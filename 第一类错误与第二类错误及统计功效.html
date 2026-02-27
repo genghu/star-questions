@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第一类错误与第二类错误及统计功效 - 交互式答题</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(50, 50, 93, 0.1), 0 5px 15px rgba(0, 0, 0, 0.07);
+            overflow: hidden;
+            padding: 30px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #eaeaea;
+        }
+
+        h1 {
+            color: #2c3e50;
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+
+        .problem-info {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 25px;
+            border-left: 5px solid #3498db;
+        }
+
+        .problem-info p {
+            margin-bottom: 8px;
+        }
+
+        .question-container {
+            margin-bottom: 40px;
+            padding-bottom: 25px;
+            border-bottom: 1px dashed #ddd;
+        }
+
+        .question-title {
+            font-size: 1.4rem;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .question-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            background-color: #3498db;
+            color: white;
+            border-radius: 50%;
+            margin-right: 15px;
+            font-weight: bold;
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            line-height: 1.7;
+        }
+
+        .math {
+            font-family: "Times New Roman", serif;
+            font-style: italic;
+            font-weight: bold;
+        }
+
+        .options-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .option {
+            background-color: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .option:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
+            border-color: #3498db;
+        }
+
+        .option.selected {
+            border-color: #3498db;
+            background-color: #e3f2fd;
+        }
+
+        .option.correct {
+            border-color: #2ecc71;
+            background-color: #d5f4e6;
+        }
+
+        .option.incorrect {
+            border-color: #e74c3c;
+            background-color: #fadbd8;
+        }
+
+        .option-letter {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            background-color: #3498db;
+            color: white;
+            border-radius: 50%;
+            margin-right: 15px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .option.correct .option-letter {
+            background-color: #2ecc71;
+        }
+
+        .option.incorrect .option-letter {
+            background-color: #e74c3c;
+        }
+
+        .dropdown-container {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .dropdown {
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 2px solid #ddd;
+            background-color: white;
+            font-size: 1rem;
+            color: #333;
+            cursor: pointer;
+            transition: border-color 0.3s;
+        }
+
+        .dropdown:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .dropdown.correct {
+            border-color: #2ecc71;
+            background-color: #d5f4e6;
+        }
+
+        .dropdown.incorrect {
+            border-color: #e74c3c;
+            background-color: #fadbd8;
+        }
+
+        .input-container {
+            margin: 15px 0;
+        }
+
+        .number-input {
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 2px solid #ddd;
+            font-size: 1rem;
+            width: 200px;
+            transition: border-color 0.3s;
+        }
+
+        .number-input:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .number-input.correct {
+            border-color: #2ecc71;
+            background-color: #d5f4e6;
+        }
+
+        .number-input.incorrect {
+            border-color: #e74c3c;
+            background-color: #fadbd8;
+        }
+
+        .explanation {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #3498db;
+            display: none;
+        }
+
+        .explanation.show {
+            display: block;
+        }
+
+        .explanation-title {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .explanation-title i {
+            margin-right: 10px;
+            color: #3498db;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-submit {
+            background-color: #3498db;
+            color: white;
+        }
+
+        .btn-submit:hover {
+            background-color: #2980b9;
+            transform: translateY(-3px);
+            box-shadow: 0 7px 14px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn-reset {
+            background-color: #95a5a6;
+            color: white;
+        }
+
+        .btn-reset:hover {
+            background-color: #7f8c8d;
+            transform: translateY(-3px);
+            box-shadow: 0 7px 14px rgba(149, 165, 166, 0.3);
+        }
+
+        .results {
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            text-align: center;
+            display: none;
+        }
+
+        .results.show {
+            display: block;
+        }
+
+        .score {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .score-text {
+            font-size: 1.2rem;
+            color: #7f8c8d;
+            margin-bottom: 20px;
+        }
+
+        .correct-answers {
+            color: #2ecc71;
+            font-weight: bold;
+        }
+
+        .total-questions {
+            color: #3498db;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .options-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .controls {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+            
+            .dropdown-container {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+
+    <style>
+    .show-explanation-btn {
+        display: none;
+        margin: 20px auto;
+        padding: 14px 28px;
+        background: linear-gradient(135deg, #9b59b6, #8e44ad);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 1.1rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
+    }
+    .show-explanation-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
+    }
+    .explanation-section {
+        display: none;
+        margin-top: 20px;
+    }
+    </style>
+    </head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-chart-line"></i> 第一类错误与第二类错误及统计功效
+                <button id="refresh-btn" style="margin-left: 15px; padding: 8px 16px; background: linear-gradient(135deg, #34a853, #2ecc71); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(52, 168, 83, 0.3);">刷新参数</button>
+            </h1>
+            <p class="subtitle">假设检验交互式练习题 - 餐饮服务业工会工资案例</p>
+        </header>
+        
+        <div class="problem-info">
+            <p><strong>背景：</strong> 一个餐饮服务业工会想要估计今年美国餐饮服务业工人的平均小时工资 μ。去年的平均小时工资是 $8.25，有理由相信今年的数值低于去年。</p>
+            <p><strong>已知信息：</strong> 样本容量 n = 150，总体标准差 σ = $1.25，显著性水平 α = 0.1。</p>
+        </div>
+        
+        <!-- 问题 (a) -->
+        <div class="question-container" id="question-a">
+            <div class="question-title">
+                <span class="question-number">(a)</span>
+                <span>工会应该用于检验的原假设和备择假设是什么？</span>
+            </div>
+            <div class="question-text">
+                <p>H₀: μ 
+                    <select class="dropdown" id="h0-relation">
+                        <option value="a">小于</option>
+                        <option value="b">小于或等于</option>
+                        <option value="c">大于</option>
+                        <option value="d" selected>大于或等于</option>
+                        <option value="e">不等于</option>
+                        <option value="f">等于</option>
+                    </select>
+                    <select class="dropdown" id="h0-value">
+                        <option value="a">8.09</option>
+                        <option value="b">1.25</option>
+                        <option value="c" selected>8.25</option>
+                        <option value="d">150</option>
+                    </select>
+                </p>
+                <p>H₁: μ 
+                    <select class="dropdown" id="h1-relation">
+                        <option value="a" selected>小于</option>
+                        <option value="b">小于或等于</option>
+                        <option value="c">大于</option>
+                        <option value="d">大于或等于</option>
+                        <option value="e">不等于</option>
+                        <option value="f">等于</option>
+                    </select>
+                    <select class="dropdown" id="h1-value">
+                        <option value="a">8.09</option>
+                        <option value="b">1.25</option>
+                        <option value="c" selected>8.25</option>
+                        <option value="d">150</option>
+                    </select>
+                </p>
+            </div>
+            <div class="explanation" id="explanation-a">
+                <div class="explanation-title"><i class="fas fa-lightbulb"></i> 解析</div>
+                <p>有理由相信今年的平均小时工资 μ 低于去年的值 $8.25。被检验的陈述是 μ 不小于 $8.25。在进行检验时，工会将暂时假设 μ 不小于 $8.25，并检查观测到的 x̄ 值，看是否可以拒绝这个假设。因此，原假设是 μ 不小于 $8.25，备择假设是 μ 小于 $8.25：</p>
+                <p>H₀: μ ≥ 8.25，H₁: μ < 8.25</p>
+            </div>
+        </div>
+        
+        <!-- 问题 (b) -->
+        <div class="question-container" id="question-b">
+            <div class="question-title">
+                <span class="question-number">(b)</span>
+                <span>当原假设实际上为真时，工会拒绝原假设的概率是多少？将你的回答舍入到至少两位小数。</span>
+            </div>
+            <div class="input-container">
+                <input type="number" step="0.01" min="0" max="1" class="number-input" id="answer-b">
+            </div>
+            <div class="explanation" id="explanation-b">
+                <div class="explanation-title"><i class="fas fa-lightbulb"></i> 解析</div>
+                <p>当原假设实际上为真时拒绝原假设是第一类错误。第一类错误的概率总是等于 α，即显著性水平。对于此检验，α = 0.1。</p>
+                <p>因此，概率为 0.10。</p>
+            </div>
+        </div>
+        
+        <!-- 问题 (c) -->
+        <div class="question-container" id="question-c">
+            <div class="question-title">
+                <span class="question-number">(c)</span>
+                <span>假设 μ 的实际值是 $8.09，工会拒绝原假设的概率是多少？将你的回答舍入到至少两位小数。</span>
+            </div>
+            <div class="input-container">
+                <input type="number" step="0.01" min="0" max="1" class="number-input" id="answer-c">
+            </div>
+            <div class="explanation" id="explanation-c">
+                <div class="explanation-title"><i class="fas fa-lightbulb"></i> 解析</div>
+                <p>这个概率是检验对于备择值 $8.09 的功效。计算步骤如下：</p>
+                <p>1. 计算临界值 C = μ₀ + (-z_{0.1}) * (σ/√n) = 8.25 + (-1.2816) * (1.25/√150) ≈ 8.1192</p>
+                <p>2. 计算当 μ₁ = 8.09 时，x̄ > C 的概率：z = (8.1192 - 8.09) / (1.25/√150) ≈ 0.2861</p>
+                <p>3. β = P(Z ≥ 0.2861) ≈ 0.3874 ≈ 0.39</p>
+                <p>4. 功效 = 1 - β ≈ 1 - 0.39 = 0.61</p>
+                <p>因此，概率为 0.61。</p>
+            </div>
+        </div>
+        
+        <!-- 问题 (d) -->
+        <div class="question-container" id="question-d">
+            <div class="question-title">
+                <span class="question-number">(d)</span>
+                <span>假设工会决定使用相同的总体、相同的原假设和备择假设、相同的样本容量进行另一次统计检验，但对于这第二次检验，工会使用 0.05 的显著性水平，而不是 0.1 的显著性水平。假设 μ 的实际值是 $8.09，工会在这第二次检验中犯第二类错误的概率与在原检验中犯第二类错误的概率相比如何？</span>
+            </div>
+            <div class="options-container">
+                <div class="option" data-value="a">
+                    <div class="option-letter">A</div>
+                    <div class="option-text">第二次检验中犯第二类错误的概率更大</div>
+                </div>
+                <div class="option" data-value="b">
+                    <div class="option-letter">B</div>
+                    <div class="option-text">第二次检验中犯第二类错误的概率更小</div>
+                </div>
+                <div class="option" data-value="c">
+                    <div class="option-letter">C</div>
+                    <div class="option-text">犯第二类错误的概率相等</div>
+                </div>
+            </div>
+            <div class="explanation" id="explanation-d">
+                <div class="explanation-title"><i class="fas fa-lightbulb"></i> 解析</div>
+                <p>当显著性水平 α 从 0.1 降低到 0.05 时，临界值 C 会向左移动（变得更小），这意味着需要更强的证据才能拒绝原假设。因此，当原假设为假（μ = 8.09）时，不拒绝原假设的概率（即第二类错误的概率 β）会增加。</p>
+                <p>所以，第二次检验中犯第二类错误的概率更大。</p>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button class="btn btn-submit" id="submit-btn">
+                <i class="fas fa-paper-plane"></i> 提交答案
+            </button>
+            <button class="btn btn-reset" id="reset-btn">
+                <i class="fas fa-redo"></i> 重新作答
+            </button>
+        </div>
+        
+        <div class="results" id="results">
+            <div class="score" id="score">0/4</div>
+            <div class="score-text">你答对了 <span class="correct-answers" id="correct-count">0</span> 题，共 <span class="total-questions" id="total-questions">4</span> 题</div>
+            <p style="margin-top: 15px;">点击题目解析查看详细解答</p>
+        </div>
+        
+        
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+            // 显示答案解析按钮点击事件
+            document.querySelectorAll('.show-explanation-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    var questionId = this.getAttribute('data-question') || this.id;
+                    var explanation;
+                    if (questionId) {
+                        explanation = this.nextElementSibling;
+                    }
+                    if (explanation) {
+                        if (explanation.classList.contains('show')) {
+                            explanation.classList.remove('show');
+                            this.textContent = '查看答案解析';
+                        } else {
+                            explanation.classList.add('show');
+                            this.textContent = '隐藏答案解析';
+                        }
+                    }
+                });
+            });
+
+            // 正确答案
+            const correctAnswers = {
+                'a': { h0Relation: 'd', h0Value: 'c', h1Relation: 'a', h1Value: 'c' },
+                'b': '0.1',
+                'c': '0.61',
+                'd': 'a'
+            };
+            
+            // 当前用户答案
+            const userAnswers = {
+                'a': { h0Relation: 'd', h0Value: 'c', h1Relation: 'a', h1Value: 'c' },
+                'b': '',
+                'c': '',
+                'd': ''
+            };
+            
+            // 初始化选项点击事件
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    const questionId = this.closest('.question-container').id;
+                    const questionLetter = questionId.split('-')[1];
+                    
+                    // 移除同一问题中其他选项的选中状态
+                    const parentContainer = this.closest('.question-container');
+                    parentContainer.querySelectorAll('.option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    
+                    // 选中当前选项
+                    this.classList.add('selected');
+                    
+                    // 保存用户答案
+                    userAnswers[questionLetter] = this.getAttribute('data-value');
+                });
+            });
+            
+            // 初始化下拉菜单变化事件
+            const dropdowns = document.querySelectorAll('.dropdown');
+            dropdowns.forEach(dropdown => {
+                dropdown.addEventListener('change', function() {
+                    const questionId = this.closest('.question-container').id;
+                    const questionLetter = questionId.split('-')[1];
+                    
+                    // 保存用户答案
+                    if (questionLetter === 'a') {
+                        userAnswers.a.h0Relation = document.getElementById('h0-relation').value;
+                        userAnswers.a.h0Value = document.getElementById('h0-value').value;
+                        userAnswers.a.h1Relation = document.getElementById('h1-relation').value;
+                        userAnswers.a.h1Value = document.getElementById('h1-value').value;
+                    }
+                });
+            });
+            
+            // 初始化数字输入变化事件
+            const numberInputs = document.querySelectorAll('.number-input');
+            numberInputs.forEach(input => {
+                input.addEventListener('input', function() {
+                    const questionId = this.closest('.question-container').id;
+                    const questionLetter = questionId.split('-')[1];
+                    
+                    // 保存用户答案
+                    userAnswers[questionLetter] = this.value;
+                });
+            });
+            
+            // 提交按钮事件
+            document.getElementById('submit-btn').addEventListener('click', function() {
+                let correctCount = 0;
+                const totalQuestions = 4;
+                
+                // 检查问题 (a)
+                const questionA = document.getElementById('question-a');
+                const h0Relation = document.getElementById('h0-relation');
+                const h0Value = document.getElementById('h0-value');
+                const h1Relation = document.getElementById('h1-relation');
+                const h1Value = document.getElementById('h1-value');
+                
+                const isACorrect = 
+                    userAnswers.a.h0Relation === correctAnswers.a.h0Relation &&
+                    userAnswers.a.h0Value === correctAnswers.a.h0Value &&
+                    userAnswers.a.h1Relation === correctAnswers.a.h1Relation &&
+                    userAnswers.a.h1Value === correctAnswers.a.h1Value;
+                
+                if (isACorrect) {
+                    correctCount++;
+                    h0Relation.classList.add('correct');
+                    h0Value.classList.add('correct');
+                    h1Relation.classList.add('correct');
+                    h1Value.classList.add('correct');
+                } else {
+                    h0Relation.classList.add('incorrect');
+                    h0Value.classList.add('incorrect');
+                    h1Relation.classList.add('incorrect');
+                    h1Value.classList.add('incorrect');
+                }
+                
+                // 显示问题 (a) 的解析
+                document.getElementById('explanation-a').classList.add('show');
+                
+                // 检查问题 (b)
+                const questionB = document.getElementById('question-b');
+                const answerB = document.getElementById('answer-b');
+                const userAnswerBValue = parseFloat(userAnswers.b);
+                const correctAnswerBValue = parseFloat(correctAnswers.b);
+                const tolerance = 0.01; // 容差范围
+
+                if (!isNaN(userAnswerBValue) && Math.abs(userAnswerBValue - correctAnswerBValue) <= tolerance) {
+                    correctCount++;
+                    answerB.classList.add('correct');
+                    answerB.classList.remove('incorrect');
+                } else {
+                    answerB.classList.add('incorrect');
+                    answerB.classList.remove('correct');
+                }
+                
+                // 显示问题 (b) 的解析
+                document.getElementById('explanation-b').classList.add('show');
+                
+                // 检查问题 (c)
+                const questionC = document.getElementById('question-c');
+                const answerC = document.getElementById('answer-c');
+                const userAnswerCValue = parseFloat(userAnswers.c);
+                const correctAnswerCValue = parseFloat(correctAnswers.c);
+                const tolerance = 0.01; // 容差范围
+
+                if (!isNaN(userAnswerCValue) && Math.abs(userAnswerCValue - correctAnswerCValue) <= tolerance) {
+                    correctCount++;
+                    answerC.classList.add('correct');
+                    answerC.classList.remove('incorrect');
+                } else {
+                    answerC.classList.add('incorrect');
+                    answerC.classList.remove('correct');
+                }
+                
+                // 显示问题 (c) 的解析
+                document.getElementById('explanation-c').classList.add('show');
+                
+                // 检查问题 (d)
+                const questionD = document.getElementById('question-d');
+                const optionsD = questionD.querySelectorAll('.option');
+                const isDCorrect = userAnswers.d === correctAnswers.d;
+                
+                if (isDCorrect) {
+                    correctCount++;
+                }
+                
+                // 标记问题 (d) 的选项
+                optionsD.forEach(option => {
+                    const value = option.getAttribute('data-value');
+                    if (value === correctAnswers.d) {
+                        option.classList.add('correct');
+                    } else if (value === userAnswers.d && value !== correctAnswers.d) {
+                        option.classList.add('incorrect');
+                    }
+                });
+                
+                // 显示问题 (d) 的解析
+                document.getElementById('explanation-d').classList.add('show');
+                
+                // 显示结果
+                const results = document.getElementById('results');
+                const scoreElement = document.getElementById('score');
+                const correctCountElement = document.getElementById('correct-count');
+                const totalQuestionsElement = document.getElementById('total-questions');
+                
+                scoreElement.textContent = `${correctCount}/${totalQuestions}`;
+                correctCountElement.textContent = correctCount;
+                totalQuestionsElement.textContent = totalQuestions;
+                
+                
+                // 显示答案解析按钮
+                document.querySelectorAll('.show-explanation-btn').forEach(btn => {
+                    btn.style.display = 'inline-block';
+                });
+
+results.classList.add('show');
+                
+                // 滚动到结果区域
+                results.scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            // 重置按钮事件
+            document.getElementById('reset-btn').addEventListener('click', function() {
+                // 重置用户答案
+                userAnswers.a = { h0Relation: 'd', h0Value: 'c', h1Relation: 'a', h1Value: 'c' };
+                userAnswers.b = '';
+                userAnswers.c = '';
+                userAnswers.d = '';
+                
+                // 重置下拉菜单
+                document.getElementById('h0-relation').value = 'd';
+                document.getElementById('h0-value').value = 'c';
+                document.getElementById('h1-relation').value = 'a';
+                document.getElementById('h1-value').value = 'c';
+                
+                // 重置输入框
+                document.getElementById('answer-b').value = '';
+                document.getElementById('answer-c').value = '';
+                
+                // 移除所有样式类
+                const dropdowns = document.querySelectorAll('.dropdown');
+                dropdowns.forEach(dropdown => {
+                    dropdown.classList.remove('correct', 'incorrect');
+                });
+                
+                const numberInputs = document.querySelectorAll('.number-input');
+                numberInputs.forEach(input => {
+                    input.classList.remove('correct', 'incorrect');
+                });
+                
+                const options = document.querySelectorAll('.option');
+                options.forEach(option => {
+                    option.classList.remove('selected', 'correct', 'incorrect');
+                });
+                
+                // 隐藏解析
+                const explanations = document.querySelectorAll('.explanation');
+                explanations.forEach(explanation => {
+                    explanation.classList.remove('show');
+                });
+                
+                
+                // 隐藏答案解析按钮
+                document.querySelectorAll('.show-explanation-btn').forEach(btn => {
+                    btn.style.display = 'none';
+                    btn.textContent = '查看答案解析';
+                });
+
+document.getElementById('results').classList.remove('show');
+                
+                // 滚动到顶部
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
+    </script>
+</body>
+</html>

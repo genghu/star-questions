@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>方差分析自由度与F统计量 - 交互式答题</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+
+        body {
+            background-color: #f8fafc;
+            color: #334155;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .header-text {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .header h1 {
+            color: #1e40af;
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        .header .subtitle {
+            color: #64748b;
+            font-size: 0.95rem;
+        }
+
+        .refresh-params-btn {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .refresh-params-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.4);
+        }
+
+        .info-box {
+            background-color: #e0f2fe;
+            border-left: 4px solid #0ea5e9;
+            padding: 15px;
+            margin-bottom: 25px;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.9rem;
+        }
+
+        .question-container {
+            background-color: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+        }
+
+        .question-title {
+            color: #1e3a8a;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .question-title .number {
+            background-color: #3b82f6;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .question-content {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed #e2e8f0;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .option {
+            padding: 16px 20px;
+            border: 2px solid #cbd5e1;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .option:hover {
+            background-color: #f1f5f9;
+            border-color: #94a3b8;
+            transform: translateY(-2px);
+        }
+
+        .option.selected {
+            border-color: #3b82f6;
+            background-color: #eff6ff;
+        }
+
+        .option.correct {
+            border-color: #10b981;
+            background-color: #d1fae5;
+        }
+
+        .option.incorrect {
+            border-color: #ef4444;
+            background-color: #fee2e2;
+        }
+
+        .option-letter {
+            background-color: #e2e8f0;
+            color: #475569;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .option.selected .option-letter {
+            background-color: #3b82f6;
+            color: white;
+        }
+
+        .option.correct .option-letter {
+            background-color: #10b981;
+            color: white;
+        }
+
+        .option.incorrect .option-letter {
+            background-color: #ef4444;
+            color: white;
+        }
+
+        .fill-blank-container {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #f8fafc;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .fill-blank-input {
+            width: 120px;
+            padding: 10px 15px;
+            font-size: 1.1rem;
+            border: 2px solid #cbd5e1;
+            border-radius: 8px;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        .fill-blank-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .fill-blank-input.correct {
+            border-color: #10b981;
+            background-color: #d1fae5;
+        }
+
+        .fill-blank-input.incorrect {
+            border-color: #ef4444;
+            background-color: #fee2e2;
+        }
+
+        .fill-blank-label {
+            font-size: 0.95rem;
+            color: #64748b;
+            margin-left: 10px;
+        }
+
+        .explanation {
+            margin-top: 25px;
+            padding: 20px;
+            background-color: #f8fafc;
+            border-radius: 8px;
+            border-left: 4px solid #8b5cf6;
+            display: none;
+        }
+
+        .explanation.show {
+            display: block;
+        }
+
+        .explanation h4 {
+            color: #7c3aed;
+            margin-bottom: 10px;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+            margin-bottom: 40px;
+        }
+
+        button {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 1rem;
+        }
+
+        #submit-btn {
+            background-color: #3b82f6;
+            color: white;
+        }
+
+        #submit-btn:hover {
+            background-color: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(37, 99, 235, 0.2);
+        }
+
+        #reset-btn {
+            background-color: #64748b;
+            color: white;
+        }
+
+        #reset-btn:hover {
+            background-color: #475569;
+            transform: translateY(-2px);
+        }
+
+        .results {
+            background-color: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            display: none;
+        }
+
+        .results.show {
+            display: block;
+        }
+
+        .results h3 {
+            color: #1e3a8a;
+            margin-bottom: 15px;
+        }
+
+        .score {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #3b82f6;
+            margin: 15px 0;
+        }
+
+        .score-detail {
+            color: #64748b;
+            margin-top: 10px;
+        }
+
+        .formula {
+            font-family: 'Cambria Math', 'Times New Roman', serif;
+            background-color: #f8fafc;
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin: 10px 0;
+            display: inline-block;
+            border-left: 3px solid #0ea5e9;
+        }
+
+        .highlight {
+            background-color: #fef3c7;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .note {
+            font-size: 0.9rem;
+            color: #64748b;
+            font-style: italic;
+            margin-top: 5px;
+        }
+
+        .show-explanation-btn {
+            display: none;
+            margin: 20px auto;
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
+        }
+        .show-explanation-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
+        }
+        .explanation-section {
+            display: none;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .question-container {
+                padding: 20px;
+            }
+
+            .option {
+                padding: 14px 16px;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-text">
+            <h1>方差分析自由度与F统计量</h1>
+            <div class="subtitle">单因素独立样本方差分析检验 - 交互式答题练习</div>
+        </div>
+        <button class="refresh-params-btn" id="refreshParamsBtn">
+            <span>↻</span> 刷新参数
+        </button>
+    </div>
+
+    <div class="info-box" id="infoBox">
+        <!-- 动态生成 -->
+    </div>
+
+    <div class="question-container" id="q1-container">
+        <div class="question-title">
+            <div class="number">1</div>
+            <div id="q1-title">给出此 F 统计量的分子自由度。</div>
+        </div>
+        <div class="question-content" id="q1-content">
+            <!-- 动态生成 -->
+        </div>
+        <div class="options-container" id="q1-options">
+            <!-- 动态生成 -->
+        </div>
+        <button class="show-explanation-btn" data-question="1" style="display:none;">查看答案解析</button>
+        <div class="explanation" id="q1-explanation" style="display:none;">
+            <!-- 动态生成 -->
+        </div>
+    </div>
+
+    <div class="question-container" id="q2-container">
+        <div class="question-title">
+            <div class="number">2</div>
+            <div id="q2-title">给出此 F 统计量的分母自由度。</div>
+        </div>
+        <div class="question-content" id="q2-content">
+            <!-- 动态生成 -->
+        </div>
+        <div class="options-container" id="q2-options">
+            <!-- 动态生成 -->
+        </div>
+        <button class="show-explanation-btn" data-question="2" style="display:none;">查看答案解析</button>
+        <div class="explanation" id="q2-explanation" style="display:none;">
+            <!-- 动态生成 -->
+        </div>
+    </div>
+
+    <div class="question-container" id="q3-container">
+        <div class="question-title">
+            <div class="number">3</div>
+            <div id="q3-title">我们能否在 0.05 的显著性水平下得出结论，至少有一位销售人员的日均销售额与其他人的有显著差异？</div>
+        </div>
+        <div class="question-content" id="q3-content">
+            <!-- 动态生成 -->
+        </div>
+        <div class="options-container" id="q3-options">
+            <!-- 动态生成 -->
+        </div>
+        <button class="show-explanation-btn" data-question="3" style="display:none;">查看答案解析</button>
+        <div class="explanation" id="q3-explanation" style="display:none;">
+            <!-- 动态生成 -->
+        </div>
+    </div>
+
+    <div class="controls">
+        <button id="submit-btn">提交答案</button>
+        <button id="reset-btn">重新作答</button>
+    </div>
+
+    <div class="results" id="results">
+        <h3>答题结果</h3>
+        <div class="score" id="score">0/3</div>
+        <p id="score-message"></p>
+        <div class="score-detail">
+            <p>正确回答了 <span id="correct-count">0</span> 题，错误 <span id="incorrect-count">3</span> 题</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // ==================== 参数化数据集 ====================
+            const questionParams = [
+                {
+                    description: "Cris Turlock 在美国加利福尼亚州旧金山市经营一家餐车企业。她计划根据四名销售人员的日均销售额发放奖金。",
+                    k: 4,
+                    df2: 383,
+                    fValue: 2.57,
+                    pValue: 0.054,
+                    conclusion: "no"
+                },
+                {
+                    description: "张明在北京市经营一家连锁餐厅。他计划根据五名店长的月均营业额发放奖金。",
+                    k: 5,
+                    df2: 245,
+                    fValue: 3.12,
+                    pValue: 0.015,
+                    conclusion: "yes"
+                },
+                {
+                    description: "李华在上海经营一家电子商务公司。她计划根据六名区域经理的季度销售额发放奖金。",
+                    k: 6,
+                    df2: 194,
+                    fValue: 2.15,
+                    pValue: 0.062,
+                    conclusion: "no"
+                },
+                {
+                    description: "王芳在广州经营一家零售连锁店。她计划根据四名采购员的采购效率发放奖金。",
+                    k: 4,
+                    df2: 156,
+                    fValue: 4.25,
+                    pValue: 0.006,
+                    conclusion: "yes"
+                },
+                {
+                    description: "赵强在深圳经营一家科技公司。他计划根据五名产品经理的项目完成率发放奖金。",
+                    k: 5,
+                    df2: 120,
+                    fValue: 2.85,
+                    pValue: 0.026,
+                    conclusion: "yes"
+                }
+            ];
+
+            let currentParamIndex = 0;
+
+            // 用户选择的答案
+            const userAnswers = {
+                'q1': null,
+                'q2': null,
+                'q3': null
+            };
+
+            // 容差设置
+            const tolerances = {
+                'q1': 0.01,  // 整数答案，小容差
+                'q2': 0.01,  // 整数答案，小容差
+                'q3': null   // 概念题，无需容差
+            };
+
+            // ==================== 渲染函数 ====================
+
+            function renderQuestion() {
+                const params = questionParams[currentParamIndex];
+                const df1 = params.k - 1;
+
+                // 渲染信息框
+                document.getElementById('infoBox').innerHTML = `
+                    <p><strong>题目背景：</strong>${params.description}为了判断销售人员之间的业绩是否存在显著差异，她进行了单因素独立样本方差分析检验，得到 F ≈ ${params.fValue}。</p>
+                `;
+
+                // 渲染问题1 - 填空题
+                document.getElementById('q1-content').innerHTML = `
+                    <p>在方差分析中，F 统计量的分子自由度计算公式为：<span class="formula">k - 1</span>，其中 <span class="highlight">k</span> 是总体（组）的数量。</p>
+                    <p class="note">本题有 ${params.k} 名销售人员，因此 k = ${params.k}。</p>
+                    <div class="fill-blank-container">
+                        <label>请输入分子自由度：</label>
+                        <input type="number" class="fill-blank-input" id="q1-answer">
+                    </div>
+                `;
+
+                document.getElementById('q1-options').innerHTML = '';
+
+                document.getElementById('q1-explanation').innerHTML = `
+                    <h4>解析：</h4>
+                    <p>F 统计量的分子自由度对应组间变异，计算公式为 <span class="formula">df₁ = k - 1</span>，其中 k 是组数（销售人员数量）。</p>
+                    <p>本题中有 ${params.k} 名销售人员，所以 <span class="formula">df₁ = ${params.k} - 1 = ${df1}</span>。</p>
+                `;
+
+                // 渲染问题2 - 填空题
+                document.getElementById('q2-content').innerHTML = `
+                    <p>在方差分析中，F 统计量的分母自由度计算公式为：<span class="formula">N - k</span>，其中 <span class="highlight">N</span> 是样本测量值的总数，<span class="highlight">k</span> 是总体（组）的数量。</p>
+                    <p class="note">根据题目解析，分母自由度为 ${params.df2}。</p>
+                    <div class="fill-blank-container">
+                        <label>请输入分母自由度：</label>
+                        <input type="number" class="fill-blank-input" id="q2-answer">
+                    </div>
+                `;
+
+                document.getElementById('q2-options').innerHTML = '';
+
+                document.getElementById('q2-explanation').innerHTML = `
+                    <h4>解析：</h4>
+                    <p>F 统计量的分母自由度对应组内变异（误差），计算公式为 <span class="formula">df₂ = N - k</span>，其中 N 是总样本量，k 是组数。</p>
+                    <p>根据题目解析，分母自由度为 <span class="highlight">${params.df2}</span>。这意味着总样本量 N = ${params.df2} + ${params.k} = ${params.df2 + params.k}。</p>
+                `;
+
+                // 渲染问题3
+                document.getElementById('q3-content').innerHTML = `
+                    <p>在显著性水平 α = 0.05 下，我们需要比较 p 值与 α 的大小关系。</p>
+                    <p>根据题目解析，F ≈ ${params.fValue}，分子自由度 df₁ = ${df1}，分母自由度 df₂ = ${params.df2}，对应的 p 值约为 ${params.pValue}。</p>
+                `;
+
+                const q3Options = `
+                    <div class="option" data-value="yes">
+                        <div class="option-letter">A</div>
+                        <div>是</div>
+                    </div>
+                    <div class="option" data-value="no">
+                        <div class="option-letter">B</div>
+                        <div>否</div>
+                    </div>
+                `;
+                document.getElementById('q3-options').innerHTML = q3Options;
+
+                const conclusionText = params.conclusion === 'yes' ? '能' : '不能';
+                document.getElementById('q3-explanation').innerHTML = `
+                    <h4>解析：</h4>
+                    <p>决策规则：如果 p 值 ≤ 显著性水平 α (0.05)，则拒绝原假设（所有总体均值相等），得出结论至少有一个均值不同。</p>
+                    <p>本题中，p 值 ≈ ${params.pValue}，而 α = 0.05，因此 <span class="formula">p 值 (${params.pValue}) ${params.pValue <= 0.05 ? '≤' : '>'} α (0.05)</span>。</p>
+                    <p>所以，我们${params.pValue <= 0.05 ? '可以' : '不能'}拒绝原假设，<span class="highlight">${conclusionText}</span> 得出结论说至少有一位销售人员的日均销售额与其他人的有显著差异。</p>
+                `;
+
+                // 重新绑定选项点击事件
+                bindOptionEvents();
+
+                // 绑定填空题输入事件
+                bindFillBlankEvents();
+            }
+
+            function bindFillBlankEvents() {
+                // Q1 填空题
+                const q1Input = document.getElementById('q1-answer');
+                if (q1Input) {
+                    q1Input.addEventListener('input', function() {
+                        userAnswers['q1'] = this.value.trim() !== '' ? parseFloat(this.value) : null;
+                    });
+                }
+
+                // Q2 填空题
+                const q2Input = document.getElementById('q2-answer');
+                if (q2Input) {
+                    q2Input.addEventListener('input', function() {
+                        userAnswers['q2'] = this.value.trim() !== '' ? parseFloat(this.value) : null;
+                    });
+                }
+            }
+
+            function generateOptions(values, correctValue) {
+                const letters = ['A', 'B', 'C', 'D'];
+                return values.map((val, idx) => `
+                    <div class="option" data-value="${val}">
+                        <div class="option-letter">${letters[idx]}</div>
+                        <div>${val}</div>
+                    </div>
+                `).join('');
+            }
+
+            function bindOptionEvents() {
+                document.querySelectorAll('.option').forEach(option => {
+                    option.addEventListener('click', function() {
+                        const questionId = this.closest('.options-container').id;
+                        const questionNum = questionId.split('-')[0];
+
+                        // 移除同一问题中其他选项的选中状态
+                        document.querySelectorAll(`#${questionId} .option`).forEach(opt => {
+                            opt.classList.remove('selected');
+                        });
+
+                        // 标记当前选项为选中
+                        this.classList.add('selected');
+
+                        // 保存用户答案
+                        userAnswers[questionNum] = this.getAttribute('data-value');
+                    });
+                });
+            }
+
+            function refreshParams() {
+                let newIndex;
+                do {
+                    newIndex = Math.floor(Math.random() * questionParams.length);
+                } while (newIndex === currentParamIndex && questionParams.length > 1);
+
+                currentParamIndex = newIndex;
+
+                // 重置用户答案
+                for (const questionId in userAnswers) {
+                    userAnswers[questionId] = null;
+                }
+
+                // 重置填空题输入框
+                document.querySelectorAll('.fill-blank-input').forEach(input => {
+                    input.value = '';
+                    input.classList.remove('correct', 'incorrect');
+                });
+
+                // 重置所有选项样式
+                document.querySelectorAll('.option').forEach(option => {
+                    option.classList.remove('selected', 'correct', 'incorrect');
+                });
+
+                // 隐藏答案解析按钮
+                document.querySelectorAll('.show-explanation-btn').forEach(btn => {
+                    btn.style.display = 'none';
+                    btn.textContent = '查看答案解析';
+                });
+
+                // 隐藏解析
+                document.querySelectorAll('.explanation').forEach(explanation => {
+                    explanation.style.display = 'none';
+                    explanation.classList.remove('show');
+                });
+
+                // 隐藏结果
+                document.getElementById('results').classList.remove('show');
+
+                // 启用提交按钮
+                const submitBtn = document.getElementById('submit-btn');
+                submitBtn.disabled = false;
+                submitBtn.style.backgroundColor = "#3b82f6";
+                submitBtn.textContent = "提交答案";
+
+                // 重新渲染
+                renderQuestion();
+            }
+
+            // ==================== 事件处理 ====================
+
+            // 刷新参数按钮
+            document.getElementById('refreshParamsBtn').addEventListener('click', function() {
+                refreshParams();
+            });
+
+            // 显示答案解析按钮点击事件
+            document.querySelectorAll('.show-explanation-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    var questionId = this.getAttribute('data-question') || this.id;
+                    var explanation = document.getElementById(`q${questionId}-explanation`);
+                    if (explanation) {
+                        if (explanation.classList.contains('show')) {
+                            explanation.classList.remove('show');
+                            this.textContent = '查看答案解析';
+                        } else {
+                            explanation.classList.add('show');
+                            this.textContent = '隐藏答案解析';
+                        }
+                    }
+                });
+            });
+
+            // 提交按钮事件
+            document.getElementById('submit-btn').addEventListener('click', function() {
+                const params = questionParams[currentParamIndex];
+                const df1 = params.k - 1;
+
+                const correctAnswers = {
+                    'q1': df1,
+                    'q2': params.df2,
+                    'q3': params.conclusion
+                };
+
+                let correctCount = 0;
+                let totalQuestions = Object.keys(correctAnswers).length;
+
+                // 检查每个问题
+                for (const questionId in correctAnswers) {
+                    const userAnswer = userAnswers[questionId];
+                    const correctAnswer = correctAnswers[questionId];
+                    const tolerance = tolerances[questionId];
+
+                    // 如果用户没有回答这个问题
+                    if (userAnswer === null || userAnswer === '') {
+                        alert(`请先回答第 ${questionId.charAt(1)} 题！`);
+                        return;
+                    }
+
+                    // 判断答案是否正确（根据题目类型）
+                    let isCorrect = false;
+                    if (tolerance !== null) {
+                        // 填空题：使用容差比较
+                        isCorrect = Math.abs(userAnswer - correctAnswer) <= tolerance;
+                    } else {
+                        // 选择题：精确匹配
+                        isCorrect = userAnswer === correctAnswer;
+                    }
+
+                    // 处理填空题的视觉反馈
+                    if (questionId === 'q1' || questionId === 'q2') {
+                        const inputElement = document.getElementById(`${questionId}-answer`);
+                        if (inputElement) {
+                            inputElement.classList.remove('correct', 'incorrect');
+                            inputElement.classList.add(isCorrect ? 'correct' : 'incorrect');
+                        }
+                    } else {
+                        // 处理选择题的视觉反馈
+                        const optionsContainer = document.getElementById(`${questionId}-options`);
+                        if (optionsContainer) {
+                            optionsContainer.querySelectorAll('.option').forEach(option => {
+                                const optionValue = option.getAttribute('data-value');
+                                option.classList.remove('correct', 'incorrect');
+                                if (optionValue === userAnswer && !isCorrect) {
+                                    option.classList.add('incorrect');
+                                }
+                            });
+                        }
+                    }
+
+                    // 显示"查看答案解析"按钮
+                    const questionNum = questionId.charAt(1);
+                    const showBtn = document.querySelector(`.show-explanation-btn[data-question="${questionNum}"]`);
+                    if (showBtn) {
+                        showBtn.style.display = 'inline-block';
+                    }
+
+                    // 统计正确数量
+                    if (isCorrect) {
+                        correctCount++;
+                    }
+                }
+
+                // 显示结果
+                const resultsDiv = document.getElementById('results');
+                const scoreDiv = document.getElementById('score');
+                const scoreMessage = document.getElementById('score-message');
+                const correctCountSpan = document.getElementById('correct-count');
+                const incorrectCountSpan = document.getElementById('incorrect-count');
+
+                scoreDiv.textContent = `${correctCount}/${totalQuestions}`;
+                correctCountSpan.textContent = correctCount;
+                incorrectCountSpan.textContent = totalQuestions - correctCount;
+
+                // 根据得分显示不同消息
+                if (correctCount === totalQuestions) {
+                    scoreMessage.textContent = "太棒了！您全部答对了！";
+                    scoreMessage.style.color = "#10b981";
+                } else if (correctCount >= totalQuestions / 2) {
+                    scoreMessage.textContent = "不错！继续努力！";
+                    scoreMessage.style.color = "#3b82f6";
+                } else {
+                    scoreMessage.textContent = "请仔细阅读解析，再试一次！";
+                    scoreMessage.style.color = "#ef4444";
+                }
+
+                resultsDiv.classList.add('show');
+
+                // 滚动到结果区域
+                resultsDiv.scrollIntoView({ behavior: 'smooth' });
+
+                // 禁用提交按钮
+                this.disabled = true;
+                this.style.backgroundColor = "#94a3b8";
+                this.textContent = "已提交";
+            });
+
+            // 重新作答按钮事件
+            document.getElementById('reset-btn').addEventListener('click', function() {
+                // 重置用户答案
+                for (const questionId in userAnswers) {
+                    userAnswers[questionId] = null;
+                }
+
+                // 重置填空题输入框
+                document.querySelectorAll('.fill-blank-input').forEach(input => {
+                    input.value = '';
+                    input.classList.remove('correct', 'incorrect');
+                });
+
+                // 重置所有选项样式
+                document.querySelectorAll('.option').forEach(option => {
+                    option.classList.remove('selected', 'correct', 'incorrect');
+                });
+
+                // 隐藏答案解析按钮
+                document.querySelectorAll('.show-explanation-btn').forEach(btn => {
+                    btn.style.display = 'none';
+                    btn.textContent = '查看答案解析';
+                });
+
+                // 隐藏解析
+                document.querySelectorAll('.explanation').forEach(explanation => {
+                    explanation.style.display = 'none';
+                    explanation.classList.remove('show');
+                });
+
+                // 隐藏结果
+                document.getElementById('results').classList.remove('show');
+
+                // 启用提交按钮
+                const submitBtn = document.getElementById('submit-btn');
+                submitBtn.disabled = false;
+                submitBtn.style.backgroundColor = "#3b82f6";
+                submitBtn.textContent = "提交答案";
+            });
+
+            // ==================== 初始化 ====================
+            renderQuestion();
+        });
+    </script>
+</body>
+</html>

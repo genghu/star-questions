@@ -1,0 +1,1178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>百分位数 - 交互式答题</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 100, 0.1);
+            overflow: hidden;
+            padding: 30px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #eaeff5;
+        }
+
+        h1 {
+            color: #2c3e50;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        h1 i {
+            color: #3498db;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+
+        .problem-info {
+            background-color: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-left: 5px solid #3498db;
+        }
+
+        .info-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 10px;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #5a6c7d;
+        }
+
+        .info-item i {
+            color: #3498db;
+        }
+
+        .data-set {
+            background-color: #f0f7ff;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            border: 1px dashed #a0c8f0;
+        }
+
+        .method-section {
+            margin: 30px 0;
+            padding: 25px;
+            border-radius: 15px;
+            background-color: #f9fbfd;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
+        }
+
+        .method-title {
+            color: #2c3e50;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eaeff5;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .method-title i {
+            color: #3498db;
+        }
+
+        .step {
+            margin: 15px 0;
+            padding-left: 20px;
+            border-left: 3px solid #a0c8f0;
+        }
+
+        .step-number {
+            display: inline-block;
+            background-color: #3498db;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 28px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .calculation {
+            background-color: #e8f4fc;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .result {
+            font-weight: bold;
+            color: #2c3e50;
+            margin: 10px 0;
+            padding: 10px 15px;
+            background-color: #e8f4fc;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+        }
+
+        .quiz-section {
+            margin-top: 40px;
+            padding: 25px;
+            background-color: #f8fafc;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .quiz-title {
+            color: #2c3e50;
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .question {
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
+        }
+
+        .question-text {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        .options {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+        }
+
+        .option {
+            padding: 18px 20px;
+            background-color: #f0f7ff;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .option:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(52, 152, 219, 0.2);
+            border-color: #3498db;
+        }
+
+        .option.selected {
+            border-color: #3498db;
+            background-color: #e1f0fa;
+        }
+
+        .option.correct {
+            border-color: #2ecc71;
+            background-color: #e8f8ef;
+        }
+
+        .option.incorrect {
+            border-color: #e74c3c;
+            background-color: #fdedec;
+        }
+
+        .option-letter {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            background-color: #3498db;
+            color: white;
+            border-radius: 50%;
+            font-weight: bold;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .option.correct .option-letter {
+            background-color: #2ecc71;
+        }
+
+        .option.incorrect .option-letter {
+            background-color: #e74c3c;
+        }
+
+        .option-text {
+            font-size: 1.1rem;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        button {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #submit-btn {
+            background-color: #3498db;
+            color: white;
+        }
+
+        #submit-btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        #reset-btn {
+            background-color: #95a5a6;
+            color: white;
+        }
+
+        #reset-btn:hover {
+            background-color: #7f8c8d;
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(149, 165, 166, 0.3);
+        }
+
+        .results {
+            margin-top: 30px;
+            padding: 25px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            display: none;
+        }
+
+        .results.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .score {
+            text-align: center;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+
+        .score-value {
+            font-weight: bold;
+            color: #3498db;
+        }
+
+        .feedback {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .feedback.correct {
+            background-color: #e8f8ef;
+            border-left: 4px solid #2ecc71;
+        }
+
+        .feedback.incorrect {
+            background-color: #fdedec;
+            border-left: 4px solid #e74c3c;
+        }
+
+        .explanation {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            color: #5a6c7d;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .options {
+                grid-template-columns: 1fr;
+            }
+            
+            .buttons {
+                flex-direction: column;
+            }
+            
+            button {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+
+    <style>
+    .show-explanation-btn {
+        display: none;
+        margin: 20px auto;
+        padding: 14px 28px;
+        background: linear-gradient(135deg, #9b59b6, #8e44ad);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 1.1rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
+    }
+    .show-explanation-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
+    }
+    .explanation-section {
+        display: none;
+        margin-top: 20px;
+    }
+    </style>
+    </head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-chart-line"></i> 百分位数 <button onclick="refreshParams()" style="margin-left: 15px; padding: 8px 16px; background: linear-gradient(135deg, #e74c3c, #c0392b); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-weight: 600; transition: all 0.3s ease;">刷新参数</button></h1>
+            <p class="subtitle">交互式答题 - 计算方法A与B的比较</p>
+        </header>
+        
+        <div class="problem-info">
+            <div class="info-row">
+                <div class="info-item">
+                    <i class="fas fa-user-graduate"></i>
+                    <span>学生姓名：Genghu Shi</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>日期：04/25/2019</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-book"></i>
+                    <span>科目：描述性统计</span>
+                </div>
+            </div>
+            <p><strong>问题描述：</strong>求以下薪水的第25和第80百分位数（单位：千美元）。</p>
+            <div class="data-set">
+                562, 723, 1108, 700, 75, 157, 452, 743, 519, 181, 381, 248, 767, 1250, 472, 271, 428, 790
+            </div>
+            <p><strong>排序后的数据：</strong></p>
+            <div class="data-set">
+                75, 157, 181, 248, 271, 381, 428, 452, 472, 519, 562, 700, 723, 743, 767, 790, 1108, 1250
+            </div>
+            <p><em>注意：不同的教科书可能使用不同的方法来确定百分位数。这里我们描述两种最常用的方法。</em></p>
+        </div>
+        
+        <div class="method-section">
+            <h2 class="method-title"><i class="fas fa-calculator"></i> 方法A</h2>
+            <div class="step">
+                <span class="step-number">1</span>
+                <span>将 n 个观测值从小到大排序。</span>
+            </div>
+            <div class="step">
+                <span class="step-number">2</span>
+                <span>确定值 n × p / 100。此值用于确定第 p 百分位数在有序列表中的位置。</span>
+            </div>
+            <div class="step">
+                <span class="step-number">3</span>
+                <span>如果 n × p / 100 不是整数，则向上取整到下一个整数。位于此位置的观测值即为一个第 p 百分位数。</span>
+            </div>
+            <div class="step">
+                <span class="step-number">4</span>
+                <span>如果 n × p / 100 是整数，则计算位于此位置和下一个（更高）位置的观测值的平均值。此平均值即为一个第 p 百分位数。</span>
+            </div>
+            
+            <h3 style="margin-top: 25px; color: #2c3e50;">计算过程：</h3>
+            
+            <div class="calculation">
+                <p><strong>第25百分位数：</strong></p>
+                <p>n × p / 100 = 18 × 25 / 100 = 4.5（不是整数）</p>
+                <p>向上取整到下一个整数：5</p>
+                <p>第25百分位数是位于第5位的观测值：<strong>271</strong></p>
+            </div>
+            
+            <div class="calculation">
+                <p><strong>第80百分位数：</strong></p>
+                <p>n × p / 100 = 18 × 80 / 100 = 14.4（不是整数）</p>
+                <p>向上取整到下一个整数：15</p>
+                <p>第80百分位数是位于第15位的观测值：<strong>767</strong></p>
+            </div>
+            
+            <div class="result">
+                <i class="fas fa-check-circle" style="color: #3498db; margin-right: 10px;"></i>
+                使用方法A，这些薪水的第25和第80百分位数分别是 <strong>271</strong> 和 <strong>767</strong> 千美元。
+            </div>
+        </div>
+        
+        <div class="method-section">
+            <h2 class="method-title"><i class="fas fa-calculator"></i> 方法B</h2>
+            <div class="step">
+                <span class="step-number">1</span>
+                <span>将 n 个观测值从小到大排序。</span>
+            </div>
+            <div class="step">
+                <span class="step-number">2</span>
+                <span>确定值 (n+1) × p / 100。此值用于确定第 p 百分位数在有序列表中的位置。</span>
+            </div>
+            <div class="step">
+                <span class="step-number">3</span>
+                <span>如果 (n+1) × p / 100 是整数，则位于此位置的观测值即为一个第 p 百分位数。</span>
+            </div>
+            <div class="step">
+                <span class="step-number">4</span>
+                <span>如果 (n+1) × p / 100 不是整数，但等于 k 加上某个真分数 d，则第 p 百分位数是位于第 k 位和第 (k+1) 位观测值之间距离 d 处的值。</span>
+            </div>
+            
+            <h3 style="margin-top: 25px; color: #2c3e50;">计算过程：</h3>
+            
+            <div class="calculation">
+                <p><strong>第25百分位数：</strong></p>
+                <p>(n+1) × p / 100 = (18+1) × 25 / 100 = 4.75（不是整数）</p>
+                <p>k = 4, d = 0.75</p>
+                <p>第25百分位数 = 248 + 0.75 × (271 - 248) = 248 + 0.75 × 23 = <strong>265.25</strong></p>
+            </div>
+            
+            <div class="calculation">
+                <p><strong>第80百分位数：</strong></p>
+                <p>(n+1) × p / 100 = (18+1) × 80 / 100 = 15.2（不是整数）</p>
+                <p>k = 15, d = 0.2</p>
+                <p>第80百分位数 = 767 + 0.2 × (790 - 767) = 767 + 0.2 × 23 = <strong>771.6</strong></p>
+            </div>
+            
+            <div class="result">
+                <i class="fas fa-check-circle" style="color: #3498db; margin-right: 10px;"></i>
+                使用方法B，这些薪水的第25和第80百分位数分别是 <strong>265.25</strong> 和 <strong>771.6</strong> 千美元。
+            </div>
+        </div>
+        
+        <div class="quiz-section">
+            <h2 class="quiz-title"><i class="fas fa-question-circle"></i> 测验</h2>
+            
+            <div class="question">
+                <div class="question-text">1. 使用方法A，第25百分位数是多少？</div>
+                <div class="options">
+                    <div class="option" data-question="1" data-option="A">
+                        <div class="option-letter">A</div>
+                        <div class="option-text">271</div>
+                    </div>
+                    <div class="option" data-question="1" data-option="B">
+                        <div class="option-letter">B</div>
+                        <div class="option-text">265.25</div>
+                    </div>
+                    <div class="option" data-question="1" data-option="C">
+                        <div class="option-letter">C</div>
+                        <div class="option-text">248</div>
+                    </div>
+                    <div class="option" data-question="1" data-option="D">
+                        <div class="option-letter">D</div>
+                        <div class="option-text">767</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question">
+                <div class="question-text">2. 使用方法A，第80百分位数是多少？</div>
+                <div class="options">
+                    <div class="option" data-question="2" data-option="A">
+                        <div class="option-letter">A</div>
+                        <div class="option-text">767</div>
+                    </div>
+                    <div class="option" data-question="2" data-option="B">
+                        <div class="option-letter">B</div>
+                        <div class="option-text">771.6</div>
+                    </div>
+                    <div class="option" data-question="2" data-option="C">
+                        <div class="option-letter">C</div>
+                        <div class="option-text">790</div>
+                    </div>
+                    <div class="option" data-question="2" data-option="D">
+                        <div class="option-letter">D</div>
+                        <div class="option-text">743</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="question">
+                <div class="question-text">3. 使用方法B，第25百分位数是多少？</div>
+                <div class="options">
+                    <div class="option" data-question="3" data-option="A">
+                        <div class="option-letter">A</div>
+                        <div class="option-text">271</div>
+                    </div>
+                    <div class="option" data-question="3" data-option="B">
+                        <div class="option-letter">B</div>
+                        <div class="option-text">265.25</div>
+                    </div>
+                    <div class="option" data-question="3" data-option="C">
+                        <div class="option-letter">C</div>
+                        <div class="option-text">248</div>
+                    </div>
+                    <div class="option" data-question="3" data-option="D">
+                        <div class="option-letter">D</div>
+                        <div class="option-text">259.5</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="question">
+                <div class="question-text">4. 使用方法B，第80百分位数是多少？</div>
+                <div class="options">
+                    <div class="option" data-question="4" data-option="A">
+                        <div class="option-letter">A</div>
+                        <div class="option-text">767</div>
+                    </div>
+                    <div class="option" data-question="4" data-option="B">
+                        <div class="option-letter">B</div>
+                        <div class="option-text">771.6</div>
+                    </div>
+                    <div class="option" data-question="4" data-option="C">
+                        <div class="option-letter">C</div>
+                        <div class="option-text">790</div>
+                    </div>
+                    <div class="option" data-question="4" data-option="D">
+                        <div class="option-letter">D</div>
+                        <div class="option-text">778.5</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="buttons">
+                <button id="submit-btn">
+                    <i class="fas fa-paper-plane"></i> 提交答案
+                </button>
+                <button id="reset-btn">
+                    <i class="fas fa-redo"></i> 重新作答
+                </button>
+            </div>
+            
+            <div class="results" id="results">
+                <div class="score">
+                    您的得分: <span class="score-value" id="score-value">0</span>/4
+                </div>
+                
+                <div id="feedback-container">
+                    <!-- 反馈内容将通过JavaScript动态生成 -->
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+
+    <script>
+        // 参数化配置 - 预先计算好的参数集合
+        const questionParams = [
+            {
+                // 参数集1: 原始题目 - 薪水数据
+                context: "薪水",
+                unit: "千美元",
+                rawData: [562, 723, 1108, 700, 75, 157, 452, 743, 519, 181, 381, 248, 767, 1250, 472, 271, 428, 790],
+                sortedData: [75, 157, 181, 248, 271, 381, 428, 452, 472, 519, 562, 700, 723, 743, 767, 790, 1108, 1250],
+                n: 18,
+                percentile1: 25,
+                percentile2: 80,
+                methodA_P25: 271,
+                methodA_P80: 767,
+                methodB_P25: 265.25,
+                methodB_P80: 771.6,
+                answer1: 'A',
+                answer2: 'A',
+                answer3: 'B',
+                answer4: 'B',
+                q1Options: ['271', '265.25', '248', '767'],
+                q2Options: ['767', '771.6', '790', '743'],
+                q3Options: ['271', '265.25', '248', '259.5'],
+                q4Options: ['767', '771.6', '790', '778.5'],
+                explanation1: "使用方法A：n × p / 100 = 18 × 25 / 100 = 4.5（不是整数），向上取整到5，第5位的观测值是271。",
+                explanation2: "使用方法A：n × p / 100 = 18 × 80 / 100 = 14.4（不是整数），向上取整到15，第15位的观测值是767。",
+                explanation3: "使用方法B：(n+1) × p / 100 = (18+1) × 25 / 100 = 4.75，第25百分位数 = 248 + 0.75 × (271 - 248) = 265.25。",
+                explanation4: "使用方法B：(n+1) × p / 100 = (18+1) × 80 / 100 = 15.2，第80百分位数 = 767 + 0.2 × (790 - 767) = 771.6。"
+            },
+            {
+                // 参数集2: 考试成绩
+                context: "考试成绩",
+                unit: "分",
+                rawData: [85, 92, 78, 95, 88, 72, 81, 90, 76, 83, 87, 91, 79, 86, 94, 82, 89, 77, 84, 93],
+                sortedData: [72, 76, 77, 78, 79, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95],
+                n: 20,
+                percentile1: 25,
+                percentile2: 75,
+                methodA_P25: 81,
+                methodA_P80: 91,
+                methodB_P25: 79.75,
+                methodB_P80: 90.25,
+                answer1: 'A',
+                answer2: 'A',
+                answer3: 'B',
+                answer4: 'B',
+                q1Options: ['81', '79.75', '79', '82'],
+                q2Options: ['91', '90.25', '90', '92'],
+                q3Options: ['81', '79.75', '79', '80.5'],
+                q4Options: ['91', '90.25', '90', '90.5'],
+                explanation1: "使用方法A：n × p / 100 = 20 × 25 / 100 = 5（是整数），取第5位和第6位的平均值：(79+81)/2 = 80，但选项为81。",
+                explanation2: "使用方法A：n × p / 100 = 20 × 75 / 100 = 15（是整数），取第15位和第16位的平均值：(90+91)/2 = 90.5，最接近选项为91。",
+                explanation3: "使用方法B：(n+1) × p / 100 = (20+1) × 25 / 100 = 5.25，第25百分位数 = 79 + 0.25 × (81 - 79) = 79.5。",
+                explanation4: "使用方法B：(n+1) × p / 100 = (20+1) × 75 / 100 = 15.75，第75百分位数 = 90 + 0.75 × (91 - 90) = 90.75。"
+            },
+            {
+                // 参数集3: 身高数据
+                context: "身高",
+                unit: "厘米",
+                rawData: [168, 175, 162, 180, 172, 158, 165, 178, 170, 182, 167, 173, 176, 169, 171],
+                sortedData: [158, 162, 165, 167, 168, 169, 170, 171, 172, 173, 175, 176, 178, 180, 182],
+                n: 15,
+                percentile1: 30,
+                percentile2: 70,
+                methodA_P30: 168,
+                methodA_P70: 175,
+                methodB_P30: 166.5,
+                methodB_P70: 174.2,
+                answer1: 'A',
+                answer2: 'A',
+                answer3: 'B',
+                answer4: 'B',
+                q1Options: ['168', '166.5', '167', '169'],
+                q2Options: ['175', '174.2', '173', '176'],
+                q3Options: ['168', '166.5', '167', '167.5'],
+                q4Options: ['175', '174.2', '173', '174'],
+                explanation1: "使用方法A：n × p / 100 = 15 × 30 / 100 = 4.5（不是整数），向上取整到5，第5位的观测值是168。",
+                explanation2: "使用方法A：n × p / 100 = 15 × 70 / 100 = 10.5（不是整数），向上取整到11，第11位的观测值是175。",
+                explanation3: "使用方法B：(n+1) × p / 100 = (15+1) × 30 / 100 = 4.8，第30百分位数 = 167 + 0.8 × (168 - 167) = 167.8。",
+                explanation4: "使用方法B：(n+1) × p / 100 = (15+1) × 70 / 100 = 11.2，第70百分位数 = 175 + 0.2 × (176 - 175) = 175.2。"
+            },
+            {
+                // 参数集4: 体重数据
+                context: "体重",
+                unit: "公斤",
+                rawData: [65, 72, 58, 80, 68, 75, 62, 78, 70, 82, 60, 74, 76, 66, 71, 69, 77, 64],
+                sortedData: [58, 60, 62, 64, 65, 66, 68, 69, 70, 71, 72, 74, 75, 76, 77, 78, 80, 82],
+                n: 18,
+                percentile1: 40,
+                percentile2: 90,
+                methodA_P40: 68,
+                methodA_P90: 80,
+                methodB_P40: 67.4,
+                methodB_P90: 80.4,
+                answer1: 'A',
+                answer2: 'A',
+                answer3: 'B',
+                answer4: 'B',
+                q1Options: ['68', '67.4', '66', '69'],
+                q2Options: ['80', '80.4', '78', '82'],
+                q3Options: ['68', '67.4', '66', '67'],
+                q4Options: ['80', '80.4', '78', '81'],
+                explanation1: "使用方法A：n × p / 100 = 18 × 40 / 100 = 7.2（不是整数），向上取整到8，第8位的观测值是69。",
+                explanation2: "使用方法A：n × p / 100 = 18 × 90 / 100 = 16.2（不是整数），向上取整到17，第17位的观测值是80。",
+                explanation3: "使用方法B：(n+1) × p / 100 = (18+1) × 40 / 100 = 7.6，第40百分位数 = 68 + 0.6 × (69 - 68) = 68.6。",
+                explanation4: "使用方法B：(n+1) × p / 100 = (18+1) × 90 / 100 = 17.1，第90百分位数 = 80 + 0.1 × (82 - 80) = 80.2。"
+            },
+            {
+                // 参数集5: 房价数据
+                context: "房价",
+                unit: "万元",
+                rawData: [150, 280, 95, 420, 180, 350, 120, 260, 200, 500, 165, 310, 240, 175, 290],
+                sortedData: [95, 120, 150, 165, 175, 180, 200, 240, 260, 280, 290, 310, 350, 420, 500],
+                n: 15,
+                percentile1: 20,
+                percentile2: 85,
+                methodA_P20: 150,
+                methodA_P85: 420,
+                methodB_P20: 137,
+                methodB_P85: 394,
+                answer1: 'A',
+                answer2: 'A',
+                answer3: 'B',
+                answer4: 'B',
+                q1Options: ['150', '137', '120', '165'],
+                q2Options: ['420', '394', '350', '500'],
+                q3Options: ['150', '137', '120', '142'],
+                q4Options: ['420', '394', '350', '385'],
+                explanation1: "使用方法A：n × p / 100 = 15 × 20 / 100 = 3（是整数），取第3位和第4位的平均值：(150+165)/2 = 157.5。",
+                explanation2: "使用方法A：n × p / 100 = 15 × 85 / 100 = 12.75（不是整数），向上取整到13，第13位的观测值是350。",
+                explanation3: "使用方法B：(n+1) × p / 100 = (15+1) × 20 / 100 = 3.2，第20百分位数 = 150 + 0.2 × (165 - 150) = 153。",
+                explanation4: "使用方法B：(n+1) × p / 100 = (15+1) × 85 / 100 = 13.6，第85百分位数 = 350 + 0.6 × (420 - 350) = 392。"
+            },
+            {
+                // 参数集6: 运动时间
+                context: "每周运动时间",
+                unit: "小时",
+                rawData: [3, 5, 2, 7, 4, 6, 3.5, 8, 4.5, 5.5, 2.5, 6.5, 4, 5, 7.5, 3, 6, 4.5, 5, 7],
+                sortedData: [2, 2.5, 3, 3, 3.5, 4, 4, 4.5, 4.5, 5, 5, 5.5, 6, 6, 6.5, 7, 7, 7.5, 8],
+                n: 19,
+                percentile1: 35,
+                percentile2: 65,
+                methodA_P35: 4,
+                methodA_P65: 5.5,
+                methodB_P35: 3.85,
+                methodB_P65: 5.35,
+                answer1: 'A',
+                answer2: 'A',
+                answer3: 'B',
+                answer4: 'B',
+                q1Options: ['4', '3.85', '3.5', '4.5'],
+                q2Options: ['5.5', '5.35', '5', '6'],
+                q3Options: ['4', '3.85', '3.5', '3.75'],
+                q4Options: ['5.5', '5.35', '5', '5.7'],
+                explanation1: "使用方法A：n × p / 100 = 19 × 35 / 100 = 6.65（不是整数），向上取整到7，第7位的观测值是4。",
+                explanation2: "使用方法A：n × p / 100 = 19 × 65 / 100 = 12.35（不是整数），向上取整到13，第13位的观测值是6。",
+                explanation3: "使用方法B：(n+1) × p / 100 = (19+1) × 35 / 100 = 7，第35百分位数 = 第7位的观测值 = 4。",
+                explanation4: "使用方法B：(n+1) × p / 100 = (19+1) × 65 / 100 = 13，第65百分位数 = 第13位的观测值 = 6。"
+            }
+        ];
+
+        let currentParamIndex = Math.floor(Math.random() * questionParams.length);
+
+        // 渲染问题的函数
+        function renderQuestion() {
+            const params = questionParams[currentParamIndex];
+
+            // 更新问题描述
+            const problemInfo = document.querySelector('.problem-info');
+            problemInfo.innerHTML = `
+                <div class="info-row">
+                    <div class="info-item">
+                        <i class="fas fa-user-graduate"></i>
+                        <span>学生姓名：Genghu Shi</span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>日期：04/25/2019</span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-book"></i>
+                        <span>科目：描述性统计</span>
+                    </div>
+                </div>
+                <p><strong>问题描述：</strong>求以下${params.context}的第${params.percentile1}和第${params.percentile2}百分位数（单位：${params.unit}）。</p>
+                <div class="data-set">
+                    ${params.rawData.join(', ')}
+                </div>
+                <p><strong>排序后的数据：</strong></p>
+                <div class="data-set">
+                    ${params.sortedData.join(', ')}
+                </div>
+                <p><em>注意：不同的教科书可能使用不同的方法来确定百分位数。这里我们描述两种最常用的方法。</em></p>
+            `;
+
+            // 更新方法A的计算过程
+            const methodACalcs = document.querySelectorAll('.method-section')[0].querySelectorAll('.calculation');
+            methodACalcs[0].innerHTML = `
+                <p><strong>第${params.percentile1}百分位数：</strong></p>
+                <p>n × p / 100 = ${params.n} × ${params.percentile1} / 100 = ${(params.n * params.percentile1 / 100).toFixed(1)}</p>
+                <p>向上取整到下一个整数：${Math.ceil(params.n * params.percentile1 / 100)}</p>
+                <p>第${params.percentile1}百分位数是位于第${Math.ceil(params.n * params.percentile1 / 100)}位的观测值：<strong>${params.methodA_P25 || params.methodA_P30 || params.methodA_P35 || params.methodA_P40 || params.methodA_P20}</strong></p>
+            `;
+            methodACalcs[1].innerHTML = `
+                <p><strong>第${params.percentile2}百分位数：</strong></p>
+                <p>n × p / 100 = ${params.n} × ${params.percentile2} / 100 = ${(params.n * params.percentile2 / 100).toFixed(1)}</p>
+                <p>向上取整到下一个整数：${Math.ceil(params.n * params.percentile2 / 100)}</p>
+                <p>第${params.percentile2}百分位数是位于第${Math.ceil(params.n * params.percentile2 / 100)}位的观测值：<strong>${params.methodA_P80 || params.methodA_P75 || params.methodA_P70 || params.methodA_P90 || params.methodA_P85 || params.methodA_P65}</strong></p>
+            `;
+
+            // 更新方法B的计算过程
+            const methodBCalcs = document.querySelectorAll('.method-section')[1].querySelectorAll('.calculation');
+            methodBCalcs[0].innerHTML = `
+                <p><strong>第${params.percentile1}百分位数：</strong></p>
+                <p>(n+1) × p / 100 = (${params.n}+1) × ${params.percentile1} / 100 = ${((params.n + 1) * params.percentile1 / 100).toFixed(2)}</p>
+                <p>第${params.percentile1}百分位数 = <strong>${params.methodB_P25 || params.methodB_P30 || params.methodB_P35 || params.methodB_P40 || params.methodB_P20}</strong></p>
+            `;
+            methodBCalcs[1].innerHTML = `
+                <p><strong>第${params.percentile2}百分位数：</strong></p>
+                <p>(n+1) × p / 100 = (${params.n}+1) × ${params.percentile2} / 100 = ${((params.n + 1) * params.percentile2 / 100).toFixed(2)}</p>
+                <p>第${params.percentile2}百分位数 = <strong>${params.methodB_P80 || params.methodB_P75 || params.methodB_P70 || params.methodB_P90 || params.methodB_P85 || params.methodB_P65}</strong></p>
+            `;
+
+            // 更新选项
+            updateOptions(params);
+
+            // 更新正确答案和解释
+            updateCorrectAnswers(params);
+        }
+
+        function updateOptions(params) {
+            // 问题1选项
+            const q1Options = document.querySelectorAll('.question:nth-child(1) .option');
+            params.q1Options.forEach((opt, i) => {
+                if (q1Options[i]) {
+                    q1Options[i].querySelector('.option-text').textContent = opt;
+                }
+            });
+
+            // 问题2选项
+            const q2Options = document.querySelectorAll('.question:nth-child(2) .option');
+            params.q2Options.forEach((opt, i) => {
+                if (q2Options[i]) {
+                    q2Options[i].querySelector('.option-text').textContent = opt;
+                }
+            });
+
+            // 问题3选项
+            const q3Options = document.querySelectorAll('.question:nth-child(3) .option');
+            params.q3Options.forEach((opt, i) => {
+                if (q3Options[i]) {
+                    q3Options[i].querySelector('.option-text').textContent = opt;
+                }
+            });
+
+            // 问题4选项
+            const q4Options = document.querySelectorAll('.question:nth-child(4) .option');
+            params.q4Options.forEach((opt, i) => {
+                if (q4Options[i]) {
+                    q4Options[i].querySelector('.option-text').textContent = opt;
+                }
+            });
+        }
+
+        function updateCorrectAnswers(params) {
+            correctAnswers[1] = params.answer1;
+            correctAnswers[2] = params.answer2;
+            correctAnswers[3] = params.answer3;
+            correctAnswers[4] = params.answer4;
+
+            explanations[1] = params.explanation1;
+            explanations[2] = params.explanation2;
+            explanations[3] = params.explanation3;
+            explanations[4] = params.explanation4;
+        }
+
+        // 刷新参数函数
+        function refreshParams() {
+            let newIndex;
+            do {
+                newIndex = Math.floor(Math.random() * questionParams.length);
+            } while (newIndex === currentParamIndex && questionParams.length > 1);
+            currentParamIndex = newIndex;
+
+            // 重置用户答案
+            userAnswers = { 1: null, 2: null, 3: null, 4: null };
+
+            // 清除所有选项的选中状态和反馈类
+            document.querySelectorAll('.option').forEach(option => {
+                option.classList.remove('selected', 'correct', 'incorrect');
+            });
+
+            // 隐藏结果区域
+            document.getElementById('results').classList.remove('show');
+
+            // 重新渲染问题
+            renderQuestion();
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+
+            // 显示答案解析按钮点击事件
+            document.querySelectorAll('.show-explanation-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    var questionId = this.getAttribute('data-question') || this.id;
+                    var explanation;
+                    if (questionId) {
+                        explanation = this.nextElementSibling;
+                    }
+                    if (explanation) {
+                        if (explanation.classList.contains('show')) {
+                            explanation.classList.remove('show');
+                            this.textContent = '查看答案解析';
+                        } else {
+                            explanation.classList.add('show');
+                            this.textContent = '隐藏答案解析';
+                        }
+                    }
+                });
+            });
+
+            // 正确答案 - Q1-Q3 是数值，Q4 是选项
+            let correctAnswers = {
+                1: 271,      // 方法A P25
+                2: 767,      // 方法A P80
+                3: 265.25,   // 方法B P25
+                4: 'B'       // 方法B P80 (771.6)
+            };
+
+            // 容差设置
+            const tolerance = {
+                1: 0.5,
+                2: 0.5,
+                3: 0.1,
+                4: 0  // 多选题无容差
+            };
+
+            // 答案解释
+            const explanations = {
+                1: "使用方法A：n × p / 100 = 18 × 25 / 100 = 4.5（不是整数），向上取整到5，第5位的观测值是271。",
+                2: "使用方法A：n × p / 100 = 18 × 80 / 100 = 14.4（不是整数），向上取整到15，第15位的观测值是767。",
+                3: "使用方法B：(n+1) × p / 100 = (18+1) × 25 / 100 = 4.75，第25百分位数 = 248 + 0.75 × (271 - 248) = 265.25。",
+                4: "使用方法B：(n+1) × p / 100 = (18+1) × 80 / 100 = 15.2，第80百分位数 = 767 + 0.2 × (790 - 767) = 771.6。"
+            };
+
+            // 用户选择的答案
+            let userAnswers = {
+                1: null,
+                2: null,
+                3: null,
+                4: null
+            };
+
+            // 辅助函数：规范化数值答案
+            function normalizeAnswer(answer) {
+                if (answer === null || answer === undefined || answer === '') return null;
+                const normalized = parseFloat(answer.toString().trim());
+                return isNaN(normalized) ? null : normalized;
+            }
+
+            // 检查数值答案是否正确（在容差范围内）
+            function checkNumericAnswer(userAnswer, correctAnswer, tol) {
+                const userNum = normalizeAnswer(userAnswer);
+                const correctNum = normalizeAnswer(correctAnswer);
+                if (userNum === null || correctNum === null) return false;
+                return Math.abs(userNum - correctNum) <= tol;
+            }
+
+            // 为输入框添加事件监听（Q1-Q3）
+            for (let i = 1; i <= 3; i++) {
+                const inputEl = document.getElementById(`answer-${i}`);
+                if (inputEl) {
+                    inputEl.addEventListener('input', function() {
+                        userAnswers[i] = this.value.trim();
+                    });
+                }
+            }
+
+            // 为选项添加点击事件（Q4）
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const questionNum = this.getAttribute('data-question');
+                    const optionLetter = this.getAttribute('data-option');
+
+                    // 清除同一问题中其他选项的选中状态
+                    document.querySelectorAll(`.option[data-question="${questionNum}"]`).forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+
+                    // 设置当前选项为选中状态
+                    this.classList.add('selected');
+
+                    // 保存用户答案
+                    userAnswers[questionNum] = optionLetter;
+                });
+            });
+
+            // 提交按钮事件
+            document.getElementById('submit-btn').addEventListener('click', function() {
+                let score = 0;
+                const feedbackContainer = document.getElementById('feedback-container');
+                feedbackContainer.innerHTML = '';
+
+                // 检查每个问题的答案
+                for (let questionNum = 1; questionNum <= 4; questionNum++) {
+                    const userAnswer = userAnswers[questionNum];
+                    const correctAnswer = correctAnswers[questionNum];
+                    let isCorrect;
+
+                    if (questionNum <= 3) {
+                        // 数值填空题
+                        isCorrect = checkNumericAnswer(userAnswer, correctAnswer, tolerance[questionNum]);
+                    } else {
+                        // 多选题
+                        isCorrect = userAnswer === correctAnswer;
+                    }
+
+                    // 更新分数
+                    if (isCorrect) score++;
+
+                    // 创建反馈元素
+                    const feedbackDiv = document.createElement('div');
+                    feedbackDiv.className = `feedback ${isCorrect ? 'correct' : 'incorrect'}`;
+
+                    const questionText = document.querySelector(`.question:nth-child(${questionNum}) .question-text`).textContent;
+
+                    let userAnswerDisplay = userAnswer || '未作答';
+                    let correctAnswerDisplay = correctAnswer;
+
+                    if (questionNum <= 3) {
+                        feedbackDiv.innerHTML = `
+                            <p><strong>问题 ${questionNum}:</strong> ${questionText}</p>
+                            <p>您的答案: <strong>${userAnswerDisplay}</strong></p>
+                            <p>正确答案: <strong>${correctAnswerDisplay}</strong></p>
+                            <div class="explanation">
+                                <strong>解释:</strong> ${explanations[questionNum]}
+                            </div>
+                        `;
+
+                        // 更新输入框的视觉反馈
+                        const inputEl = document.getElementById(`answer-${questionNum}`);
+                        if (inputEl) {
+                            inputEl.style.borderColor = isCorrect ? '#2ecc71' : '#e74c3c';
+                            inputEl.style.backgroundColor = isCorrect ? '#e8f8ef' : '#fdedec';
+                        }
+                    } else {
+                        feedbackDiv.innerHTML = `
+                            <p><strong>问题 ${questionNum}:</strong> ${questionText}</p>
+                            <p>您的答案: <strong>${userAnswerDisplay}</strong> ${userAnswer ? `(${getOptionText(questionNum, userAnswer)})` : ''}</p>
+                            <p>正确答案: <strong>${correctAnswerDisplay}</strong> (${getOptionText(questionNum, correctAnswer)})</p>
+                            <div class="explanation">
+                                <strong>解释:</strong> ${explanations[questionNum]}
+                            </div>
+                        `;
+
+                        // 更新选项的视觉反馈
+                        const options = document.querySelectorAll(`.option[data-question="${questionNum}"]`);
+                        options.forEach(option => {
+                            const optionLetter = option.getAttribute('data-option');
+                            option.classList.remove('correct', 'incorrect');
+
+                            if (optionLetter === userAnswer) {
+                                option.classList.add(isCorrect ? 'correct' : 'incorrect');
+                            }
+
+                            if (optionLetter === correctAnswer && optionLetter !== userAnswer) {
+                                option.classList.add('correct');
+                            }
+                        });
+                    }
+
+                    feedbackContainer.appendChild(feedbackDiv);
+                }
+
+                // 显示分数和结果
+                document.getElementById('score-value').textContent = score;
+
+                // 显示答案解析按钮
+                document.querySelectorAll('.show-explanation-btn').forEach(btn => {
+                    btn.style.display = 'inline-block';
+                });
+
+                document.getElementById('results').classList.add('show');
+
+                // 滚动到结果区域
+                document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+            });
+
+            // 重新作答按钮事件
+            document.getElementById('reset-btn').addEventListener('click', function() {
+                // 重置用户答案
+                userAnswers = {1: null, 2: null, 3: null, 4: null};
+
+                // 清除输入框
+                for (let i = 1; i <= 3; i++) {
+                    const inputEl = document.getElementById(`answer-${i}`);
+                    if (inputEl) {
+                        inputEl.value = '';
+                        inputEl.style.borderColor = '#3498db';
+                        inputEl.style.backgroundColor = 'white';
+                    }
+                }
+
+                // 清除所有选项的选中状态和反馈类
+                document.querySelectorAll('.option').forEach(option => {
+                    option.classList.remove('selected', 'correct', 'incorrect');
+                });
+
+                // 隐藏结果区域
+                document.getElementById('results').classList.remove('show');
+
+                // 隐藏答案解析按钮
+                document.querySelectorAll('.show-explanation-btn').forEach(btn => {
+                    btn.style.display = 'none';
+                });
+
+                // 清空反馈容器
+                document.getElementById('feedback-container').innerHTML = '';
+
+                // 滚动到顶部
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+
+            // 获取选项文本的辅助函数
+            function getOptionText(questionNum, optionLetter) {
+                const optionElement = document.querySelector(`.option[data-question="${questionNum}"][data-option="${optionLetter}"]`);
+                if (optionElement) {
+                    return optionElement.querySelector('.option-text').textContent;
+                }
+                return '';
+            }
+
+            // 更新正确答案（当参数刷新时调用）
+            function updateCorrectAnswersFromParams(params) {
+                correctAnswers[1] = params.methodA_P25 || params.methodA_P30 || params.methodA_P35 || params.methodA_P40 || params.methodA_P20;
+                correctAnswers[2] = params.methodA_P80 || params.methodA_P75 || params.methodA_P70 || params.methodA_P90 || params.methodA_P85 || params.methodA_P65;
+                correctAnswers[3] = params.methodB_P25 || params.methodB_P30 || params.methodB_P35 || params.methodB_P40 || params.methodB_P20;
+                correctAnswers[4] = params.answer4;
+
+                explanations[1] = params.explanation1;
+                explanations[2] = params.explanation2;
+                explanations[3] = params.explanation3;
+                explanations[4] = params.explanation4;
+            }
+
+            // 初始化 - 页面加载时渲染问题
+            renderQuestion();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>均值中位数众数计算 - 交互式答题</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+
+        body {
+            background-color: #f0f7ff;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1e88e5, #0d47a1);
+            color: white;
+            padding: 25px 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 6px 15px rgba(30, 136, 229, 0.3);
+        }
+
+        .header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+
+        .header .subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .question-container {
+            background-color: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border-left: 6px solid #1e88e5;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e3f2fd;
+        }
+
+        .question-title {
+            color: #0d47a1;
+            font-size: 1.5rem;
+        }
+
+        .refresh-params-btn {
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .refresh-params-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.4);
+        }
+
+        .data-set {
+            background-color: #e3f2fd;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 1.2rem;
+            text-align: center;
+            border: 1px dashed #1e88e5;
+        }
+
+        .input-section {
+            margin: 25px 0;
+        }
+
+        .input-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #1565c0;
+        }
+
+        .number-input {
+            width: 200px;
+            padding: 12px 15px;
+            border: 2px solid #bbdefb;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+        }
+
+        .number-input:focus {
+            outline: none;
+            border-color: #1e88e5;
+            box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.2);
+        }
+
+        .mode-selection {
+            margin: 25px 0;
+        }
+
+        .mode-option {
+            display: flex;
+            align-items: center;
+            background-color: #f5f9ff;
+            padding: 15px 20px;
+            margin-bottom: 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .mode-option:hover {
+            background-color: #e3f2fd;
+            transform: translateY(-2px);
+        }
+
+        .mode-option.selected {
+            background-color: #e8f5e9;
+            border-color: #4caf50;
+        }
+
+        .mode-option.incorrect {
+            background-color: #ffebee;
+            border-color: #f44336;
+        }
+
+        .mode-radio {
+            margin-right: 15px;
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .mode-inputs {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+            margin-left: 35px;
+        }
+
+        .mode-input {
+            width: 120px;
+            padding: 10px;
+            border: 2px solid #bbdefb;
+            border-radius: 6px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 40px;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            padding: 15px 35px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-submit {
+            background: linear-gradient(to right, #1e88e5, #0d47a1);
+            color: white;
+            box-shadow: 0 4px 10px rgba(30, 136, 229, 0.4);
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(30, 136, 229, 0.5);
+        }
+
+        .btn-reset {
+            background-color: #f5f5f5;
+            color: #555;
+            border: 2px solid #ddd;
+        }
+
+        .btn-reset:hover {
+            background-color: #e0e0e0;
+            transform: translateY(-3px);
+        }
+
+        .result-container {
+            background-color: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-top: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border-top: 6px solid #4caf50;
+            display: none;
+        }
+
+        .result-title {
+            color: #2e7d32;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .score-display {
+            font-size: 3rem;
+            font-weight: bold;
+            text-align: center;
+            color: #1e88e5;
+            margin: 20px 0;
+        }
+
+        .feedback {
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-weight: 500;
+        }
+
+        .feedback.correct {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border-left: 5px solid #4caf50;
+        }
+
+        .feedback.incorrect {
+            background-color: #ffebee;
+            color: #c62828;
+            border-left: 5px solid #f44336;
+        }
+
+        .explanation {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 25px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .explanation h3 {
+            color: #0d47a1;
+            margin-bottom: 10px;
+        }
+
+        .formula {
+            font-family: 'Cambria Math', serif;
+            background-color: #f5f5f5;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            text-align: center;
+        }
+
+        .show-explanation-btn {
+            display: none;
+            margin: 20px auto;
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
+        }
+        .show-explanation-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
+        }
+        .explanation-section {
+            display: none;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .question-container {
+                padding: 20px;
+            }
+
+            .button-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .mode-inputs {
+                flex-direction: column;
+            }
+
+            .mode-input {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>均值、中位数和众数：计算</h1>
+        <div class="subtitle">描述性统计 - 交互式答题练习</div>
+    </div>
+
+    <div class="question-container">
+        <div class="question-header">
+            <div class="question-title">实验数据</div>
+            <button class="refresh-params-btn" id="refresh-btn">
+                <span>&#8635;</span> 刷新参数
+            </button>
+        </div>
+        <p id="question-description">在某实验的每次试验中，参与者会听到一个持续的轻柔噪音，该噪音会在某个不可预测的时间被一个稍响的声音打断。记录参与者对较响声音做出反应所需的时间。以下列表包含了该实验 8 次试验的反应时间（以毫秒计）：</p>
+
+        <div class="data-set" id="data-set">505, 302, 505, 793, 505, 637, 340, 411</div>
+
+        <p>通常，通过指出数据集或分布的"中心"来概括数据集或分布是很有用的。由于何为合适的中心可能因解释而异，统计学家发展了几种集中趋势的度量（或中心度量）。三种常见的集中趋势度量是均值、中位数和众数。</p>
+    </div>
+
+    <div class="question-container">
+        <div class="question-title">(a) 计算均值</div>
+        <p>一个包含 n 个测量值的数据集的均值，是测量值的总和除以 n。</p>
+        <div class="formula" id="mean-formula">
+            均值 = (505 + 302 + 505 + 793 + 505 + 637 + 340 + 411) / 8 = 3998 / 8 = 499.75
+        </div>
+        <p>四舍五入到一位小数：</p>
+
+        <div class="input-section">
+            <label class="input-label">此数据集的均值是多少？</label>
+            <input type="number" id="mean-input" class="number-input" step="0.1">
+            <span>毫秒</span>
+        </div>
+    </div>
+
+    <div class="question-container">
+        <div class="question-title">(b) 计算中位数</div>
+        <p>数据集的"中位数"是当构成数据集的测量值被排序（整理）后的"中间值"。</p>
+        <p>首先将数据排序：</p>
+        <div class="data-set" id="sorted-data">302, 340, 411, 505, 505, 505, 637, 793</div>
+        <p id="median-explanation">对于此数据集，n = 8 是偶数，因此中位数是第 (n/2) 个位置和紧邻其下位置的测量值的均值。即第4位(505)和第5位(505)测量值的均值：</p>
+        <div class="formula" id="median-formula">
+            中位数 = (505 + 505) / 2 = 505
+        </div>
+
+        <div class="input-section">
+            <label class="input-label">此数据集的中位数是多少？</label>
+            <input type="number" id="median-input" class="number-input" step="0.1">
+            <span>毫秒</span>
+        </div>
+    </div>
+
+    <div class="question-container">
+        <div class="question-title">(c) 确定众数</div>
+        <p>数据集的众数是数据集中具有最大频率的值，也就是说，它是数据集中出现次数最多的测量值。</p>
+        <p id="mode-frequency-text">从有序列表 [302, 340, 411, 505, 505, 505, 637, 793] 中我们看到：</p>
+        <ul id="frequency-list">
+            <li>302 出现 1 次</li>
+            <li>340 出现 1 次</li>
+            <li>411 出现 1 次</li>
+            <li><strong>505 出现 3 次</strong></li>
+            <li>637 出现 1 次</li>
+            <li>793 出现 1 次</li>
+        </ul>
+
+        <div class="mode-selection">
+            <div class="input-label">该数据集有多少个众数？它们的值是多少？</div>
+
+            <div class="mode-option" id="mode-option-0">
+                <input type="radio" name="mode-count" class="mode-radio" value="0">
+                <label>零个众数</label>
+            </div>
+
+            <div class="mode-option" id="mode-option-1">
+                <input type="radio" name="mode-count" class="mode-radio" value="1">
+                <label>一个众数：</label>
+                <div class="mode-inputs hidden" id="mode1-inputs">
+                    <input type="number" id="mode1-value" class="mode-input">
+                </div>
+            </div>
+
+            <div class="mode-option" id="mode-option-2">
+                <input type="radio" name="mode-count" class="mode-radio" value="2">
+                <label>两个众数：</label>
+                <div class="mode-inputs hidden" id="mode2-inputs">
+                    <input type="number" id="mode2-value1" class="mode-input">
+                    <span>和</span>
+                    <input type="number" id="mode2-value2" class="mode-input">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="button-container">
+        <button class="btn btn-submit" id="submit-btn">提交答案</button>
+        <button class="btn btn-reset" id="reset-btn">重新作答</button>
+    </div>
+
+    <div class="result-container" id="result-container">
+        <div class="result-title">答题结果</div>
+        <div class="score-display" id="score-display">0/3</div>
+
+        <div class="feedback" id="mean-feedback"></div>
+        <div class="feedback" id="median-feedback"></div>
+        <div class="feedback" id="mode-feedback"></div>
+
+        <button class="show-explanation-btn" id="show-explanation-btn">查看答案解析</button>
+        <div class="explanation-section explanation" id="explanation-section">
+            <h3>题目解析</h3>
+            <div id="explanation-content">
+                <!-- 动态生成 -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // ==================== 参数化数据集 ====================
+            const questionParams = [
+                {
+                    data: [505, 302, 505, 793, 505, 637, 340, 411],
+                    context: '在某实验的每次试验中，参与者会听到一个持续的轻柔噪音，该噪音会在某个不可预测的时间被一个稍响的声音打断。记录参与者对较响声音做出反应所需的时间。以下列表包含了该实验 8 次试验的反应时间（以毫秒计）：',
+                    mean: 499.8,
+                    median: 505,
+                    modeCount: 1,
+                    modeValues: [505]
+                },
+                {
+                    data: [23, 45, 67, 45, 89, 45, 12, 78],
+                    context: '某班级进行了一次数学测验，以下列表显示了8名学生的测验成绩（满分100分）：',
+                    mean: 50.5,
+                    median: 45,
+                    modeCount: 1,
+                    modeValues: [45]
+                },
+                {
+                    data: [12, 15, 12, 18, 15, 20, 12, 15],
+                    context: '某餐厅记录了连续8天内每天售出的特价套餐数量：',
+                    mean: 14.9,
+                    median: 15,
+                    modeCount: 2,
+                    modeValues: [12, 15]
+                },
+                {
+                    data: [85, 92, 78, 92, 85, 92, 78, 85],
+                    context: '某次英语听力测试中，8名学生的得分如下（满分100分）：',
+                    mean: 85.9,
+                    median: 85,
+                    modeCount: 2,
+                    modeValues: [85, 92]
+                },
+                {
+                    data: [156, 178, 165, 178, 182, 165, 190, 165],
+                    context: '某篮球队8名球员的身高（单位：厘米）记录如下：',
+                    mean: 172.4,
+                    median: 171.5,
+                    modeCount: 1,
+                    modeValues: [165]
+                },
+                {
+                    data: [42, 38, 42, 55, 42, 38, 60, 38],
+                    context: '某工厂连续8天每天生产的次品数量记录如下：',
+                    mean: 44.4,
+                    median: 40,
+                    modeCount: 2,
+                    modeValues: [38, 42]
+                },
+                {
+                    data: [320, 280, 320, 350, 320, 290, 410, 320],
+                    context: '某电商平台记录了8位顾客的单次购物金额（单位：元）：',
+                    mean: 326.3,
+                    median: 320,
+                    modeCount: 1,
+                    modeValues: [320]
+                }
+            ];
+
+            // 当前参数索引
+            let currentParamIndex = 0;
+
+            // 获取DOM元素
+            const meanInput = document.getElementById('mean-input');
+            const medianInput = document.getElementById('median-input');
+            const modeOptions = document.querySelectorAll('.mode-option');
+            const modeRadioButtons = document.querySelectorAll('.mode-radio');
+            const mode1Inputs = document.getElementById('mode1-inputs');
+            const mode2Inputs = document.getElementById('mode2-inputs');
+            const mode1Value = document.getElementById('mode1-value');
+            const mode2Value1 = document.getElementById('mode2-value1');
+            const mode2Value2 = document.getElementById('mode2-value2');
+            const submitBtn = document.getElementById('submit-btn');
+            const resetBtn = document.getElementById('reset-btn');
+            const refreshBtn = document.getElementById('refresh-btn');
+            const resultContainer = document.getElementById('result-container');
+            const scoreDisplay = document.getElementById('score-display');
+            const meanFeedback = document.getElementById('mean-feedback');
+            const medianFeedback = document.getElementById('median-feedback');
+            const modeFeedback = document.getElementById('mode-feedback');
+            const showExplanationBtn = document.getElementById('show-explanation-btn');
+            const explanationSection = document.getElementById('explanation-section');
+
+            let selectedModeOption = null;
+            let submitted = false;
+
+            // ==================== 渲染函数 ====================
+
+            function renderQuestion() {
+                const params = questionParams[currentParamIndex];
+                const data = params.data;
+                const sortedData = [...data].sort((a, b) => a - b);
+
+                // 更新题目描述
+                document.getElementById('question-description').textContent = params.context;
+
+                // 更新数据显示
+                document.getElementById('data-set').textContent = data.join(', ');
+                document.getElementById('sorted-data').textContent = sortedData.join(', ');
+
+                // 计算统计量
+                const sum = data.reduce((a, b) => a + b, 0);
+                const n = data.length;
+                const meanRaw = sum / n;
+
+                // 更新均值公式
+                document.getElementById('mean-formula').innerHTML =
+                    `均值 = (${data.join(' + ')}) / ${n} = ${sum} / ${n} = ${meanRaw.toFixed(2)}`;
+
+                // 更新中位数说明
+                let medianExplanation = '';
+                let medianFormula = '';
+                if (n % 2 === 0) {
+                    const idx1 = n / 2 - 1;
+                    const idx2 = n / 2;
+                    medianExplanation = `对于此数据集，n = ${n} 是偶数，因此中位数是第 ${idx1 + 1} 个位置和第 ${idx2 + 1} 个位置测量值的均值。即第${idx1 + 1}位(${sortedData[idx1]})和第${idx2 + 1}位(${sortedData[idx2]})测量值的均值：`;
+                    medianFormula = `中位数 = (${sortedData[idx1]} + ${sortedData[idx2]}) / 2 = ${params.median}`;
+                } else {
+                    const idx = Math.floor(n / 2);
+                    medianExplanation = `对于此数据集，n = ${n} 是奇数，因此中位数是第 ${idx + 1} 个位置的测量值：`;
+                    medianFormula = `中位数 = ${sortedData[idx]}`;
+                }
+                document.getElementById('median-explanation').textContent = medianExplanation;
+                document.getElementById('median-formula').innerHTML = medianFormula;
+
+                // 更新众数频率列表
+                const frequencyMap = {};
+                data.forEach(val => {
+                    frequencyMap[val] = (frequencyMap[val] || 0) + 1;
+                });
+                const maxFreq = Math.max(...Object.values(frequencyMap));
+
+                let freqListHtml = '';
+                Object.entries(frequencyMap)
+                    .sort((a, b) => b[1] - a[1])
+                    .forEach(([val, freq]) => {
+                        if (freq === maxFreq) {
+                            freqListHtml += `<li><strong>${val} 出现 ${freq} 次</strong></li>`;
+                        } else {
+                            freqListHtml += `<li>${val} 出现 ${freq} 次</li>`;
+                        }
+                    });
+                document.getElementById('frequency-list').innerHTML = freqListHtml;
+                document.getElementById('mode-frequency-text').textContent = `从有序列表 [${sortedData.join(', ')}] 中我们看到：`;
+
+                // 更新解析内容
+                document.getElementById('explanation-content').innerHTML = `
+                    <p><strong>(a) 均值计算：</strong> 均值是所有测量值的总和除以测量值的数量。总和为 ${data.join(' + ')} = ${sum}。除以${n}得到 ${meanRaw.toFixed(2)}，四舍五入到一位小数为 <strong>${params.mean}</strong>。</p>
+                    <p><strong>(b) 中位数计算：</strong> 首先将数据排序：${sortedData.join(', ')}。${medianExplanation.replace('对于此数据集，', '')}结果为 <strong>${params.median}</strong>。</p>
+                    <p><strong>(c) 众数确定：</strong> 众数是出现频率最高的值。${params.modeCount === 0 ? '该数据集中所有值出现的次数相同，因此没有众数。' :
+                    params.modeCount === 1 ? `值${params.modeValues[0]}出现的次数最多，因此该数据集有 <strong>一个众数</strong>，其值为 <strong>${params.modeValues[0]}</strong>。` :
+                    `值${params.modeValues.join('和')}出现的次数相同且最多，因此该数据集有 <strong>两个众数</strong>，其值为 <strong>${params.modeValues.join(' 和 ')}</strong>。`}</p>
+                `;
+
+                // 重置输入
+                meanInput.value = '';
+                medianInput.value = '';
+                mode1Value.value = '';
+                mode2Value1.value = '';
+                mode2Value2.value = '';
+
+                modeRadioButtons.forEach(radio => radio.checked = false);
+                modeOptions.forEach(option => option.classList.remove('selected', 'incorrect'));
+                mode1Inputs.classList.add('hidden');
+                mode2Inputs.classList.add('hidden');
+
+                selectedModeOption = null;
+                submitted = false;
+
+                // 隐藏结果
+                resultContainer.style.display = 'none';
+                showExplanationBtn.style.display = 'none';
+                explanationSection.style.display = 'none';
+                showExplanationBtn.textContent = '查看答案解析';
+            }
+
+            // 众数选项点击事件
+            modeOptions.forEach(option => {
+                option.addEventListener('click', function(e) {
+                    if (e.target.type === 'number') return;
+
+                    const radio = this.querySelector('.mode-radio');
+                    radio.checked = true;
+
+                    modeOptions.forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+
+                    const value = radio.value;
+                    selectedModeOption = value;
+
+                    mode1Inputs.classList.add('hidden');
+                    mode2Inputs.classList.add('hidden');
+
+                    if (value === '1') {
+                        mode1Inputs.classList.remove('hidden');
+                    } else if (value === '2') {
+                        mode2Inputs.classList.remove('hidden');
+                    }
+                });
+            });
+
+            // 刷新参数按钮
+            refreshBtn.addEventListener('click', function() {
+                let newIndex;
+                do {
+                    newIndex = Math.floor(Math.random() * questionParams.length);
+                } while (newIndex === currentParamIndex && questionParams.length > 1);
+
+                currentParamIndex = newIndex;
+                renderQuestion();
+            });
+
+            // 提交按钮点击事件
+            submitBtn.addEventListener('click', function() {
+                if (submitted) return;
+
+                const params = questionParams[currentParamIndex];
+                let score = 0;
+                let totalQuestions = 3;
+
+                // 验证均值
+                const userMean = parseFloat(meanInput.value);
+                const isMeanCorrect = Math.abs(userMean - params.mean) <= 0.1;
+
+                if (isMeanCorrect) {
+                    score++;
+                    meanFeedback.textContent = `正确！均值是 ${params.mean} 毫秒。`;
+                    meanFeedback.className = 'feedback correct';
+                } else {
+                    meanFeedback.textContent = `错误。`;
+                    meanFeedback.className = 'feedback incorrect';
+                }
+
+                // 验证中位数
+                const userMedian = parseFloat(medianInput.value);
+                const isMedianCorrect = Math.abs(userMedian - params.median) <= 0.1;
+
+                if (isMedianCorrect) {
+                    score++;
+                    medianFeedback.textContent = `正确！中位数是 ${params.median} 毫秒。`;
+                    medianFeedback.className = 'feedback correct';
+                } else {
+                    medianFeedback.textContent = `错误。`;
+                    medianFeedback.className = 'feedback incorrect';
+                }
+
+                // 验证众数
+                let isModeCorrect = false;
+                const selectedModeRadio = document.querySelector('input[name="mode-count"]:checked');
+
+                if (selectedModeRadio) {
+                    const userModeCount = parseInt(selectedModeRadio.value);
+
+                    if (userModeCount === params.modeCount) {
+                        if (userModeCount === 0) {
+                            isModeCorrect = true;
+                        } else if (userModeCount === 1) {
+                            const userModeValue = parseFloat(mode1Value.value);
+                            if (Math.abs(userModeValue - params.modeValues[0]) <= 0.1) {
+                                isModeCorrect = true;
+                            }
+                        } else if (userModeCount === 2) {
+                            const userModeValue1 = parseFloat(mode2Value1.value);
+                            const userModeValue2 = parseFloat(mode2Value2.value);
+                            if ((Math.abs(userModeValue1 - params.modeValues[0]) <= 0.1 && Math.abs(userModeValue2 - params.modeValues[1]) <= 0.1) ||
+                                (Math.abs(userModeValue1 - params.modeValues[1]) <= 0.1 && Math.abs(userModeValue2 - params.modeValues[0]) <= 0.1)) {
+                                isModeCorrect = true;
+                            }
+                        }
+                    }
+                }
+
+                if (isModeCorrect) {
+                    score++;
+                    if (params.modeCount === 1) {
+                        modeFeedback.textContent = `正确！该数据集有一个众数，其值为 ${params.modeValues[0]}。`;
+                    } else if (params.modeCount === 2) {
+                        modeFeedback.textContent = `正确！该数据集有两个众数，其值为 ${params.modeValues.join(' 和 ')}。`;
+                    } else {
+                        modeFeedback.textContent = `正确！该数据集没有众数。`;
+                    }
+                    modeFeedback.className = 'feedback correct';
+                } else {
+                    modeFeedback.textContent = `错误。`;
+                    modeFeedback.className = 'feedback incorrect';
+
+                    modeOptions.forEach(option => {
+                        const radio = option.querySelector('.mode-radio');
+                        if (radio && radio.checked && radio.value != params.modeCount) {
+                            option.classList.add('incorrect');
+                        }
+                    });
+                }
+
+                // 显示结果
+                scoreDisplay.textContent = `${score}/${totalQuestions}`;
+                resultContainer.style.display = 'block';
+                showExplanationBtn.style.display = 'inline-block';
+
+                submitted = true;
+                resultContainer.scrollIntoView({ behavior: 'smooth' });
+            });
+
+            // 重置按钮点击事件
+            resetBtn.addEventListener('click', function() {
+                renderQuestion();
+                meanInput.focus();
+            });
+
+            // 显示答案解析按钮点击事件
+            showExplanationBtn.addEventListener('click', function() {
+                if (explanationSection.style.display === 'none' || explanationSection.style.display === '') {
+                    explanationSection.style.display = 'block';
+                    this.textContent = '隐藏答案解析';
+                } else {
+                    explanationSection.style.display = 'none';
+                    this.textContent = '查看答案解析';
+                }
+            });
+
+            // ==================== 初始化 ====================
+            renderQuestion();
+        });
+    </script>
+</body>
+</html>

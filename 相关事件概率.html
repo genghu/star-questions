@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>相关事件概率 - 交互式答题</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+
+        body {
+            background-color: #f0f7ff;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .container {
+            background-color: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0, 82, 204, 0.1);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e6f0ff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        h1 {
+            color: #0052cc;
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #6699ff;
+            font-size: 1.1rem;
+        }
+
+        .refresh-btn {
+            background-color: #34a853;
+            color: white;
+            padding: 10px 20px;
+            font-size: 0.95rem;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .refresh-btn:hover {
+            background-color: #2d9248;
+        }
+
+        .question-section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            color: #0052cc;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e6f0ff;
+        }
+
+        .question-content {
+            background-color: #f8fbff;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 5px solid #4d94ff;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+        }
+
+        .math-formula {
+            background-color: #f0f7ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: 'Cambria Math', serif;
+            font-size: 1.1rem;
+            border: 1px dashed #99c2ff;
+        }
+
+        .answer-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+            margin: 25px 0;
+        }
+
+        .answer-option {
+            background-color: white;
+            border: 2px solid #c2d9ff;
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .answer-option:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 82, 204, 0.15);
+            border-color: #4d94ff;
+        }
+
+        .answer-option.selected {
+            border-color: #0052cc;
+            background-color: #e6f0ff;
+        }
+
+        .answer-option.correct {
+            border-color: #28a745;
+            background-color: #d4edda;
+        }
+
+        .answer-option.incorrect {
+            border-color: #dc3545;
+            background-color: #f8d7da;
+        }
+
+        .option-label {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            background-color: #4d94ff;
+            color: white;
+            border-radius: 50%;
+            margin-right: 15px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .option-text {
+            font-size: 1.1rem;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        #submit-btn {
+            background-color: #0052cc;
+            color: white;
+        }
+
+        #submit-btn:hover {
+            background-color: #0047b3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 82, 204, 0.3);
+        }
+
+        #reset-btn {
+            background-color: #f8f9fa;
+            color: #495057;
+            border: 2px solid #dee2e6;
+        }
+
+        #reset-btn:hover {
+            background-color: #e9ecef;
+            transform: translateY(-2px);
+        }
+
+        .feedback-section {
+            margin-top: 30px;
+            padding: 25px;
+            border-radius: 12px;
+            display: none;
+        }
+
+        .feedback-section.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .correct-feedback {
+            background-color: #d4edda;
+            border: 2px solid #28a745;
+            color: #155724;
+        }
+
+        .incorrect-feedback {
+            background-color: #f8d7da;
+            border: 2px solid #dc3545;
+            color: #721c24;
+        }
+
+        .feedback-title {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .feedback-title i {
+            margin-right: 10px;
+            font-size: 1.6rem;
+        }
+
+        .score-display {
+            text-align: center;
+            font-size: 1.3rem;
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e6f0ff;
+            border-radius: 10px;
+            font-weight: bold;
+            color: #0052cc;
+        }
+
+        .explanation {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #f8fbff;
+            border-radius: 10px;
+            border-left: 4px solid #4d94ff;
+        }
+
+        .explanation h3 {
+            color: #0052cc;
+            margin-bottom: 10px;
+        }
+
+        .explanation p {
+            margin-bottom: 10px;
+        }
+
+        .show-explanation-btn {
+            display: none;
+            margin: 20px auto;
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
+        }
+        .show-explanation-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
+        }
+        .explanation-section {
+            display: none;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .answer-options {
+                grid-template-columns: 1fr;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div>
+                <h1>相关事件概率</h1>
+                <div class="subtitle">交互式答题系统 - 条件概率计算</div>
+            </div>
+            <button class="refresh-btn" id="refresh-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+                </svg>
+                刷新参数
+            </button>
+        </header>
+
+        <main>
+            <section class="question-section">
+                <h2 class="section-title">题目内容</h2>
+
+                <div class="question-content" id="question-content">
+                    <!-- 动态生成 -->
+                </div>
+
+                <h2 class="section-title">选择答案</h2>
+
+                <div class="answer-options" id="answer-options">
+                    <!-- 动态生成 -->
+                </div>
+
+                <div class="controls">
+                    <button id="submit-btn">提交答案</button>
+                    <button id="reset-btn">重新作答</button>
+                </div>
+
+                <div class="score-display">
+                    得分: <span id="score">0</span>/1
+                </div>
+
+                <div class="feedback-section" id="feedback">
+                    <div class="feedback-title">
+                        <i id="feedback-icon"></i>
+                        <span id="feedback-text"></span>
+                    </div>
+                    <div id="feedback-detail"></div>
+                </div>
+
+                <button class="show-explanation-btn" id="show-explanation-btn">查看答案解析</button>
+                <div class="explanation" id="explanation-section" style="display: none;">
+                    <h3>题目解析</h3>
+                    <div id="explanation-content">
+                        <!-- 动态生成 -->
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // ==================== 参数化数据集 ====================
+            const questionParams = [
+                {
+                    totalToppings: 14,
+                    vegToppings: 8,
+                    nonVegToppings: 6,
+                    description: '披萨餐厅',
+                    item: '配料',
+                    firstProb: '8/14',
+                    secondProb: '7/13',
+                    unsimplifiedAnswer: '56/182',
+                    simplifiedAnswer: '4/13',
+                    options: [
+                        { label: 'A', text: '56/182' },
+                        { label: 'B', text: '4/13' },
+                        { label: 'C', text: '8/14' },
+                        { label: 'D', text: '7/13' }
+                    ],
+                    correctAnswer: 'B'
+                },
+                {
+                    totalToppings: 12,
+                    vegToppings: 7,
+                    nonVegToppings: 5,
+                    description: '冰淇淋店',
+                    item: '口味',
+                    firstProb: '7/12',
+                    secondProb: '6/11',
+                    unsimplifiedAnswer: '42/132',
+                    simplifiedAnswer: '7/22',
+                    options: [
+                        { label: 'A', text: '42/132' },
+                        { label: 'B', text: '7/22' },
+                        { label: 'C', text: '7/12' },
+                        { label: 'D', text: '6/11' }
+                    ],
+                    correctAnswer: 'B'
+                },
+                {
+                    totalToppings: 15,
+                    vegToppings: 9,
+                    nonVegToppings: 6,
+                    description: '糖果店',
+                    item: '糖果',
+                    firstProb: '9/15',
+                    secondProb: '8/14',
+                    unsimplifiedAnswer: '72/210',
+                    simplifiedAnswer: '12/35',
+                    options: [
+                        { label: 'A', text: '72/210' },
+                        { label: 'B', text: '12/35' },
+                        { label: 'C', text: '9/15' },
+                        { label: 'D', text: '8/14' }
+                    ],
+                    correctAnswer: 'B'
+                },
+                {
+                    totalToppings: 20,
+                    vegToppings: 12,
+                    nonVegToppings: 8,
+                    description: '面包店',
+                    item: '面包',
+                    firstProb: '12/20',
+                    secondProb: '11/19',
+                    unsimplifiedAnswer: '132/380',
+                    simplifiedAnswer: '33/95',
+                    options: [
+                        { label: 'A', text: '132/380' },
+                        { label: 'B', text: '33/95' },
+                        { label: 'C', text: '12/20' },
+                        { label: 'D', text: '11/19' }
+                    ],
+                    correctAnswer: 'B'
+                },
+                {
+                    totalToppings: 10,
+                    vegToppings: 6,
+                    nonVegToppings: 4,
+                    description: '水果店',
+                    item: '水果',
+                    firstProb: '6/10',
+                    secondProb: '5/9',
+                    unsimplifiedAnswer: '30/90',
+                    simplifiedAnswer: '1/3',
+                    options: [
+                        { label: 'A', text: '30/90' },
+                        { label: 'B', text: '1/3' },
+                        { label: 'C', text: '6/10' },
+                        { label: 'D', text: '5/9' }
+                    ],
+                    correctAnswer: 'B'
+                }
+            ];
+
+            // 当前参数索引
+            let currentParamIndex = 0;
+            let selectedAnswer = null;
+            let isSubmitted = false;
+
+            // ==================== 渲染函数 ====================
+            function renderQuestion() {
+                const params = questionParams[currentParamIndex];
+
+                // 渲染问题内容
+                document.getElementById('question-content').innerHTML = `
+                    <div class="question-text">
+                        <p>一家${params.description}提供 ${params.totalToppings} 种不同的${params.item}：其中 ${params.vegToppings} 种是素食${params.item}，${params.nonVegToppings} 种是非素食${params.item}。一位顾客随机选择她的第一种${params.item}，然后从剩余的${params.item}中随机选择另一种${params.item}。</p>
+                        <p><strong>她两次选择的${params.item}都是素食${params.item}的概率是多少？</strong></p>
+                        <p>请以精确分数形式报告你的答案。</p>
+                    </div>
+
+                    <div class="math-formula">
+                        <p><strong>相关事件概率公式：</strong></p>
+                        <p>P(A 与 B) = P(A) * P(B | A)</p>
+                        <p>其中 P(B | A) 表示在 A 发生的条件下 B 发生的条件概率。</p>
+                    </div>
+
+                    <div class="question-text">
+                        <p>请注意，第二次选择结果的概率取决于第一次选择的结果。例如，如果第一次选择的是素食${params.item}，那么在剩余的 ${params.totalToppings - 1} 种${params.item}中，将有 ${params.vegToppings - 1} 种是素食${params.item}。</p>
+                    </div>
+                `;
+
+                // 渲染选项
+                document.getElementById('answer-options').innerHTML = params.options.map(opt => `
+                    <div class="answer-option" data-value="${opt.label}">
+                        <div class="option-label">${opt.label}</div>
+                        <div class="option-text">${opt.text}</div>
+                    </div>
+                `).join('');
+
+                // 渲染解析
+                document.getElementById('explanation-content').innerHTML = `
+                    <p>这是一个典型的条件概率问题，因为第二次选择的结果依赖于第一次选择的结果。</p>
+
+                    <p><strong>解题步骤：</strong></p>
+                    <ol>
+                        <li>第一次选择素食${params.item}的概率：P(第一次素食) = ${params.firstProb}</li>
+                        <li>在第一次选择素食的条件下，第二次选择素食的概率：P(第二次素食 | 第一次素食) = ${params.secondProb}</li>
+                        <li>两次都选择素食的概率：P(两次都素食) = (${params.firstProb}) * (${params.secondProb}) = ${params.unsimplifiedAnswer}</li>
+                        <li>简化分数：${params.unsimplifiedAnswer} = ${params.simplifiedAnswer}</li>
+                    </ol>
+
+                    <div class="math-formula">
+                        <p>P("第一次选择是素食" 与 "第二次选择是素食")</p>
+                        <p>= P("第一次选择是素食") * P("第二次选择是素食" | "第一次选择是素食")</p>
+                        <p>= (${params.firstProb}) * (${params.secondProb})</p>
+                        <p>= ${params.unsimplifiedAnswer}</p>
+                        <p>= ${params.simplifiedAnswer}</p>
+                    </div>
+
+                    <p><strong>正确答案：</strong> ${params.correctAnswer}. ${params.simplifiedAnswer}</p>
+                    <p><strong>注意：</strong> ${params.unsimplifiedAnswer} 是未简化的形式，题目要求精确分数形式，所以应该简化为最简分数 ${params.simplifiedAnswer}。</p>
+                `;
+
+                // 重新绑定选项点击事件
+                bindOptionEvents();
+            }
+
+            function bindOptionEvents() {
+                const answerOptions = document.querySelectorAll('.answer-option');
+                answerOptions.forEach(option => {
+                    option.addEventListener('click', function() {
+                        if (isSubmitted) return;
+
+                        // 移除之前的选择
+                        answerOptions.forEach(opt => opt.classList.remove('selected'));
+
+                        // 标记当前选择
+                        this.classList.add('selected');
+                        selectedAnswer = this.getAttribute('data-value');
+                    });
+                });
+            }
+
+            function refreshParams() {
+                let newIndex;
+                do {
+                    newIndex = Math.floor(Math.random() * questionParams.length);
+                } while (newIndex === currentParamIndex && questionParams.length > 1);
+
+                currentParamIndex = newIndex;
+                selectedAnswer = null;
+                isSubmitted = false;
+
+                // 重置UI
+                document.querySelectorAll('.answer-option').forEach(opt => {
+                    opt.classList.remove('selected', 'correct', 'incorrect');
+                });
+                document.getElementById('feedback').classList.remove('show', 'correct-feedback', 'incorrect-feedback');
+                document.getElementById('show-explanation-btn').style.display = 'none';
+                document.getElementById('explanation-section').style.display = 'none';
+                document.getElementById('score').textContent = '0';
+
+                renderQuestion();
+            }
+
+            // 刷新参数按钮
+            document.getElementById('refresh-btn').addEventListener('click', refreshParams);
+
+            // 显示答案解析按钮
+            document.getElementById('show-explanation-btn').addEventListener('click', function() {
+                const explanation = document.getElementById('explanation-section');
+                if (explanation.style.display === 'block') {
+                    explanation.style.display = 'none';
+                    this.textContent = '查看答案解析';
+                } else {
+                    explanation.style.display = 'block';
+                    this.textContent = '隐藏答案解析';
+                }
+            });
+
+            // 提交答案
+            const submitBtn = document.getElementById('submit-btn');
+            const feedbackSection = document.getElementById('feedback');
+            const feedbackText = document.getElementById('feedback-text');
+            const feedbackIcon = document.getElementById('feedback-icon');
+            const feedbackDetail = document.getElementById('feedback-detail');
+            const scoreDisplay = document.getElementById('score');
+
+            submitBtn.addEventListener('click', function() {
+                if (!selectedAnswer) {
+                    alert('请先选择一个答案！');
+                    return;
+                }
+
+                isSubmitted = true;
+
+                const params = questionParams[currentParamIndex];
+                const isCorrect = selectedAnswer === params.correctAnswer;
+
+                // 标记错误选项
+                if (!isCorrect) {
+                    const selectedOption = document.querySelector(`.answer-option[data-value="${selectedAnswer}"]`);
+                    if (selectedOption) {
+                        selectedOption.classList.add('incorrect');
+                    }
+                }
+
+                // 显示反馈
+                if (isCorrect) {
+                    feedbackSection.className = 'feedback-section show correct-feedback';
+                    feedbackIcon.textContent = '✓';
+                    feedbackText.textContent = '恭喜！你的答案正确！';
+                    feedbackDetail.innerHTML = `
+                        <p>你选择了 <strong>${selectedAnswer}. ${params.simplifiedAnswer}</strong></p>
+                        <p>这是正确答案！两次选择都是素食${params.item}的概率确实是 <strong>${params.simplifiedAnswer}</strong>。</p>
+                    `;
+                    scoreDisplay.textContent = '1';
+                } else {
+                    feedbackSection.className = 'feedback-section show incorrect-feedback';
+                    feedbackIcon.textContent = '✗';
+                    feedbackText.textContent = '答案不正确，请再试一次！';
+                    feedbackDetail.innerHTML = `
+                        <p>你选择了 <strong>${selectedAnswer}</strong></p>
+                        <p>正确答案是 <strong>${params.correctAnswer}. ${params.simplifiedAnswer}</strong></p>
+                        <p>两次选择都是素食${params.item}的概率计算为: (${params.firstProb}) * (${params.secondProb}) = ${params.unsimplifiedAnswer} = ${params.simplifiedAnswer}</p>
+                    `;
+                    scoreDisplay.textContent = '0';
+                }
+
+                // 显示答案解析按钮
+                document.getElementById('show-explanation-btn').style.display = 'inline-block';
+
+                // 滚动到反馈区域
+                feedbackSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            });
+
+            // 重新作答
+            document.getElementById('reset-btn').addEventListener('click', function() {
+                // 重置所有选项
+                document.querySelectorAll('.answer-option').forEach(option => {
+                    option.classList.remove('selected', 'correct', 'incorrect');
+                });
+
+                // 隐藏反馈
+                feedbackSection.classList.remove('show', 'correct-feedback', 'incorrect-feedback');
+
+                // 隐藏答案解析
+                document.getElementById('show-explanation-btn').style.display = 'none';
+                document.getElementById('explanation-section').style.display = 'none';
+
+                // 重置状态
+                selectedAnswer = null;
+                isSubmitted = false;
+                scoreDisplay.textContent = '0';
+            });
+
+            // ==================== 初始化 ====================
+            renderQuestion();
+        });
+    </script>
+</body>
+</html>

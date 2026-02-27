@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中心极限定理：样本比例 - 交互式答题</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background-color: #f0f7ff;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #4a90e2;
+        }
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2.2rem;
+        }
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        .card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 150, 0.08);
+            margin-bottom: 20px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 150, 0.12);
+        }
+        .question-title {
+            color: #2980b9;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+        .question-title::before {
+            content: "";
+            margin-right: 10px;
+            font-size: 1.3rem;
+        }
+        .question-text {
+            font-size: 1.05rem;
+            margin-bottom: 20px;
+            white-space: pre-line;
+        }
+        .math {
+            font-family: 'Cambria Math', serif;
+            background-color: #f8f9fa;
+            padding: 2px 6px;
+            border-radius: 4px;
+            border-left: 3px solid #4a90e2;
+            margin: 5px 0;
+            display: inline-block;
+        }
+        .answer-input-container {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #f8fafc;
+            border-radius: 10px;
+            border: 2px solid #e0e7ff;
+        }
+        .answer-label {
+            font-size: 1rem;
+            color: #2c3e50;
+            margin-bottom: 8px;
+            display: block;
+            font-weight: 600;
+        }
+        .answer-input {
+            width: 100%;
+            max-width: 250px;
+            padding: 12px 15px;
+            font-size: 1.1rem;
+            border: 2px solid #e0e7ff;
+            border-radius: 8px;
+            transition: all 0.3s;
+            outline: none;
+        }
+        .answer-input:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 10px rgba(52, 152, 219, 0.2);
+        }
+        .answer-input.correct {
+            border-color: #2ecc71;
+            background-color: #e8f8ef;
+        }
+        .answer-input.incorrect {
+            border-color: #e74c3c;
+            background-color: #fdedec;
+        }
+        .tolerance-hint {
+            font-size: 0.85rem;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+        .feedback-inline {
+            margin-top: 8px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            display: none;
+        }
+        .feedback-inline.correct {
+            background-color: #e8f8ef;
+            color: #27ae60;
+            display: block;
+        }
+        .feedback-inline.incorrect {
+            background-color: #fdedec;
+            color: #e74c3c;
+            display: block;
+        }
+        .question-block {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px dashed #e0e0e0;
+        }
+        .question-block:last-child {
+            border-bottom: none;
+        }
+        .question-block-title {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 12px;
+            font-size: 1.05rem;
+        }
+        .feedback {
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        .feedback.correct {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .feedback.incorrect {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .feedback.show {
+            display: block;
+        }
+        .explanation {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 25px;
+            border-left: 5px solid #3498db;
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+        .explanation h4 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        .stat-item h3 {
+            font-size: 2rem;
+            margin-bottom: 5px;
+        }
+        .stat-item p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        .buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+        button {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex-grow: 1;
+            min-width: 140px;
+        }
+        #submitBtn {
+            background-color: #3498db;
+            color: white;
+        }
+        #submitBtn:hover {
+            background-color: #2980b9;
+            transform: scale(1.03);
+        }
+        #resetBtn {
+            background-color: #95a5a6;
+            color: white;
+        }
+        #resetBtn:hover {
+            background-color: #7f8c8d;
+            transform: scale(1.03);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .note {
+            background-color: #fffde7;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #ffd54f;
+            margin: 15px 0;
+            font-size: 0.95rem;
+        }
+        .refresh-btn {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.9em;
+            margin-left: 10px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .refresh-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+        }
+        .param-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .show-explanation-btn {
+            display: none;
+            margin: 20px auto;
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
+        }
+        .show-explanation-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
+        }
+        .explanation-section {
+            display: none;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>中心极限定理：样本比例</h1>
+        <p class="subtitle">交互式答题与解析 - 概率与统计</p>
+    </header>
+
+    <div class="container">
+        <section class="question-section">
+            <div class="card">
+                <div class="param-header">
+                    <h2 class="question-title" style="margin: 0;">题目内容</h2>
+                    <button class="refresh-btn" onclick="refreshQuestion()">刷新参数</button>
+                </div>
+                <div class="question-text" id="questionText">
+                </div>
+
+                <div class="note">
+                    <strong>提示：</strong> 根据中心极限定理，当样本量足够大时，样本比例 <span class="math">p</span> 的抽样分布近似正态分布。
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="question-title">请输入你的答案</h2>
+                <div id="answersContainer">
+                    <!-- 动态生成填空输入框 -->
+                </div>
+
+                <div class="feedback" id="feedback"></div>
+
+                <div class="buttons">
+                    <button id="submitBtn">提交答案</button>
+                    <button id="resetBtn">重新作答</button>
+                </div>
+
+                <div class="stats">
+                    <div class="stat-item">
+                        <h3 id="score">0</h3>
+                        <p>得分</p>
+                    </div>
+                    <div class="stat-item">
+                        <h3 id="answered">0</h3>
+                        <p>已答题</p>
+                    </div>
+                    <div class="stat-item">
+                        <h3 id="correctCount">0</h3>
+                        <p>正确数</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="interaction-section">
+            <div class="card">
+                <h2 class="question-title">题目解析</h2>
+                <button class="show-explanation-btn" id="show-explanation-btn">查看答案解析</button>
+                <div class="explanation-section" id="explanationSection" style="display:none;">
+                    <div class="explanation" id="explanationContent">
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="question-title">中心极限定理要点</h2>
+                <div class="explanation">
+                    <p><strong>中心极限定理（样本比例）：</strong> 从总体比例为 <span class="math">p</span> 的总体中，抽取容量为 <span class="math">n</span> 的简单随机样本，当 <span class="math">n</span> 足够大时，样本比例 <span class="math">p</span> 的抽样分布近似正态分布。</p>
+                    <ul style="padding-left: 20px; margin-top: 10px;">
+                        <li>均值：<span class="math">mu_p = p</span></li>
+                        <li>标准差（标准误）：<span class="math">sigma_p = sqrt[p(1-p)/n]</span></li>
+                        <li>近似正态的条件：<span class="math">np >= 10</span> 且 <span class="math">n(1-p) >= 10</span></li>
+                    </ul>
+                    <p style="margin-top: 15px;" id="conditionCheck"></p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Parameter sets with pre-computed answers
+        const parameterSets = [
+            {
+                description: "当一个人突然停止使用止痛药时，可能会出现戒断症状。对于一种特殊类型的止痛药，戒断症状的发生率为",
+                p: 0.01,
+                n: 1100,
+                threshold: 0.02,
+                meanAnswer: 0.01,
+                stdAnswer: 0.003,
+                probAnswer: 0.0004,
+                explanation: "设随机变量 X 表示样本中经历戒断症状的人数，则 X ~ Binomial(n=1100, p=0.01)，且 p = X / 1100。"
+            },
+            {
+                description: "某地区成年人中患有某种慢性疾病的比例是",
+                p: 0.15,
+                n: 800,
+                threshold: 0.18,
+                meanAnswer: 0.15,
+                stdAnswer: 0.013,
+                probAnswer: 0.0106,
+                explanation: "设随机变量 X 表示样本中患有该疾病的人数，则 X ~ Binomial(n=800, p=0.15)，且 p = X / 800。"
+            },
+            {
+                description: "某产品的合格率为",
+                p: 0.95,
+                n: 500,
+                threshold: 0.92,
+                meanAnswer: 0.95,
+                stdAnswer: 0.010,
+                probAnswer: 0.0014,
+                explanation: "设随机变量 X 表示样本中合格产品的数量，则 X ~ Binomial(n=500, p=0.95)，且 p = X / 500。"
+            },
+            {
+                description: "某城市居民支持一项新政策的比例为",
+                p: 0.42,
+                n: 1200,
+                threshold: 0.45,
+                meanAnswer: 0.42,
+                stdAnswer: 0.014,
+                probAnswer: 0.0161,
+                explanation: "设随机变量 X 表示样本中支持新政策的人数，则 X ~ Binomial(n=1200, p=0.42)，且 p = X / 1200。"
+            },
+            {
+                description: "某工厂生产的产品中有缺陷的比例为",
+                p: 0.08,
+                n: 600,
+                threshold: 0.10,
+                meanAnswer: 0.08,
+                stdAnswer: 0.011,
+                probAnswer: 0.0349,
+                explanation: "设随机变量 X 表示样本中有缺陷的产品数量，则 X ~ Binomial(n=600, p=0.08)，且 p = X / 600。"
+            }
+        ];
+
+        let currentParams = null;
+        let userAnswers = {};
+        let score = 0;
+        let answeredCount = 0;
+        let correctCount = 0;
+        let submitted = false;
+
+        function refreshQuestion() {
+            // Reset form
+            resetAnswers();
+
+            // Select random parameter set
+            const randomIndex = Math.floor(Math.random() * parameterSets.length);
+            currentParams = parameterSets[randomIndex];
+
+            // Update question text
+            const questionText = `<p>${currentParams.description} <span class="math">${(currentParams.p * 100).toFixed(0)}%</span>。现考虑一个由 <span class="math">n = ${currentParams.n}</span> 名个体组成的随机样本。</p>
+                <p><strong>a.</strong> 求 <span class="math">p</span> 的均值，其中 <span class="math">p</span> 是样本中具有该特征的人的比例。</p>
+                <p><strong>b.</strong> 求 <span class="math">p</span> 的标准差。</p>
+                <p><strong>c.</strong> 计算 <span class="math">P(p > ${currentParams.threshold})</span> 的近似值，即样本中超过 ${(currentParams.threshold * 100).toFixed(0)}% 的人具有该特征的概率。将你的答案四舍五入到四位小数。</p>`;
+            document.getElementById('questionText').innerHTML = questionText;
+
+            // Update condition check
+            const np = currentParams.n * currentParams.p;
+            const n1p = currentParams.n * (1 - currentParams.p);
+            document.getElementById('conditionCheck').innerHTML = `本题中，<span class="math">np = ${np.toFixed(0)}</span>，<span class="math">n(1-p) = ${n1p.toFixed(0)}</span>，${np >= 10 && n1p >= 10 ? '满足' : '不满足'}近似条件。`;
+
+            // Re-render input fields
+            renderInputFields();
+
+            // Update explanation
+            const stdDev = Math.sqrt(currentParams.p * (1 - currentParams.p) / currentParams.n);
+            const zValue = (currentParams.threshold - currentParams.p) / stdDev;
+            document.getElementById('explanationContent').innerHTML = `
+                <h4>解题思路</h4>
+                <p>${currentParams.explanation}</p>
+                <p><strong>a. 均值：</strong> <span class="math">E(p) = E(X/n) = E(X)/n = (np)/n = p = ${currentParams.p}</span></p>
+                <p><strong>b. 标准差：</strong> <span class="math">sigma(p) = sqrt[p(1-p)/n] = sqrt[${currentParams.p} x ${(1-currentParams.p).toFixed(2)}/${currentParams.n}] = ${currentParams.stdAnswer.toFixed(4)}</span></p>
+                <p><strong>c. 概率计算：</strong> 由于 <span class="math">np=${(currentParams.n * currentParams.p).toFixed(0)} > 5</span> 且 <span class="math">n(1-p)=${(currentParams.n * (1-currentParams.p)).toFixed(0)} > 5</span>，样本比例近似正态分布。</p>
+                <p><span class="math">Z = (p - p_pop) / sqrt[p(1-p)/n] = (${currentParams.threshold} - ${currentParams.p}) / ${currentParams.stdAnswer.toFixed(4)} = ${zValue.toFixed(3)}</span></p>
+                <p><span class="math">P(p > ${currentParams.threshold}) = P(Z > ${zValue.toFixed(3)}) = ${currentParams.probAnswer.toFixed(4)}</span></p>
+            `;
+        }
+
+        function renderInputFields() {
+            const container = document.getElementById('answersContainer');
+            container.innerHTML = `
+                <div class="question-block">
+                    <div class="question-block-title">a. 求 p 的均值（样本比例的平均值）</div>
+                    <div class="answer-input-container">
+                        <label class="answer-label">请输入均值：</label>
+                        <input type="text" class="answer-input" id="answer-a">
+                        <div class="tolerance-hint">容差：±0.01</div>
+                        <div class="feedback-inline" id="feedback-a"></div>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <div class="question-block-title">b. 求 p 的标准差（四舍五入到三位小数）</div>
+                    <div class="answer-input-container">
+                        <label class="answer-label">请输入标准差：</label>
+                        <input type="text" class="answer-input" id="answer-b">
+                        <div class="tolerance-hint">容差：±0.001</div>
+                        <div class="feedback-inline" id="feedback-b"></div>
+                    </div>
+                </div>
+
+                <div class="question-block">
+                    <div class="question-block-title">c. 计算 P(p > ${currentParams.threshold}) 的近似值（四舍五入到四位小数）</div>
+                    <div class="answer-input-container">
+                        <label class="answer-label">请输入概率值：</label>
+                        <input type="text" class="answer-input" id="answer-c">
+                        <div class="tolerance-hint">容差：±0.001</div>
+                        <div class="feedback-inline" id="feedback-c"></div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // DOM元素
+        const feedbackEl = document.getElementById('feedback');
+        const scoreEl = document.getElementById('score');
+        const answeredEl = document.getElementById('answered');
+        const correctCountEl = document.getElementById('correctCount');
+        const submitBtn = document.getElementById('submitBtn');
+        const resetBtn = document.getElementById('resetBtn');
+
+        // 更新统计信息
+        function updateStats() {
+            scoreEl.textContent = score;
+            answeredEl.textContent = answeredCount;
+            correctCountEl.textContent = correctCount;
+        }
+
+        // 提交答案
+        function submitAnswers() {
+            if (!currentParams || submitted) return;
+
+            const answerA = parseFloat(document.getElementById('answer-a').value);
+            const answerB = parseFloat(document.getElementById('answer-b').value);
+            const answerC = parseFloat(document.getElementById('answer-c').value);
+
+            if (isNaN(answerA) || isNaN(answerB) || isNaN(answerC)) {
+                feedbackEl.textContent = '请先完成所有 3 道题目！';
+                feedbackEl.className = 'feedback incorrect show';
+                return;
+            }
+
+            submitted = true;
+
+            // 重置反馈
+            feedbackEl.className = 'feedback';
+            feedbackEl.innerHTML = '';
+
+            // 计算得分
+            score = 0;
+            correctCount = 0;
+            answeredCount = 3;
+
+            const toleranceA = 0.01;
+            const toleranceB = 0.001;
+            const toleranceC = 0.001;
+
+            // 检查答案a
+            const inputA = document.getElementById('answer-a');
+            const feedbackA = document.getElementById('feedback-a');
+            if (Math.abs(answerA - currentParams.meanAnswer) <= toleranceA) {
+                score += 10;
+                correctCount++;
+                inputA.classList.add('correct');
+                feedbackA.textContent = '正确！';
+                feedbackA.className = 'feedback-inline correct';
+            } else {
+                inputA.classList.add('incorrect');
+                feedbackA.textContent = `不正确。正确答案是 ${currentParams.meanAnswer.toFixed(2)}`;
+                feedbackA.className = 'feedback-inline incorrect';
+            }
+
+            // 检查答案b
+            const inputB = document.getElementById('answer-b');
+            const feedbackB = document.getElementById('feedback-b');
+            if (Math.abs(answerB - currentParams.stdAnswer) <= toleranceB) {
+                score += 10;
+                correctCount++;
+                inputB.classList.add('correct');
+                feedbackB.textContent = '正确！';
+                feedbackB.className = 'feedback-inline correct';
+            } else {
+                inputB.classList.add('incorrect');
+                feedbackB.textContent = `不正确。正确答案是 ${currentParams.stdAnswer.toFixed(3)}`;
+                feedbackB.className = 'feedback-inline incorrect';
+            }
+
+            // 检查答案c
+            const inputC = document.getElementById('answer-c');
+            const feedbackC = document.getElementById('feedback-c');
+            if (Math.abs(answerC - currentParams.probAnswer) <= toleranceC) {
+                score += 10;
+                correctCount++;
+                inputC.classList.add('correct');
+                feedbackC.textContent = '正确！';
+                feedbackC.className = 'feedback-inline correct';
+            } else {
+                inputC.classList.add('incorrect');
+                feedbackC.textContent = `不正确。正确答案是 ${currentParams.probAnswer.toFixed(4)}`;
+                feedbackC.className = 'feedback-inline incorrect';
+            }
+
+            // 禁用输入
+            document.querySelectorAll('.answer-input').forEach(input => {
+                input.disabled = true;
+            });
+
+            // 显示反馈
+            const percentage = Math.round((correctCount / 3) * 100);
+            feedbackEl.innerHTML = `
+                <h3>答题完成！</h3>
+                <p>你的得分：<strong>${score}</strong> 分（${correctCount}/3 正确）</p>
+                <p>正确率：<strong>${percentage}%</strong></p>
+                ${percentage === 100 ? '<p>太棒了！全部答对！</p>' :
+                  percentage >= 70 ? '<p>做得不错！</p>' :
+                  '<p>继续加油！查看解析巩固知识。</p>'}
+            `;
+            feedbackEl.className = 'feedback show';
+            if (percentage === 100) {
+                feedbackEl.classList.add('correct');
+            } else {
+                feedbackEl.classList.add('incorrect');
+            }
+
+            // Show explanation button after submit
+            var showBtn = document.getElementById('show-explanation-btn');
+            if (showBtn) {
+                showBtn.style.display = 'inline-block';
+            }
+
+            // 更新统计
+            updateStats();
+        }
+
+        // 重置答题
+        function resetAnswers() {
+            userAnswers = {};
+            score = 0;
+            answeredCount = 0;
+            correctCount = 0;
+            submitted = false;
+
+            // 清除所有输入状态
+            document.querySelectorAll('.answer-input').forEach(input => {
+                input.value = '';
+                input.classList.remove('correct', 'incorrect');
+                input.disabled = false;
+            });
+
+            document.querySelectorAll('.feedback-inline').forEach(fb => {
+                fb.className = 'feedback-inline';
+                fb.textContent = '';
+            });
+
+            // 隐藏反馈
+            feedbackEl.className = 'feedback';
+
+            // Hide explanation
+            document.getElementById('show-explanation-btn').style.display = 'none';
+            document.getElementById('explanationSection').style.display = 'none';
+            document.getElementById('show-explanation-btn').textContent = '查看答案解析';
+
+            // 更新统计
+            updateStats();
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize with first random parameter set
+            refreshQuestion();
+
+            // 显示答案解析按钮点击事件
+            document.getElementById('show-explanation-btn').addEventListener('click', function() {
+                var explanation = document.getElementById('explanationSection');
+                if (explanation) {
+                    if (explanation.style.display === 'none' || explanation.style.display === '') {
+                        explanation.style.display = 'block';
+                        this.textContent = '隐藏答案解析';
+                    } else {
+                        explanation.style.display = 'none';
+                        this.textContent = '查看答案解析';
+                    }
+                }
+            });
+
+            // 事件监听
+            submitBtn.addEventListener('click', submitAnswers);
+            resetBtn.addEventListener('click', resetAnswers);
+
+            updateStats();
+        });
+    </script>
+</body>
+</html>

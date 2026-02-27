@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>茎叶图解读 - 交互式答题</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 30px auto;
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(50, 100, 150, 0.1);
+            overflow: hidden;
+            padding: 30px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #eaeff5;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2.2rem;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+
+        .meta-info {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            background-color: #f8fafc;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            font-size: 0.9rem;
+            color: #5a6c7d;
+        }
+
+        .meta-info div {
+            margin: 5px 10px;
+        }
+
+        .stem-leaf-container {
+            background-color: #f0f8ff;
+            border: 2px dashed #b8d4f0;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        .stem-leaf-title {
+            font-size: 1.4rem;
+            color: #2c5282;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .stem-leaf-legend {
+            background-color: #e6f2ff;
+            padding: 10px 15px;
+            border-radius: 8px;
+            display: inline-block;
+            margin-bottom: 20px;
+            font-weight: bold;
+            color: #2d3748;
+        }
+
+        .stem-leaf-display {
+            font-family: 'Courier New', monospace;
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #1a365d;
+            line-height: 2.2;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px auto;
+            max-width: 300px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .question-container {
+            margin: 35px 0;
+            padding: 25px;
+            border-radius: 15px;
+            background-color: #f9fbfd;
+            border-left: 5px solid #4a90e2;
+            transition: transform 0.3s ease;
+        }
+
+        .question-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(74, 144, 226, 0.1);
+        }
+
+        .question-text {
+            font-size: 1.3rem;
+            color: #2d3748;
+            margin-bottom: 25px;
+            font-weight: 600;
+        }
+
+        .options-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .option {
+            background-color: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 18px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            font-size: 1.1rem;
+        }
+
+        .option:hover {
+            border-color: #4a90e2;
+            background-color: #f0f7ff;
+            transform: scale(1.02);
+        }
+
+        .option.selected {
+            border-color: #4a90e2;
+            background-color: #ebf5ff;
+            box-shadow: 0 5px 15px rgba(74, 144, 226, 0.2);
+        }
+
+        .option.correct {
+            border-color: #10b981;
+            background-color: #d1fae5;
+        }
+
+        .option.incorrect {
+            border-color: #ef4444;
+            background-color: #fee2e2;
+        }
+
+        .option-letter {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            background-color: #4a90e2;
+            color: white;
+            border-radius: 50%;
+            margin-right: 15px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .option.correct .option-letter {
+            background-color: #10b981;
+        }
+
+        .option.incorrect .option-letter {
+            background-color: #ef4444;
+        }
+
+        .feedback {
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            display: none;
+            font-weight: 500;
+        }
+
+        .feedback.correct {
+            background-color: #d1fae5;
+            color: #065f46;
+            border-left: 4px solid #10b981;
+            display: block;
+        }
+
+        .feedback.incorrect {
+            background-color: #fee2e2;
+            color: #991b1b;
+            border-left: 4px solid #ef4444;
+            display: block;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 16px 32px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        #submit-btn {
+            background: linear-gradient(to right, #4a90e2, #63b3ed);
+            color: white;
+            box-shadow: 0 5px 15px rgba(74, 144, 226, 0.4);
+        }
+
+        #submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(74, 144, 226, 0.5);
+        }
+
+        #reset-btn {
+            background-color: white;
+            color: #4a90e2;
+            border: 2px solid #4a90e2;
+        }
+
+        #reset-btn:hover {
+            background-color: #f0f7ff;
+            transform: translateY(-3px);
+        }
+
+        .results-container {
+            background: linear-gradient(to right, #1e3c72, #2a5298);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin-top: 40px;
+            text-align: center;
+            display: none;
+        }
+
+        .results-container.show {
+            display: block;
+            animation: fadeIn 0.8s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .score-display {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin: 15px 0;
+            text-shadow: 0 5px 10px rgba(0,0,0,0.2);
+        }
+
+        .score-text {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            opacity: 0.9;
+        }
+
+        .explanation {
+            background-color: white;
+            color: #2d3748;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 25px;
+            text-align: left;
+            border-left: 5px solid #4a90e2;
+        }
+
+        .explanation h3 {
+            color: #2c5282;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                margin: 10px auto;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .options-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .stem-leaf-display {
+                font-size: 1.5rem;
+            }
+            
+            button {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+            
+            .controls {
+                flex-direction: column;
+            }
+        }
+    </style>
+
+    <style>
+    .show-explanation-btn {
+        display: none;
+        margin: 20px auto;
+        padding: 14px 28px;
+        background: linear-gradient(135deg, #9b59b6, #8e44ad);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 1.1rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
+    }
+    .show-explanation-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
+    }
+    .explanation-section {
+        display: none;
+        margin-top: 20px;
+    }
+    </style>
+    </head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-chart-bar"></i> 茎叶图解读 <button onclick="refreshParams()" style="margin-left: 15px; padding: 8px 16px; background: linear-gradient(135deg, #e74c3c, #c0392b); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-weight: 600; transition: all 0.3s ease;">刷新参数</button></h1>
+            <p class="subtitle">描述性统计 - 交互式答题练习</p>
+        </header>
+        
+        <div class="stem-leaf-container">
+            <div class="stem-leaf-title">上周工作小时数</div>
+            <div class="stem-leaf-legend">图例： 2|6 表示 26 小时。</div>
+            <div class="stem-leaf-display">
+                2 67<br>
+                3 225778<br>
+                4 1256<br>
+                5 177
+            </div>
+            <p style="margin-top: 15px; color: #4a5568;">茎叶图显示了按位值排列的数据集。茎代表十位数，叶代表个位数。</p>
+        </div>
+        
+        <div class="question-container" id="question1">
+            <div class="question-text">(a) 总体最高工作小时数是多少？</div>
+            <div class="options-container">
+                <div class="option" data-question="1" data-value="57">
+                    <div class="option-letter">A</div>
+                    <div class="option-text">57 小时</div>
+                </div>
+                <div class="option" data-question="1" data-value="51">
+                    <div class="option-letter">B</div>
+                    <div class="option-text">51 小时</div>
+                </div>
+                <div class="option" data-question="1" data-value="77">
+                    <div class="option-letter">C</div>
+                    <div class="option-text">77 小时</div>
+                </div>
+                <div class="option" data-question="1" data-value="67">
+                    <div class="option-letter">D</div>
+                    <div class="option-text">67 小时</div>
+                </div>
+            </div>
+            <div class="feedback" id="feedback1">
+                茎叶图的最底行显示最高工作小时数。茎为5，叶为1、7、7，所以最大值为57小时。
+            </div>
+        </div>
+        
+        <div class="question-container" id="question2">
+            <div class="question-text">(b) 在 30 多小时的组中，最小的工作小时数是多少？</div>
+            <div class="options-container">
+                <div class="option" data-question="2" data-value="32">
+                    <div class="option-letter">A</div>
+                    <div class="option-text">32 小时</div>
+                </div>
+                <div class="option" data-question="2" data-value="30">
+                    <div class="option-letter">B</div>
+                    <div class="option-text">30 小时</div>
+                </div>
+                <div class="option" data-question="2" data-value="37">
+                    <div class="option-letter">C</div>
+                    <div class="option-text">37 小时</div>
+                </div>
+                <div class="option" data-question="2" data-value="22">
+                    <div class="option-letter">D</div>
+                    <div class="option-text">22 小时</div>
+                </div>
+            </div>
+            <div class="feedback" id="feedback2">
+                茎叶图的第二行（茎为3）显示30多小时组：32, 32, 35, 37, 37, 38。其中最小值为32小时。
+            </div>
+        </div>
+        
+        <div class="question-container" id="question3">
+            <div class="question-text">(c) 有多少个回答落在 20 多小时的组中？</div>
+            <div class="options-container">
+                <div class="option" data-question="3" data-value="2">
+                    <div class="option-letter">A</div>
+                    <div class="option-text">2 个回答</div>
+                </div>
+                <div class="option" data-question="3" data-value="3">
+                    <div class="option-letter">B</div>
+                    <div class="option-text">3 个回答</div>
+                </div>
+                <div class="option" data-question="3" data-value="6">
+                    <div class="option-letter">C</div>
+                    <div class="option-text">6 个回答</div>
+                </div>
+                <div class="option" data-question="3" data-value="7">
+                    <div class="option-letter">D</div>
+                    <div class="option-text">7 个回答</div>
+                </div>
+            </div>
+            <div class="feedback" id="feedback3">
+                茎叶图的第一行（茎为2）显示20多小时组：26, 27。共有2个数据点。
+            </div>
+        </div>
+        
+        <div class="controls">
+            <button id="submit-btn">
+                <i class="fas fa-paper-plane"></i> 提交答案
+            </button>
+            <button id="reset-btn">
+                <i class="fas fa-redo-alt"></i> 重新作答
+            </button>
+        </div>
+        
+        <div class="results-container" id="results">
+            <h2><i class="fas fa-trophy"></i> 答题结果</h2>
+            <div class="score-display" id="score">0/3</div>
+            <div class="score-text" id="score-text">您答对了 <span id="correct-count">0</span> 题，共 3 题</div>
+            
+            <button class="show-explanation-btn" id="show-explanation-btn">📖 查看答案解析</button>
+<div class="explanation-section explanation">
+                <h3><i class="fas fa-lightbulb"></i> 题目解析</h3>
+                <p><strong>(a) 总体最高工作小时数：</strong> 茎叶图的最底行（茎为5）包含数据：51, 57, 57。其中最大值为57小时。</p>
+                <p><strong>(b) 30多小时的组中最小值：</strong> 茎为3的行包含数据：32, 32, 35, 37, 37, 38。其中最小值为32小时。</p>
+                <p><strong>(c) 20多小时的组中数据个数：</strong> 茎为2的行包含数据：26, 27。共有2个数据点。</p>
+                <p style="margin-top: 15px; color: #4a5568; font-style: italic;">茎叶图是一种有效的数据可视化方式，茎代表十位数，叶代表个位数，既能显示数据分布，又能保留原始数据值。</p>
+            </div>
+        </div>
+        
+        
+    </div>
+
+    <script>
+        // 参数化配置 - 预先计算好的参数集合
+        const questionParams = [
+            {
+                // 参数集1: 原始题目 - 工作小时数
+                title: "上周工作小时数",
+                legend: "图例： 2|6 表示 26 小时。",
+                description: "茎叶图显示了按位值排列的数据集。茎代表十位数，叶代表个位数。",
+                stemLeafData: {
+                    2: [6, 7],
+                    3: [2, 2, 5, 7, 7, 8],
+                    4: [1, 2, 5, 6],
+                    5: [1, 7, 7]
+                },
+                maxValue: 57,
+                minIn30s: 32,
+                countIn20s: 2,
+                q1Options: [
+                    { value: '57', text: '57 小时' },
+                    { value: '51', text: '51 小时' },
+                    { value: '77', text: '77 小时' },
+                    { value: '67', text: '67 小时' }
+                ],
+                q2Options: [
+                    { value: '32', text: '32 小时' },
+                    { value: '30', text: '30 小时' },
+                    { value: '37', text: '37 小时' },
+                    { value: '22', text: '22 小时' }
+                ],
+                q3Options: [
+                    { value: '2', text: '2 个回答' },
+                    { value: '3', text: '3 个回答' },
+                    { value: '6', text: '6 个回答' },
+                    { value: '7', text: '7 个回答' }
+                ],
+                feedback1: "茎叶图的最底行显示最高工作小时数。茎为5，叶为1、7、7，所以最大值为57小时。",
+                feedback2: "茎叶图的第二行（茎为3）显示30多小时组：32, 32, 35, 37, 37, 38。其中最小值为32小时。",
+                feedback3: "茎叶图的第一行（茎为2）显示20多小时组：26, 27。共有2个数据点。"
+            },
+            {
+                // 参数集2: 考试成绩
+                title: "数学考试成绩",
+                legend: "图例： 6|5 表示 65 分。",
+                description: "茎叶图显示了按位值排列的数据集。茎代表十位数，叶代表个位数。",
+                stemLeafData: {
+                    5: [2, 5, 8],
+                    6: [1, 3, 5, 7, 8, 9],
+                    7: [2, 4, 5, 6, 8, 9],
+                    8: [1, 3, 5, 7],
+                    9: [2, 5]
+                },
+                maxValue: 95,
+                minIn70s: 72,
+                countIn80s: 4,
+                q1Options: [
+                    { value: '95', text: '95 分' },
+                    { value: '92', text: '92 分' },
+                    { value: '85', text: '85 分' },
+                    { value: '98', text: '98 分' }
+                ],
+                q2Options: [
+                    { value: '72', text: '72 分' },
+                    { value: '70', text: '70 分' },
+                    { value: '75', text: '75 分' },
+                    { value: '68', text: '68 分' }
+                ],
+                q3Options: [
+                    { value: '4', text: '4 个回答' },
+                    { value: '5', text: '5 个回答' },
+                    { value: '6', text: '6 个回答' },
+                    { value: '3', text: '3 个回答' }
+                ],
+                feedback1: "茎叶图的最底行显示最高成绩。茎为9，叶为2、5，所以最大值为95分。",
+                feedback2: "茎叶图的第三行（茎为7）显示70多分组：72, 74, 75, 76, 78, 79。其中最小值为72分。",
+                feedback3: "茎叶图的第四行（茎为8）显示80多分组：81, 83, 85, 87。共有4个数据点。"
+            },
+            {
+                // 参数集3: 身高数据
+                title: "学生身高（厘米）",
+                legend: "图例： 15|2 表示 152 厘米。",
+                description: "茎叶图显示了按位值排列的数据集。茎代表百位和十位数，叶代表个位数。",
+                stemLeafData: {
+                    14: [8, 9],
+                    15: [2, 3, 5, 6, 7, 8],
+                    16: [1, 2, 3, 4, 5, 6, 7],
+                    17: [2, 5, 8]
+                },
+                maxValue: 178,
+                minIn160s: 161,
+                countIn150s: 6,
+                q1Options: [
+                    { value: '178', text: '178 厘米' },
+                    { value: '175', text: '175 厘米' },
+                    { value: '167', text: '167 厘米' },
+                    { value: '172', text: '172 厘米' }
+                ],
+                q2Options: [
+                    { value: '161', text: '161 厘米' },
+                    { value: '160', text: '160 厘米' },
+                    { value: '162', text: '162 厘米' },
+                    { value: '152', text: '152 厘米' }
+                ],
+                q3Options: [
+                    { value: '6', text: '6 个回答' },
+                    { value: '5', text: '5 个回答' },
+                    { value: '7', text: '7 个回答' },
+                    { value: '2', text: '2 个回答' }
+                ],
+                feedback1: "茎叶图的最底行显示最高身高。茎为17，叶为2、5、8，所以最大值为178厘米。",
+                feedback2: "茎叶图的第三行（茎为16）显示160多厘米组：161, 162, 163, 164, 165, 166, 167。其中最小值为161厘米。",
+                feedback3: "茎叶图的第二行（茎为15）显示150多厘米组：152, 153, 155, 156, 157, 158。共有6个数据点。"
+            },
+            {
+                // 参数集4: 体重数据
+                title: "成年人体重（公斤）",
+                legend: "图例： 5|8 表示 58 公斤。",
+                description: "茎叶图显示了按位值排列的数据集。茎代表十位数，叶代表个位数。",
+                stemLeafData: {
+                    5: [2, 5, 8, 9],
+                    6: [1, 2, 4, 5, 7, 8],
+                    7: [2, 3, 5, 6, 8],
+                    8: [1, 4]
+                },
+                maxValue: 84,
+                minIn70s: 72,
+                countIn60s: 6,
+                q1Options: [
+                    { value: '84', text: '84 公斤' },
+                    { value: '81', text: '81 公斤' },
+                    { value: '78', text: '78 公斤' },
+                    { value: '89', text: '89 公斤' }
+                ],
+                q2Options: [
+                    { value: '72', text: '72 公斤' },
+                    { value: '70', text: '70 公斤' },
+                    { value: '73', text: '73 公斤' },
+                    { value: '68', text: '68 公斤' }
+                ],
+                q3Options: [
+                    { value: '6', text: '6 个回答' },
+                    { value: '5', text: '5 个回答' },
+                    { value: '4', text: '4 个回答' },
+                    { value: '7', text: '7 个回答' }
+                ],
+                feedback1: "茎叶图的最底行显示最高体重。茎为8，叶为1、4，所以最大值为84公斤。",
+                feedback2: "茎叶图的第三行（茎为7）显示70多公斤组：72, 73, 75, 76, 78。其中最小值为72公斤。",
+                feedback3: "茎叶图的第二行（茎为6）显示60多公斤组：61, 62, 64, 65, 67, 68。共有6个数据点。"
+            },
+            {
+                // 参数集5: 年龄数据
+                title: "员工年龄（岁）",
+                legend: "图例： 2|5 表示 25 岁。",
+                description: "茎叶图显示了按位值排列的数据集。茎代表十位数，叶代表个位数。",
+                stemLeafData: {
+                    2: [2, 3, 5, 6, 7, 8, 9],
+                    3: [1, 2, 4, 5, 6, 8, 9],
+                    4: [2, 3, 5, 7],
+                    5: [1, 4]
+                },
+                maxValue: 54,
+                minIn30s: 31,
+                countIn20s: 7,
+                q1Options: [
+                    { value: '54', text: '54 岁' },
+                    { value: '51', text: '51 岁' },
+                    { value: '47', text: '47 岁' },
+                    { value: '49', text: '49 岁' }
+                ],
+                q2Options: [
+                    { value: '31', text: '31 岁' },
+                    { value: '30', text: '30 岁' },
+                    { value: '32', text: '32 岁' },
+                    { value: '29', text: '29 岁' }
+                ],
+                q3Options: [
+                    { value: '7', text: '7 个回答' },
+                    { value: '6', text: '6 个回答' },
+                    { value: '5', text: '5 个回答' },
+                    { value: '8', text: '8 个回答' }
+                ],
+                feedback1: "茎叶图的最底行显示最高年龄。茎为5，叶为1、4，所以最大值为54岁。",
+                feedback2: "茎叶图的第二行（茎为3）显示30多岁组：31, 32, 34, 35, 36, 38, 39。其中最小值为31岁。",
+                feedback3: "茎叶图的第一行（茎为2）显示20多岁组：22, 23, 25, 26, 27, 28, 29。共有7个数据点。"
+            },
+            {
+                // 参数集6: 每日步数
+                title: "每日步数（千步）",
+                legend: "图例： 4|5 表示 4500 步。",
+                description: "茎叶图显示了按位值排列的数据集。茎代表千位数，叶代表百位数。",
+                stemLeafData: {
+                    3: [2, 5, 8],
+                    4: [1, 2, 5, 6, 9],
+                    5: [2, 3, 5, 7, 8],
+                    6: [1, 4, 5],
+                    7: [2]
+                },
+                maxValue: 72,
+                minIn50s: 52,
+                countIn40s: 5,
+                q1Options: [
+                    { value: '72', text: '7200 步' },
+                    { value: '65', text: '6500 步' },
+                    { value: '58', text: '5800 步' },
+                    { value: '61', text: '6100 步' }
+                ],
+                q2Options: [
+                    { value: '52', text: '5200 步' },
+                    { value: '50', text: '5000 步' },
+                    { value: '53', text: '5300 步' },
+                    { value: '49', text: '4900 步' }
+                ],
+                q3Options: [
+                    { value: '5', text: '5 个回答' },
+                    { value: '4', text: '4 个回答' },
+                    { value: '6', text: '6 个回答' },
+                    { value: '3', text: '3 个回答' }
+                ],
+                feedback1: "茎叶图的最底行显示最高步数。茎为7，叶为2，所以最大值为7200步。",
+                feedback2: "茎叶图的第三行（茎为5）显示5000多步组：52, 53, 55, 57, 58（即5200, 5300, 5500, 5700, 5800步）。其中最小值为5200步。",
+                feedback3: "茎叶图的第二行（茎为4）显示4000多步组：41, 42, 45, 46, 49。共有5个数据点。"
+            }
+        ];
+
+        let currentParamIndex = Math.floor(Math.random() * questionParams.length);
+
+        // 渲染问题的函数
+        function renderQuestion() {
+            const params = questionParams[currentParamIndex];
+
+            // 更新标题和图例
+            document.querySelector('.stem-leaf-title').textContent = params.title;
+            document.querySelector('.stem-leaf-legend').textContent = params.legend;
+            document.querySelector('.stem-leaf-container p').textContent = params.description;
+
+            // 更新茎叶图显示
+            let stemLeafHTML = '';
+            const stems = Object.keys(params.stemLeafData).sort((a, b) => a - b);
+            stems.forEach(stem => {
+                const leaves = params.stemLeafData[stem].join('');
+                stemLeafHTML += `${stem} ${leaves}<br>`;
+            });
+            document.querySelector('.stem-leaf-display').innerHTML = stemLeafHTML;
+
+            // 更新问题1选项
+            const q1Options = document.querySelectorAll('#question1 .option');
+            params.q1Options.forEach((opt, i) => {
+                q1Options[i].setAttribute('data-value', opt.value);
+                q1Options[i].querySelector('.option-text').textContent = opt.text;
+            });
+
+            // 更新问题2选项
+            const q2Options = document.querySelectorAll('#question2 .option');
+            params.q2Options.forEach((opt, i) => {
+                q2Options[i].setAttribute('data-value', opt.value);
+                q2Options[i].querySelector('.option-text').textContent = opt.text;
+            });
+
+            // 更新问题3选项
+            const q3Options = document.querySelectorAll('#question3 .option');
+            params.q3Options.forEach((opt, i) => {
+                q3Options[i].setAttribute('data-value', opt.value);
+                q3Options[i].querySelector('.option-text').textContent = opt.text;
+            });
+
+            // 更新正确答案
+            correctAnswers[1] = params.maxValue.toString();
+            correctAnswers[2] = params.minIn30s.toString();
+            correctAnswers[3] = params.countIn20s.toString();
+
+            // 更新反馈
+            document.getElementById('feedback1').textContent = params.feedback1;
+            document.getElementById('feedback2').textContent = params.feedback2;
+            document.getElementById('feedback3').textContent = params.feedback3;
+        }
+
+        // 刷新参数函数
+        function refreshParams() {
+            let newIndex;
+            do {
+                newIndex = Math.floor(Math.random() * questionParams.length);
+            } while (newIndex === currentParamIndex && questionParams.length > 1);
+            currentParamIndex = newIndex;
+
+            // 重置用户答案
+            userAnswers = { 1: null, 2: null, 3: null };
+
+            // 清除所有选项的样式
+            document.querySelectorAll('.option').forEach(option => {
+                option.classList.remove('selected', 'correct', 'incorrect');
+            });
+
+            // 清除所有反馈
+            for (let i = 1; i <= 3; i++) {
+                const feedback = document.getElementById(`feedback${i}`);
+                feedback.classList.remove('correct', 'incorrect');
+            }
+
+            // 隐藏答案解析按钮
+            document.querySelectorAll('.show-explanation-btn').forEach(btn => {
+                btn.style.display = 'none';
+                btn.textContent = '查看答案解析';
+            });
+
+            document.getElementById('results').classList.remove('show');
+
+            // 重新渲染问题
+            renderQuestion();
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+
+            // 显示答案解析按钮点击事件
+            document.querySelectorAll('.show-explanation-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    var questionId = this.getAttribute('data-question') || this.id;
+                    var explanation;
+                    if (questionId) {
+                        explanation = this.nextElementSibling;
+                    }
+                    if (explanation) {
+                        if (explanation.classList.contains('show')) {
+                            explanation.classList.remove('show');
+                            this.textContent = '查看答案解析';
+                        } else {
+                            explanation.classList.add('show');
+                            this.textContent = '隐藏答案解析';
+                        }
+                    }
+                });
+            });
+
+            // 正确答案
+            const correctAnswers = {
+                1: '57',
+                2: '32',
+                3: '2'
+            };
+
+            // 用户选择的答案
+            let userAnswers = {
+                1: null,
+                2: null,
+                3: null
+            };
+            
+            // 为每个选项添加点击事件
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const questionNum = this.getAttribute('data-question');
+                    const value = this.getAttribute('data-value');
+                    
+                    // 清除同一问题的其他选项的选中状态
+                    document.querySelectorAll(`.option[data-question="${questionNum}"]`).forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    
+                    // 设置当前选项为选中状态
+                    this.classList.add('selected');
+                    
+                    // 保存用户答案
+                    userAnswers[questionNum] = value;
+                    
+                    // 清除之前的反馈
+                    const feedback = document.getElementById(`feedback${questionNum}`);
+                    feedback.classList.remove('correct', 'incorrect');
+                });
+            });
+            
+            // 提交按钮事件
+            document.getElementById('submit-btn').addEventListener('click', function() {
+                let correctCount = 0;
+                
+                // 检查每个问题的答案
+                for (let i = 1; i <= 3; i++) {
+                    const userAnswer = userAnswers[i];
+                    const correctAnswer = correctAnswers[i];
+                    const feedback = document.getElementById(`feedback${i}`);
+                    
+                    // 如果用户没有回答这个问题
+                    if (userAnswer === null) {
+                        feedback.textContent = '请先选择答案再提交！';
+                        feedback.classList.add('incorrect');
+                        continue;
+                    }
+                    
+                    // 检查答案是否正确
+                    if (userAnswer === correctAnswer) {
+                        correctCount++;
+                        feedback.textContent = `正确！`;
+                        feedback.classList.remove('incorrect');
+                        feedback.classList.add('correct');
+
+                        // 标记正确选项
+                        document.querySelectorAll(`.option[data-question="${i}"]`).forEach(opt => {
+                            opt.classList.remove('selected', 'incorrect');
+                            if (opt.getAttribute('data-value') === userAnswer) {
+                                opt.classList.add('correct');
+                            }
+                        });
+                    } else {
+                        feedback.textContent = `不正确。`;
+                        feedback.classList.remove('correct');
+                        feedback.classList.add('incorrect');
+
+                        // 只标记用户选择的错误选项，不标记正确答案
+                        document.querySelectorAll(`.option[data-question="${i}"]`).forEach(opt => {
+                            const optValue = opt.getAttribute('data-value');
+                            opt.classList.remove('selected', 'correct');
+
+                            if (optValue === userAnswer) {
+                                opt.classList.add('incorrect');
+                            }
+                        });
+                    }
+                }
+                
+                // 显示结果
+                const scoreElement = document.getElementById('score');
+                const correctCountElement = document.getElementById('correct-count');
+                const scoreTextElement = document.getElementById('score-text');
+                const resultsContainer = document.getElementById('results');
+                
+                scoreElement.textContent = `${correctCount}/3`;
+                correctCountElement.textContent = correctCount;
+                
+                // 根据得分显示不同的消息
+                if (correctCount === 3) {
+                    scoreTextElement.innerHTML = '完美！您答对了所有题目 <i class="fas fa-star" style="color: #fbbf24;"></i>';
+                    scoreElement.style.color = '#10b981';
+                } else if (correctCount >= 2) {
+                    scoreTextElement.textContent = '不错！再检查一下错题吧。';
+                    scoreElement.style.color = '#f59e0b';
+                } else {
+                    scoreTextElement.textContent = '请仔细查看解析，理解茎叶图的解读方法。';
+                    scoreElement.style.color = '#ef4444';
+                }
+                
+                resultsContainer.classList.add('show');
+
+    // Show explanation button after submit
+    var showBtn = document.getElementById('show-explanation-btn');
+    if (showBtn) {
+        showBtn.style.display = 'inline-block';
+        showBtn.addEventListener('click', function() {
+            var explanation = this.nextElementSibling;
+            if (explanation) {
+                if (explanation.style.display === 'none' || explanation.style.display === '') {
+                    explanation.style.display = 'block';
+                    this.textContent = '📖 隐藏答案解析';
+                } else {
+                    explanation.style.display = 'none';
+                    this.textContent = '📖 查看答案解析';
+                }
+            }
+        });
+    }
+    
+
+    // Show explanation button after submit
+    var showBtn = document.getElementById('show-explanation-btn');
+    if (showBtn) {
+        showBtn.style.display = 'inline-block';
+        showBtn.addEventListener('click', function() {
+            var explanation = this.nextElementSibling;
+            if (explanation) {
+                if (explanation.style.display === 'none' || explanation.style.display === '') {
+                    explanation.style.display = 'block';
+                    this.textContent = '📖 隐藏答案解析';
+                } else {
+                    explanation.style.display = 'none';
+                    this.textContent = '📖 查看答案解析';
+                }
+            }
+        });
+    }
+    
+
+    // Show explanation button after submit
+    var showBtn = document.getElementById('show-explanation-btn');
+    if (showBtn) {
+        showBtn.style.display = 'inline-block';
+        showBtn.addEventListener('click', function() {
+            var explanation = this.nextElementSibling;
+            if (explanation) {
+                if (explanation.style.display === 'none' || explanation.style.display === '') {
+                    explanation.style.display = 'block';
+                    this.textContent = '📖 隐藏答案解析';
+                } else {
+                    explanation.style.display = 'none';
+                    this.textContent = '📖 查看答案解析';
+                }
+            }
+        });
+    }
+    
+
+    // Show explanation button after submit
+    var showBtn = document.getElementById('show-explanation-btn');
+    if (showBtn) {
+        showBtn.style.display = 'inline-block';
+        showBtn.addEventListener('click', function() {
+            var explanation = this.nextElementSibling;
+            if (explanation) {
+                if (explanation.style.display === 'none' || explanation.style.display === '') {
+                    explanation.style.display = 'block';
+                    this.textContent = '📖 隐藏答案解析';
+                } else {
+                    explanation.style.display = 'none';
+                    this.textContent = '📖 查看答案解析';
+                }
+            }
+        });
+    }
+    
+                
+                // 滚动到结果区域
+                resultsContainer.scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            // 重新作答按钮事件
+            document.getElementById('reset-btn').addEventListener('click', function() {
+                // 重置用户答案
+                userAnswers = {1: null, 2: null, 3: null};
+                
+                // 清除所有选项的样式
+                document.querySelectorAll('.option').forEach(option => {
+                    option.classList.remove('selected', 'correct', 'incorrect');
+                });
+                
+                // 清除所有反馈
+                for (let i = 1; i <= 3; i++) {
+                    const feedback = document.getElementById(`feedback${i}`);
+                    feedback.classList.remove('correct', 'incorrect');
+                }
+                
+                
+                // 隐藏答案解析按钮
+                document.querySelectorAll('.show-explanation-btn').forEach(btn => {
+                    btn.style.display = 'none';
+                    btn.textContent = '查看答案解析';
+                });
+
+document.getElementById('results').classList.remove('show');
+                
+                // 滚动到顶部
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+            
+            // 获取题目解析
+            function getExplanation(questionNum) {
+                const params = questionParams[currentParamIndex];
+                const explanations = {
+                    1: params.feedback1,
+                    2: params.feedback2,
+                    3: params.feedback3
+                };
+                return explanations[questionNum];
+            }
+
+            // 初始化 - 页面加载时渲染问题
+            renderQuestion();
+        });
+    </script>
+</body>
+</html>

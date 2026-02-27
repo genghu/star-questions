@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>二项分布问题基础 - 交互式答题</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+
+        body {
+            background-color: #f0f7ff;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .container {
+            background-color: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0, 82, 204, 0.1);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e6f0ff;
+        }
+
+        h1 {
+            color: #0052cc;
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #6699ff;
+            font-size: 1.1rem;
+            font-weight: normal;
+        }
+
+        .question-section {
+            margin-bottom: 35px;
+        }
+
+        .section-title {
+            color: #0052cc;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 1px dashed #b3d1ff;
+        }
+
+        .question-text {
+            background-color: #f9fbff;
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 5px solid #4d94ff;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            line-height: 1.7;
+        }
+
+        .math {
+            font-family: 'Cambria Math', 'Times New Roman', serif;
+            font-weight: bold;
+            color: #0066cc;
+        }
+
+        .answer-input-container {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #f8fafc;
+            border-radius: 12px;
+            border: 2px solid #e0e7ff;
+        }
+
+        .answer-label {
+            font-size: 1.1rem;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            display: block;
+            font-weight: 600;
+        }
+
+        .answer-input {
+            width: 100%;
+            max-width: 300px;
+            padding: 14px 18px;
+            font-size: 1.2rem;
+            border: 2px solid #e0e7ff;
+            border-radius: 10px;
+            transition: all 0.3s;
+            outline: none;
+        }
+
+        .answer-input:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 10px rgba(52, 152, 219, 0.2);
+        }
+
+        .answer-input.correct {
+            border-color: #2ecc71;
+            background-color: #e8f8ef;
+        }
+
+        .answer-input.incorrect {
+            border-color: #e74c3c;
+            background-color: #fdedec;
+        }
+
+        .tolerance-hint {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-top: 8px;
+        }
+
+        .feedback-inline {
+            margin-top: 10px;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            display: none;
+        }
+
+        .feedback-inline.correct {
+            background-color: #e8f8ef;
+            color: #27ae60;
+            display: block;
+        }
+
+        .feedback-inline.incorrect {
+            background-color: #fdedec;
+            color: #e74c3c;
+            display: block;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        #submit-btn {
+            background-color: #0052cc;
+            color: white;
+        }
+
+        #submit-btn:hover {
+            background-color: #0047b3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 82, 204, 0.3);
+        }
+
+        #reset-btn {
+            background-color: #f0f7ff;
+            color: #0052cc;
+            border: 2px solid #cce0ff;
+        }
+
+        #reset-btn:hover {
+            background-color: #e6f0ff;
+            transform: translateY(-2px);
+        }
+
+        #refresh-btn {
+            background: linear-gradient(135deg, #ff9800, #f57c00);
+            color: white;
+        }
+
+        #refresh-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 152, 0, 0.3);
+        }
+
+        .result-panel {
+            background-color: #f0f7ff;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 30px;
+            text-align: center;
+            display: none;
+        }
+
+        .result-panel.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .score {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #0052cc;
+            margin: 10px 0;
+        }
+
+        .feedback {
+            font-size: 1.2rem;
+            margin: 15px 0;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .correct-feedback {
+            color: #00a652;
+            background-color: #e6fff2;
+        }
+
+        .incorrect-feedback {
+            color: #cc0000;
+            background-color: #ffe6e6;
+        }
+
+        .note-box {
+            background-color: #fff9e6;
+            border-left: 5px solid #ffcc00;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+        }
+
+        .show-explanation-btn {
+            display: none;
+            margin: 20px auto;
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
+        }
+        .show-explanation-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
+        }
+        .explanation-section {
+            display: none;
+            margin-top: 20px;
+        }
+        .explanation-section.show {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>二项分布问题基础</h1>
+            <p class="subtitle">交互式答题练习 - 概率与统计</p>
+        </header>
+
+        <div class="question-section">
+            <h2 class="section-title">问题描述</h2>
+            <div class="question-text" id="question-text">
+                <!-- 问题将通过JavaScript动态生成 -->
+            </div>
+
+            <div class="answer-input-container">
+                <label class="answer-label">请输入概率值（保留三位小数）：</label>
+                <input type="text" class="answer-input" id="answer-input">
+                <div class="tolerance-hint">容差：±0.01</div>
+                <div class="feedback-inline" id="feedback-inline"></div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button id="submit-btn">提交答案</button>
+            <button id="reset-btn">重新作答</button>
+            <button id="refresh-btn">刷新参数</button>
+        </div>
+
+        <div class="result-panel" id="result-panel">
+            <h2>答题结果</h2>
+            <div class="score" id="score">0/1</div>
+            <div class="feedback" id="feedback"></div>
+        </div>
+
+        <button class="show-explanation-btn" id="show-explanation-btn">查看答案解析</button>
+        <div class="explanation-section explanation" id="explanation-section" style="background-color: #f9fbff; padding: 20px; border-radius: 12px; border-left: 5px solid #80b3ff;">
+            <h3>题目解析</h3>
+            <div id="explanation-content">
+                <!-- 解析将通过JavaScript动态生成 -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 参数集合 - 至少3组参数
+            const parameterSets = [
+                {
+                    outageRate: 0.10,
+                    outagePercent: 10,
+                    teamSize: 6,
+                    successRate: 0.90,
+                    answer: 0.531
+                },
+                {
+                    outageRate: 0.15,
+                    outagePercent: 15,
+                    teamSize: 5,
+                    successRate: 0.85,
+                    answer: 0.444
+                },
+                {
+                    outageRate: 0.20,
+                    outagePercent: 20,
+                    teamSize: 4,
+                    successRate: 0.80,
+                    answer: 0.410
+                },
+                {
+                    outageRate: 0.08,
+                    outagePercent: 8,
+                    teamSize: 7,
+                    successRate: 0.92,
+                    answer: 0.558
+                },
+                {
+                    outageRate: 0.12,
+                    outagePercent: 12,
+                    teamSize: 6,
+                    successRate: 0.88,
+                    answer: 0.464
+                }
+            ];
+
+            let currentParams = null;
+            let submitted = false;
+
+            const answerInput = document.getElementById('answer-input');
+            const submitBtn = document.getElementById('submit-btn');
+            const resetBtn = document.getElementById('reset-btn');
+            const refreshBtn = document.getElementById('refresh-btn');
+            const resultPanel = document.getElementById('result-panel');
+            const scoreElement = document.getElementById('score');
+            const feedbackElement = document.getElementById('feedback');
+            const feedbackInline = document.getElementById('feedback-inline');
+            const showExplanationBtn = document.getElementById('show-explanation-btn');
+            const explanationSection = document.getElementById('explanation-section');
+
+            // 更新问题文本
+            function updateQuestionText(params) {
+                const questionText = document.getElementById('question-text');
+                questionText.innerHTML = `
+                    <p>一场暴雨导致俄勒冈州波特兰市约 <span class="math">${params.outagePercent}%</span> 的家庭断电。波特兰的一个管理团队明天有一个重要会议，团队所有 <span class="math">${params.teamSize}</span> 名成员正在各自的家中努力工作，准备他们的演示。假设他们的住址分布较广，家庭间断电事件相互独立，求他们中没有人在家中断电的概率是多少？</p>
+                    <p>将你的答案四舍五入到至少三位小数。</p>
+                `;
+            }
+
+            // 更新解析内容
+            function updateExplanation(params) {
+                const explanationContent = document.getElementById('explanation-content');
+                explanationContent.innerHTML = `
+                    <p>对于每个家庭，断电的概率是 <span class="math">${params.outageRate.toFixed(2)}</span>，因此不断电的概率是 <span class="math">1 - ${params.outageRate.toFixed(2)} = ${params.successRate.toFixed(2)}</span>。所以，对于管理团队的每位成员，他/她没有断电的概率是 <span class="math">${params.successRate.toFixed(2)}</span>。</p>
+                    <p>这意味着管理团队第一位成员没有断电的概率是 <span class="math">${params.successRate.toFixed(2)}</span>。由于家庭间断电是独立的，第一位成员没有断电且第二位成员也没有断电的概率是 <span class="math">${params.successRate.toFixed(2)} x ${params.successRate.toFixed(2)}</span>。</p>
+                    <p>类似地，第一位、第二位和第三位成员都没有断电的概率是 <span class="math">${params.successRate.toFixed(2)} x ${params.successRate.toFixed(2)} x ${params.successRate.toFixed(2)}</span>。</p>
+                    <p>根据这个推理，我们得到团队中没有成员断电的概率是 <span class="math">${params.successRate.toFixed(2)}<sup>${params.teamSize}</sup></span>。</p>
+                    <p>计算 <span class="math">${params.successRate.toFixed(2)}<sup>${params.teamSize}</sup> = ${params.answer.toFixed(3)}</span>。</p>
+
+                    <div class="note-box">
+                        <p><strong>注：</strong>最后一个等式是二项式公式的一个具体实例。具体来说，由于我们有 ${params.teamSize} 次独立试验（即 ${params.teamSize} 次独立的"断电"或"不断电"选择），每次试验"成功"（团队成员没有断电）的概率为 ${params.successRate.toFixed(2)}，"失败"（团队成员断电）的概率为 ${params.outageRate.toFixed(2)}，那么获得 ${params.teamSize} 次"成功"的概率为：</p>
+                        <p class="math">(${params.teamSize} 选 ${params.teamSize}) x (${params.successRate.toFixed(2)})<sup>${params.teamSize}</sup> x (${params.outageRate.toFixed(2)})<sup>0</sup> = ${params.successRate.toFixed(2)}<sup>${params.teamSize}</sup> = ${params.answer.toFixed(3)}</p>
+                    </div>
+
+                    <p><strong>正确答案：${params.answer.toFixed(3)}</strong></p>
+                `;
+            }
+
+            // 初始化/刷新参数
+            function initializeQuiz() {
+                // 随机选择参数集
+                const randomIndex = Math.floor(Math.random() * parameterSets.length);
+                currentParams = parameterSets[randomIndex];
+
+                // 更新问题文本
+                updateQuestionText(currentParams);
+
+                // 更新解析
+                updateExplanation(currentParams);
+
+                // 重置状态
+                submitted = false;
+
+                // 清除输入和反馈
+                answerInput.value = '';
+                answerInput.classList.remove('correct', 'incorrect');
+                answerInput.disabled = false;
+
+                feedbackInline.className = 'feedback-inline';
+                feedbackInline.textContent = '';
+
+                // 隐藏结果面板和解析
+                resultPanel.classList.remove('show');
+                explanationSection.classList.remove('show');
+                showExplanationBtn.style.display = 'none';
+                showExplanationBtn.textContent = '查看答案解析';
+            }
+
+            // 提交答案
+            submitBtn.addEventListener('click', () => {
+                const userAnswer = parseFloat(answerInput.value);
+
+                if (isNaN(userAnswer)) {
+                    alert('请先输入一个有效的数字答案！');
+                    return;
+                }
+
+                if (submitted) return;
+
+                submitted = true;
+
+                const tolerance = 0.01;
+                const isCorrect = Math.abs(userAnswer - currentParams.answer) <= tolerance;
+
+                // 显示结果面板
+                scoreElement.textContent = isCorrect ? '1/1' : '0/1';
+
+                if (isCorrect) {
+                    answerInput.classList.add('correct');
+                    feedbackInline.textContent = '正确！';
+                    feedbackInline.className = 'feedback-inline correct';
+                    feedbackElement.textContent = '恭喜！你的答案是正确的。';
+                    feedbackElement.className = 'feedback correct-feedback';
+                } else {
+                    answerInput.classList.add('incorrect');
+                    feedbackInline.textContent = `不正确。正确答案是 ${currentParams.answer.toFixed(3)}`;
+                    feedbackInline.className = 'feedback-inline incorrect';
+                    feedbackElement.textContent = '答案不正确。请查看下面的解析以理解正确答案。';
+                    feedbackElement.className = 'feedback incorrect-feedback';
+                }
+
+                resultPanel.classList.add('show');
+                showExplanationBtn.style.display = 'block';
+
+                // 禁用输入
+                answerInput.disabled = true;
+
+                // 滚动到结果区域
+                resultPanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            });
+
+            // 重置答题
+            resetBtn.addEventListener('click', () => {
+                // 重置输入
+                answerInput.value = '';
+                answerInput.classList.remove('correct', 'incorrect');
+                answerInput.disabled = false;
+
+                feedbackInline.className = 'feedback-inline';
+                feedbackInline.textContent = '';
+
+                // 重置状态
+                submitted = false;
+
+                // 隐藏结果面板和解析
+                resultPanel.classList.remove('show');
+                explanationSection.classList.remove('show');
+                showExplanationBtn.style.display = 'none';
+                showExplanationBtn.textContent = '查看答案解析';
+            });
+
+            // 刷新参数
+            refreshBtn.addEventListener('click', () => {
+                initializeQuiz();
+            });
+
+            // 显示答案解析按钮点击事件
+            showExplanationBtn.addEventListener('click', function() {
+                if (explanationSection.classList.contains('show')) {
+                    explanationSection.classList.remove('show');
+                    this.textContent = '查看答案解析';
+                } else {
+                    explanationSection.classList.add('show');
+                    this.textContent = '隐藏答案解析';
+                }
+            });
+
+            // 初始化
+            initializeQuiz();
+        });
+    </script>
+</body>
+</html>

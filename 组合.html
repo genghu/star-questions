@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>组合 - 概率练习题</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+
+        body {
+            background-color: #f0f7ff;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #4a90e2;
+        }
+
+        h1 {
+            color: #2c5aa0;
+            margin-bottom: 10px;
+            font-size: 2.2rem;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 1rem;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            padding: 25px;
+            margin-bottom: 20px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        .question-title {
+            color: #2c5aa0;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eaeaea;
+            display: flex;
+            align-items: center;
+        }
+
+        .refresh-btn {
+            background-color: #34a853;
+            color: white;
+            padding: 8px 16px;
+            font-size: 0.9rem;
+            border-radius: 6px;
+            margin-left: auto;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .refresh-btn:hover {
+            background-color: #2d9248;
+        }
+
+        .question-content {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+
+        .param {
+            color: #4a90e2;
+            font-weight: bold;
+        }
+
+        .math-formula {
+            background-color: #f8fafd;
+            border-left: 4px solid #4a90e2;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 8px 8px 0;
+            font-family: 'Cambria Math', serif;
+            overflow-x: auto;
+        }
+
+        .answer-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 25px 0;
+        }
+
+        .answer-option {
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            font-size: 1.1rem;
+        }
+
+        .answer-option:hover {
+            background-color: #f0f7ff;
+            border-color: #a0c8ff;
+        }
+
+        .answer-option.selected {
+            background-color: #e6f0ff;
+            border-color: #4a90e2;
+            font-weight: 600;
+        }
+
+        .answer-option.correct {
+            background-color: #e7f7e7;
+            border-color: #2ecc71;
+        }
+
+        .answer-option.incorrect {
+            background-color: #fdeaea;
+            border-color: #e74c3c;
+        }
+
+        .option-label {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            background-color: #4a90e2;
+            color: white;
+            border-radius: 50%;
+            margin-right: 15px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .submit-btn {
+            background-color: #4a90e2;
+            color: white;
+            flex: 1;
+        }
+
+        .submit-btn:hover {
+            background-color: #3a7bc8;
+        }
+
+        .reset-btn {
+            background-color: #f0f0f0;
+            color: #555;
+            flex: 1;
+        }
+
+        .reset-btn:hover {
+            background-color: #e0e0e0;
+        }
+
+        .feedback {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .feedback.correct {
+            background-color: #e7f7e7;
+            border-left: 5px solid #2ecc71;
+            display: block;
+        }
+
+        .feedback.incorrect {
+            background-color: #fdeaea;
+            border-left: 5px solid #e74c3c;
+            display: block;
+        }
+
+        .feedback-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .feedback.correct .feedback-title {
+            color: #27ae60;
+        }
+
+        .feedback.incorrect .feedback-title {
+            color: #c0392b;
+        }
+
+        .stats {
+            background-color: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .stats h3 {
+            color: #2c5aa0;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eaeaea;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 15px;
+            background-color: #f8fafd;
+            border-radius: 8px;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #4a90e2;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .explanation {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px dashed #ddd;
+        }
+
+        .explanation h4 {
+            color: #2c5aa0;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+
+    <style>
+    .show-explanation-btn {
+        display: none;
+        margin: 20px auto;
+        padding: 14px 28px;
+        background: linear-gradient(135deg, #9b59b6, #8e44ad);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 1.1rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
+    }
+    .show-explanation-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
+    }
+    .explanation-section {
+        display: none;
+        margin-top: 20px;
+    }
+    </style>
+    </head>
+<body>
+    <div class="header">
+        <h1>组合 - 概率练习题</h1>
+        <p class="subtitle">基于ALEKS学习系统的题目 | 交互式答题界面</p>
+    </div>
+
+    <div class="container">
+        <div class="question-section">
+            <div class="card">
+                <h2 class="question-title">
+                    题目
+                    <button class="refresh-btn" id="refresh-btn">刷新参数</button>
+                </h2>
+                <div class="question-content">
+                    <p><strong>学生姓名：</strong>Genghu Shi</p>
+                    <p><strong>日期：</strong>2019年04月25日</p>
+                    <p><strong>科目：</strong>概率</p>
+                    <p><strong>主题：</strong>组合</p>
+
+                    <div class="math-formula">
+                        <p>从 <span class="param" id="param-n">19</span> 人中可以组成多少种规模为 <span class="param" id="param-r">10</span> 人的委员会？假设当人们被选入委员会时，选择的顺序无关紧要。</p>
+                    </div>
+
+                    <p>由于选择的顺序无关紧要，我们需要找出从 <span class="param" id="param-n2">19</span> 人中每次选取 <span class="param" id="param-r2">10</span> 人的组合数（而非排列数）。</p>
+
+                    <div class="math-formula">
+                        <p>从 n 个对象中每次选取 r 个的组合数为：</p>
+                        <p>C(n, r) = n! / [r! (n-r)!]</p>
+                    </div>
+
+                    <p>因此，从 <span class="param" id="param-n3">19</span> 人中每次选取 <span class="param" id="param-r3">10</span> 人的组合数为：</p>
+
+                    <div class="math-formula" id="calculation-formula">
+                        <p>C(<span id="calc-n">19</span>, <span id="calc-r">10</span>) = <span id="calc-n2">19</span>! / [<span id="calc-r2">10</span>! (<span id="calc-n4">19</span>-<span id="calc-r4">10</span>)!] = <span id="calc-n5">19</span>! / (<span id="calc-r5">10</span>! <span id="calc-nr">9</span>!)</p>
+                        <p>= (<span id="calc-product">19·18·17·16·15·14·13·12·11</span>·<span id="calc-r6">10</span>!) / (<span id="calc-r7">10</span>!·<span id="calc-factorial">9·8·7·6·5·4·3·2·1</span>) = <span class="param" id="calc-answer">92378</span></p>
+                    </div>
+                </div>
+
+                <h3 class="question-title">请选择正确答案：</h3>
+                <div class="answer-options" id="answerOptions">
+                    <!-- Options will be dynamically generated -->
+                </div>
+
+                <div class="controls">
+                    <button class="submit-btn" id="submitBtn">提交答案</button>
+                    <button class="reset-btn" id="resetBtn">重新作答</button>
+                </div>
+
+                <div class="feedback" id="feedback">
+                    <div class="feedback-title" id="feedbackTitle"></div>
+                    <div id="feedbackContent"></div>
+
+                    <div class="explanation" id="explanation-section">
+                        <h4>题目解析：</h4>
+                        <p>这是一个组合问题，因为选择顺序无关紧要。从 n 个不同元素中取出 r 个元素的组合数公式为：</p>
+                        <div class="math-formula">
+                            <p>C(n, r) = n! / [r! (n-r)!]</p>
+                        </div>
+                        <p id="explanation-calculation"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="interaction-section">
+            <div class="stats">
+                <h3>答题统计</h3>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value" id="totalQuestions">1</div>
+                        <div class="stat-label">总题数</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="answeredQuestions">0</div>
+                        <div class="stat-label">已回答</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="correctAnswers">0</div>
+                        <div class="stat-label">正确</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="accuracyRate">0%</div>
+                        <div class="stat-label">正确率</div>
+                    </div>
+                </div>
+
+                <div class="explanation">
+                    <h4>组合公式说明：</h4>
+                    <p>组合与排列的区别在于：</p>
+                    <ul style="padding-left: 20px; margin-top: 10px;">
+                        <li><strong>排列</strong>：考虑顺序，如排队、密码</li>
+                        <li><strong>组合</strong>：不考虑顺序，如委员会、彩票号码</li>
+                    </ul>
+                    <p>组合公式 C(n, r) 计算从 n 个不同元素中选取 r 个元素的不同方式数量，不考虑选取顺序。</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 class="question-title">组合计算器</h3>
+                <p>尝试计算不同的组合：</p>
+                <div style="margin-top: 15px;">
+                    <div style="display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap;">
+                        <div>
+                            <label for="nValue">n (总数):</label>
+                            <input type="number" id="nValue" value="19" min="1" max="100" style="width: 80px; padding: 8px; border: 1px solid #ddd; border-radius: 4px; margin-left: 5px;">
+                        </div>
+                        <div>
+                            <label for="rValue">r (选取数):</label>
+                            <input type="number" id="rValue" value="10" min="1" max="100" style="width: 80px; padding: 8px; border: 1px solid #ddd; border-radius: 4px; margin-left: 5px;">
+                        </div>
+                        <button id="calculateBtn" style="background-color: #2c5aa0; color: white; padding: 8px 15px;">计算</button>
+                    </div>
+                    <div class="math-formula">
+                        <p id="calculationResult">C(19, 10) = 92378</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script>
+        // Parameter sets for the question
+        const parameterSets = [
+            { n: 19, r: 10, answer: 92378 },
+            { n: 20, r: 8, answer: 125970 },
+            { n: 15, r: 7, answer: 6435 },
+            { n: 18, r: 12, answer: 18564 },
+            { n: 22, r: 9, answer: 497420 }
+        ];
+
+        let currentParams = parameterSets[0];
+        let selectedAnswer = null;
+        let isSubmitted = false;
+        let stats = {
+            total: 1,
+            answered: 0,
+            correct: 0
+        };
+
+        // Calculate combination
+        function calculateCombination(n, r) {
+            if (r > n) return 0;
+            if (r === 0 || r === n) return 1;
+
+            r = Math.min(r, n - r);
+            let result = 1;
+
+            for (let i = 1; i <= r; i++) {
+                result = result * (n - r + i) / i;
+            }
+
+            return Math.round(result);
+        }
+
+        function generateOptions(correctAnswer) {
+            const options = [];
+            const usedValues = new Set();
+
+            // Add correct answer
+            options.push({ value: 'A', answer: correctAnswer, isCorrect: true });
+            usedValues.add(correctAnswer);
+
+            // Generate 3 distractors
+            const variations = [0.85, 1.15, 0.7, 1.3, 0.9, 1.1];
+            let distractorIndex = 0;
+
+            while (options.length < 4 && distractorIndex < variations.length) {
+                const distractor = Math.round(correctAnswer * variations[distractorIndex]);
+                if (!usedValues.has(distractor) && distractor > 0) {
+                    options.push({ value: String.fromCharCode(66 + options.length - 1), answer: distractor, isCorrect: false });
+                    usedValues.add(distractor);
+                }
+                distractorIndex++;
+            }
+
+            // Shuffle options
+            for (let i = options.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [options[i], options[j]] = [options[j], options[i]];
+            }
+
+            // Reassign letters after shuffle
+            options.forEach((opt, idx) => {
+                opt.value = String.fromCharCode(65 + idx);
+            });
+
+            return options;
+        }
+
+        function renderQuestion() {
+            const params = currentParams;
+
+            // Update all parameter displays
+            document.getElementById('param-n').textContent = params.n;
+            document.getElementById('param-r').textContent = params.r;
+            document.getElementById('param-n2').textContent = params.n;
+            document.getElementById('param-r2').textContent = params.r;
+            document.getElementById('param-n3').textContent = params.n;
+            document.getElementById('param-r3').textContent = params.r;
+
+            document.getElementById('calc-n').textContent = params.n;
+            document.getElementById('calc-r').textContent = params.r;
+            document.getElementById('calc-n2').textContent = params.n;
+            document.getElementById('calc-r2').textContent = params.r;
+            document.getElementById('calc-n4').textContent = params.n;
+            document.getElementById('calc-r4').textContent = params.r;
+            document.getElementById('calc-n5').textContent = params.n;
+            document.getElementById('calc-r5').textContent = params.r;
+            document.getElementById('calc-nr').textContent = params.n - params.r;
+            document.getElementById('calc-r6').textContent = params.r;
+            document.getElementById('calc-r7').textContent = params.r;
+
+            // Generate product string
+            const nr = params.n - params.r;
+            let productStr = '';
+            for (let i = params.n; i > nr; i--) {
+                productStr += i + (i > nr + 1 ? '·' : '');
+            }
+            document.getElementById('calc-product').textContent = productStr;
+
+            // Generate factorial string
+            let factorialStr = '';
+            for (let i = nr; i >= 1; i--) {
+                factorialStr += i + (i > 1 ? '·' : '');
+            }
+            document.getElementById('calc-factorial').textContent = factorialStr;
+
+            document.getElementById('calc-answer').textContent = params.answer.toLocaleString();
+
+            // Generate and render options
+            const options = generateOptions(params.answer);
+            const optionsContainer = document.getElementById('answerOptions');
+            optionsContainer.innerHTML = '';
+
+            options.forEach(opt => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'answer-option';
+                optionDiv.setAttribute('data-value', opt.value);
+                optionDiv.setAttribute('data-answer', opt.answer);
+                optionDiv.setAttribute('data-correct', opt.isCorrect);
+                optionDiv.innerHTML = `
+                    <span class="option-label">${opt.value}</span>
+                    <span class="option-text">${opt.answer.toLocaleString()}</span>
+                `;
+                optionsContainer.appendChild(optionDiv);
+            });
+
+            // Update explanation
+            document.getElementById('explanation-calculation').innerHTML = `
+                将 n=${params.n}, r=${params.r} 代入公式：
+                <div class="math-formula">
+                    <p>C(${params.n}, ${params.r}) = ${params.n}! / (${params.r}! × ${params.n - params.r}!)</p>
+                    <p>= ${params.answer.toLocaleString()}</p>
+                </div>
+                <p>因此，从 ${params.n} 人中选出 ${params.r} 人组成委员会的方法有 <strong>${params.answer.toLocaleString()}</strong> 种。</p>
+            `;
+
+            // Reset state
+            selectedAnswer = null;
+            isSubmitted = false;
+
+            // Re-attach event listeners
+            attachOptionListeners();
+        }
+
+        function attachOptionListeners() {
+            const answerOptions = document.querySelectorAll('.answer-option');
+            answerOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    if (isSubmitted) return;
+
+                    answerOptions.forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                    selectedAnswer = this.getAttribute('data-value');
+                });
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize with first parameter set
+            renderQuestion();
+
+            const refreshBtn = document.getElementById('refresh-btn');
+            const submitBtn = document.getElementById('submitBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const feedback = document.getElementById('feedback');
+            const feedbackTitle = document.getElementById('feedbackTitle');
+            const feedbackContent = document.getElementById('feedbackContent');
+            const explanationSection = document.getElementById('explanation-section');
+
+            const totalQuestionsEl = document.getElementById('totalQuestions');
+            const answeredQuestionsEl = document.getElementById('answeredQuestions');
+            const correctAnswersEl = document.getElementById('correctAnswers');
+            const accuracyRateEl = document.getElementById('accuracyRate');
+
+            const calculateBtn = document.getElementById('calculateBtn');
+            const nValueInput = document.getElementById('nValue');
+            const rValueInput = document.getElementById('rValue');
+            const calculationResult = document.getElementById('calculationResult');
+
+            // Refresh button
+            refreshBtn.addEventListener('click', function() {
+                let newParams;
+                do {
+                    newParams = parameterSets[Math.floor(Math.random() * parameterSets.length)];
+                } while (newParams === currentParams && parameterSets.length > 1);
+
+                currentParams = newParams;
+                renderQuestion();
+
+                // Reset UI
+                document.querySelectorAll('.answer-option').forEach(option => {
+                    option.classList.remove('selected', 'correct', 'incorrect');
+                });
+
+                feedback.className = 'feedback';
+                feedbackTitle.textContent = '';
+                feedbackContent.textContent = '';
+                explanationSection.style.display = 'none';
+            });
+
+            // Submit button
+            submitBtn.addEventListener('click', function() {
+                if (!selectedAnswer) {
+                    alert('请先选择一个答案！');
+                    return;
+                }
+
+                if (isSubmitted) return;
+
+                isSubmitted = true;
+                stats.answered++;
+
+                const selectedElement = document.querySelector(`.answer-option[data-value="${selectedAnswer}"]`);
+                const isCorrect = selectedElement.getAttribute('data-correct') === 'true';
+
+                if (isCorrect) {
+                    stats.correct++;
+                    feedback.className = 'feedback correct';
+                    feedbackTitle.textContent = '回答正确！';
+                    feedbackContent.innerHTML = `<p>你选择了正确答案：<strong>${currentParams.answer.toLocaleString()}</strong></p>`;
+                } else {
+                    feedback.className = 'feedback incorrect';
+                    feedbackTitle.textContent = '回答不正确';
+                    feedbackContent.innerHTML = `<p>你选择的答案不正确。正确答案是：<strong>${currentParams.answer.toLocaleString()}</strong></p>`;
+                }
+
+                // Mark incorrect answer
+                document.querySelectorAll('.answer-option').forEach(option => {
+                    option.classList.remove('selected');
+                    if (option.getAttribute('data-value') === selectedAnswer && !isCorrect) {
+                        option.classList.add('incorrect');
+                    }
+                });
+
+                explanationSection.style.display = 'block';
+
+                // Update stats
+                updateStats();
+                feedback.style.display = 'block';
+                feedback.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            });
+
+            // Reset button
+            resetBtn.addEventListener('click', function() {
+                selectedAnswer = null;
+                isSubmitted = false;
+
+                document.querySelectorAll('.answer-option').forEach(option => {
+                    option.classList.remove('selected', 'correct', 'incorrect');
+                });
+
+                feedback.className = 'feedback';
+                feedbackTitle.textContent = '';
+                feedbackContent.textContent = '';
+                explanationSection.style.display = 'none';
+            });
+
+            // Calculator
+            calculateBtn.addEventListener('click', function() {
+                const n = parseInt(nValueInput.value);
+                const r = parseInt(rValueInput.value);
+
+                if (isNaN(n) || isNaN(r) || n < 1 || r < 1 || r > n) {
+                    alert('请输入有效的n和r值，且r不能大于n');
+                    return;
+                }
+
+                const result = calculateCombination(n, r);
+                calculationResult.textContent = `C(${n}, ${r}) = ${result.toLocaleString()}`;
+            });
+
+            // Update stats
+            function updateStats() {
+                totalQuestionsEl.textContent = stats.total;
+                answeredQuestionsEl.textContent = stats.answered;
+                correctAnswersEl.textContent = stats.correct;
+
+                const accuracy = stats.answered > 0 ? Math.round((stats.correct / stats.answered) * 100) : 0;
+                accuracyRateEl.textContent = `${accuracy}%`;
+            }
+
+            // Initial calculation example
+            const initialResult = calculateCombination(19, 10);
+            calculationResult.textContent = `C(19, 10) = ${initialResult.toLocaleString()}`;
+        });
+    </script>
+</body>
+</html>

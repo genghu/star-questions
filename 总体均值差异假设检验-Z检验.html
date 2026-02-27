@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>总体均值差异假设检验 Z检验 - 交互式答题</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f0f7ff;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #4a90e2;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2.2rem;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+
+        .info-box {
+            background-color: #e8f4fc;
+            border-left: 5px solid #4a90e2;
+            padding: 15px;
+            margin-bottom: 25px;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.95rem;
+        }
+
+        .question-container {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            padding: 25px;
+            margin-bottom: 25px;
+            transition: transform 0.3s ease;
+        }
+
+        .question-container:hover {
+            transform: translateY(-3px);
+        }
+
+        .question-number {
+            display: inline-block;
+            background-color: #4a90e2;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 32px;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .question-content {
+            flex: 1;
+        }
+
+        .options-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .option {
+            background-color: #f8fafd;
+            border: 2px solid #dbe6f0;
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .option:hover {
+            background-color: #eef5ff;
+            border-color: #a8c6f0;
+        }
+
+        .option.selected {
+            background-color: #e1f0ff;
+            border-color: #4a90e2;
+        }
+
+        .option.correct {
+            background-color: #e7f7e7;
+            border-color: #2ecc71;
+        }
+
+        .option.incorrect {
+            background-color: #fdeaea;
+            border-color: #e74c3c;
+        }
+
+        .option-letter {
+            display: inline-block;
+            background-color: #b8d4f5;
+            color: #2c3e50;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 28px;
+            margin-right: 12px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .option-text {
+            flex: 1;
+        }
+
+        .math {
+            font-family: 'Times New Roman', Times, serif;
+            font-style: italic;
+            margin: 0 2px;
+        }
+
+        .formula {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+            border-left: 3px solid #4a90e2;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .data-table th, .data-table td {
+            border: 1px solid #d1d8e0;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .data-table th {
+            background-color: #e8f4fc;
+            font-weight: bold;
+        }
+
+        .data-table tr:nth-child(even) {
+            background-color: #f8fafd;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #357ae8;
+        }
+
+        button#resetBtn {
+            background-color: #95a5a6;
+        }
+
+        button#resetBtn:hover {
+            background-color: #7f8c8d;
+        }
+
+        .refresh-btn {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.9em;
+            margin-left: 10px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .refresh-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+        }
+
+        .results {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            padding: 25px;
+            margin-top: 30px;
+            text-align: center;
+            display: none;
+        }
+
+        .results.show {
+            display: block;
+        }
+
+        .score {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #4a90e2;
+            margin: 10px 0;
+        }
+
+        .feedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #f8fafd;
+        }
+
+        .correct-answer {
+            color: #2ecc71;
+            font-weight: bold;
+        }
+
+        .explanation {
+            margin-top: 15px;
+            text-align: left;
+            padding: 15px;
+            background-color: #f0f7ff;
+            border-radius: 8px;
+            border-left: 4px solid #4a90e2;
+        }
+
+        .explanation h4 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .options-container {
+                grid-template-columns: 1fr;
+            }
+
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            button {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+
+    <style>
+    .show-explanation-btn {
+        display: none;
+        margin: 20px auto;
+        padding: 14px 28px;
+        background: linear-gradient(135deg, #9b59b6, #8e44ad);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 1.1rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
+    }
+    .show-explanation-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
+    }
+    .explanation-section {
+        display: none;
+        margin-top: 20px;
+    }
+    </style>
+    </head>
+<body>
+    <header>
+        <h1>总体均值差异假设检验：Z检验</h1>
+        <p class="subtitle">交互式答题系统 - 根据题目内容选择正确答案</p>
+    </header>
+
+    <div class="info-box">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <p><strong>题目背景：</strong><span id="questionBackground"></span></p>
+                <p><strong>数据摘要：</strong></p>
+                <table class="data-table" id="dataTable">
+                </table>
+                <p><strong>显著性水平 <span id="alphaValue"></span>，执行<span id="testType"></span>检验。</p>
+            </div>
+            <button class="refresh-btn" onclick="refreshQuestion()">刷新参数</button>
+        </div>
+    </div>
+
+    <div id="questionsContainer">
+    </div>
+
+    <div class="controls">
+        <button id="submitBtn">提交答案</button>
+        <button id="resetBtn">重新作答</button>
+    </div>
+
+    <div id="resultsContainer" class="results">
+        <h2>答题结果</h2>
+        <div class="score">得分: <span id="scoreValue">0</span>/<span id="totalQuestions">6</span></div>
+        <p id="scoreMessage"></p>
+
+        <div class="feedback">
+            <h3>详细反馈：</h3>
+            <div id="questionFeedback"></div>
+        </div>
+
+        <button id="reviewBtn" style="margin-top: 20px;">查看解析</button>
+    </div>
+
+    <script>
+        // Parameter sets with pre-computed answers
+        const parameterSets = [
+            {
+                n1: 60, xbar1: 112.9, s1: 12.9,
+                n2: 90, xbar2: 117.1, s2: 16.7,
+                alpha: 0.1,
+                testDirection: "单尾",
+                zStatistic: -1.733,
+                criticalValue: -1.282,
+                rejectNull: "是",
+                background: "某工程公司的人力资源部门声称，今年新员工的平均智商分数(μ₁)大于或等于去年新员工的平均智商分数(μ₂)。",
+                group1Name: "今年",
+                group2Name: "去年"
+            },
+            {
+                n1: 80, xbar1: 78.5, s1: 10.2,
+                n2: 100, xbar2: 82.3, s2: 11.5,
+                alpha: 0.05,
+                testDirection: "单尾",
+                zStatistic: -2.342,
+                criticalValue: -1.645,
+                rejectNull: "是",
+                background: "某教育机构声称，新教学方法的学生成绩(μ₁)不低于传统教学方法的学生成绩(μ₂)。",
+                group1Name: "新方法",
+                group2Name: "传统方法"
+            },
+            {
+                n1: 150, xbar1: 45.8, s1: 8.5,
+                n2: 120, xbar2: 43.2, s2: 7.8,
+                alpha: 0.05,
+                testDirection: "双尾",
+                zStatistic: 2.547,
+                criticalValue: 1.96,
+                rejectNull: "是",
+                background: "研究两个城市的居民月均支出是否存在差异。",
+                group1Name: "城市A",
+                group2Name: "城市B"
+            },
+            {
+                n1: 200, xbar1: 125.6, s1: 18.4,
+                n2: 180, xbar2: 122.8, s2: 16.9,
+                alpha: 0.01,
+                testDirection: "双尾",
+                zStatistic: 1.502,
+                criticalValue: 2.576,
+                rejectNull: "否",
+                background: "比较两种减肥方法的效果是否存在显著差异。",
+                group1Name: "方法A",
+                group2Name: "方法B"
+            },
+            {
+                n1: 75, xbar1: 68.4, s1: 9.8,
+                n2: 85, xbar2: 72.6, s2: 10.5,
+                alpha: 0.1,
+                testDirection: "单尾",
+                zStatistic: -2.618,
+                criticalValue: -1.282,
+                rejectNull: "是",
+                background: "某公司声称其新产品的满意度(μ₁)不低于竞争对手的产品满意度(μ₂)。",
+                group1Name: "新产品",
+                group2Name: "竞争产品"
+            }
+        ];
+
+        let currentParams = null;
+        let userAnswers = {};
+        let submitted = false;
+
+        function refreshQuestion() {
+            // Reset state
+            userAnswers = {};
+            submitted = false;
+            document.querySelectorAll('.option').forEach(opt => {
+                opt.classList.remove('selected', 'correct', 'incorrect');
+            });
+            document.getElementById('resultsContainer').classList.remove('show');
+            document.querySelectorAll('.explanation').forEach(exp => {
+                exp.style.display = 'none';
+            });
+            document.querySelectorAll('.show-explanation-btn').forEach(btn => {
+                btn.style.display = 'none';
+                btn.textContent = '查看答案解析';
+            });
+
+            // Select random parameter set
+            const randomIndex = Math.floor(Math.random() * parameterSets.length);
+            currentParams = parameterSets[randomIndex];
+
+            // Update info box
+            document.getElementById('questionBackground').textContent = currentParams.background;
+            document.getElementById('alphaValue').textContent = `α = ${currentParams.alpha}`;
+            document.getElementById('testType').textContent = currentParams.testDirection;
+
+            // Update data table
+            document.getElementById('dataTable').innerHTML = `
+                <tr>
+                    <th>组别</th>
+                    <th>样本量 (n)</th>
+                    <th>样本均值 (x̄)</th>
+                    <th>样本标准差 (s)</th>
+                </tr>
+                <tr>
+                    <td>${currentParams.group1Name}</td>
+                    <td>${currentParams.n1}</td>
+                    <td>${currentParams.xbar1}</td>
+                    <td>${currentParams.s1}</td>
+                </tr>
+                <tr>
+                    <td>${currentParams.group2Name}</td>
+                    <td>${currentParams.n2}</td>
+                    <td>${currentParams.xbar2}</td>
+                    <td>${currentParams.s2}</td>
+                </tr>
+            `;
+
+            // Generate questions
+            renderQuestions();
+        }
+
+        function renderQuestions() {
+            const container = document.getElementById('questionsContainer');
+            const isOneTailed = currentParams.testDirection === "单尾";
+
+            const questions = [
+                {
+                    number: 1,
+                    title: "原假设：",
+                    subtitle: "H₀:",
+                    correctAnswer: isOneTailed ? "H₀: μ₁ - μ₂ ≥ 0" : "H₀: μ₁ - μ₂ = 0",
+                    options: isOneTailed ? [
+                        { value: "H₀: μ₁ - μ₂ ≥ 0", letter: "A" },
+                        { value: "H₀: μ₁ - μ₂ ≤ 0", letter: "B" },
+                        { value: "H₀: μ₁ - μ₂ = 0", letter: "C" },
+                        { value: "H₀: μ₁ ≥ μ₂", letter: "D" }
+                    ] : [
+                        { value: "H₀: μ₁ - μ₂ = 0", letter: "A" },
+                        { value: "H₀: μ₁ - μ₂ ≥ 0", letter: "B" },
+                        { value: "H₀: μ₁ - μ₂ ≤ 0", letter: "C" },
+                        { value: "H₀: μ₁ ≠ μ₂", letter: "D" }
+                    ],
+                    explanation: `原假设反映声称内容。${isOneTailed ? '单尾检验中，原假设为μ₁ ≥ μ₂或等价的μ₁ - μ₂ ≥ 0。' : '双尾检验中，原假设为μ₁ = μ₂或等价的μ₁ - μ₂ = 0。'}`
+                },
+                {
+                    number: 2,
+                    title: "备择假设：",
+                    subtitle: "H₁:",
+                    correctAnswer: isOneTailed ? "H₁: μ₁ - μ₂ < 0" : "H₁: μ₁ - μ₂ ≠ 0",
+                    options: isOneTailed ? [
+                        { value: "H₁: μ₁ - μ₂ < 0", letter: "A" },
+                        { value: "H₁: μ₁ - μ₂ > 0", letter: "B" },
+                        { value: "H₁: μ₁ - μ₂ ≠ 0", letter: "C" },
+                        { value: "H₁: μ₁ < μ₂", letter: "D" }
+                    ] : [
+                        { value: "H₁: μ₁ - μ₂ ≠ 0", letter: "A" },
+                        { value: "H₁: μ₁ - μ₂ > 0", letter: "B" },
+                        { value: "H₁: μ₁ - μ₂ < 0", letter: "C" },
+                        { value: "H₁: μ₁ ≠ μ₂", letter: "D" }
+                    ],
+                    explanation: `备择假设与原假设对立。${isOneTailed ? '单尾检验中，备择假设为μ₁ < μ₂或等价的μ₁ - μ₂ < 0。' : '双尾检验中，备择假设为μ₁ ≠ μ₂或等价的μ₁ - μ₂ ≠ 0。'}`
+                },
+                {
+                    number: 3,
+                    title: "检验统计量的类型：",
+                    correctAnswer: "Z",
+                    options: [
+                        { value: "Z", letter: "A" },
+                        { value: "t", letter: "B" },
+                        { value: "卡方", letter: "C" },
+                        { value: "F", letter: "D" }
+                    ],
+                    explanation: `由于样本量较大(${currentParams.group1Name}n₁=${currentParams.n1}≥30，${currentParams.group2Name}n₂=${currentParams.n2}≥30)，且总体标准差用样本标准差估计，因此使用Z检验统计量。`
+                },
+                {
+                    number: 4,
+                    title: "检验统计量的值：（至少四舍五入到三位小数。）",
+                    correctAnswer: currentParams.zStatistic,
+                    isNumerical: true,
+                    tolerance: 0.01,
+                    explanation: `z = (${currentParams.xbar1} - ${currentParams.xbar2}) / √(${currentParams.s1}²/${currentParams.n1} + ${currentParams.s2}²/${currentParams.n2}) ≈ ${currentParams.zStatistic}`
+                },
+                {
+                    number: 5,
+                    title: `在${currentParams.alpha}显著性水平下的临界值：（至少四舍五入到三位小数。）`,
+                    correctAnswer: currentParams.criticalValue,
+                    isNumerical: true,
+                    tolerance: 0.01,
+                    explanation: `${isOneTailed ? '这是左尾检验' : '这是双尾检验'}，显著性水平α=${currentParams.alpha}。临界值 = ${currentParams.criticalValue}`
+                },
+                {
+                    number: 6,
+                    title: `我们能否拒绝原假设？`,
+                    correctAnswer: currentParams.rejectNull,
+                    options: [
+                        { value: "是", letter: "A" },
+                        { value: "否", letter: "B" }
+                    ],
+                    explanation: `检验统计量 z = ${currentParams.zStatistic}，临界值 = ${currentParams.criticalValue}。${currentParams.rejectNull === "是" ? `因为检验统计量落在拒绝域内，拒绝原假设。` : `因为检验统计量不在拒绝域内，不能拒绝原假设。`}`
+                }
+            ];
+
+            container.innerHTML = questions.map(q => `
+                <div class="question-container" data-correct="${q.isNumerical ? q.correctAnswer : q.correctAnswer}" data-question="${q.number}" data-is-numerical="${q.isNumerical || false}" data-tolerance="${q.tolerance || 0}">
+                    <div class="question-text">
+                        <span class="question-number">${q.number}</span>
+                        <div class="question-content">
+                            <p><strong>${q.title}</strong></p>
+                            ${q.subtitle ? `<p>${q.subtitle}</p>` : ''}
+                        </div>
+                    </div>
+                    ${q.isNumerical ? `
+                        <div class="numerical-input-container" style="margin-top: 20px;">
+                            <input type="number" step="0.001" class="numerical-answer"
+                                   data-question="${q.number}"
+                                   style="padding: 12px 15px; font-size: 1.1rem; border: 2px solid #d1e3f0; border-radius: 8px; width: 300px; max-width: 100%;">
+                        </div>
+                    ` : `
+                        <div class="options-container">
+                            ${q.options.map(opt => `
+                                <div class="option" data-value="${opt.value}">
+                                    <span class="option-letter">${opt.letter}</span>
+                                    <div class="option-text">${opt.value}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `}
+                    <button class="show-explanation-btn" style="display:none;">查看答案解析</button>
+                    <div class="explanation" style="display:none;">
+                        <h4>解析：</h4>
+                        <p>${q.explanation}</p>
+                    </div>
+                </div>
+            `).join('');
+
+            // Add click events to options
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const questionContainer = this.closest('.question-container');
+                    const allOptions = questionContainer.querySelectorAll('.option');
+
+                    allOptions.forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+
+                    this.classList.add('selected');
+                    userAnswers[questionContainer.dataset.question] = this.dataset.value;
+                });
+            });
+
+            // Add input events for numerical inputs
+            document.querySelectorAll('.numerical-answer').forEach(input => {
+                input.addEventListener('input', function() {
+                    const questionContainer = this.closest('.question-container');
+                    const questionNum = questionContainer.dataset.question;
+                    userAnswers[questionNum] = parseFloat(this.value) || null;
+                });
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            refreshQuestion();
+
+            // Submit button
+            document.getElementById('submitBtn').addEventListener('click', function() {
+                if (submitted) return;
+                submitted = true;
+
+                let score = 0;
+                let totalQuestions = document.querySelectorAll('.question-container').length;
+                let feedbackHTML = '';
+
+                document.querySelectorAll('.question-container').forEach((question, index) => {
+                    const correctAnswer = question.dataset.correct;
+                    const isNumerical = question.dataset.isNumerical === 'true';
+                    const tolerance = parseFloat(question.dataset.tolerance) || 0.01;
+
+                    if (isNumerical) {
+                        // Handle numerical input
+                        const numericalInput = question.querySelector('.numerical-answer');
+                        const inputContainer = question.querySelector('.numerical-input-container');
+
+                        if (numericalInput && numericalInput.value.trim() !== '') {
+                            const userAnswer = parseFloat(numericalInput.value);
+                            const correctValue = parseFloat(correctAnswer);
+                            const isCorrect = Math.abs(userAnswer - correctValue) <= tolerance;
+
+                            if (isCorrect) {
+                                score++;
+                                numericalInput.style.borderColor = '#2ecc71';
+                                numericalInput.style.backgroundColor = '#e7f7e7';
+                                feedbackHTML += `<p><strong>问题 ${index + 1}:</strong> <span class="correct-answer">正确</span> (你的答案: ${userAnswer}, 正确答案: ${correctValue})</p>`;
+                            } else {
+                                numericalInput.style.borderColor = '#e74c3c';
+                                numericalInput.style.backgroundColor = '#fdeaea';
+                                feedbackHTML += `<p><strong>问题 ${index + 1}:</strong> <span style="color: #e74c3c;">错误</span> (你的答案: ${userAnswer}, 正确答案: ${correctValue})</p>`;
+                            }
+                        } else {
+                            feedbackHTML += `<p><strong>问题 ${index + 1}:</strong> <span style="color: #f39c12;">未作答</span> (正确答案: ${correctAnswer})</p>`;
+                        }
+                    } else {
+                        // Handle multiple choice
+                        const selectedOption = question.querySelector('.option.selected');
+
+                        const allOptions = question.querySelectorAll('.option');
+                        allOptions.forEach(opt => {
+                            opt.classList.remove('correct', 'incorrect');
+                        });
+
+                        if (selectedOption) {
+                            const userAnswer = selectedOption.dataset.value;
+
+                            if (userAnswer === correctAnswer) {
+                                score++;
+                                selectedOption.classList.add('correct');
+                                feedbackHTML += `<p><strong>问题 ${index + 1}:</strong> <span class="correct-answer">正确</span></p>`;
+                            } else {
+                                selectedOption.classList.add('incorrect');
+                                feedbackHTML += `<p><strong>问题 ${index + 1}:</strong> <span style="color: #e74c3c;">错误</span></p>`;
+                            }
+                        } else {
+                            feedbackHTML += `<p><strong>问题 ${index + 1}:</strong> <span style="color: #f39c12;">未作答</span></p>`;
+                        }
+                    }
+
+                    // Show explanation button
+                    const showBtn = question.querySelector('.show-explanation-btn');
+                    if (showBtn) {
+                        showBtn.style.display = 'inline-block';
+                    }
+                });
+
+                document.getElementById('scoreValue').textContent = score;
+                document.getElementById('totalQuestions').textContent = totalQuestions;
+                document.getElementById('questionFeedback').innerHTML = feedbackHTML;
+
+                const scoreMessage = document.getElementById('scoreMessage');
+                const percentage = (score / totalQuestions * 100).toFixed(1);
+
+                if (score === totalQuestions) {
+                    scoreMessage.textContent = `完美！你答对了所有问题 (${percentage}%)`;
+                    scoreMessage.style.color = '#2ecc71';
+                } else if (score >= totalQuestions * 0.7) {
+                    scoreMessage.textContent = `不错！你答对了 ${score}/${totalQuestions} 题 (${percentage}%)`;
+                    scoreMessage.style.color = '#3498db';
+                } else {
+                    scoreMessage.textContent = `继续努力！你答对了 ${score}/${totalQuestions} 题 (${percentage}%)`;
+                    scoreMessage.style.color = '#f39c12';
+                }
+
+                document.getElementById('resultsContainer').classList.add('show');
+                document.getElementById('resultsContainer').scrollIntoView({ behavior: 'smooth' });
+            });
+
+            // Reset button
+            document.getElementById('resetBtn').addEventListener('click', function() {
+                refreshQuestion();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+
+        // Function to reset all inputs (options and numerical)
+        function resetAllInputs() {
+            // Reset all options
+            document.querySelectorAll('.option').forEach(opt => {
+                opt.classList.remove('selected', 'correct', 'incorrect');
+            });
+
+            // Reset all numerical inputs
+            document.querySelectorAll('.numerical-answer').forEach(input => {
+                input.value = '';
+                input.style.borderColor = '#d1e3f0';
+                input.style.backgroundColor = '';
+            });
+        }
+
+            // Review button
+            document.getElementById('reviewBtn').addEventListener('click', function() {
+                const explanations = document.querySelectorAll('.explanation');
+                const allVisible = Array.from(explanations).every(exp => exp.style.display === 'block');
+
+                explanations.forEach(exp => {
+                    exp.style.display = allVisible ? 'none' : 'block';
+                });
+
+                this.textContent = allVisible ? '查看解析' : '隐藏解析';
+            });
+
+            // Explanation buttons
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('show-explanation-btn')) {
+                    const explanation = e.target.nextElementSibling;
+                    if (explanation) {
+                        if (explanation.style.display === 'block') {
+                            explanation.style.display = 'none';
+                            e.target.textContent = '查看答案解析';
+                        } else {
+                            explanation.style.display = 'block';
+                            e.target.textContent = '隐藏答案解析';
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

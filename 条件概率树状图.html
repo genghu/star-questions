@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>条件概率树状图 - 交互式答题</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: #f0f7ff;
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 100, 200, 0.1);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        h1 {
+            color: #1a5fb4;
+            text-align: center;
+            border-bottom: 3px solid #62a0ea;
+            padding-bottom: 15px;
+            margin-top: 0;
+        }
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .refresh-btn {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+        }
+        .refresh-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+        .question-section {
+            background-color: #f8fafc;
+            border-left: 5px solid #62a0ea;
+            padding: 20px;
+            border-radius: 0 10px 10px 0;
+            margin-bottom: 30px;
+        }
+        .question-text {
+            font-size: 1.1em;
+            margin-bottom: 20px;
+        }
+        .tree-diagram {
+            background-color: white;
+            border: 2px dashed #99c1f1;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 25px 0;
+            text-align: center;
+            position: relative;
+            overflow-x: auto;
+        }
+        .tree-node {
+            display: inline-block;
+            vertical-align: top;
+            margin: 0 40px;
+            text-align: center;
+        }
+        .tree-branch {
+            position: relative;
+            margin: 15px 0;
+        }
+        .branch-label {
+            position: absolute;
+            font-size: 0.9em;
+            color: #1a5fb4;
+            font-weight: bold;
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        .probability {
+            font-weight: bold;
+            color: #e01b24;
+        }
+        .event {
+            font-weight: bold;
+            color: #1a5fb4;
+        }
+        .tree-line {
+            height: 2px;
+            background-color: #62a0ea;
+            margin: 10px 0;
+            position: relative;
+        }
+        .tree-line.vertical {
+            width: 2px;
+            height: 40px;
+            display: inline-block;
+            margin: 0 20px;
+        }
+        .options-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 25px 0;
+        }
+        .option {
+            background-color: #f8fafc;
+            border: 2px solid #99c1f1;
+            border-radius: 10px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-size: 1.1em;
+        }
+        .option:hover {
+            background-color: #e6f0ff;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 100, 200, 0.1);
+        }
+        .option.selected {
+            border-color: #1a5fb4;
+            background-color: #e6f0ff;
+            font-weight: bold;
+        }
+        .option.correct {
+            border-color: #26a269;
+            background-color: #d1f7c4;
+        }
+        .option.incorrect {
+            border-color: #e01b24;
+            background-color: #ffd1d1;
+        }
+        .feedback {
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            display: none;
+        }
+        .feedback.correct {
+            background-color: #d1f7c4;
+            border: 1px solid #26a269;
+            color: #1f6521;
+        }
+        .feedback.incorrect {
+            background-color: #ffd1d1;
+            border: 1px solid #e01b24;
+            color: #7a1c1c;
+        }
+        .score-panel {
+            background-color: #e6f0ff;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            margin: 20px 0;
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #1a5fb4;
+        }
+        .button {
+            background-color: #1a5fb4;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            margin: 10px 5px;
+        }
+        .button:hover {
+            background-color: #0d4d9c;
+        }
+        .button.reset {
+            background-color: #e01b24;
+        }
+        .button.reset:hover {
+            background-color: #c01019;
+        }
+        .explanation {
+            background-color: #f8fafc;
+            border-left: 5px solid #26a269;
+            padding: 20px;
+            border-radius: 0 10px 10px 0;
+            margin-top: 30px;
+            display: none;
+        }
+        .math {
+            font-family: 'Cambria Math', 'Times New Roman', serif;
+            font-style: italic;
+        }
+        .key {
+            font-weight: bold;
+            color: #1a5fb4;
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            .options-container {
+                grid-template-columns: 1fr;
+            }
+            .tree-node {
+                margin: 0 15px;
+            }
+            .question-header {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+
+    <style>
+    .show-explanation-btn {
+        display: none;
+        margin: 20px auto;
+        padding: 14px 28px;
+        background: linear-gradient(135deg, #9b59b6, #8e44ad);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 1.1rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
+    }
+    .show-explanation-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
+    }
+    .explanation-section {
+        display: none;
+        margin-top: 20px;
+    }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="question-header">
+            <h1>条件概率树状图</h1>
+            <button class="refresh-btn" onclick="refreshParams()">刷新参数</button>
+        </div>
+
+        <div class="question-section">
+            <div class="question-text" id="question-text">
+                <!-- Dynamic content -->
+            </div>
+
+            <div class="tree-diagram" id="tree-diagram">
+                <!-- Dynamic content -->
+            </div>
+
+            <div class="question-text">
+                <p><strong id="question-prompt">问题：</strong></p>
+            </div>
+
+            <div class="options-container" id="options-container">
+                <!-- Dynamic content -->
+            </div>
+
+            <div style="text-align: center;">
+                <button class="button" id="submitBtn">提交答案</button>
+                <button class="button reset" id="resetBtn">重新作答</button>
+            </div>
+
+            <div class="feedback" id="feedback"></div>
+
+            <div class="score-panel">
+                得分: <span id="score">0</span> / 1
+            </div>
+        </div>
+
+        <button class="show-explanation-btn" id="show-explanation-btn">查看答案解析</button>
+        <div class="explanation" id="explanation">
+            <!-- Dynamic content -->
+        </div>
+    </div>
+
+    <script>
+        // Parameterized datasets - 5 sets with pre-computed answers
+        const questionParams = [
+            {
+                context: '一位运动心理学家对她开发的一些用于提高运动表现的可视化技术进行了一项研究。她以业余高尔夫球手和业余网球运动员作为参与者。',
+                group1: '高尔夫球手',
+                group2: '网球运动员',
+                pG: 0.5,
+                pIgivenG: 0.7,
+                pIgivenNotG: 0.75,
+                pNotG: 0.5,
+                pNotIgivenG: 0.3,
+                pNotIgivenNotG: 0.25,
+                pGandI: 0.35,
+                pGandNotI: 0.15,
+                pNotGandI: 0.375,
+                pNotGandNotI: 0.125,
+                correctAnswer: 0.275,
+                questionType: 'no_improvement',
+                explanation: {
+                    steps: [
+                        'P(G ∩ I̅) = P(G) × P(I̅|G) = 0.5 × 0.3 = 0.15',
+                        'P(G̅ ∩ I̅) = P(G̅) × P(I̅|G̅) = 0.5 × 0.25 = 0.125',
+                        'P(I̅) = 0.15 + 0.125 = 0.275'
+                    ]
+                }
+            },
+            {
+                context: '某医院对两种不同治疗方法的效果进行研究。参与研究的患者中，60%接受A疗法，40%接受B疗法。',
+                group1: 'A疗法患者',
+                group2: 'B疗法患者',
+                pG: 0.6,
+                pIgivenG: 0.8,
+                pIgivenNotG: 0.65,
+                pNotG: 0.4,
+                pNotIgivenG: 0.2,
+                pNotIgivenNotG: 0.35,
+                pGandI: 0.48,
+                pGandNotI: 0.12,
+                pNotGandI: 0.26,
+                pNotGandNotI: 0.14,
+                correctAnswer: 0.74,
+                questionType: 'improvement',
+                explanation: {
+                    steps: [
+                        'P(G ∩ I) = P(G) × P(I|G) = 0.6 × 0.8 = 0.48',
+                        'P(G̅ ∩ I) = P(G̅) × P(I|G̅) = 0.4 × 0.65 = 0.26',
+                        'P(I) = 0.48 + 0.26 = 0.74'
+                    ]
+                }
+            },
+            {
+                context: '某教育机构研究两种教学模式对学生成绩的影响。参与学生中，55%采用线上学习，45%采用线下学习。',
+                group1: '线上学习',
+                group2: '线下学习',
+                pG: 0.55,
+                pIgivenG: 0.72,
+                pIgivenNotG: 0.88,
+                pNotG: 0.45,
+                pNotIgivenG: 0.28,
+                pNotIgivenNotG: 0.12,
+                pGandI: 0.396,
+                pGandNotI: 0.154,
+                pNotGandI: 0.396,
+                pNotGandNotI: 0.054,
+                correctAnswer: 0.208,
+                questionType: 'no_improvement',
+                explanation: {
+                    steps: [
+                        'P(G ∩ I̅) = P(G) × P(I̅|G) = 0.55 × 0.28 = 0.154',
+                        'P(G̅ ∩ I̅) = P(G̅) × P(I̅|G̅) = 0.45 × 0.12 = 0.054',
+                        'P(I̅) = 0.154 + 0.054 = 0.208'
+                    ]
+                }
+            },
+            {
+                context: '某公司研究两种培训方案对员工绩效的影响。参与员工中，70%参加方案A，30%参加方案B。',
+                group1: '方案A',
+                group2: '方案B',
+                pG: 0.7,
+                pIgivenG: 0.85,
+                pIgivenNotG: 0.6,
+                pNotG: 0.3,
+                pNotIgivenG: 0.15,
+                pNotIgivenNotG: 0.4,
+                pGandI: 0.595,
+                pGandNotI: 0.105,
+                pNotGandI: 0.18,
+                pNotGandNotI: 0.12,
+                correctAnswer: 0.775,
+                questionType: 'improvement',
+                explanation: {
+                    steps: [
+                        'P(G ∩ I) = P(G) × P(I|G) = 0.7 × 0.85 = 0.595',
+                        'P(G̅ ∩ I) = P(G̅) × P(I|G̅) = 0.3 × 0.6 = 0.18',
+                        'P(I) = 0.595 + 0.18 = 0.775'
+                    ]
+                }
+            },
+            {
+                context: '某研究机构调查两种饮食习惯对健康的影响。受访者中，40%遵循饮食计划X，60%遵循饮食计划Y。',
+                group1: '饮食计划X',
+                group2: '饮食计划Y',
+                pG: 0.4,
+                pIgivenG: 0.78,
+                pIgivenNotG: 0.62,
+                pNotG: 0.6,
+                pNotIgivenG: 0.22,
+                pNotIgivenNotG: 0.38,
+                pGandI: 0.312,
+                pGandNotI: 0.088,
+                pNotGandI: 0.372,
+                pNotGandNotI: 0.228,
+                correctAnswer: 0.316,
+                questionType: 'no_improvement',
+                explanation: {
+                    steps: [
+                        'P(G ∩ I̅) = P(G) × P(I̅|G) = 0.4 × 0.22 = 0.088',
+                        'P(G̅ ∩ I̅) = P(G̅) × P(I̅|G̅) = 0.6 × 0.38 = 0.228',
+                        'P(I̅) = 0.088 + 0.228 = 0.316'
+                    ]
+                }
+            }
+        ];
+
+        let currentIndex = 0;
+        let currentAnswer = 0.275;
+        let selectedOption = null;
+        let isSubmitted = false;
+        let score = 0;
+
+        function renderQuestion() {
+            const params = questionParams[currentIndex];
+            currentAnswer = params.correctAnswer;
+
+            // Render question text
+            const improvementRateG = (params.pIgivenG * 100).toFixed(0);
+            const improvementRateNotG = (params.pIgivenNotG * 100).toFixed(0);
+
+            document.getElementById('question-text').innerHTML = `
+                <p>${params.context}在她的研究中，有 ${(params.pG * 100).toFixed(0)}% 的参与者是${params.group1}，另外 ${(params.pNotG * 100).toFixed(0)}% 是${params.group2}。（没有参与者同时属于两类。）这些技术似乎对两类参与者都有帮助：${improvementRateG}% 的${params.group1}报告说在使用技术后表现有显著改善，${improvementRateNotG}% 的${params.group2}报告说在使用技术后表现有显著改善。</p>
+
+                <p>令 <span class="math">G</span> 表示随机选择的参与者是${params.group1}的事件，令 <span class="math">G̅</span> 表示随机选择的参与者是${params.group2}的事件。令 <span class="math">I</span> 表示随机选择的参与者报告在使用技术后表现有显著改善的事件，令 <span class="math">I̅</span> 表示随机选择的参与者报告在使用技术后表现没有显著改善的事件。</p>
+
+                <p>填写概率以完成下面的树状图，然后回答后面的问题。不要对任何回答进行四舍五入。</p>
+            `;
+
+            // Render tree diagram
+            document.getElementById('tree-diagram').innerHTML = `
+                <div class="tree-node">
+                    <div class="event">开始</div>
+                    <div class="tree-line"></div>
+                    <div class="tree-branch">
+                        <div class="branch-label" style="top: -25px; left: 30%;">P(G) = ${params.pG}</div>
+                        <div class="event">G (${params.group1})</div>
+                        <div class="tree-line vertical"></div>
+                        <div class="tree-branch">
+                            <div class="branch-label" style="top: -25px; left: 30%;">P(I|G) = ${params.pIgivenG}</div>
+                            <div class="event">I (有改善)</div>
+                            <div class="probability">P(G∩I) = ${params.pGandI}</div>
+                        </div>
+                        <div class="tree-branch">
+                            <div class="branch-label" style="top: -25px; left: 30%;">P(I̅|G) = ${params.pNotIgivenG}</div>
+                            <div class="event">I̅ (无改善)</div>
+                            <div class="probability">P(G∩I̅) = ${params.pGandNotI}</div>
+                        </div>
+                    </div>
+                    <div class="tree-branch">
+                        <div class="branch-label" style="top: -25px; left: 30%;">P(G̅) = ${params.pNotG}</div>
+                        <div class="event">G̅ (${params.group2})</div>
+                        <div class="tree-line vertical"></div>
+                        <div class="tree-branch">
+                            <div class="branch-label" style="top: -25px; left: 30%;">P(I|G̅) = ${params.pIgivenNotG}</div>
+                            <div class="event">I (有改善)</div>
+                            <div class="probability">P(G̅∩I) = ${params.NotGandI}</div>
+                        </div>
+                        <div class="tree-branch">
+                            <div class="branch-label" style="top: -25px; left: 30%;">P(I̅|G̅) = ${params.pNotIgivenNotG}</div>
+                            <div class="event">I̅ (无改善)</div>
+                            <div class="probability">P(G̅∩I̅) = ${params.pNotGandNotI}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Render question prompt
+            const questionText = params.questionType === 'no_improvement'
+                ? '随机选择的一名参与者报告在使用技术后表现没有显著改善的概率是多少？'
+                : '随机选择的一名参与者报告在使用技术后表现有显著改善的概率是多少？';
+            document.getElementById('question-prompt').textContent = '问题：' + questionText;
+
+            // Generate options
+            const options = generateDistractors(params.correctAnswer);
+            const letters = ['A', 'B', 'C', 'D'];
+            document.getElementById('options-container').innerHTML = options.map((opt, i) => `
+                <div class="option" data-value="${opt}">${letters[i]}. ${opt}</div>
+            `).join('');
+
+            // Render explanation
+            document.getElementById('explanation').innerHTML = `
+                <h3>题目解析</h3>
+                <p>根据树状图，我们需要计算 <span class="math">P(${params.questionType === 'no_improvement' ? 'I̅' : 'I'})</span>，即随机选择的参与者报告${params.questionType === 'no_improvement' ? '没有' : ''}显著改善的概率。</p>
+                <p>根据全概率公式：</p>
+                <p><span class="math">P(${params.questionType === 'no_improvement' ? 'I̅' : 'I'}) = P(G ∩ ${params.questionType === 'no_improvement' ? 'I̅' : 'I'}) + P(G̅ ∩ ${params.questionType === 'no_improvement' ? 'I̅' : 'I'})</span></p>
+                <p>从树状图中可知：</p>
+                <ul>
+                    ${params.explanation.steps.map(step => `<li><span class="math">${step}</span></li>`).join('')}
+                </ul>
+                <p>树状图最右侧四个端点的概率之和为：${params.pGandI} + ${params.pGandNotI} + ${params.NotGandI} + ${params.pNotGandNotI} = 1，验证了计算的正确性。</p>
+            `;
+
+            // Rebind option events
+            bindOptionEvents();
+        }
+
+        function generateDistractors(correctAnswer) {
+            const distractors = new Set();
+            distractors.add(correctAnswer.toFixed(3));
+
+            const offsets = [0.05, -0.05, 0.1, -0.1, 0.125, -0.075];
+            let offsetIndex = 0;
+
+            while (distractors.size < 4 && offsetIndex < offsets.length) {
+                let distractor = correctAnswer + offsets[offsetIndex];
+                if (distractor > 0 && distractor < 1) {
+                    distractors.add(distractor.toFixed(3));
+                }
+                offsetIndex++;
+            }
+
+            while (distractors.size < 4) {
+                let randomDistractor = Math.random() * 0.8 + 0.1;
+                distractors.add(randomDistractor.toFixed(3));
+            }
+
+            return Array.from(distractors).sort(() => Math.random() - 0.5);
+        }
+
+        function bindOptionEvents() {
+            const options = document.querySelectorAll('.option');
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    if (isSubmitted) return;
+
+                    options.forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                    selectedOption = this;
+                });
+            });
+        }
+
+        function refreshParams() {
+            let newIndex;
+            do {
+                newIndex = Math.floor(Math.random() * questionParams.length);
+            } while (newIndex === currentIndex && questionParams.length > 1);
+
+            currentIndex = newIndex;
+            selectedOption = null;
+            isSubmitted = false;
+
+            document.querySelectorAll('.option').forEach(option => {
+                option.classList.remove('selected', 'correct', 'incorrect');
+                option.style.cursor = 'pointer';
+            });
+
+            document.getElementById('feedback').style.display = 'none';
+            document.getElementById('explanation').style.display = 'none';
+            document.getElementById('show-explanation-btn').style.display = 'none';
+
+            renderQuestion();
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            renderQuestion();
+
+            document.getElementById('show-explanation-btn').addEventListener('click', function() {
+                const explanation = document.getElementById('explanation');
+                if (explanation.style.display === 'block') {
+                    explanation.style.display = 'none';
+                    this.textContent = '查看答案解析';
+                } else {
+                    explanation.style.display = 'block';
+                    this.textContent = '隐藏答案解析';
+                }
+            });
+
+            const submitBtn = document.getElementById('submitBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const feedback = document.getElementById('feedback');
+            const scoreElement = document.getElementById('score');
+
+            submitBtn.addEventListener('click', function() {
+                if (!selectedOption) {
+                    feedback.textContent = '请先选择一个答案！';
+                    feedback.className = 'feedback incorrect';
+                    feedback.style.display = 'block';
+                    return;
+                }
+
+                isSubmitted = true;
+                const userAnswer = selectedOption.getAttribute('data-value');
+                const isCorrect = userAnswer === currentAnswer.toFixed(3);
+
+                document.querySelectorAll('.option').forEach(option => {
+                    option.classList.remove('selected');
+                    if (option.getAttribute('data-value') === currentAnswer.toFixed(3)) {
+                        option.classList.add('correct');
+                    } else if (option === selectedOption && !isCorrect) {
+                        option.classList.add('incorrect');
+                    }
+                });
+
+                if (isCorrect) {
+                    feedback.textContent = '正确！答案是 ' + currentAnswer.toFixed(3);
+                    feedback.className = 'feedback correct';
+                    score = 1;
+                } else {
+                    feedback.textContent = '错误。您选择了 ' + userAnswer + '，正确答案是 ' + currentAnswer.toFixed(3);
+                    feedback.className = 'feedback incorrect';
+                    score = 0;
+                }
+
+                feedback.style.display = 'block';
+                scoreElement.textContent = score;
+                document.getElementById('show-explanation-btn').style.display = 'inline-block';
+
+                document.querySelectorAll('.option').forEach(option => {
+                    option.style.cursor = 'default';
+                });
+            });
+
+            resetBtn.addEventListener('click', function() {
+                refreshParams();
+            });
+        });
+    </script>
+</body>
+</html>

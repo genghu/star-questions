@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>线性关系与样本相关系数 - 交互式答题</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+
+        body {
+            background-color: #f8fafc;
+            color: #334155;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .header h1 {
+            color: #1e40af;
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+
+        .header .subtitle {
+            color: #64748b;
+            font-size: 1.1rem;
+        }
+
+        .content-container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        /* Single column layout */
+
+        .section-title {
+            color: #1e40af;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #cbd5e1;
+        }
+
+        .question-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .question-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+        }
+
+        .question-number {
+            display: inline-block;
+            background-color: #3b82f6;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 32px;
+            font-weight: bold;
+            margin-right: 10px;
+            margin-bottom: 15px;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            color: #1e293b;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            padding: 16px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            font-size: 1.05rem;
+        }
+
+        .option:hover {
+            background-color: #f1f5f9;
+            border-color: #94a3b8;
+        }
+
+        .option.selected {
+            border-color: #3b82f6;
+            background-color: #eff6ff;
+        }
+
+        .option.correct {
+            border-color: #10b981;
+            background-color: #d1fae5;
+        }
+
+        .option.incorrect {
+            border-color: #ef4444;
+            background-color: #fee2e2;
+        }
+
+        .option-letter {
+            display: inline-block;
+            width: 28px;
+            height: 28px;
+            background-color: #cbd5e1;
+            color: #475569;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 28px;
+            font-weight: bold;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .option.selected .option-letter {
+            background-color: #3b82f6;
+            color: white;
+        }
+
+        .option.correct .option-letter {
+            background-color: #10b981;
+            color: white;
+        }
+
+        .option.incorrect .option-letter {
+            background-color: #ef4444;
+            color: white;
+        }
+
+        .feedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+            font-size: 1rem;
+        }
+
+        .feedback.correct {
+            background-color: #d1fae5;
+            border-left: 5px solid #10b981;
+            color: #065f46;
+            display: block;
+        }
+
+        .feedback.incorrect {
+            background-color: #fee2e2;
+            border-left: 5px solid #ef4444;
+            color: #991b1b;
+            display: block;
+        }
+
+        .info-section {
+            background-color: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 0.95rem;
+        }
+
+        .data-table th, .data-table td {
+            border: 1px solid #cbd5e1;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .data-table th {
+            background-color: #f1f5f9;
+            font-weight: 600;
+        }
+
+        .data-table tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+
+        .concept-explanation {
+            background-color: #f0f9ff;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 25px;
+            border-left: 5px solid #0ea5e9;
+        }
+
+        .concept-explanation h3 {
+            color: #0369a1;
+            margin-bottom: 10px;
+        }
+
+        .concept-explanation p {
+            margin-bottom: 10px;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background-color: #3b82f6;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2563eb;
+        }
+
+        .btn-secondary {
+            background-color: #94a3b8;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #64748b;
+        }
+
+        .score-display {
+            text-align: center;
+            font-size: 1.3rem;
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #e0f2fe;
+            border-radius: 10px;
+            color: #0369a1;
+            font-weight: 600;
+            display: none;
+        }
+
+        .score-display.show {
+            display: block;
+        }
+
+        .correlation-visual {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .correlation-item {
+            text-align: center;
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .correlation-item img {
+            width: 100%;
+            max-width: 120px;
+            height: auto;
+            margin-bottom: 8px;
+        }
+
+        .correlation-label {
+            font-size: 0.9rem;
+            color: #475569;
+        }
+
+        @media (max-width: 767px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .question-card {
+                padding: 20px;
+            }
+            
+            .option {
+                padding: 14px 16px;
+            }
+            
+            .btn {
+                padding: 12px 20px;
+                font-size: 1rem;
+            }
+            
+            .correlation-visual {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+
+    <style>
+    .show-explanation-btn {
+        display: none;
+        margin: 20px auto;
+        padding: 14px 28px;
+        background: linear-gradient(135deg, #9b59b6, #8e44ad);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 1.1rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
+    }
+    .show-explanation-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
+    }
+    .explanation-section {
+        display: none;
+        margin-top: 20px;
+    }
+    </style>
+    </head>
+<body>
+    <div class="header">
+        <h1>线性关系与样本相关系数
+            <button id="refresh-btn" style="margin-left: 15px; padding: 8px 16px; background: linear-gradient(135deg, #34a853, #2ecc71); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(52, 168, 83, 0.3);">刷新参数</button>
+        </h1>
+        <div class="subtitle">回归与相关 · 双变量数据分析 · 交互式答题</div>
+    </div>
+
+    <div class="content-container">
+        <div class="questions-section">
+            <h2 class="section-title">问题</h2>
+            
+            <div class="question-card" id="question1">
+                <div class="question-number">1</div>
+                <div class="question-text">哪个数据集的两个变量之间存在明显的负向但不完美的线性关系？</div>
+                <div class="options-container">
+                    <div class="option" data-option="a">
+                        <div class="option-letter">A</div>
+                        <div class="option-text">x, y 数据集</div>
+                    </div>
+                    <div class="option" data-option="b">
+                        <div class="option-letter">B</div>
+                        <div class="option-text">u, v 数据集</div>
+                    </div>
+                    <div class="option" data-option="c">
+                        <div class="option-letter">C</div>
+                        <div class="option-text">w, t 数据集</div>
+                    </div>
+                    <div class="option" data-option="d">
+                        <div class="option-letter">D</div>
+                        <div class="option-text">m, n 数据集</div>
+                    </div>
+                    <div class="option" data-option="e">
+                        <div class="option-letter">E</div>
+                        <div class="option-text">以上都不是</div>
+                    </div>
+                </div>
+                <button class="show-explanation-btn" style="display:none;">查看答案解析</button>
+                <div class="explanation-section" style="display:none;">
+                    <strong>解析：</strong>图4（m, n数据集）中的数据点显示出负向关系，但并未落在一条直线上。因此，m, n数据集表明存在负向但不完美的线性关系。（实际上，这些数据的样本相关系数 r ≈ -0.93。）
+                </div>
+            </div>
+            
+            <div class="question-card" id="question2">
+                <div class="question-number">2</div>
+                <div class="question-text">哪个数据集的两个变量之间存在最强的正向线性关系？</div>
+                <div class="options-container">
+                    <div class="option" data-option="a">
+                        <div class="option-letter">A</div>
+                        <div class="option-text">x, y 数据集</div>
+                    </div>
+                    <div class="option" data-option="b">
+                        <div class="option-letter">B</div>
+                        <div class="option-text">u, v 数据集</div>
+                    </div>
+                    <div class="option" data-option="c">
+                        <div class="option-letter">C</div>
+                        <div class="option-text">w, t 数据集</div>
+                    </div>
+                    <div class="option" data-option="d">
+                        <div class="option-letter">D</div>
+                        <div class="option-text">m, n 数据集</div>
+                    </div>
+                </div>
+                <button class="show-explanation-btn" style="display:none;">查看答案解析</button>
+                <div class="explanation-section" style="display:none;">
+                    <strong>解析：</strong>图2（u, v数据集）中的数据点落在一条具有正斜率的直线上，因此u, v数据集显示出最强的正向关系；实际上，这是一种完美的正向关系。（这些数据的样本相关系数 r = 1。）
+                </div>
+            </div>
+            
+            <div class="question-card" id="question3">
+                <div class="question-number">3</div>
+                <div class="question-text">哪个数据集的两个变量之间存在完美的负向线性关系？</div>
+                <div class="options-container">
+                    <div class="option" data-option="a">
+                        <div class="option-letter">A</div>
+                        <div class="option-text">x, y 数据集</div>
+                    </div>
+                    <div class="option" data-option="b">
+                        <div class="option-letter">B</div>
+                        <div class="option-text">u, v 数据集</div>
+                    </div>
+                    <div class="option" data-option="c">
+                        <div class="option-letter">C</div>
+                        <div class="option-text">w, t 数据集</div>
+                    </div>
+                    <div class="option" data-option="d">
+                        <div class="option-letter">D</div>
+                        <div class="option-text">m, n 数据集</div>
+                    </div>
+                    <div class="option" data-option="e">
+                        <div class="option-letter">E</div>
+                        <div class="option-text">以上都不是</div>
+                    </div>
+                </div>
+                <button class="show-explanation-btn" style="display:none;">查看答案解析</button>
+                <div class="explanation-section" style="display:none;">
+                    <strong>解析：</strong>没有一个散点图显示的数据完全落在具有负斜率的直线上，因此没有一个数据集表明两个变量之间存在完美的负向线性关系。
+                </div>
+            </div>
+            
+            <div class="question-card" id="question4">
+                <div class="question-number">4</div>
+                <div class="question-text">在哪个数据集中，有证据表明两个变量之间存在强烈的非线性关系？</div>
+                <div class="options-container">
+                    <div class="option" data-option="a">
+                        <div class="option-letter">A</div>
+                        <div class="option-text">x, y 数据集</div>
+                    </div>
+                    <div class="option" data-option="b">
+                        <div class="option-letter">B</div>
+                        <div class="option-text">u, v 数据集</div>
+                    </div>
+                    <div class="option" data-option="c">
+                        <div class="option-letter">C</div>
+                        <div class="option-text">w, t 数据集</div>
+                    </div>
+                    <div class="option" data-option="d">
+                        <div class="option-letter">D</div>
+                        <div class="option-text">m, n 数据集</div>
+                    </div>
+                    <div class="option" data-option="e">
+                        <div class="option-letter">E</div>
+                        <div class="option-text">以上都不是</div>
+                    </div>
+                </div>
+                <button class="show-explanation-btn" style="display:none;">查看答案解析</button>
+                <div class="explanation-section" style="display:none;">
+                    <strong>解析：</strong>没有一个数据集表明两个变量之间存在强烈的非线性关系。图3表明配对变量w, t具有非常弱的线性关系，甚至可能没有线性关系，但这并不意味着两个变量存在强烈的非线性关系。实际上，从图3绘制的数据来看，w, t之间似乎几乎没有或完全没有关系。
+                </div>
+            </div>
+            
+            <div class="score-display" id="scoreDisplay">
+                您的得分：<span id="score">0</span>/4
+            </div>
+            
+            <div class="controls">
+                <button class="btn btn-primary" id="submitBtn">提交答案</button>
+                <button class="btn btn-secondary" id="resetBtn">重新作答</button>
+            </div>
+        </div>
+        
+        <div class="info-section">
+            <h2 class="section-title">数据集</h2>
+            
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>x</th>
+                        <th>y</th>
+                        <th>u</th>
+                        <th>v</th>
+                        <th>w</th>
+                        <th>t</th>
+                        <th>m</th>
+                        <th>n</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1.0</td>
+                        <td>4.0</td>
+                        <td>1.0</td>
+                        <td>1.0</td>
+                        <td>1.0</td>
+                        <td>6.7</td>
+                        <td>1.0</td>
+                        <td>8.1</td>
+                    </tr>
+                    <tr>
+                        <td>2.0</td>
+                        <td>6.0</td>
+                        <td>2.0</td>
+                        <td>2.0</td>
+                        <td>2.0</td>
+                        <td>9.8</td>
+                        <td>2.0</td>
+                        <td>6.9</td>
+                    </tr>
+                    <tr>
+                        <td>3.0</td>
+                        <td>7.3</td>
+                        <td>3.0</td>
+                        <td>3.0</td>
+                        <td>3.0</td>
+                        <td>3.7</td>
+                        <td>3.0</td>
+                        <td>7.8</td>
+                    </tr>
+                    <tr>
+                        <td>4.0</td>
+                        <td>4.3</td>
+                        <td>4.0</td>
+                        <td>4.0</td>
+                        <td>4.0</td>
+                        <td>9.1</td>
+                        <td>4.0</td>
+                        <td>5.9</td>
+                    </tr>
+                    <tr>
+                        <td>5.0</td>
+                        <td>4.8</td>
+                        <td>5.0</td>
+                        <td>5.0</td>
+                        <td>5.0</td>
+                        <td>5.6</td>
+                        <td>5.0</td>
+                        <td>6.9</td>
+                    </tr>
+                    <tr>
+                        <td>6.0</td>
+                        <td>8.0</td>
+                        <td>6.0</td>
+                        <td>6.0</td>
+                        <td>6.0</td>
+                        <td>2.2</td>
+                        <td>6.0</td>
+                        <td>4.3</td>
+                    </tr>
+                    <tr>
+                        <td>7.0</td>
+                        <td>5.7</td>
+                        <td>7.0</td>
+                        <td>7.0</td>
+                        <td>7.0</td>
+                        <td>6.1</td>
+                        <td>7.0</td>
+                        <td>4.9</td>
+                    </tr>
+                    <tr>
+                        <td>8.0</td>
+                        <td>7.0</td>
+                        <td>8.0</td>
+                        <td>8.0</td>
+                        <td>8.0</td>
+                        <td>9.8</td>
+                        <td>8.0</td>
+                        <td>3.6</td>
+                    </tr>
+                    <tr>
+                        <td>9.0</td>
+                        <td>8.8</td>
+                        <td>9.0</td>
+                        <td>9.0</td>
+                        <td>9.0</td>
+                        <td>5.0</td>
+                        <td>9.0</td>
+                        <td>4.2</td>
+                    </tr>
+                    <tr>
+                        <td>10.0</td>
+                        <td>7.3</td>
+                        <td>10.0</td>
+                        <td>10.0</td>
+                        <td>10.0</td>
+                        <td>8.4</td>
+                        <td>10.0</td>
+                        <td>3.1</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="concept-explanation">
+                <h3>样本相关系数 r</h3>
+                <p>样本相关系数 r 是衡量两个变量之间（样本）线性关系强度和方向的数值指标。</p>
+                <p>r 的值始终是介于 -1 到 1 之间的一个数：</p>
+                <ul style="padding-left: 20px; margin-top: 10px;">
+                    <li>如果 r 为正，则样本数据表明两个变量之间存在正向线性关系</li>
+                    <li>如果 r 为负，则样本数据表明两个变量之间存在负向线性关系</li>
+                    <li>r 越接近极值 -1 和 1，样本所显示的线性关系就越强</li>
+                    <li>如果 r = 1，表示完美的正向线性关系</li>
+                    <li>如果 r = -1，表示完美的负向线性关系</li>
+                    <li>当 r = 0 时，样本数据显示两个变量之间没有线性关系</li>
+                </ul>
+                
+                <div class="correlation-visual">
+                    <div class="correlation-item">
+                        <div style="height: 60px; background: linear-gradient(135deg, #ef4444, #f97316); border-radius: 5px;"></div>
+                        <div class="correlation-label">r = -1<br>完美的负向线性关系</div>
+                    </div>
+                    <div class="correlation-item">
+                        <div style="height: 60px; background: linear-gradient(135deg, #cbd5e1, #94a3b8); border-radius: 5px;"></div>
+                        <div class="correlation-label">r = 0<br>无线性关系</div>
+                    </div>
+                    <div class="correlation-item">
+                        <div style="height: 60px; background: linear-gradient(135deg, #10b981, #3b82f6); border-radius: 5px;"></div>
+                        <div class="correlation-label">r = 1<br>完美的正向线性关系</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+            // 显示答案解析按钮点击事件
+            document.querySelectorAll('.show-explanation-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    var explanation = this.nextElementSibling;
+                    if (explanation) {
+                        if (explanation.style.display === 'none' || explanation.style.display === '') {
+                            explanation.style.display = 'block';
+                            this.textContent = '隐藏答案解析';
+                        } else {
+                            explanation.style.display = 'none';
+                            this.textContent = '查看答案解析';
+                        }
+                    }
+                });
+            });
+
+            // 正确答案配置
+            const correctAnswers = {
+                'question1': 'd',
+                'question2': 'b',
+                'question3': 'e',
+                'question4': 'e'
+            };
+            
+            // 用户选择的答案
+            let userAnswers = {
+                'question1': null,
+                'question2': null,
+                'question3': null,
+                'question4': null
+            };
+            
+            // 是否已提交
+            let submitted = false;
+            
+            // 为每个选项添加点击事件
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', function() {
+                    if (submitted) return;
+                    
+                    const questionCard = this.closest('.question-card');
+                    const questionId = questionCard.id;
+                    
+                    // 移除同一问题中其他选项的选中状态
+                    questionCard.querySelectorAll('.option').forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    
+                    // 选中当前选项
+                    this.classList.add('selected');
+                    
+                    // 保存用户答案
+                    const selectedOption = this.getAttribute('data-option');
+                    userAnswers[questionId] = selectedOption;
+                });
+            });
+            
+            // 提交按钮事件
+            document.getElementById('submitBtn').addEventListener('click', function() {
+                if (submitted) return;
+                
+                let score = 0;
+                
+                // 检查每个问题的答案
+                for (const questionId in correctAnswers) {
+                    const correctAnswer = correctAnswers[questionId];
+                    const userAnswer = userAnswers[questionId];
+                    const questionCard = document.getElementById(questionId);
+                    
+                    if (userAnswer === null) {
+                        // 未作答
+                        continue;
+                    }
+                    
+                    // 获取所有选项
+                    const options = questionCard.querySelectorAll('.option');
+                    
+                    // 标记正确和错误的答案 - 只标记错误答案，不显示正确答案
+                    options.forEach(option => {
+                        const optionValue = option.getAttribute('data-option');
+
+                        // Only mark incorrect, don't reveal correct answer
+                        if (optionValue === userAnswer && userAnswer !== correctAnswer) {
+                            option.classList.add('incorrect');
+                        }
+                    });
+
+                    // 显示解析按钮
+                    const showBtn = questionCard.querySelector('.show-explanation-btn');
+                    if (showBtn) {
+                        showBtn.style.display = 'inline-block';
+                    }
+
+                    // 显示反馈
+                    const feedback = questionCard.querySelector('.feedback');
+                    if (userAnswer === correctAnswer) {
+                        score++;
+                        feedback.classList.add('correct');
+                    } else {
+                        feedback.classList.add('incorrect');
+                    }
+                    
+                    // 禁用该问题的选项点击
+                    questionCard.querySelectorAll('.option').forEach(opt => {
+                        opt.style.cursor = 'default';
+                    });
+                }
+                
+                // 显示得分
+                const scoreDisplay = document.getElementById('scoreDisplay');
+                const scoreElement = document.getElementById('score');
+                scoreElement.textContent = score;
+                scoreDisplay.classList.add('show');
+                
+                submitted = true;
+                
+                // 更改提交按钮文本
+                this.textContent = '已提交';
+                this.disabled = true;
+                this.style.backgroundColor = '#94a3b8';
+            });
+            
+            // 重新作答按钮事件
+            document.getElementById('resetBtn').addEventListener('click', function() {
+                // 重置所有状态
+                submitted = false;
+                userAnswers = {
+                    'question1': null,
+                    'question2': null,
+                    'question3': null,
+                    'question4': null
+                };
+                
+                // 清除所有选项的样式
+                document.querySelectorAll('.option').forEach(option => {
+                    option.classList.remove('selected', 'correct', 'incorrect');
+                    option.style.cursor = 'pointer';
+                });
+                
+                // 隐藏反馈
+                document.querySelectorAll('.feedback').forEach(feedback => {
+                    feedback.classList.remove('correct', 'incorrect');
+                });
+
+                // 隐藏解析按钮和解析内容
+                document.querySelectorAll('.show-explanation-btn').forEach(btn => {
+                    btn.style.display = 'none';
+                    btn.textContent = '查看答案解析';
+                });
+                document.querySelectorAll('.explanation-section').forEach(section => {
+                    section.style.display = 'none';
+                });
+
+                // 隐藏得分显示
+                document.getElementById('scoreDisplay').classList.remove('show');
+                
+                // 重置提交按钮
+                const submitBtn = document.getElementById('submitBtn');
+                submitBtn.textContent = '提交答案';
+                submitBtn.disabled = false;
+                submitBtn.style.backgroundColor = '';
+            });
+            
+            // 初始选择第一个选项作为默认答案（仅用于演示）
+            document.querySelectorAll('.question-card').forEach(card => {
+                const firstOption = card.querySelector('.option');
+                if (firstOption) {
+                    // 不自动选择，让用户自己选择
+                    // firstOption.classList.add('selected');
+                    // const questionId = card.id;
+                    // userAnswers[questionId] = firstOption.getAttribute('data-option');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

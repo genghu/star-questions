@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>卡方分布 - 交互式答题</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+
+        body {
+            background-color: #f0f7ff;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #4a90e2;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2.2rem;
+        }
+
+        .header .subtitle {
+            color: #7f8c8d;
+            font-size: 1rem;
+        }
+
+        .quiz-container {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(52, 152, 219, 0.15);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .question-block {
+            margin-bottom: 40px;
+            padding-bottom: 25px;
+            border-bottom: 1px dashed #dce7ff;
+        }
+
+        .question-block:last-of-type {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .question-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .question-title {
+            font-size: 1.4rem;
+            color: #2980b9;
+            flex: 1;
+            display: flex;
+            align-items: center;
+        }
+
+        .question-title .q-number {
+            background-color: #4a90e2;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-weight: bold;
+        }
+
+        .refresh-btn {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+        }
+
+        .refresh-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            padding-left: 44px;
+        }
+
+        .math {
+            font-family: 'Cambria Math', 'Times New Roman', serif;
+            font-style: italic;
+            background-color: #f8fafd;
+            padding: 2px 6px;
+            border-radius: 4px;
+            border-left: 3px solid #4a90e2;
+        }
+
+        .input-container {
+            padding-left: 44px;
+            margin-top: 20px;
+        }
+
+        .answer-input-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .answer-input-wrapper label {
+            font-size: 1.1rem;
+            color: #2980b9;
+            font-weight: 600;
+        }
+
+        .answer-input {
+            width: 150px;
+            padding: 12px 15px;
+            font-size: 1.1rem;
+            border: 2px solid #e3f2fd;
+            border-radius: 10px;
+            background-color: #f8fafd;
+            transition: all 0.3s ease;
+        }
+
+        .answer-input:focus {
+            outline: none;
+            border-color: #4a90e2;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(74, 144, 226, 0.2);
+        }
+
+        .answer-input.correct {
+            border-color: #27ae60;
+            background-color: #d5f4e6;
+        }
+
+        .answer-input.incorrect {
+            border-color: #e74c3c;
+            background-color: #fadbd8;
+        }
+
+        .input-feedback {
+            font-size: 1rem;
+            margin-left: 10px;
+            padding: 5px 12px;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .input-feedback.show {
+            display: inline-block;
+        }
+
+        .input-feedback.correct {
+            background-color: #d5f4e6;
+            color: #27ae60;
+        }
+
+        .input-feedback.incorrect {
+            background-color: #fadbd8;
+            color: #e74c3c;
+        }
+
+        .correct-answer-display {
+            font-size: 1rem;
+            color: #7f8c8d;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .correct-answer-display.show {
+            display: block;
+        }
+
+        .explanation {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8fafd;
+            border-radius: 10px;
+            border-left: 4px solid #3498db;
+            font-size: 0.95rem;
+            display: none;
+        }
+
+        .explanation.show {
+            display: block;
+        }
+
+        .explanation-title {
+            font-weight: bold;
+            color: #2980b9;
+            margin-bottom: 8px;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 160px;
+        }
+
+        .btn-submit {
+            background-color: #3498db;
+            color: white;
+        }
+
+        .btn-submit:hover {
+            background-color: #2980b9;
+            transform: translateY(-3px);
+            box-shadow: 0 7px 14px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn-reset {
+            background-color: #95a5a6;
+            color: white;
+        }
+
+        .btn-reset:hover {
+            background-color: #7f8c8d;
+            transform: translateY(-3px);
+            box-shadow: 0 7px 14px rgba(149, 165, 166, 0.3);
+        }
+
+        .results {
+            margin-top: 30px;
+            padding: 25px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(52, 152, 219, 0.15);
+            text-align: center;
+            display: none;
+        }
+
+        .results.show {
+            display: block;
+        }
+
+        .results h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        .score {
+            font-size: 3.5rem;
+            font-weight: bold;
+            color: #3498db;
+            margin: 20px 0;
+        }
+
+        .score-percentage {
+            font-size: 1.2rem;
+            color: #7f8c8d;
+            margin-bottom: 25px;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+
+            .quiz-container {
+                padding: 20px;
+            }
+
+            .question-title {
+                font-size: 1.2rem;
+            }
+
+            .question-text, .input-container {
+                padding-left: 0;
+            }
+
+            .answer-input {
+                width: 120px;
+            }
+
+            .btn {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+
+            .controls {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+
+    <style>
+    .show-explanation-btn {
+        display: none;
+        margin: 20px auto;
+        padding: 14px 28px;
+        background: linear-gradient(135deg, #9b59b6, #8e44ad);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 1.1rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
+    }
+    .show-explanation-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
+    }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>卡方分布</h1>
+        <div class="subtitle">交互式答题练习 - 基于ALEKS题目内容</div>
+    </div>
+
+    <div class="quiz-container">
+        <div class="question-block">
+            <div class="question-header">
+                <div class="question-title">
+                    <span class="q-number">1</span>
+                    <span id="q1-title">计算概率 P(4 <= chi^2 <= 9)</span>
+                </div>
+                <button class="refresh-btn" onclick="refreshQuestion(1)">Refresh Parameters</button>
+            </div>
+            <div class="question-text" id="q1-text">
+                <p>Assume chi^2 follows a chi-square distribution with <span class="math" id="df1-1">7</span> degrees of freedom. Calculate <span class="math">P(<span id="lower1-1">4</span> <= chi^2 <= <span id="upper1-1">9</span>)</span>.</p>
+                <p>Round your answer to at least three decimal places.</p>
+                <p><em>Hint:</em> <span class="math">P(<span id="lower2-1">4</span> <= chi^2 <= <span id="upper2-1">9</span>) = P(chi^2 > <span id="lower3-1">4</span>) - P(chi^2 > <span id="upper3-1">9</span>)</span></p>
+            </div>
+            <div class="input-container" id="input-container-1">
+                <div class="answer-input-wrapper">
+                    <label for="answer-1">Your Answer:</label>
+                    <input type="text" class="answer-input" id="answer-1">
+                    <span class="input-feedback" id="feedback-1"></span>
+                </div>
+                <div class="correct-answer-display" id="correct-display-1">
+                    Correct Answer: <strong id="correct-value-1">0.527</strong>
+                </div>
+            </div>
+            <button class="show-explanation-btn" data-question="1">View Answer Explanation</button>
+            <div class="explanation" id="explanation1">
+                <div class="explanation-title">Key Points and Analysis</div>
+                <p>According to the problem, <span class="math">P(<span id="exp-lower1-1">4</span> <= chi^2 <= <span id="exp-upper1-1">9</span>) = P(chi^2 > <span id="exp-lower2-1">4</span>) - P(chi^2 > <span id="exp-upper2-1">9</span>)</span>.</p>
+                <p>Using a calculator: <span class="math">P(chi^2 > <span id="exp-lower3-1">4</span>) = <span id="exp-prob1-1">0.77977741</span></span>, <span class="math">P(chi^2 > <span id="exp-upper3-1">9</span>) = <span id="exp-prob2-1">0.25265605</span></span>.</p>
+                <p>Therefore, <span class="math">P(<span id="exp-lower4-1">4</span> <= chi^2 <= <span id="exp-upper4-1">9</span>) = <span id="exp-prob3-1">0.77977741</span> - <span id="exp-prob4-1">0.25265605</span> ~= <span id="exp-result-1">0.527</span></span>.</p>
+                <p id="answer-text-1">So the correct answer is <strong>0.527</strong>.</p>
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-header">
+                <div class="question-title">
+                    <span class="q-number">2</span>
+                    <span id="q2-title">Find k such that P(chi^2 > k) = 0.025</span>
+                </div>
+                <button class="refresh-btn" onclick="refreshQuestion(2)">Refresh Parameters</button>
+            </div>
+            <div class="question-text" id="q2-text">
+                <p>Again assume chi^2 follows a chi-square distribution with <span class="math" id="df1-2">7</span> degrees of freedom. Find k such that <span class="math">P(chi^2 > k) = <span id="alpha1-2">0.025</span></span>.</p>
+                <p>Round your answer to at least two decimal places.</p>
+                <p><em>Hint:</em> Such k is the right-tail critical value of the chi-square distribution <span class="math">chi^2<span id="alpha2-2">_0.025</span></span>.</p>
+            </div>
+            <div class="input-container" id="input-container-2">
+                <div class="answer-input-wrapper">
+                    <label for="answer-2">Your Answer:</label>
+                    <input type="text" class="answer-input" id="answer-2">
+                    <span class="input-feedback" id="feedback-2"></span>
+                </div>
+                <div class="correct-answer-display" id="correct-display-2">
+                    Correct Answer: <strong id="correct-value-2">16.01</strong>
+                </div>
+            </div>
+            <button class="show-explanation-btn" data-question="2">View Answer Explanation</button>
+            <div class="explanation" id="explanation2">
+                <div class="explanation-title">Key Points and Analysis</div>
+                <p>We need to find the right-tail critical value for a chi-square distribution with <span id="exp-df1-2">7</span> degrees of freedom, such that the right-tail area is <span id="exp-alpha1-2">0.025</span>.</p>
+                <p>According to the problem, using a calculator: <span class="math">k = chi^2<span id="exp-alpha2-2">_0.025</span> = <span id="exp-fval-2">16.01276427</span> ~= <span id="exp-result-2">16.01</span></span>.</p>
+                <p id="answer-text-2">So the correct answer is <strong>16.01</strong>.</p>
+            </div>
+        </div>
+
+        <div class="question-block">
+            <div class="question-header">
+                <div class="question-title">
+                    <span class="q-number">3</span>
+                    <span id="q3-title">Find the Median of Chi-Square Distribution</span>
+                </div>
+                <button class="refresh-btn" onclick="refreshQuestion(3)">Refresh Parameters</button>
+            </div>
+            <div class="question-text" id="q3-text">
+                <p>Find the median of a chi-square distribution with <span class="math" id="df1-3">7</span> degrees of freedom.</p>
+                <p>Round your answer to at least two decimal places.</p>
+                <p><em>Hint:</em> The median m satisfies <span class="math">P(chi^2 > m) = 0.5</span>, i.e., <span class="math">chi^2_0.5</span>.</p>
+            </div>
+            <div class="input-container" id="input-container-3">
+                <div class="answer-input-wrapper">
+                    <label for="answer-3">Your Answer:</label>
+                    <input type="text" class="answer-input" id="answer-3">
+                    <span class="input-feedback" id="feedback-3"></span>
+                </div>
+                <div class="correct-answer-display" id="correct-display-3">
+                    Correct Answer: <strong id="correct-value-3">6.35</strong>
+                </div>
+            </div>
+            <button class="show-explanation-btn" data-question="3">View Answer Explanation</button>
+            <div class="explanation" id="explanation3">
+                <div class="explanation-title">Key Points and Analysis</div>
+                <p>The median of a continuous distribution is the value that divides the distribution in half, i.e., the probability of obtaining a value greater than the median is 0.5.</p>
+                <p>Therefore, we need to find m such that <span class="math">P(chi^2 > m) = 0.5</span>, where chi^2 follows a chi-square distribution with <span id="exp-df1-3">7</span> degrees of freedom.</p>
+                <p>According to the problem, using a calculator: <span class="math">m = chi^2_0.5 ~= <span id="exp-fval-3">6.3458112</span> ~= <span id="exp-result-3">6.35</span></span>.</p>
+                <p id="answer-text-3">So the correct answer is <strong>6.35</strong>.</p>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="btn btn-submit" id="submitBtn">Submit Answers</button>
+            <button class="btn btn-reset" id="resetBtn">Reset</button>
+        </div>
+    </div>
+
+    <div class="results" id="results">
+        <h2>Quiz Results</h2>
+        <div class="score" id="score">0/3</div>
+        <div class="score-percentage" id="percentage">0%</div>
+        <p id="resultMessage">Please complete all questions and submit your answers to see results.</p>
+        <div class="controls">
+            <button class="btn btn-reset" id="resetAfterBtn">Reset</button>
+        </div>
+    </div>
+
+    <script>
+        // Parameter datasets for each question
+        const questionParams = {
+            1: [
+                { df: 7, lower: 4, upper: 9, prob1: 0.77977741, prob2: 0.25265605, result: 0.527 },
+                { df: 5, lower: 3, upper: 8, prob1: 0.6998, prob2: 0.1562, result: 0.544 },
+                { df: 10, lower: 5, upper: 12, prob1: 0.8912, prob2: 0.2851, result: 0.606 },
+                { df: 8, lower: 4, upper: 10, prob1: 0.8494, prob2: 0.2650, result: 0.584 },
+                { df: 6, lower: 3, upper: 9, prob1: 0.8088, prob2: 0.1734, result: 0.635 }
+            ],
+            2: [
+                { df: 7, alpha: 0.025, alphaText: '_0.025', fval: 16.01 },
+                { df: 5, alpha: 0.05, alphaText: '_0.05', fval: 11.07 },
+                { df: 10, alpha: 0.01, alphaText: '_0.01', fval: 23.21 },
+                { df: 8, alpha: 0.025, alphaText: '_0.025', fval: 17.53 },
+                { df: 6, alpha: 0.05, alphaText: '_0.05', fval: 12.59 }
+            ],
+            3: [
+                { df: 7, fval: 6.35 },
+                { df: 5, fval: 4.35 },
+                { df: 10, fval: 9.34 },
+                { df: 8, fval: 7.34 },
+                { df: 6, fval: 5.35 }
+            ]
+        };
+
+        // Current parameter index for each question
+        let currentParamIndex = { 1: 0, 2: 0, 3: 0 };
+        let correctAnswers = { 1: '0.527', 2: '16.01', 3: '6.35' };
+
+        // User answers
+        const userAnswers = {
+            1: null,
+            2: null,
+            3: null
+        };
+
+        // Helper function to normalize numeric answers (handles different decimal formats)
+        function normalizeAnswer(answer) {
+            if (answer === null || answer === undefined || answer === '') return null;
+            const normalized = parseFloat(answer.toString().trim());
+            return isNaN(normalized) ? null : normalized;
+        }
+
+        // Check if answer is correct within tolerance
+        function checkAnswer(userAnswer, correctAnswer, tolerance = 0.01) {
+            const userNum = normalizeAnswer(userAnswer);
+            const correctNum = normalizeAnswer(correctAnswer);
+            if (userNum === null || correctNum === null) return false;
+            return Math.abs(userNum - correctNum) <= tolerance;
+        }
+
+        // Initialize question display
+        function initQuestion(qNum) {
+            const params = questionParams[qNum][currentParamIndex[qNum]];
+
+            if (qNum === 1) {
+                document.getElementById('df1-1').textContent = params.df;
+                document.getElementById('lower1-1').textContent = params.lower;
+                document.getElementById('upper1-1').textContent = params.upper;
+                document.getElementById('lower2-1').textContent = params.lower;
+                document.getElementById('upper2-1').textContent = params.upper;
+                document.getElementById('lower3-1').textContent = params.lower;
+                document.getElementById('upper3-1').textContent = params.upper;
+
+                // Update correct answer
+                correctAnswers[1] = params.result.toFixed(3);
+                document.getElementById('correct-value-1').textContent = params.result.toFixed(3);
+
+                // Update explanation
+                document.getElementById('exp-lower1-1').textContent = params.lower;
+                document.getElementById('exp-upper1-1').textContent = params.upper;
+                document.getElementById('exp-lower2-1').textContent = params.lower;
+                document.getElementById('exp-upper2-1').textContent = params.upper;
+                document.getElementById('exp-lower3-1').textContent = params.lower;
+                document.getElementById('exp-upper3-1').textContent = params.upper;
+                document.getElementById('exp-lower4-1').textContent = params.lower;
+                document.getElementById('exp-upper4-1').textContent = params.upper;
+                document.getElementById('exp-prob1-1').textContent = params.prob1.toFixed(5);
+                document.getElementById('exp-prob2-1').textContent = params.prob2.toFixed(5);
+                document.getElementById('exp-prob3-1').textContent = params.prob1.toFixed(5);
+                document.getElementById('exp-prob4-1').textContent = params.prob2.toFixed(5);
+                document.getElementById('exp-result-1').textContent = params.result.toFixed(3);
+                document.getElementById('answer-text-1').innerHTML = `So the correct answer is <strong>${params.result.toFixed(3)}</strong>.`;
+
+            } else if (qNum === 2) {
+                document.getElementById('df1-2').textContent = params.df;
+                document.getElementById('alpha1-2').textContent = params.alpha;
+                document.getElementById('alpha2-2').textContent = params.alphaText;
+
+                // Update correct answer
+                correctAnswers[2] = params.fval.toFixed(2);
+                document.getElementById('correct-value-2').textContent = params.fval.toFixed(2);
+
+                // Update explanation
+                document.getElementById('exp-df1-2').textContent = params.df;
+                document.getElementById('exp-alpha1-2').textContent = params.alpha;
+                document.getElementById('exp-alpha2-2').textContent = params.alphaText;
+                document.getElementById('exp-fval-2').textContent = params.fval.toFixed(5);
+                document.getElementById('exp-result-2').textContent = params.fval.toFixed(2);
+                document.getElementById('answer-text-2').innerHTML = `So the correct answer is <strong>${params.fval.toFixed(2)}</strong>.`;
+
+            } else if (qNum === 3) {
+                document.getElementById('df1-3').textContent = params.df;
+
+                // Update correct answer
+                correctAnswers[3] = params.fval.toFixed(2);
+                document.getElementById('correct-value-3').textContent = params.fval.toFixed(2);
+
+                // Update explanation
+                document.getElementById('exp-df1-3').textContent = params.df;
+                document.getElementById('exp-fval-3').textContent = params.fval.toFixed(5);
+                document.getElementById('exp-result-3').textContent = params.fval.toFixed(2);
+                document.getElementById('answer-text-3').innerHTML = `So the correct answer is <strong>${params.fval.toFixed(2)}</strong>.`;
+            }
+        }
+
+        // Refresh question with random parameters
+        function refreshQuestion(qNum) {
+            let newIndex;
+            do {
+                newIndex = Math.floor(Math.random() * questionParams[qNum].length);
+            } while (newIndex === currentParamIndex[qNum] && questionParams[qNum].length > 1);
+
+            currentParamIndex[qNum] = newIndex;
+
+            // Clear input for this question
+            userAnswers[qNum] = null;
+            const inputEl = document.getElementById(`answer-${qNum}`);
+            inputEl.value = '';
+            inputEl.classList.remove('correct', 'incorrect');
+
+            // Hide feedback and correct answer display
+            const feedbackEl = document.getElementById(`feedback-${qNum}`);
+            feedbackEl.classList.remove('show', 'correct', 'incorrect');
+            feedbackEl.textContent = '';
+
+            const correctDisplayEl = document.getElementById(`correct-display-${qNum}`);
+            correctDisplayEl.classList.remove('show');
+
+            // Hide explanation
+            document.getElementById(`explanation${qNum}`).classList.remove('show');
+            document.querySelector(`.show-explanation-btn[data-question="${qNum}"]`).style.display = 'none';
+            document.querySelector(`.show-explanation-btn[data-question="${qNum}"]`).textContent = 'View Answer Explanation';
+
+            // Update display
+            initQuestion(qNum);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize all questions
+            initQuestion(1);
+            initQuestion(2);
+            initQuestion(3);
+
+            // Show explanation button click event
+            document.querySelectorAll('.show-explanation-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const questionId = this.getAttribute('data-question');
+                    const explanation = document.getElementById(`explanation${questionId}`);
+                    if (explanation) {
+                        if (explanation.classList.contains('show')) {
+                            explanation.classList.remove('show');
+                            this.textContent = 'View Answer Explanation';
+                        } else {
+                            explanation.classList.add('show');
+                            this.textContent = 'Hide Answer Explanation';
+                        }
+                    }
+                });
+            });
+
+            // Input change event - track user answers
+            for (let i = 1; i <= 3; i++) {
+                const inputEl = document.getElementById(`answer-${i}`);
+                inputEl.addEventListener('input', function() {
+                    userAnswers[i] = this.value.trim();
+                });
+            }
+
+            // Submit button
+            document.getElementById('submitBtn').addEventListener('click', function() {
+                let score = 0;
+                const totalQuestions = Object.keys(correctAnswers).length;
+
+                // Check if all questions are answered
+                let allAnswered = true;
+                for (let i = 1; i <= totalQuestions; i++) {
+                    if (!userAnswers[i] || userAnswers[i].trim() === '') {
+                        allAnswered = false;
+                        break;
+                    }
+                }
+
+                if (!allAnswered) {
+                    alert('Please complete all questions before submitting!');
+                    return;
+                }
+
+                // Calculate score and show feedback
+                for (let i = 1; i <= totalQuestions; i++) {
+                    const userAnswer = userAnswers[i];
+                    const correctAnswer = correctAnswers[i];
+
+                    const inputEl = document.getElementById(`answer-${i}`);
+                    const feedbackEl = document.getElementById(`feedback-${i}`);
+                    const correctDisplayEl = document.getElementById(`correct-display-${i}`);
+
+                    const isCorrect = checkAnswer(userAnswer, correctAnswer, 0.02);
+
+                    if (isCorrect) {
+                        inputEl.classList.add('correct');
+                        inputEl.classList.remove('incorrect');
+                        feedbackEl.textContent = 'Correct!';
+                        feedbackEl.classList.add('show', 'correct');
+                        feedbackEl.classList.remove('incorrect');
+                        score++;
+                    } else {
+                        inputEl.classList.add('incorrect');
+                        inputEl.classList.remove('correct');
+                        feedbackEl.textContent = 'Incorrect';
+                        feedbackEl.classList.add('show', 'incorrect');
+                        feedbackEl.classList.remove('correct');
+                        correctDisplayEl.classList.add('show');
+                    }
+                }
+
+                // Show results panel
+                const results = document.getElementById('results');
+                const scoreElement = document.getElementById('score');
+                const percentageElement = document.getElementById('percentage');
+                const resultMessage = document.getElementById('resultMessage');
+
+                scoreElement.textContent = `${score}/${totalQuestions}`;
+                const percentage = Math.round((score / totalQuestions) * 100);
+                percentageElement.textContent = `${percentage}%`;
+
+                // Show different messages based on score
+                if (score === totalQuestions) {
+                    resultMessage.textContent = 'Excellent! You got all answers correct!';
+                    resultMessage.style.color = '#27ae60';
+                } else if (score >= totalQuestions / 2) {
+                    resultMessage.textContent = 'Good job! Keep practicing!';
+                    resultMessage.style.color = '#f39c12';
+                } else {
+                    resultMessage.textContent = 'You need to review the chi-square distribution concepts!';
+                    resultMessage.style.color = '#e74c3c';
+                }
+
+                // Show explanation buttons
+                document.querySelectorAll('.show-explanation-btn').forEach(btn => {
+                    btn.style.display = 'inline-block';
+                });
+
+                results.classList.add('show');
+                results.scrollIntoView({ behavior: 'smooth' });
+
+                // Disable submit button
+                this.disabled = true;
+                this.style.opacity = '0.7';
+                this.style.cursor = 'not-allowed';
+            });
+
+            // Reset quiz
+            function resetQuiz() {
+                // Reset user answers
+                for (let i = 1; i <= Object.keys(correctAnswers).length; i++) {
+                    userAnswers[i] = null;
+                    const inputEl = document.getElementById(`answer-${i}`);
+                    inputEl.value = '';
+                    inputEl.classList.remove('correct', 'incorrect');
+
+                    const feedbackEl = document.getElementById(`feedback-${i}`);
+                    feedbackEl.classList.remove('show', 'correct', 'incorrect');
+                    feedbackEl.textContent = '';
+
+                    const correctDisplayEl = document.getElementById(`correct-display-${i}`);
+                    correctDisplayEl.classList.remove('show');
+                }
+
+                // Hide all explanations
+                for (let i = 1; i <= Object.keys(correctAnswers).length; i++) {
+                    document.getElementById(`explanation${i}`).classList.remove('show');
+                }
+
+                // Hide explanation buttons and reset text
+                document.querySelectorAll('.show-explanation-btn').forEach(btn => {
+                    btn.style.display = 'none';
+                    btn.textContent = 'View Answer Explanation';
+                });
+
+                // Hide results panel
+                document.getElementById('results').classList.remove('show');
+
+                // Enable submit button
+                const submitBtn = document.getElementById('submitBtn');
+                submitBtn.disabled = false;
+                submitBtn.style.opacity = '1';
+                submitBtn.style.cursor = 'pointer';
+
+                // Scroll to top
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            // Reset button events
+            document.getElementById('resetBtn').addEventListener('click', resetQuiz);
+            document.getElementById('resetAfterBtn').addEventListener('click', resetQuiz);
+        });
+    </script>
+</body>
+</html>

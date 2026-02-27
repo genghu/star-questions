@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>卡方独立性检验 - 交互式答题</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+        body {
+            background-color: #f8fafc;
+            color: #334155;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        h1 {
+            color: #1e40af;
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #64748b;
+            font-size: 1rem;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        .section {
+            background-color: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border-left: 5px solid #3b82f6;
+        }
+        .section h2 {
+            color: #1e40af;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed #cbd5e1;
+            font-size: 1.5rem;
+        }
+        .section p, .section li {
+            margin-bottom: 10px;
+        }
+        .table-container {
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 0.95rem;
+            min-width: 700px;
+        }
+        table th, table td {
+            border: 1px solid #cbd5e1;
+            padding: 12px 15px;
+            text-align: center;
+        }
+        table th {
+            background-color: #eff6ff;
+            color: #1e40af;
+            font-weight: 600;
+        }
+        table tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+        .question-block {
+            margin: 25px 0;
+            padding: 20px;
+            background-color: #f1f5f9;
+            border-radius: 8px;
+        }
+        .question-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .question {
+            font-weight: 600;
+            color: #1e293b;
+            font-size: 1.1rem;
+            flex: 1;
+        }
+        .refresh-btn {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+        }
+        .refresh-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+        .options {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 12px;
+            margin-top: 15px;
+        }
+        .option {
+            background-color: white;
+            border: 2px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+        }
+        .option:hover {
+            border-color: #3b82f6;
+            background-color: #eff6ff;
+            transform: translateY(-2px);
+        }
+        .option.selected {
+            border-color: #3b82f6;
+            background-color: #dbeafe;
+        }
+        .option.correct {
+            border-color: #10b981;
+            background-color: #d1fae5;
+        }
+        .option.incorrect {
+            border-color: #ef4444;
+            background-color: #fee2e2;
+        }
+        .option-label {
+            display: inline-block;
+            background-color: #3b82f6;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 28px;
+            margin-right: 12px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        .option.correct .option-label {
+            background-color: #10b981;
+        }
+        .option.incorrect .option-label {
+            background-color: #ef4444;
+        }
+        .feedback {
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            display: none;
+        }
+        .feedback.correct {
+            background-color: #d1fae5;
+            border-left: 4px solid #10b981;
+            color: #065f46;
+        }
+        .feedback.incorrect {
+            background-color: #fee2e2;
+            border-left: 4px solid #ef4444;
+            color: #991b1b;
+        }
+        .feedback p {
+            margin-bottom: 5px;
+        }
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+        button {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        #submitBtn {
+            background-color: #3b82f6;
+            color: white;
+        }
+        #submitBtn:hover {
+            background-color: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(37, 99, 235, 0.2);
+        }
+        #resetBtn {
+            background-color: #94a3b8;
+            color: white;
+        }
+        #resetBtn:hover {
+            background-color: #64748b;
+            transform: translateY(-2px);
+        }
+        .score-board {
+            text-align: center;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 30px;
+            display: none;
+        }
+        .score-board h3 {
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+        .score {
+            font-size: 3rem;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .score-text {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        .formula {
+            background-color: #f8fafc;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #8b5cf6;
+            margin: 15px 0;
+            font-family: 'Cambria Math', serif;
+        }
+        .highlight {
+            background-color: #fef3c7;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+            h1 {
+                font-size: 1.8rem;
+            }
+            .section {
+                padding: 20px 15px;
+            }
+            .options {
+                grid-template-columns: 1fr;
+            }
+            .controls {
+                flex-direction: column;
+                gap: 10px;
+            }
+            button {
+                width: 100%;
+            }
+            table {
+                font-size: 0.85rem;
+            }
+            table th, table td {
+                padding: 8px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>卡方独立性检验</h1>
+        <p class="subtitle">交互式答题练习 - 根据ADHD研究数据完成假设检验</p>
+    </header>
+
+    <div class="container">
+        <section class="section">
+            <h2>题目背景</h2>
+            <p>一名本科生因其对诊断为ADHD（注意缺陷多动障碍）学生的研究而获奖。他的研究表明，患有ADHD的学生在视觉搜索任务上的表现与未患ADHD的学生存在显著差异。</p>
+            <p>当该学生试图将其研究发表在学术期刊上时，他遇到了以下批评：由于他在显示界面中使用了彩色字母和背景，参与者是否具有色觉是否可能对数据中观察到的某些效应产生影响？该学生回去后，测试了参与者的色盲情况，并重新分析了数据。</p>
+            <p>表1是一个列联表，总结了该实验<span id="total-trials">2000</span>次试验的数据。每次试验由色盲参与者或非色盲参与者完成。表中的每个单元格包含三个数字：第一个数字是观测单元格频数（fO）；第二个数字是在假设参与者色觉与试验结果这两个变量之间没有依赖关系下的期望单元格频数（fE）；第三个数字是值 (观测单元格频数 - 期望单元格频数)² / 期望单元格频数。</p>
+
+            <div class="table-container">
+                <table id="contingency-table">
+                    <caption>表1：列联表（部分数据已给出）</caption>
+                    <thead>
+                        <tr>
+                            <th rowspan="2">参与者色觉</th>
+                            <th colspan="4">试验结果</th>
+                            <th rowspan="2">总计</th>
+                        </tr>
+                        <tr>
+                            <th>命中</th>
+                            <th>漏报</th>
+                            <th>虚报</th>
+                            <th>正确拒绝</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body">
+                        <!-- Table content will be dynamically generated -->
+                    </tbody>
+                </table>
+            </div>
+
+            <p>填写表1中的缺失值。将期望频数至少四舍五入到两位小数，并将 (fO - fE)² / fE 值至少四舍五入到三位小数。然后，使用<span id="alpha-display">0.10</span>的显著性水平，检验参与者色觉与试验结果这两个变量之间没有依赖关系的假设。</p>
+
+            <div style="text-align: center; margin: 20px 0;">
+                <button class="refresh-btn" onclick="refreshData()">刷新参数</button>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>假设检验问题</h2>
+
+            <div class="question-block">
+                <div class="question-header">
+                    <div class="question">1. 检验统计量的类型：</div>
+                </div>
+                <div class="options" id="q1-options">
+                    <div class="option" data-question="1" data-option="A">
+                        <span class="option-label">A</span>
+                        <span>Z</span>
+                    </div>
+                    <div class="option" data-question="1" data-option="B">
+                        <span class="option-label">B</span>
+                        <span>t</span>
+                    </div>
+                    <div class="option" data-question="1" data-option="C">
+                        <span class="option-label">C</span>
+                        <span>卡方</span>
+                    </div>
+                    <div class="option" data-question="1" data-option="D">
+                        <span class="option-label">D</span>
+                        <span>F</span>
+                    </div>
+                </div>
+                <div class="question" style="margin-top: 20px;">自由度（如适用）：</div>
+                <input type="number" id="df-input" min="0" max="20" style="padding: 10px; border: 2px solid #cbd5e1; border-radius: 6px; width: 150px; margin-top: 10px;">
+            </div>
+
+            <div class="question-block">
+                <div class="question-header">
+                    <div class="question">2. 检验统计量的值：（将答案至少四舍五入到两位小数。）</div>
+                </div>
+                <input type="number" id="test-statistic" step="0.01" style="padding: 10px; border: 2px solid #cbd5e1; border-radius: 6px; width: 200px; margin-top: 10px;">
+            </div>
+
+            <div class="question-block">
+                <div class="question-header">
+                    <div class="question">3. p值：（将答案至少四舍五入到三位小数。）</div>
+                </div>
+                <input type="number" id="p-value" step="0.001" min="0" max="1" style="padding: 10px; border: 2px solid #cbd5e1; border-radius: 6px; width: 200px; margin-top: 10px;">
+            </div>
+
+            <div class="question-block">
+                <div class="question-header">
+                    <div class="question">4. 我们能否拒绝参与者色觉与试验结果这两个变量之间没有依赖关系的假设？使用<span id="alpha-q4">0.10</span>的显著性水平。</div>
+                </div>
+                <div class="options" id="q4-options">
+                    <div class="option" data-question="4" data-option="A">
+                        <span class="option-label">A</span>
+                        <span>是，Yes</span>
+                    </div>
+                    <div class="option" data-question="4" data-option="B">
+                        <span class="option-label">B</span>
+                        <span>否，No</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2>关键公式与概念</h2>
+            <div class="formula">
+                <p><strong>期望频数计算公式：</strong></p>
+                <p>第i行第j列单元格的期望频数 = (第i行总计) x (第j列总计) / 样本量</p>
+                <p>fE<sub>ij</sub> = (RowTotal<sub>i</sub> x ColTotal<sub>j</sub>) / n</p>
+            </div>
+            <div class="formula">
+                <p><strong>卡方检验统计量：</strong></p>
+                <p>chi^2 = Sum [ (fO - fE)^2 / fE ]</p>
+                <p>其中求和遍及列联表中的所有单元格</p>
+            </div>
+            <div class="formula">
+                <p><strong>自由度：</strong></p>
+                <p>df = (行数 - 1) x (列数 - 1) = (2 - 1) x (4 - 1) = 3</p>
+            </div>
+            <p>检验原理：如果两个分类变量是独立的，那么在一定条件下，chi^2 近似服从自由度为 (r-1)(c-1) 的卡方分布。chi^2 值越大，观测频数与独立性假设下的期望频数差异越大，两个变量独立性的可能性就越小。</p>
+        </section>
+
+        <div class="controls">
+            <button id="submitBtn">提交答案</button>
+            <button id="resetBtn">重新作答</button>
+        </div>
+
+        <div class="score-board" id="scoreBoard">
+            <h3>答题结果</h3>
+            <div class="score" id="scoreDisplay">0/4</div>
+            <p class="score-text" id="scoreText"></p>
+        </div>
+    </div>
+
+    <script>
+        // Parameter datasets
+        const dataParams = [
+            {
+                total: 2000,
+                colorblindTotal: 202, nonColorblindTotal: 1798,
+                colorblind: { hit: 64, miss: 25, falseAlarm: 26, correctReject: 87 },
+                nonColorblind: { hit: 643, miss: 278, falseAlarm: 286, correctReject: 591 },
+                colTotals: { hit: 707, miss: 303, falseAlarm: 312, correctReject: 678 },
+                chiSquare: 8.64, pValue: 0.034, alpha: 0.10, reject: 'A'
+            },
+            {
+                total: 1500,
+                colorblindTotal: 150, nonColorblindTotal: 1350,
+                colorblind: { hit: 48, miss: 18, falseAlarm: 20, correctReject: 64 },
+                nonColorblind: { hit: 482, miss: 210, falseAlarm: 215, correctReject: 443 },
+                colTotals: { hit: 530, miss: 228, falseAlarm: 235, correctReject: 507 },
+                chiSquare: 7.82, pValue: 0.050, alpha: 0.10, reject: 'A'
+            },
+            {
+                total: 2500,
+                colorblindTotal: 255, nonColorblindTotal: 2245,
+                colorblind: { hit: 82, miss: 32, falseAlarm: 33, correctReject: 108 },
+                nonColorblind: { hit: 804, miss: 348, falseAlarm: 358, correctReject: 735 },
+                colTotals: { hit: 886, miss: 380, falseAlarm: 391, correctReject: 843 },
+                chiSquare: 9.15, pValue: 0.027, alpha: 0.10, reject: 'A'
+            },
+            {
+                total: 1800,
+                colorblindTotal: 180, nonColorblindTotal: 1620,
+                colorblind: { hit: 58, miss: 22, falseAlarm: 24, correctReject: 76 },
+                nonColorblind: { hit: 579, miss: 251, falseAlarm: 258, correctReject: 532 },
+                colTotals: { hit: 637, miss: 273, falseAlarm: 282, correctReject: 608 },
+                chiSquare: 6.89, pValue: 0.076, alpha: 0.10, reject: 'A'
+            },
+            {
+                total: 2200,
+                colorblindTotal: 225, nonColorblindTotal: 1975,
+                colorblind: { hit: 72, miss: 28, falseAlarm: 29, correctReject: 96 },
+                nonColorblind: { hit: 708, miss: 306, falseAlarm: 315, correctReject: 646 },
+                colTotals: { hit: 780, miss: 334, falseAlarm: 344, correctReject: 742 },
+                chiSquare: 7.45, pValue: 0.059, alpha: 0.10, reject: 'A'
+            }
+        ];
+
+        let currentIndex = 0;
+        let correctAnswers = {};
+
+        // Calculate expected frequencies and chi-square components
+        function calculateExpected(params) {
+            const rows = ['colorblind', 'nonColorblind'];
+            const cols = ['hit', 'miss', 'falseAlarm', 'correctReject'];
+            const rowTotals = {
+                colorblind: params.colorblindTotal,
+                nonColorblind: params.nonColorblindTotal
+            };
+            const result = {};
+
+            rows.forEach(row => {
+                result[row] = {};
+                cols.forEach(col => {
+                    const observed = params[row][col];
+                    const expected = (rowTotals[row] * params.colTotals[col]) / params.total;
+                    const chiComponent = Math.pow(observed - expected, 2) / expected;
+                    result[row][col] = {
+                        observed: observed,
+                        expected: expected.toFixed(2),
+                        chiComponent: chiComponent.toFixed(3)
+                    };
+                });
+            });
+
+            return result;
+        }
+
+        // Build table HTML
+        function buildTable(params) {
+            const calculated = calculateExpected(params);
+            const tbody = document.getElementById('table-body');
+
+            let html = '';
+
+            // Colorblind rows
+            html += '<tr><td rowspan="3">色盲</td>';
+            html += `<td>${calculated.colorblind.hit.observed}</td>`;
+            html += `<td>${calculated.colorblind.miss.observed}</td>`;
+            html += `<td>${calculated.colorblind.falseAlarm.observed}</td>`;
+            html += `<td>${calculated.colorblind.correctReject.observed}</td>`;
+            html += `<td rowspan="3">${params.colorblindTotal}</td></tr>`;
+            html += '<tr>';
+            html += `<td>${calculated.colorblind.hit.expected}</td>`;
+            html += `<td>${calculated.colorblind.miss.expected}</td>`;
+            html += `<td>${calculated.colorblind.falseAlarm.expected}</td>`;
+            html += `<td>${calculated.colorblind.correctReject.expected}</td></tr>`;
+            html += '<tr>';
+            html += `<td>${calculated.colorblind.hit.chiComponent}</td>`;
+            html += `<td>${calculated.colorblind.miss.chiComponent}</td>`;
+            html += `<td>${calculated.colorblind.falseAlarm.chiComponent}</td>`;
+            html += `<td>${calculated.colorblind.correctReject.chiComponent}</td></tr>`;
+
+            // Non-colorblind rows
+            html += '<tr><td rowspan="3">非色盲</td>';
+            html += `<td>${calculated.nonColorblind.hit.observed}</td>`;
+            html += `<td>${calculated.nonColorblind.miss.observed}</td>`;
+            html += `<td>${calculated.nonColorblind.falseAlarm.observed}</td>`;
+            html += `<td>${calculated.nonColorblind.correctReject.observed}</td>`;
+            html += `<td rowspan="3">${params.nonColorblindTotal}</td></tr>`;
+            html += '<tr>';
+            html += `<td>${calculated.nonColorblind.hit.expected}</td>`;
+            html += `<td>${calculated.nonColorblind.miss.expected}</td>`;
+            html += `<td>${calculated.nonColorblind.falseAlarm.expected}</td>`;
+            html += `<td>${calculated.nonColorblind.correctReject.expected}</td></tr>`;
+            html += '<tr>';
+            html += `<td>${calculated.nonColorblind.hit.chiComponent}</td>`;
+            html += `<td>${calculated.nonColorblind.miss.chiComponent}</td>`;
+            html += `<td>${calculated.nonColorblind.falseAlarm.chiComponent}</td>`;
+            html += `<td>${calculated.nonColorblind.correctReject.chiComponent}</td></tr>`;
+
+            // Totals row
+            html += '<tr><td><strong>总计</strong></td>';
+            html += `<td><strong>${params.colTotals.hit}</strong></td>`;
+            html += `<td><strong>${params.colTotals.miss}</strong></td>`;
+            html += `<td><strong>${params.colTotals.falseAlarm}</strong></td>`;
+            html += `<td><strong>${params.colTotals.correctReject}</strong></td>`;
+            html += `<td><strong>${params.total}</strong></td></tr>';
+
+            tbody.innerHTML = html;
+        }
+
+        // Initialize with current parameters
+        function initParams() {
+            const params = dataParams[currentIndex];
+
+            // Update display elements
+            document.getElementById('total-trials').textContent = params.total;
+            document.getElementById('alpha-display').textContent = params.alpha.toFixed(2);
+            document.getElementById('alpha-q4').textContent = params.alpha.toFixed(2);
+
+            // Build table
+            buildTable(params);
+
+            // Set correct answers
+            correctAnswers = {
+                q1: 'C', // 卡方
+                df: 3,   // 自由度
+                testStatistic: params.chiSquare,
+                pValue: params.pValue,
+                q4: params.reject
+            };
+        }
+
+        // Refresh data with random selection
+        function refreshData() {
+            let newIndex;
+            do {
+                newIndex = Math.floor(Math.random() * dataParams.length);
+            } while (newIndex === currentIndex && dataParams.length > 1);
+
+            currentIndex = newIndex;
+
+            // Clear all selections and inputs
+            document.querySelectorAll('.option').forEach(option => {
+                option.classList.remove('selected', 'correct', 'incorrect');
+            });
+
+            document.getElementById('df-input').value = '';
+            document.getElementById('df-input').style.borderColor = '#cbd5e1';
+            document.getElementById('df-input').style.backgroundColor = 'white';
+
+            document.getElementById('test-statistic').value = '';
+            document.getElementById('test-statistic').style.borderColor = '#cbd5e1';
+            document.getElementById('test-statistic').style.backgroundColor = 'white';
+
+            document.getElementById('p-value').value = '';
+            document.getElementById('p-value').style.borderColor = '#cbd5e1';
+            document.getElementById('p-value').style.backgroundColor = 'white';
+
+            // Hide score board
+            document.getElementById('scoreBoard').style.display = 'none';
+
+            // Reset user answers
+            userAnswers = {
+                q1: null,
+                df: null,
+                testStatistic: null,
+                pValue: null,
+                q4: null
+            };
+
+            // Enable submit button
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = false;
+            submitBtn.style.backgroundColor = '#3b82f6';
+            submitBtn.textContent = '提交答案';
+
+            // Update display
+            initParams();
+        }
+
+        // User answers storage
+        let userAnswers = {
+            q1: null,
+            df: null,
+            testStatistic: null,
+            pValue: null,
+            q4: null
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize
+            initParams();
+
+            // Option click event
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const questionNum = this.getAttribute('data-question');
+                    const selectedOption = this.getAttribute('data-option');
+
+                    // Clear same question selections
+                    document.querySelectorAll(`.option[data-question="${questionNum}"]`).forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+
+                    // Set current selection
+                    this.classList.add('selected');
+
+                    // Save answer
+                    if (questionNum === '1') {
+                        userAnswers.q1 = selectedOption;
+                    } else if (questionNum === '4') {
+                        userAnswers.q4 = selectedOption;
+                    }
+                });
+            });
+
+            // Input events
+            document.getElementById('df-input').addEventListener('input', function() {
+                userAnswers.df = parseFloat(this.value);
+            });
+
+            document.getElementById('test-statistic').addEventListener('input', function() {
+                userAnswers.testStatistic = parseFloat(this.value);
+            });
+
+            document.getElementById('p-value').addEventListener('input', function() {
+                userAnswers.pValue = parseFloat(this.value);
+            });
+
+            // Submit button
+            document.getElementById('submitBtn').addEventListener('click', function() {
+                let score = 0;
+                const totalQuestions = 4;
+
+                // Check Q1
+                if (userAnswers.q1 === correctAnswers.q1) {
+                    document.querySelector(`.option[data-question="1"][data-option="${correctAnswers.q1}"]`).classList.add('correct');
+                    score++;
+                } else if (userAnswers.q1) {
+                    document.querySelector(`.option[data-question="1"][data-option="${userAnswers.q1}"]`).classList.add('incorrect');
+                    document.querySelector(`.option[data-question="1"][data-option="${correctAnswers.q1}"]`).classList.add('correct');
+                }
+
+                // Check df
+                const dfInput = document.getElementById('df-input');
+                if (userAnswers.df === correctAnswers.df) {
+                    dfInput.style.borderColor = '#10b981';
+                    dfInput.style.backgroundColor = '#d1fae5';
+                    score++;
+                } else if (userAnswers.df !== null) {
+                    dfInput.style.borderColor = '#ef4444';
+                    dfInput.style.backgroundColor = '#fee2e2';
+                }
+
+                // Check test statistic (allow small tolerance)
+                const testStatInput = document.getElementById('test-statistic');
+                if (userAnswers.testStatistic !== null &&
+                    Math.abs(userAnswers.testStatistic - correctAnswers.testStatistic) < 0.1) {
+                    testStatInput.style.borderColor = '#10b981';
+                    testStatInput.style.backgroundColor = '#d1fae5';
+                    score++;
+                } else if (userAnswers.testStatistic !== null) {
+                    testStatInput.style.borderColor = '#ef4444';
+                    testStatInput.style.backgroundColor = '#fee2e2';
+                }
+
+                // Check p-value (allow small tolerance)
+                const pValueInput = document.getElementById('p-value');
+                if (userAnswers.pValue !== null &&
+                    Math.abs(userAnswers.pValue - correctAnswers.pValue) < 0.01) {
+                    pValueInput.style.borderColor = '#10b981';
+                    pValueInput.style.backgroundColor = '#d1fae5';
+                    score++;
+                } else if (userAnswers.pValue !== null) {
+                    pValueInput.style.borderColor = '#ef4444';
+                    pValueInput.style.backgroundColor = '#fee2e2';
+                }
+
+                // Check Q4
+                if (userAnswers.q4 === correctAnswers.q4) {
+                    document.querySelector(`.option[data-question="4"][data-option="${correctAnswers.q4}"]`).classList.add('correct');
+                    score++;
+                } else if (userAnswers.q4) {
+                    document.querySelector(`.option[data-question="4"][data-option="${userAnswers.q4}"]`).classList.add('incorrect');
+                    document.querySelector(`.option[data-question="4"][data-option="${correctAnswers.q4}"]`).classList.add('correct');
+                }
+
+                // Display score
+                const scoreBoard = document.getElementById('scoreBoard');
+                const scoreDisplay = document.getElementById('scoreDisplay');
+                const scoreText = document.getElementById('scoreText');
+
+                scoreDisplay.textContent = `${score}/${totalQuestions}`;
+
+                if (score === totalQuestions) {
+                    scoreText.textContent = "优秀！所有答案都正确！";
+                } else if (score >= totalQuestions * 0.7) {
+                    scoreText.textContent = "良好！大部分答案正确。";
+                } else if (score >= totalQuestions * 0.5) {
+                    scoreText.textContent = "及格！需要继续努力。";
+                } else {
+                    scoreText.textContent = "需要复习相关概念。";
+                }
+
+                scoreBoard.style.display = 'block';
+                scoreBoard.scrollIntoView({ behavior: 'smooth' });
+
+                // Disable submit button
+                this.disabled = true;
+                this.style.backgroundColor = '#94a3b8';
+                this.textContent = '已提交';
+            });
+
+            // Reset button
+            document.getElementById('resetBtn').addEventListener('click', function() {
+                refreshData();
+            });
+        });
+    </script>
+</body>
+</html>

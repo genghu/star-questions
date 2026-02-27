@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>已解释与未解释变异及最小二乘回归线 - 答题练习</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f8fafc;
+            color: #334155;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            padding: 30px;
+            overflow: hidden;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        h1 {
+            color: #1e40af;
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #64748b;
+            font-size: 1rem;
+        }
+
+        .question-section {
+            margin-bottom: 40px;
+            padding: 25px;
+            background-color: #f1f5f9;
+            border-radius: 12px;
+            border-left: 5px solid #3b82f6;
+        }
+
+        .question-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .question-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            background-color: #3b82f6;
+            color: white;
+            border-radius: 50%;
+            margin-right: 12px;
+            font-size: 0.9rem;
+        }
+
+        .question-text {
+            margin-bottom: 20px;
+            font-size: 1.05rem;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .option {
+            padding: 16px 20px;
+            background-color: white;
+            border: 2px solid #cbd5e1;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .option:hover {
+            border-color: #93c5fd;
+            background-color: #f0f9ff;
+            transform: translateY(-2px);
+        }
+
+        .option.selected {
+            border-color: #3b82f6;
+            background-color: #dbeafe;
+        }
+
+        .option.correct {
+            border-color: #10b981;
+            background-color: #d1fae5;
+        }
+
+        .option.incorrect {
+            border-color: #ef4444;
+            background-color: #fee2e2;
+        }
+
+        .option-letter {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            background-color: #e2e8f0;
+            color: #475569;
+            border-radius: 50%;
+            margin-right: 15px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .option.selected .option-letter {
+            background-color: #3b82f6;
+            color: white;
+        }
+
+        .option.correct .option-letter {
+            background-color: #10b981;
+            color: white;
+        }
+
+        .option.incorrect .option-letter {
+            background-color: #ef4444;
+            color: white;
+        }
+
+        .fill-blank-container {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #f8fafc;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .fill-blank-input{
+            width: 120px;
+            padding: 10px 15px;
+            font-size: 1.1rem;
+            border: 2px solid #cbd5e1;
+            border-radius: 8px;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        .fill-blank-input:focus{
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .fill-blank-input.correct{
+            border-color: #10b981;
+            background-color: #d1fae5;
+        }
+
+        .fill-blank-input.incorrect{
+            border-color: #ef4444;
+            background-color: #fee2e2;
+        }
+
+        .feedback {
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            display: none;
+            font-size: 0.95rem;
+        }
+
+        .feedback.correct {
+            background-color: #d1fae5;
+            color: #065f46;
+            border-left: 4px solid #10b981;
+            display: block;
+        }
+
+        .feedback.incorrect {
+            background-color: #fee2e2;
+            color: #991b1b;
+            border-left: 4px solid #ef4444;
+            display: block;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.9rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .data-table th, .data-table td {
+            border: 1px solid #cbd5e1;
+            padding: 12px 15px;
+            text-align: center;
+        }
+
+        .data-table th {
+            background-color: #e2e8f0;
+            font-weight: 600;
+            color: #334155;
+        }
+
+        .data-table tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid #e2e8f0;
+        }
+
+        button {
+            padding: 14px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        #submit-btn {
+            background-color: #3b82f6;
+            color: white;
+        }
+
+        #submit-btn:hover {
+            background-color: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.2);
+        }
+
+        #reset-btn {
+            background-color: #64748b;
+            color: white;
+        }
+
+        #reset-btn:hover {
+            background-color: #475569;
+            transform: translateY(-2px);
+        }
+
+        .score-container {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f1f5f9;
+            border-radius: 12px;
+            display: none;
+        }
+
+        .score-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 10px;
+        }
+
+        .score-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #3b82f6;
+            margin: 10px 0;
+        }
+
+        .score-details {
+            color: #64748b;
+            font-size: 0.95rem;
+        }
+
+        .math {
+            font-family: 'Cambria Math', 'Times New Roman', serif;
+            font-style: italic;
+        }
+
+        .formula {
+            background-color: #f8fafc;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #94a3b8;
+            margin: 15px 0;
+            font-family: 'Cambria Math', 'Times New Roman', serif;
+            overflow-x: auto;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .question-section {
+                padding: 20px;
+            }
+            
+            .controls {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            button {
+                width: 100%;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+
+    <style>
+    .show-explanation-btn {
+        display: none;
+        margin: 20px auto;
+        padding: 14px 28px;
+        background: linear-gradient(135deg, #9b59b6, #8e44ad);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 1.1rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
+    }
+    .show-explanation-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
+    }
+    .explanation-section {
+        display: none;
+        margin-top: 20px;
+    }
+    </style>
+    </head>
+<body>
+    <div class="container">
+        <header>
+            <h1>已解释与未解释变异及最小二乘回归线 <button id="refresh-btn" style="margin-left: 15px; padding: 8px 16px; background: linear-gradient(135deg, #34a853, #2ecc71); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(52, 168, 83, 0.3);">刷新参数</button></h1>
+            <div class="subtitle">回归与相关 - 答题练习</div>
+        </header>
+
+        <div class="question-section">
+            <div class="question-title">
+                <span class="question-number">1</span>
+                样本 y 值中，由 x 和 y 之间的估计线性关系所解释的变异由 ________ 给出，对于这些数据，其值为 ________。
+            </div>
+            <div class="question-text">
+                <p>根据题目提供的计算表：</p>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>x</th>
+                            <th>y</th>
+                            <th>(ŷ - ȳ)²</th>
+                            <th>(y - ŷ)²</th>
+                            <th>(y - ȳ)²</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>22.5</td>
+                            <td>24.1</td>
+                            <td>13.1769</td>
+                            <td>1.5129</td>
+                            <td>5.7600</td>
+                        </tr>
+                        <tr>
+                            <td>24.3</td>
+                            <td>23.4</td>
+                            <td>3.7558</td>
+                            <td>1.3502</td>
+                            <td>9.6100</td>
+                        </tr>
+                        <tr>
+                            <td>26.4</td>
+                            <td>27.0</td>
+                            <td>0.0013</td>
+                            <td>0.2153</td>
+                            <td>0.2500</td>
+                        </tr>
+                        <tr>
+                            <td>28.4</td>
+                            <td>26.0</td>
+                            <td>3.6711</td>
+                            <td>5.8371</td>
+                            <td>0.2500</td>
+                        </tr>
+                        <tr>
+                            <td>30.2</td>
+                            <td>32.0</td>
+                            <td>13.0177</td>
+                            <td>3.5797</td>
+                            <td>30.2500</td>
+                        </tr>
+                        <tr style="font-weight: bold; background-color: #e2e8f0;">
+                            <td>列总和</td>
+                            <td></td>
+                            <td>33.6228</td>
+                            <td>12.4952</td>
+                            <td>46.1200</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p>其中：</p>
+                <ul>
+                    <li>第一列总和 = 回归平方和 (SSR) = 33.6228</li>
+                    <li>第二列总和 = 误差平方和 (SSE) = 12.4952</li>
+                    <li>第三列总和 = 总平方和 (SST) = 46.1200</li>
+                </ul>
+                <p>样本 y 值中，由 x 和 y 之间的估计线性关系所解释的变异由 <strong>回归平方和 (SSR)</strong> 给出。</p>
+            </div>
+            <div class="options-container">
+                <div class="option" data-question="1" data-option="a">
+                    <div class="option-letter">A</div>
+                    <div>误差平方和, 46.1200</div>
+                </div>
+                <div class="option" data-question="1" data-option="b">
+                    <div class="option-letter">B</div>
+                    <div>总平方和, 12.4952</div>
+                </div>
+                <div class="option" data-question="1" data-option="c">
+                    <div class="option-letter">C</div>
+                    <div>回归平方和, 33.6228</div>
+                </div>
+            </div>
+            <div class="feedback" id="feedback-1"></div>
+        </div>
+
+        <div class="question-section">
+            <div class="question-title">
+                <span class="question-number">2</span>
+                值 r² 是样本 y 值总变异中由 x 和 y 之间的估计线性关系所解释的比例。对于这些数据，r² 的值是 ________。（将你的答案四舍五入到至少2位小数。）
+            </div>
+            <div class="question-text">
+                <p>r² 的计算公式为：</p>
+                <div class="formula">r² = SSR / SST</div>
+                <p>其中 SSR = 33.6228，SST = 46.1200</p>
+                <p>因此：</p>
+                <div class="formula">r² = 33.6228 / 46.1200 ≈ 0.7288 ≈ 0.73</div>
+            </div>
+            <div class="options-container">
+                <div class="option" data-question="2" data-option="a">
+                    <div class="option-letter">A</div>
+                    <div>0.67</div>
+                </div>
+                <div class="option" data-question="2" data-option="b">
+                    <div class="option-letter">B</div>
+                    <div>0.73</div>
+                </div>
+                <div class="option" data-question="2" data-option="c">
+                    <div class="option-letter">C</div>
+                    <div>0.82</div>
+                </div>
+                <div class="option" data-question="2" data-option="d">
+                    <div class="option-letter">D</div>
+                    <div>0.91</div>
+                </div>
+            </div>
+            <div class="feedback" id="feedback-2"></div>
+        </div>
+
+        <div class="question-section">
+            <div class="question-title">
+                <span class="question-number">3</span>
+                上面给出的最小二乘回归线被称为"最佳拟合"样本数据的直线。使用"最佳拟合"这个术语是因为该直线的方程最小化了 _______，对于这些数据，其值为 ________。
+            </div>
+            <div class="question-text">
+                <p>最小二乘回归线是使 <strong>误差平方和 (SSE)</strong> 最小化的直线。</p>
+                <p>根据计算表，SSE = 12.4952。</p>
+                <p>回归方程为：<span class="math">ŷ = 1.72 + 0.94x</span></p>
+            </div>
+            <div class="options-container">
+                <div class="option" data-question="3" data-option="a">
+                    <div class="option-letter">A</div>
+                    <div>误差平方和, 46.1200</div>
+                </div>
+                <div class="option" data-question="3" data-option="b">
+                    <div class="option-letter">B</div>
+                    <div>总平方和, 12.4952</div>
+                </div>
+                <div class="option" data-question="3" data-option="c">
+                    <div class="option-letter">C</div>
+                    <div>误差平方和, 12.4952</div>
+                </div>
+                <div class="option" data-question="3" data-option="d">
+                    <div class="option-letter">D</div>
+                    <div>回归平方和, 33.6228</div>
+                </div>
+            </div>
+            <div class="feedback" id="feedback-3"></div>
+        </div>
+
+        <div class="question-section">
+            <div class="question-title">
+                <span class="question-number">4</span>
+                对于数据点 (24.3, 23.4)，残差的值是 ________。（将你的答案四舍五入到至少2位小数。）
+            </div>
+            <div class="question-text">
+                <p>残差 = 观测值 y - 预测值 ŷ</p>
+                <p>观测值 y = 23.4</p>
+                <p>预测值 ŷ = 1.72 + 0.94 × 24.3 = 1.72 + 22.842 = 24.562</p>
+                <p>因此：</p>
+                <div class="formula">残差 = 23.4 - 24.562 = -1.162 ≈ -1.16</div>
+            </div>
+            <div class="options-container">
+                <div class="option" data-question="4" data-option="a">
+                    <div class="option-letter">A</div>
+                    <div>1.16</div>
+                </div>
+                <div class="option" data-question="4" data-option="b">
+                    <div class="option-letter">B</div>
+                    <div>-0.94</div>
+                </div>
+                <div class="option" data-question="4" data-option="c">
+                    <div class="option-letter">C</div>
+                    <div>-1.16</div>
+                </div>
+                <div class="option" data-question="4" data-option="d">
+                    <div class="option-letter">D</div>
+                    <div>0.94</div>
+                </div>
+            </div>
+            <div class="feedback" id="feedback-4"></div>
+        </div>
+
+        <div class="controls">
+            <button id="submit-btn">提交答案</button>
+            <button id="reset-btn">重新作答</button>
+        </div>
+
+        <div class="score-container" id="score-container">
+            <div class="score-title">答题结果</div>
+            <div class="score-value" id="score-value">0/4</div>
+            <div class="score-details" id="score-details">您答对了 0 题，答错了 0 题</div>
+        </div>
+
+        <button class="show-explanation-btn" id="show-explanation-btn">查看答案解析</button>
+        <div class="explanation-section" style="display:none; background-color: #f9f9f9; border-radius: 8px; padding: 20px; margin-top: 20px; border-left: 4px solid #f39c12;">
+            <h3 style="color: #e67e22; margin-bottom: 15px;">答案解析</h3>
+            <p><strong>1.</strong> 样本 y 值中，由 x 和 y 之间的估计线性关系所解释的变异由回归平方和 (SSR) 给出，其值为 33.6228。</p>
+            <p><strong>2.</strong> r² = SSR / SST = 33.6228 / 46.1200 ≈ 0.7288 ≈ 0.73。</p>
+            <p><strong>3.</strong> 最小二乘回归线最小化误差平方和 (SSE)，其值为 12.4952。</p>
+            <p><strong>4.</strong> 残差 = 观测值 y - 预测值 ŷ = 23.4 - (1.72 + 0.94×24.3) = 23.4 - 24.562 = -1.162 ≈ -1.16。</p>
+        </div>
+    </div>
+
+    <script>
+        // 正确答案配置
+        const correctAnswers = {
+            1: 'c', // 回归平方和, 33.6228
+            2: 'b', // 0.73
+            3: 'c', // 误差平方和, 12.4952
+            4: 'c'  // -1.16
+        };
+
+        // 答案解释
+        const answerExplanations = {
+            1: "正确！样本 y 值中，由 x 和 y 之间的估计线性关系所解释的变异由回归平方和 (SSR) 给出。根据计算表，SSR = 33.6228。",
+            2: "正确！r² = SSR / SST = 33.6228 / 46.1200 ≈ 0.7288 ≈ 0.73。",
+            3: "正确！最小二乘回归线最小化误差平方和 (SSE)。根据计算表，SSE = 12.4952。",
+            4: "正确！残差 = 观测值 y - 预测值 ŷ = 23.4 - (1.72 + 0.94×24.3) = 23.4 - 24.562 = -1.162 ≈ -1.16。"
+        };
+
+        // 用户选择的答案
+        let userAnswers = {};
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+
+            // 显示答案解析按钮点击事件
+            document.querySelectorAll('.show-explanation-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    var explanation = this.nextElementSibling;
+                    if (explanation) {
+                        if (explanation.style.display === 'none' || explanation.style.display === '') {
+                            explanation.style.display = 'block';
+                            this.textContent = '隐藏答案解析';
+                        } else {
+                            explanation.style.display = 'none';
+                            this.textContent = '查看答案解析';
+                        }
+                    }
+                });
+            });
+
+            // 为每个选项添加点击事件
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const questionNum = this.getAttribute('data-question');
+                    const optionLetter = this.getAttribute('data-option');
+                    
+                    // 清除同一问题的其他选项的选择状态
+                    document.querySelectorAll(`.option[data-question="${questionNum}"]`).forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    
+                    // 设置当前选项为选中状态
+                    this.classList.add('selected');
+                    
+                    // 保存用户答案
+                    userAnswers[questionNum] = optionLetter;
+                    
+                    // 清除该问题的反馈
+                    const feedback = document.getElementById(`feedback-${questionNum}`);
+                    feedback.className = 'feedback';
+                    feedback.textContent = '';
+                });
+            });
+            
+            // 提交按钮事件
+            document.getElementById('submit-btn').addEventListener('click', function() {
+                let correctCount = 0;
+                const totalQuestions = Object.keys(correctAnswers).length;
+                
+                // 检查每个问题
+                for (let i = 1; i <= totalQuestions; i++) {
+                    const userAnswer = userAnswers[i];
+                    const correctAnswer = correctAnswers[i];
+                    const feedback = document.getElementById(`feedback-${i}`);
+                    
+                    // 清除所有选项的样式
+                    document.querySelectorAll(`.option[data-question="${i}"]`).forEach(opt => {
+                        opt.classList.remove('correct', 'incorrect');
+                    });
+                    
+                    // 如果没有回答
+                    if (!userAnswer) {
+                        feedback.className = 'feedback incorrect';
+                        feedback.textContent = '请先选择答案！';
+                        continue;
+                    }
+                    
+                    // 获取用户选择的选项元素
+                    const userOption = document.querySelector(`.option[data-question="${i}"][data-option="${userAnswer}"]`);
+
+                    // Mark incorrect only
+                    if (userAnswer === correctAnswer) {
+                        // 回答正确
+                        correctCount++;
+                        userOption.classList.add('correct');
+                        feedback.className = 'feedback correct';
+                        feedback.textContent = answerExplanations[i];
+                    } else {
+                        // 回答错误
+                        userOption.classList.add('incorrect');
+                        feedback.className = 'feedback incorrect';
+                        feedback.textContent = `回答错误。${answerExplanations[i]}`;
+                    }
+                }
+                
+                // 显示得分
+                const scoreContainer = document.getElementById('score-container');
+                const scoreValue = document.getElementById('score-value');
+                const scoreDetails = document.getElementById('score-details');
+
+                scoreValue.textContent = `${correctCount}/${totalQuestions}`;
+                scoreDetails.textContent = `您答对了 ${correctCount} 题，答错了 ${totalQuestions - correctCount} 题`;
+                scoreContainer.style.display = 'block';
+
+                // Show explanation button
+                var showBtn = document.getElementById('show-explanation-btn');
+                if (showBtn) {
+                    showBtn.style.display = 'inline-block';
+                }
+
+                // 滚动到得分区域
+                scoreContainer.scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            // 重置按钮事件
+            document.getElementById('reset-btn').addEventListener('click', function() {
+                // 清除所有选择
+                userAnswers = {};
+                
+                // 清除所有选项的样式
+                document.querySelectorAll('.option').forEach(option => {
+                    option.classList.remove('selected', 'correct', 'incorrect');
+                });
+                
+                // 清除所有反馈
+                document.querySelectorAll('.feedback').forEach(feedback => {
+                    feedback.className = 'feedback';
+                    feedback.textContent = '';
+                });
+                
+                // 隐藏得分区域
+                document.getElementById('score-container').style.display = 'none';
+            });
+        });
+    </script>
+</body>
+</html>

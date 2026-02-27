@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>两骰子概率问题 - 交互式答题</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 100, 0.1);
+            overflow: hidden;
+            padding: 30px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #eaeaea;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2.2rem;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+
+        .problem-info {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 25px;
+            border-left: 5px solid #3498db;
+        }
+
+        .problem-info p {
+            margin: 5px 0;
+        }
+
+        .content-section {
+            margin-bottom: 40px;
+        }
+
+        h2 {
+            color: #2980b9;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px dashed #bdc3c7;
+            font-size: 1.6rem;
+        }
+
+        .page-content {
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .dice-table {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 8px;
+            margin: 20px auto;
+            max-width: 500px;
+        }
+
+        .dice-cell {
+            background-color: #e3f2fd;
+            border: 2px solid #bbdefb;
+            border-radius: 8px;
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .dice-cell:hover {
+            transform: scale(1.05);
+            background-color: #bbdefb;
+        }
+
+        .sum-highlight {
+            background-color: #c8e6c9;
+            border-color: #81c784;
+        }
+
+        .probability-section {
+            background-color: #e8f4fc;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+        }
+
+        .question {
+            margin: 25px 0;
+            padding: 20px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e0e0e0;
+        }
+
+        .question-title {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .refresh-btn {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .refresh-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.4);
+        }
+
+        .answer-input-container {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #f8fafc;
+            border-radius: 12px;
+            border: 2px solid #e0e7ff;
+        }
+
+        .answer-label {
+            font-size: 1.1rem;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            display: block;
+            font-weight: 600;
+        }
+
+        .answer-input {
+            width: 100%;
+            max-width: 300px;
+            padding: 14px 18px;
+            font-size: 1.2rem;
+            border: 2px solid #e0e7ff;
+            border-radius: 10px;
+            transition: all 0.3s;
+            outline: none;
+        }
+
+        .answer-input:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 10px rgba(52, 152, 219, 0.2);
+        }
+
+        .answer-input.correct {
+            border-color: #2ecc71;
+            background-color: #e8f8ef;
+        }
+
+        .answer-input.incorrect {
+            border-color: #e74c3c;
+            background-color: #fdedec;
+        }
+
+        .tolerance-hint {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-top: 8px;
+        }
+
+        .feedback-inline {
+            margin-top: 10px;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            display: none;
+        }
+
+        .feedback-inline.correct {
+            background-color: #e8f8ef;
+            color: #27ae60;
+            display: block;
+        }
+
+        .feedback-inline.incorrect {
+            background-color: #fdedec;
+            color: #e74c3c;
+            display: block;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        #submit-btn {
+            background-color: #2ecc71;
+            color: white;
+        }
+
+        #submit-btn:hover {
+            background-color: #27ae60;
+            transform: translateY(-3px);
+            box-shadow: 0 7px 14px rgba(46, 204, 113, 0.3);
+        }
+
+        #reset-btn {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        #reset-btn:hover {
+            background-color: #c0392b;
+            transform: translateY(-3px);
+            box-shadow: 0 7px 14px rgba(231, 76, 60, 0.3);
+        }
+
+        #refresh-btn {
+            background: linear-gradient(135deg, #ff9800, #f57c00);
+            color: white;
+        }
+
+        #refresh-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(255, 152, 0, 0.3);
+        }
+
+        .results {
+            margin-top: 30px;
+            padding: 25px;
+            background-color: #f8f9fa;
+            border-radius: 15px;
+            display: none;
+        }
+
+        .results.show {
+            display: block;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .score-display {
+            font-size: 1.8rem;
+            font-weight: bold;
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
+        .score-bar {
+            height: 20px;
+            background-color: #ecf0f1;
+            border-radius: 10px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .score-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #2ecc71, #3498db);
+            width: 0%;
+            transition: width 1s ease-in-out;
+        }
+
+        .explanation {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+            border-left: 5px solid #f39c12;
+        }
+
+        .formula {
+            font-family: 'Courier New', monospace;
+            background-color: #f1f1f1;
+            padding: 5px 10px;
+            border-radius: 5px;
+            margin: 0 5px;
+        }
+
+        .show-explanation-btn {
+            display: none;
+            margin: 20px auto;
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
+        }
+        .show-explanation-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
+        }
+        .explanation-section {
+            display: none;
+            margin-top: 20px;
+        }
+        .explanation-section.show {
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .dice-table {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-dice"></i> 两骰子概率问题</h1>
+            <div class="subtitle">十进制答案 - 交互式概率计算练习</div>
+        </header>
+
+        <div class="problem-info">
+            <p><strong>题目来源：</strong> ALEKS 在线学习系统</p>
+        </div>
+
+        <div class="content-section">
+            <h2><i class="fas fa-book-open"></i> 问题描述</h2>
+            <div class="page-content" id="problem-description">
+                <!-- 动态生成 -->
+            </div>
+        </div>
+
+        <div class="content-section">
+            <h2><i class="fas fa-table"></i> 两次掷骰的所有可能结果</h2>
+            <div class="page-content">
+                <p>下表显示了两次掷骰可能产生的所有 36 种可能组合：</p>
+                <div class="dice-table" id="dice-table">
+                    <!-- 骰子组合将通过JavaScript动态生成 -->
+                </div>
+                <p>因为骰子是公平的，所以这 36 种组合中的每一种被掷出的概率都相同，即 <span class="formula">1/36</span>。</p>
+            </div>
+        </div>
+
+        <div class="content-section">
+            <h2><i class="fas fa-question-circle"></i> 交互式答题</h2>
+
+            <div class="question-header">
+                <p>请输入以下每个事件的概率（四舍五入到两位小数）：</p>
+                <button class="refresh-btn" id="refresh-all-btn">
+                    <i class="fas fa-random"></i> 刷新参数
+                </button>
+            </div>
+
+            <div class="question" id="question-a">
+                <div class="question-title" id="question-a-title">1. 事件 A 的概率 P(A)</div>
+                <div class="answer-input-container">
+                    <label class="answer-label">请输入概率值：</label>
+                    <input type="text" class="answer-input" id="answer-a">
+                    <div class="tolerance-hint">容差：±0.01</div>
+                    <div class="feedback-inline" id="feedback-a"></div>
+                </div>
+            </div>
+
+            <div class="question" id="question-b">
+                <div class="question-title" id="question-b-title">2. 事件 B 的概率 P(B)</div>
+                <div class="answer-input-container">
+                    <label class="answer-label">请输入概率值：</label>
+                    <input type="text" class="answer-input" id="answer-b">
+                    <div class="tolerance-hint">容差：±0.01</div>
+                    <div class="feedback-inline" id="feedback-b"></div>
+                </div>
+            </div>
+
+            <div class="controls">
+                <button id="submit-btn">
+                    <i class="fas fa-paper-plane"></i> 提交答案
+                </button>
+                <button id="reset-btn">
+                    <i class="fas fa-redo"></i> 重新作答
+                </button>
+                <button id="refresh-btn">
+                    <i class="fas fa-random"></i> 刷新参数
+                </button>
+            </div>
+
+            <div class="results" id="results">
+                <div class="score-display" id="score-text">得分: <span id="score">0</span>/2</div>
+                <div class="score-bar">
+                    <div class="score-fill" id="score-fill"></div>
+                </div>
+
+                <button class="show-explanation-btn" id="show-explanation-btn">查看答案解析</button>
+                <div class="explanation-section explanation" id="explanation-section">
+                    <h3><i class="fas fa-lightbulb"></i> 解题思路</h3>
+                    <div id="explanation-content">
+                        <!-- 动态生成 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 和为特定值的组合数量
+            const sumCounts = {
+                2: 1, 3: 2, 4: 3, 5: 4, 6: 5, 7: 6,
+                8: 5, 9: 4, 10: 3, 11: 2, 12: 1
+            };
+
+            // 参数集合 - 不同的事件条件
+            const parameterSets = [
+                {
+                    eventADescription: '和大于 5',
+                    eventAThreshold: 5,
+                    eventADirection: 'greater',
+                    eventBDescription: '和不能被 5 整除',
+                    eventBDivisor: 5,
+                    eventBDirection: 'notDivisible',
+                    correctA: 0.72,
+                    correctB: 0.81
+                },
+                {
+                    eventADescription: '和大于 6',
+                    eventAThreshold: 6,
+                    eventADirection: 'greater',
+                    eventBDescription: '和不能被 3 整除',
+                    eventBDivisor: 3,
+                    eventBDirection: 'notDivisible',
+                    correctA: 0.58,
+                    correctB: 0.67
+                },
+                {
+                    eventADescription: '和大于 4',
+                    eventAThreshold: 4,
+                    eventADirection: 'greater',
+                    eventBDescription: '和不能被 4 整除',
+                    eventBDivisor: 4,
+                    eventBDirection: 'notDivisible',
+                    correctA: 0.83,
+                    correctB: 0.75
+                },
+                {
+                    eventADescription: '和大于 7',
+                    eventAThreshold: 7,
+                    eventADirection: 'greater',
+                    eventBDescription: '和不能被 6 整除',
+                    eventBDivisor: 6,
+                    eventBDirection: 'notDivisible',
+                    correctA: 0.42,
+                    correctB: 0.92
+                },
+                {
+                    eventADescription: '和小于等于 7',
+                    eventAThreshold: 7,
+                    eventADirection: 'lessOrEqual',
+                    eventBDescription: '和能被 2 整除',
+                    eventBDivisor: 2,
+                    eventBDirection: 'divisible',
+                    correctA: 0.58,
+                    correctB: 0.50
+                }
+            ];
+
+            let currentParams = null;
+            let submitted = false;
+
+            // 生成骰子表格
+            function generateDiceTable() {
+                const diceTable = document.getElementById('dice-table');
+                diceTable.innerHTML = '';
+
+                for (let i = 1; i <= 6; i++) {
+                    for (let j = 1; j <= 6; j++) {
+                        const cell = document.createElement('div');
+                        cell.className = 'dice-cell';
+                        cell.textContent = `(${i},${j})`;
+                        cell.title = `和 = ${i + j}`;
+                        diceTable.appendChild(cell);
+                    }
+                }
+            }
+
+            // 初始化问题
+            function initializeQuiz() {
+                // 随机选择参数集
+                const randomIndex = Math.floor(Math.random() * parameterSets.length);
+                currentParams = parameterSets[randomIndex];
+
+                // 更新问题描述
+                document.getElementById('problem-description').innerHTML = `
+                    <p>一个普通的（公平的）骰子是一个立方体，六个面上标有数字 1 到 6（由涂画的点表示）。想象一下，这样的骰子连续掷两次，并将两次掷出的面值相加。这个和被记录为一次随机试验单次试验的结果。</p>
+                    <p>计算以下每个事件的概率：</p>
+                    <ul>
+                        <li><strong>事件 A：</strong>${currentParams.eventADescription}。</li>
+                        <li><strong>事件 B：</strong>${currentParams.eventBDescription}。</li>
+                    </ul>
+                    <p>将你的答案四舍五入到两位小数。</p>
+                `;
+
+                // 更新问题标题
+                document.getElementById('question-a-title').textContent = `1. 事件 A 的概率 P(A)：${currentParams.eventADescription}`;
+                document.getElementById('question-b-title').textContent = `2. 事件 B 的概率 P(B)：${currentParams.eventBDescription}`;
+
+                // 生成解析内容
+                document.getElementById('explanation-content').innerHTML = `
+                    <p><strong>事件 A（${currentParams.eventADescription}）：</strong></p>
+                    <p>根据掷两骰子的所有 36 种可能结果，计算满足条件的情况数量，然后除以 36。</p>
+                    <p>P(A) ≈ ${currentParams.correctA.toFixed(2)}</p>
+                    <br>
+                    <p><strong>事件 B（${currentParams.eventBDescription}）：</strong></p>
+                    <p>同样基于 36 种等可能结果，计算满足条件的情况数量。</p>
+                    <p>P(B) ≈ ${currentParams.correctB.toFixed(2)}</p>
+                `;
+
+                // 重置状态
+                submitted = false;
+
+                // 清除输入和反馈
+                document.getElementById('answer-a').value = '';
+                document.getElementById('answer-a').classList.remove('correct', 'incorrect');
+                document.getElementById('feedback-a').className = 'feedback-inline';
+                document.getElementById('feedback-a').textContent = '';
+
+                document.getElementById('answer-b').value = '';
+                document.getElementById('answer-b').classList.remove('correct', 'incorrect');
+                document.getElementById('feedback-b').className = 'feedback-inline';
+                document.getElementById('feedback-b').textContent = '';
+
+                // 隐藏结果
+                document.getElementById('results').classList.remove('show');
+                document.getElementById('explanation-section').classList.remove('show');
+                document.getElementById('show-explanation-btn').style.display = 'none';
+                document.getElementById('score-fill').style.width = '0%';
+            }
+
+            // 生成骰子表格
+            generateDiceTable();
+
+            // 初始化问题
+            initializeQuiz();
+
+            // 刷新参数按钮
+            document.getElementById('refresh-btn').addEventListener('click', initializeQuiz);
+            document.getElementById('refresh-all-btn').addEventListener('click', initializeQuiz);
+
+            // 提交答案
+            document.getElementById('submit-btn').addEventListener('click', function() {
+                const answerAInput = document.getElementById('answer-a');
+                const answerBInput = document.getElementById('answer-b');
+                const userAnswerA = parseFloat(answerAInput.value);
+                const userAnswerB = parseFloat(answerBInput.value);
+
+                if (isNaN(userAnswerA) || isNaN(userAnswerB)) {
+                    alert('请先输入所有答案！');
+                    return;
+                }
+
+                submitted = true;
+
+                const tolerance = 0.01;
+
+                // 检查答案A
+                const feedbackA = document.getElementById('feedback-a');
+                if (Math.abs(userAnswerA - currentParams.correctA) <= tolerance) {
+                    answerAInput.classList.add('correct');
+                    feedbackA.textContent = '正确！';
+                    feedbackA.className = 'feedback-inline correct';
+                } else {
+                    answerAInput.classList.add('incorrect');
+                    feedbackA.textContent = `不正确。正确答案是 ${currentParams.correctA.toFixed(2)}`;
+                    feedbackA.className = 'feedback-inline incorrect';
+                }
+
+                // 检查答案B
+                const feedbackB = document.getElementById('feedback-b');
+                if (Math.abs(userAnswerB - currentParams.correctB) <= tolerance) {
+                    answerBInput.classList.add('correct');
+                    feedbackB.textContent = '正确！';
+                    feedbackB.className = 'feedback-inline correct';
+                } else {
+                    answerBInput.classList.add('incorrect');
+                    feedbackB.textContent = `不正确。正确答案是 ${currentParams.correctB.toFixed(2)}`;
+                    feedbackB.className = 'feedback-inline incorrect';
+                }
+
+                // 计算得分
+                let score = 0;
+                if (Math.abs(userAnswerA - currentParams.correctA) <= tolerance) score++;
+                if (Math.abs(userAnswerB - currentParams.correctB) <= tolerance) score++;
+
+                // 显示得分
+                document.getElementById('score').textContent = score;
+                document.getElementById('score-text').textContent = `得分: ${score}/2`;
+
+                // 更新进度条
+                const percentage = (score / 2) * 100;
+                document.getElementById('score-fill').style.width = `${percentage}%`;
+
+                // 显示结果和解析按钮
+                document.getElementById('results').classList.add('show');
+                document.getElementById('show-explanation-btn').style.display = 'inline-block';
+
+                // 滚动到结果区域
+                document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+            });
+
+            // 重新作答
+            document.getElementById('reset-btn').addEventListener('click', function() {
+                // 清除输入和反馈
+                document.getElementById('answer-a').value = '';
+                document.getElementById('answer-a').classList.remove('correct', 'incorrect');
+                document.getElementById('feedback-a').className = 'feedback-inline';
+                document.getElementById('feedback-a').textContent = '';
+
+                document.getElementById('answer-b').value = '';
+                document.getElementById('answer-b').classList.remove('correct', 'incorrect');
+                document.getElementById('feedback-b').className = 'feedback-inline';
+                document.getElementById('feedback-b').textContent = '';
+
+                submitted = false;
+
+                // 隐藏结果区域
+                document.getElementById('results').classList.remove('show');
+                document.getElementById('explanation-section').classList.remove('show');
+                document.getElementById('show-explanation-btn').style.display = 'none';
+
+                // 重置进度条
+                document.getElementById('score-fill').style.width = '0%';
+            });
+
+            // 显示答案解析按钮点击事件
+            document.getElementById('show-explanation-btn').addEventListener('click', function() {
+                const explanation = document.getElementById('explanation-section');
+                if (explanation.classList.contains('show')) {
+                    explanation.classList.remove('show');
+                    this.textContent = '查看答案解析';
+                } else {
+                    explanation.classList.add('show');
+                    this.textContent = '隐藏答案解析';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

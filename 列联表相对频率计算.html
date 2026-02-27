@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>列联表相对频率计算 - 交互式答题</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f0f7ff;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #4a90e2;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2.2rem;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        /* Single column layout */
+
+        .card {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            padding: 25px;
+            margin-bottom: 20px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        .question-title {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            border-left: 5px solid #4a90e2;
+            padding-left: 15px;
+        }
+
+        .contingency-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 1rem;
+        }
+
+        .contingency-table th, .contingency-table td {
+            border: 1px solid #ddd;
+            padding: 12px 15px;
+            text-align: center;
+        }
+
+        .contingency-table th {
+            background-color: #4a90e2;
+            color: white;
+            font-weight: 600;
+        }
+
+        .contingency-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        .contingency-table tr:hover {
+            background-color: #e8f4ff;
+        }
+
+        .highlight-cell {
+            background-color: #fff3cd !important;
+            font-weight: bold;
+        }
+
+        .answer-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 25px 0;
+        }
+
+        .answer-option {
+            background-color: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 18px 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        .answer-option:hover {
+            background-color: #e9f7fe;
+            border-color: #4a90e2;
+            transform: scale(1.03);
+        }
+
+        .answer-option.selected {
+            background-color: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .answer-option.correct {
+            background-color: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .answer-option.incorrect {
+            background-color: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        .button {
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 14px 28px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-weight: 600;
+            margin-right: 15px;
+            margin-bottom: 15px;
+        }
+
+        .button:hover {
+            background-color: #357ae8;
+        }
+
+        .button.reset {
+            background-color: #6c757d;
+        }
+
+        .button.reset:hover {
+            background-color: #5a6268;
+        }
+
+        .feedback {
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            display: none;
+        }
+
+        .feedback.correct {
+            background-color: #d4edda;
+            border-left: 5px solid #28a745;
+            color: #155724;
+        }
+
+        .feedback.incorrect {
+            background-color: #f8d7da;
+            border-left: 5px solid #dc3545;
+            color: #721c24;
+        }
+
+        .score-display {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .explanation {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 25px;
+            border-left: 5px solid #17a2b8;
+        }
+
+        .explanation h3 {
+            color: #17a2b8;
+            margin-bottom: 15px;
+        }
+
+        .formula {
+            font-family: 'Cambria Math', serif;
+            font-size: 1.2rem;
+            background-color: #f8f9fa;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            text-align: center;
+            border-left: 4px solid #ffc107;
+        }
+
+        .instructions {
+            background-color: #e9f7fe;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+            border-left: 5px solid #4a90e2;
+        }
+    </style>
+
+    <style>
+    .show-explanation-btn {
+        display: none;
+        margin: 20px auto;
+        padding: 14px 28px;
+        background: linear-gradient(135deg, #9b59b6, #8e44ad);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 1.1rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
+    }
+    .show-explanation-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
+    }
+    .explanation-section {
+        display: none;
+        margin-top: 20px;
+    }
+    </style>
+    </head>
+<body>
+    <header>
+        <h1>列联表相对频率计算</h1>
+        <p class="subtitle">交互式答题练习 - 概率与统计</p>
+    </header>
+
+    <div class="container">
+        <section class="question-section">
+            <div class="card">
+                <h2 class="question-title">题目内容 <button id="refresh-btn" style="margin-left: 15px; padding: 8px 16px; background: linear-gradient(135deg, #3498db, #2980b9); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3);">刷新参数</button></h2>
+
+                <div class="instructions">
+                    <p><strong>说明：</strong> 阅读题目，分析列联表，然后从下方选项中选择正确答案。</p>
+                </div>
+
+                <p><strong>主题：</strong> 概率 - 计算列联表中的相对频率</p>
+
+                <h3 style="margin: 20px 0 10px 0; color: #2c3e50;">父母的吸烟习惯与个人吸烟习惯列联表</h3>
+
+                <table class="contingency-table" id="contingency-table">
+                    <thead>
+                        <tr>
+                            <th rowspan="2">个人的吸烟习惯</th>
+                            <th colspan="3">父母的吸烟习惯</th>
+                        </tr>
+                        <tr>
+                            <th>父母都吸烟</th>
+                            <th>仅一位父母吸烟</th>
+                            <th>父母都不吸烟</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body">
+                        <tr>
+                            <td><strong>吸烟</strong></td>
+                            <td id="cell1">46</td>
+                            <td id="cell2">23</td>
+                            <td id="cell3">19</td>
+                        </tr>
+                        <tr>
+                            <td><strong>不吸烟</strong></td>
+                            <td id="cell4">32</td>
+                            <td id="cell5" class="highlight-cell">36</td>
+                            <td id="cell6">40</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div style="margin: 25px 0;" id="question-text">
+                    <p><strong>问题：</strong> 在样本的所有个体中，<span id="target-row">不吸烟</span>且<span id="target-col">仅一位父母吸烟</span>的个体的相对频率是多少？</p>
+                    <p>将你的答案四舍五入到两位小数。</p>
+                </div>
+                
+                <button class="show-explanation-btn" id="show-explanation-btn">📖 查看答案解析</button>
+<div class="explanation-section explanation">
+                    <h3>题目解析</h3>
+                    <p>列联表提供了关于两个分类变量的信息。在这个问题中，两个变量是个人的吸烟习惯和父母的吸烟习惯。每个个体根据每个变量被归入一个类别，得到的频率显示在列联表的单元格中。</p>
+                    <p>例如，左上角单元格的频率显示有 <strong>46</strong> 个个体吸烟且父母都吸烟。</p>
+                    <p>我们需要计算的是：<strong>不吸烟且仅有一位父母吸烟</strong>的个体的相对频率。</p>
+                    <p>从表中可以看到，不吸烟且仅有一位父母吸烟的个体数是 <strong>36</strong>。</p>
+                    <p>首先计算样本总数：</p>
+                    <div class="formula">
+                        总数 = 46 + 23 + 19 + 32 + 36 + 40 = 196
+                    </div>
+                    <p>因此，所需的相对频率是：</p>
+                    <div class="formula">
+                        相对频率 = 36 ÷ 196 ≈ 0.18367...
+                    </div>
+                    <p>四舍五入到两位小数：</p>
+                    <div class="formula">
+                        0.18367... ≈ 0.18
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="interaction-section">
+            <div class="card">
+                <h2 class="question-title">选择你的答案</h2>
+
+                <div class="answer-options" id="answerOptions">
+                    <!-- Options will be dynamically rendered -->
+                </div>
+                
+                <div style="margin: 25px 0;">
+                    <button class="button" id="submitBtn">提交答案</button>
+                    <button class="button reset" id="resetBtn">重新作答</button>
+                </div>
+                
+                <div class="score-display" id="scoreDisplay">
+                    得分: <span id="score">0</span> / 1
+                </div>
+                
+                <div class="feedback" id="feedback">
+                    <h3 id="feedbackTitle"></h3>
+                    <p id="feedbackText"></p>
+                </div>
+                
+                <button class="show-explanation-btn" id="show-explanation-btn">📖 查看答案解析</button>
+<div class="explanation-section explanation">
+                    <h3>统计术语说明</h3>
+                    <ul style="padding-left: 20px;">
+                        <li><strong>列联表</strong>也称为<strong>双向表</strong>。</li>
+                        <li>找出表中单个单元格的相对频率是找出<strong>联合相对频率</strong>。</li>
+                        <li>找出行或列的相对频率是找出<strong>边际相对频率</strong>。</li>
+                        <li>在给定我们处于某一行或某一列的情况下，找出单个单元格的相对频率是找出<strong>条件相对频率</strong>。</li>
+                    </ul>
+                    <p style="margin-top: 15px;"><strong>注意：</strong>样本中大约 18% 的个体是不吸烟且仅有一位父母吸烟的人。如果我们认为样本能代表其来源的总体，那么我们可能会推断，该总体中大约 18% 的成员是不吸烟且仅有一位父母吸烟的人，即，从该总体中随机选择一名成员，其是不吸烟且仅有一位父母吸烟的人的概率约为 0.18。</p>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+            // Parameter sets with pre-computed answers
+            const questionParams = [
+                {
+                    cells: [46, 23, 19, 32, 36, 40], // cell1-cell6
+                    total: 196,
+                    targetCell: 36, // cell5 (not smoking + one parent smoking)
+                    targetRow: "不吸烟",
+                    targetCol: "仅一位父母吸烟",
+                    answer: "0.18",
+                    options: ["0.15", "0.18", "0.20", "0.23"]
+                },
+                {
+                    cells: [52, 28, 15, 25, 42, 38],
+                    total: 200,
+                    targetCell: 42,
+                    targetRow: "不吸烟",
+                    targetCol: "仅一位父母吸烟",
+                    answer: "0.21",
+                    options: ["0.18", "0.21", "0.24", "0.19"]
+                },
+                {
+                    cells: [38, 32, 22, 28, 45, 35],
+                    total: 200,
+                    targetCell: 45,
+                    targetRow: "不吸烟",
+                    targetCol: "仅一位父母吸烟",
+                    answer: "0.23",
+                    options: ["0.20", "0.23", "0.25", "0.18"]
+                },
+                {
+                    cells: [55, 25, 18, 30, 35, 37],
+                    total: 200,
+                    targetCell: 35,
+                    targetRow: "不吸烟",
+                    targetCol: "仅一位父母吸烟",
+                    answer: "0.18",
+                    options: ["0.15", "0.18", "0.21", "0.16"]
+                },
+                {
+                    cells: [42, 30, 20, 35, 40, 33],
+                    total: 200,
+                    targetCell: 40,
+                    targetRow: "不吸烟",
+                    targetCol: "仅一位父母吸烟",
+                    answer: "0.20",
+                    options: ["0.17", "0.20", "0.22", "0.19"]
+                },
+                {
+                    cells: [48, 26, 16, 28, 38, 44],
+                    total: 200,
+                    targetCell: 38,
+                    targetRow: "不吸烟",
+                    targetCol: "仅一位父母吸烟",
+                    answer: "0.19",
+                    options: ["0.16", "0.19", "0.22", "0.17"]
+                }
+            ];
+
+            let currentParams = questionParams[0];
+
+            // 显示答案解析按钮点击事件
+            document.querySelectorAll('.show-explanation-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    var questionId = this.getAttribute('data-question') || this.id;
+                    var explanation;
+                    if (questionId) {
+                        explanation = this.nextElementSibling;
+                    }
+                    if (explanation) {
+                        if (explanation.classList.contains('show')) {
+                            explanation.classList.remove('show');
+                            this.textContent = '查看答案解析';
+                        } else {
+                            explanation.classList.add('show');
+                            this.textContent = '隐藏答案解析';
+                        }
+                    }
+                });
+            });
+
+            // 获取DOM元素
+            const submitBtn = document.getElementById('submitBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const refreshBtn = document.getElementById('refresh-btn');
+            const feedback = document.getElementById('feedback');
+            const feedbackTitle = document.getElementById('feedbackTitle');
+            const feedbackText = document.getElementById('feedbackText');
+            const scoreDisplay = document.getElementById('score');
+
+            // 正确答案 (will be updated dynamically)
+            let correctAnswer = currentParams.answer;
+            let selectedAnswer = null;
+            let isSubmitted = false;
+            let score = 0;
+
+            // Render question with current parameters
+            function renderQuestion() {
+                const params = currentParams;
+
+                // Update table cells
+                for (let i = 1; i <= 6; i++) {
+                    document.getElementById(`cell${i}`).textContent = params.cells[i-1];
+                }
+
+                // Update question text
+                document.getElementById('target-row').textContent = params.targetRow;
+                document.getElementById('target-col').textContent = params.targetCol;
+
+                // Update options
+                document.getElementById('answerOptions').innerHTML = params.options.map(opt =>
+                    `<div class="answer-option" data-value="${opt}">${opt}</div>`
+                ).join('');
+
+                // Update correct answer
+                correctAnswer = params.answer;
+
+                // Reset state
+                selectedAnswer = null;
+
+                // Re-attach click events
+                attachOptionEvents();
+            }
+
+            // Attach click events to options
+            function attachOptionEvents() {
+                const answerOptions = document.querySelectorAll('.answer-option');
+                answerOptions.forEach(option => {
+                    option.addEventListener('click', function() {
+                        if (isSubmitted) return;
+
+                        // Remove previous selection
+                        answerOptions.forEach(opt => opt.classList.remove('selected'));
+
+                        // Set current selection
+                        this.classList.add('selected');
+                        selectedAnswer = this.getAttribute('data-value');
+                    });
+                });
+            }
+
+            // Refresh button
+            refreshBtn.addEventListener('click', function() {
+                // Select random parameters
+                const randomIndex = Math.floor(Math.random() * questionParams.length);
+                currentParams = questionParams[randomIndex];
+
+                // Reset state
+                isSubmitted = false;
+                selectedAnswer = null;
+                score = 0;
+
+                // Hide feedback
+                feedback.style.display = 'none';
+                feedback.classList.remove('correct', 'incorrect');
+
+                // Hide explanation
+                document.querySelectorAll('.explanation-section').forEach(exp => {
+                    exp.classList.remove('show');
+                });
+                document.querySelectorAll('.show-explanation-btn').forEach(btn => {
+                    btn.style.display = 'none';
+                    btn.textContent = '查看答案解析';
+                });
+
+                // Reset score
+                scoreDisplay.textContent = '0';
+
+                // Re-render
+                renderQuestion();
+            });
+
+            // Initial render
+            renderQuestion();
+
+            // 提交答案
+            submitBtn.addEventListener('click', function() {
+                if (!selectedAnswer) {
+                    alert('请先选择一个答案！');
+                    return;
+                }
+
+                if (isSubmitted) return;
+
+                isSubmitted = true;
+
+                // 检查答案
+                const isCorrect = selectedAnswer === correctAnswer;
+
+                // 显示正确答案
+                const answerOptions = document.querySelectorAll('.answer-option');
+                answerOptions.forEach(option => {
+                    if (option.getAttribute('data-value') === correctAnswer) {
+                        option.classList.add('correct');
+                    } else if (option.classList.contains('selected')) {
+                        option.classList.add('incorrect');
+                    }
+                });
+
+                // 显示反馈
+                if (isCorrect) {
+                    feedbackTitle.textContent = '回答正确！';
+                    feedbackText.textContent = `你选择了 ${selectedAnswer}，这是正确答案。${currentParams.targetRow}且${currentParams.targetCol}的个体的相对频率是 ${currentParams.targetCell}/${currentParams.total}，四舍五入到两位小数为 ${correctAnswer}。`;
+                    feedback.classList.add('correct');
+                    feedback.classList.remove('incorrect');
+                    score = 1;
+                } else {
+                    feedbackTitle.textContent = '回答不正确';
+                    feedbackText.textContent = `你选择了 ${selectedAnswer}。`;
+                    feedback.classList.add('incorrect');
+                    feedback.classList.remove('correct');
+                    score = 0;
+                }
+
+                feedback.style.display = 'block';
+
+                // Show explanation button after submit
+                var showBtns = document.querySelectorAll('.show-explanation-btn');
+                showBtns.forEach(function(btn) {
+                    btn.style.display = 'inline-block';
+                });
+
+                scoreDisplay.textContent = score;
+
+                // 滚动到反馈区域
+                feedback.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            });
+
+            // 重置答题
+            resetBtn.addEventListener('click', function() {
+                // 重置所有选项样式
+                const answerOptions = document.querySelectorAll('.answer-option');
+                answerOptions.forEach(option => {
+                    option.classList.remove('selected', 'correct', 'incorrect');
+                });
+
+                // 隐藏反馈
+                feedback.style.display = 'none';
+
+                // 重置状态
+                selectedAnswer = null;
+                isSubmitted = false;
+            });
+        });
+    </script>
+</body>
+</html>

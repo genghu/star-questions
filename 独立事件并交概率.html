@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>独立事件并交概率 - 交互式答题</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(50, 50, 93, 0.1), 0 5px 15px rgba(0, 0, 0, 0.07);
+            overflow: hidden;
+            padding: 30px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #eaeaea;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2.2rem;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+
+        .question-container {
+            margin-bottom: 40px;
+            padding: 25px;
+            background-color: #f8fafc;
+            border-radius: 15px;
+            border-left: 5px solid #3498db;
+        }
+
+        .question-title {
+            font-size: 1.4rem;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .question-title i {
+            margin-right: 10px;
+            color: #3498db;
+        }
+
+        .refresh-btn {
+            background-color: #34a853;
+            color: white;
+            padding: 8px 16px;
+            font-size: 0.9rem;
+            border-radius: 6px;
+            margin-left: auto;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .refresh-btn:hover {
+            background-color: #2d9248;
+        }
+
+        .question-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
+            line-height: 1.8;
+        }
+
+        .math {
+            font-family: 'Cambria Math', 'Times New Roman', serif;
+            font-size: 1.1rem;
+            color: #2c3e50;
+        }
+
+        .param {
+            color: #3498db;
+            font-weight: bold;
+        }
+
+        .options-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .option {
+            background-color: white;
+            border: 2px solid #e0e6ed;
+            border-radius: 10px;
+            padding: 18px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .option:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(52, 152, 219, 0.15);
+            border-color: #3498db;
+        }
+
+        .option.selected {
+            border-color: #3498db;
+            background-color: #ebf5fb;
+        }
+
+        .option.correct {
+            border-color: #2ecc71;
+            background-color: #e8f8ef;
+        }
+
+        .option.incorrect {
+            border-color: #e74c3c;
+            background-color: #fdedec;
+        }
+
+        .option-label {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            background-color: #3498db;
+            color: white;
+            border-radius: 50%;
+            margin-right: 15px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .option.correct .option-label {
+            background-color: #2ecc71;
+        }
+
+        .option.incorrect .option-label {
+            background-color: #e74c3c;
+        }
+
+        .option-text {
+            font-size: 1.05rem;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        button {
+            padding: 14px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        #submit-btn {
+            background-color: #3498db;
+            color: white;
+        }
+
+        #submit-btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-3px);
+            box-shadow: 0 7px 14px rgba(52, 152, 219, 0.3);
+        }
+
+        #reset-btn {
+            background-color: #95a5a6;
+            color: white;
+        }
+
+        #reset-btn:hover {
+            background-color: #7f8c8d;
+            transform: translateY(-3px);
+            box-shadow: 0 7px 14px rgba(149, 165, 166, 0.3);
+        }
+
+        .results-container {
+            margin-top: 40px;
+            padding: 25px;
+            background-color: #f8fafc;
+            border-radius: 15px;
+            border-left: 5px solid #9b59b6;
+            display: none;
+        }
+
+        .results-title {
+            font-size: 1.4rem;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .results-title i {
+            margin-right: 10px;
+            color: #9b59b6;
+        }
+
+        .score-display {
+            text-align: center;
+            font-size: 3rem;
+            font-weight: bold;
+            color: #3498db;
+            margin: 20px 0;
+        }
+
+        .feedback {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .feedback-title {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .feedback-content {
+            color: #34495e;
+            line-height: 1.8;
+        }
+
+        .correct-answer {
+            color: #27ae60;
+            font-weight: 600;
+        }
+
+        .explanation {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            border-left: 4px solid #f1c40f;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            .options-container {
+                grid-template-columns: 1fr;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+
+    <style>
+    .show-explanation-btn {
+        display: none;
+        margin: 20px auto;
+        padding: 14px 28px;
+        background: linear-gradient(135deg, #9b59b6, #8e44ad);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 1.1rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
+    }
+    .show-explanation-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
+    }
+    .explanation-section {
+        display: none;
+        margin-top: 20px;
+    }
+    </style>
+    </head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-chart-bar"></i> 独立事件并交概率</h1>
+            <p class="subtitle">交互式概率计算练习 - 请阅读题目并选择正确答案</p>
+        </header>
+
+        <div class="question-container" id="question1-container">
+            <div class="question-title">
+                <i class="fas fa-question-circle"></i> 题目 1: 独立事件的并集与交集的概率
+                <button class="refresh-btn" id="refresh-btn">刷新参数</button>
+            </div>
+
+            <div class="question-content">
+                <p>假设 A 和 B 是独立事件，且 <span class="math">P(A) = <span class="param" id="param-pa">0.20</span></span> 和 <span class="math">P(B) = <span class="param" id="param-pb">0.40</span></span>。</p>
+                <p class="math">求 P(A ∩ B) 和 P(A ∪ B)。</p>
+
+                <div class="explanation" id="calculation-hint">
+                    <p><strong>解题思路：</strong></p>
+                    <p>对于独立事件，交集的概率为：P(A ∩ B) = P(A) · P(B) = <span id="hint-pa">0.20</span> × <span id="hint-pb">0.40</span> = <span id="hint-intersection">0.08</span></p>
+                    <p>并集的概率为：P(A ∪ B) = P(A) + P(B) - P(A ∩ B) = <span id="hint-pa2">0.20</span> + <span id="hint-pb2">0.40</span> - <span id="hint-intersection2">0.08</span> = <span id="hint-union">0.52</span></p>
+                </div>
+            </div>
+
+            <div class="options-container" id="options-container-1">
+                <!-- Options will be dynamically generated -->
+            </div>
+        </div>
+
+        <div class="question-container" id="question2-container">
+            <div class="question-title">
+                <i class="fas fa-question-circle"></i> 题目 2: 补集事件的概率计算
+            </div>
+
+            <div class="question-content">
+                <p>基于题目1的条件，现在计算 <span class="math">P(A̅ ∩ B)</span> 和 <span class="math">P(A̅ ∪ B)</span>。</p>
+                <p class="math">首先，我们求 P(A̅)，因为后续计算需要用到它。我们可以使用补集法则：</p>
+                <p class="math">P(A̅) = 1 - P(A) = 1 - <span id="hint2-pa">0.20</span> = <span id="hint2-pac">0.80</span>。</p>
+                <p class="math">由于 A̅ 和 B 是独立的，我们有 P(A̅ ∩ B) = P(A̅) · P(B) = <span id="hint2-pac2">0.80</span> · <span id="hint2-pb">0.40</span> = <span id="hint2-intersection">0.32</span>。</p>
+                <p class="math">接下来，利用概率加法公式，我们有 P(A̅ ∪ B) = P(A̅) + P(B) - P(A̅ ∩ B) = <span id="hint2-pac3">0.80</span> + <span id="hint2-pb2">0.40</span> - <span id="hint2-intersection2">0.32</span> = <span id="hint2-union">0.88</span>。</p>
+            </div>
+
+            <div class="options-container" id="options-container-2">
+                <!-- Options will be dynamically generated -->
+            </div>
+        </div>
+
+        <div class="controls">
+            <button id="submit-btn">
+                <i class="fas fa-paper-plane"></i> 提交答案
+            </button>
+            <button id="reset-btn">
+                <i class="fas fa-redo"></i> 重新作答
+            </button>
+        </div>
+
+        <div class="results-container" id="results">
+            <div class="results-title">
+                <i class="fas fa-chart-line"></i> 答题结果
+            </div>
+
+            <div class="score-display">
+                <span id="score">0</span>/2
+            </div>
+
+            <div class="feedback">
+                <div class="feedback-title">题目1反馈:</div>
+                <div class="feedback-content" id="feedback1">
+                    <!-- 反馈内容将通过JS动态生成 -->
+                </div>
+
+                <div class="feedback-title" style="margin-top: 20px;">题目2反馈:</div>
+                <div class="feedback-content" id="feedback2">
+                    <!-- 反馈内容将通过JS动态生成 -->
+                </div>
+
+                <div class="explanation" style="margin-top: 20px;">
+                    <p><strong>知识点总结：</strong></p>
+                    <p>1. 对于独立事件 A 和 B：P(A ∩ B) = P(A) · P(B)</p>
+                    <p>2. 对于任意两个事件：P(A ∪ B) = P(A) + P(B) - P(A ∩ B)</p>
+                    <p>3. 补集概率：P(A̅) = 1 - P(A)</p>
+                    <p>4. 如果 A 和 B 独立，则 A̅ 和 B 也独立</p>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <script>
+        // Parameter sets for the question
+        const parameterSets = [
+            { pA: 0.20, pB: 0.40, intersection: 0.08, union: 0.52, pAc: 0.80, acIntersection: 0.32, acUnion: 0.88 },
+            { pA: 0.30, pB: 0.50, intersection: 0.15, union: 0.65, pAc: 0.70, acIntersection: 0.35, acUnion: 0.85 },
+            { pA: 0.25, pB: 0.60, intersection: 0.15, union: 0.70, pAc: 0.75, acIntersection: 0.45, acUnion: 0.90 },
+            { pA: 0.35, pB: 0.45, intersection: 0.1575, union: 0.6425, pAc: 0.65, acIntersection: 0.2925, acUnion: 0.8075 },
+            { pA: 0.15, pB: 0.55, intersection: 0.0825, union: 0.6175, pAc: 0.85, acIntersection: 0.4675, acUnion: 0.9325 }
+        ];
+
+        let currentParams = parameterSets[0];
+        let selectedAnswers = { 'question1': null, 'question2': null };
+        let isSubmitted = false;
+
+        function generateOptions1(params) {
+            const correct = {
+                intersection: params.intersection.toFixed(4),
+                union: params.union.toFixed(4)
+            };
+
+            const options = [
+                { value: 'A', text: `P(A ∩ B) = ${correct.intersection}, P(A ∪ B) = ${correct.union}`, isCorrect: true }
+            ];
+
+            // Generate distractors
+            const wrongIntersection1 = (params.intersection + 0.12).toFixed(4);
+            const wrongUnion1 = (params.union + 0.08).toFixed(4);
+            options.push({ value: 'B', text: `P(A ∩ B) = ${wrongIntersection1}, P(A ∪ B) = ${wrongUnion1}`, isCorrect: false });
+
+            const wrongIntersection2 = (params.intersection + 0.24).toFixed(4);
+            const wrongUnion2 = (params.union + 0.36).toFixed(4);
+            options.push({ value: 'C', text: `P(A ∩ B) = ${wrongIntersection2}, P(A ∪ B) = ${wrongUnion2}`, isCorrect: false });
+
+            const wrongIntersection3 = (params.pA + params.pB - params.intersection).toFixed(4);
+            const wrongUnion3 = params.intersection.toFixed(4);
+            options.push({ value: 'D', text: `P(A ∩ B) = ${wrongIntersection3}, P(A ∪ B) = ${wrongUnion3}`, isCorrect: false });
+
+            return options;
+        }
+
+        function generateOptions2(params) {
+            const correct = {
+                intersection: params.acIntersection.toFixed(4),
+                union: params.acUnion.toFixed(4)
+            };
+
+            const options = [
+                { value: 'A', text: `P(A̅ ∩ B) = ${correct.intersection}, P(A̅ ∪ B) = ${correct.union}`, isCorrect: true }
+            ];
+
+            // Generate distractors
+            const wrongIntersection1 = params.pA.toFixed(4);
+            const wrongUnion1 = params.pB.toFixed(4);
+            options.push({ value: 'B', text: `P(A̅ ∩ B) = ${wrongIntersection1}, P(A̅ ∪ B) = ${wrongUnion1}`, isCorrect: false });
+
+            const wrongIntersection2 = params.intersection.toFixed(4);
+            const wrongUnion2 = params.union.toFixed(4);
+            options.push({ value: 'C', text: `P(A̅ ∩ B) = ${wrongIntersection2}, P(A̅ ∪ B) = ${wrongUnion2}`, isCorrect: false });
+
+            const wrongIntersection3 = params.pAc.toFixed(4);
+            const wrongUnion3 = params.pB.toFixed(4);
+            options.push({ value: 'D', text: `P(A̅ ∩ B) = ${wrongIntersection3}, P(A̅ ∪ B) = ${wrongUnion3}`, isCorrect: false });
+
+            return options;
+        }
+
+        function renderQuestion() {
+            const params = currentParams;
+
+            // Update parameters in question text
+            document.getElementById('param-pa').textContent = params.pA.toFixed(2);
+            document.getElementById('param-pb').textContent = params.pB.toFixed(2);
+
+            // Update hints for question 1
+            document.getElementById('hint-pa').textContent = params.pA.toFixed(2);
+            document.getElementById('hint-pb').textContent = params.pB.toFixed(2);
+            document.getElementById('hint-intersection').textContent = params.intersection.toFixed(4);
+            document.getElementById('hint-pa2').textContent = params.pA.toFixed(2);
+            document.getElementById('hint-pb2').textContent = params.pB.toFixed(2);
+            document.getElementById('hint-intersection2').textContent = params.intersection.toFixed(4);
+            document.getElementById('hint-union').textContent = params.union.toFixed(4);
+
+            // Update hints for question 2
+            document.getElementById('hint2-pa').textContent = params.pA.toFixed(2);
+            document.getElementById('hint2-pac').textContent = params.pAc.toFixed(2);
+            document.getElementById('hint2-pac2').textContent = params.pAc.toFixed(2);
+            document.getElementById('hint2-pb').textContent = params.pB.toFixed(2);
+            document.getElementById('hint2-intersection').textContent = params.acIntersection.toFixed(4);
+            document.getElementById('hint2-pac3').textContent = params.pAc.toFixed(2);
+            document.getElementById('hint2-pb2').textContent = params.pB.toFixed(2);
+            document.getElementById('hint2-intersection2').textContent = params.acIntersection.toFixed(4);
+            document.getElementById('hint2-union').textContent = params.acUnion.toFixed(4);
+
+            // Render options for question 1
+            const options1 = generateOptions1(params);
+            const container1 = document.getElementById('options-container-1');
+            container1.innerHTML = '';
+            options1.forEach(opt => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'option';
+                optionDiv.setAttribute('data-value', opt.value);
+                optionDiv.setAttribute('data-question', 'question1');
+                optionDiv.setAttribute('data-correct', opt.isCorrect);
+                optionDiv.innerHTML = `
+                    <div class="option-label">${opt.value}</div>
+                    <div class="option-text"><span class="math">${opt.text}</span></div>
+                `;
+                container1.appendChild(optionDiv);
+            });
+
+            // Render options for question 2
+            const options2 = generateOptions2(params);
+            const container2 = document.getElementById('options-container-2');
+            container2.innerHTML = '';
+            options2.forEach(opt => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'option';
+                optionDiv.setAttribute('data-value', opt.value);
+                optionDiv.setAttribute('data-question', 'question2');
+                optionDiv.setAttribute('data-correct', opt.isCorrect);
+                optionDiv.innerHTML = `
+                    <div class="option-label">${opt.value}</div>
+                    <div class="option-text"><span class="math">${opt.text}</span></div>
+                `;
+                container2.appendChild(optionDiv);
+            });
+
+            // Reset state
+            selectedAnswers = { 'question1': null, 'question2': null };
+            isSubmitted = false;
+
+            // Re-attach event listeners
+            attachOptionListeners();
+        }
+
+        function attachOptionListeners() {
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const questionKey = this.getAttribute('data-question');
+                    const questionContainer = this.closest('.question-container');
+                    const siblingOptions = questionContainer.querySelectorAll('.option');
+
+                    siblingOptions.forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+
+                    this.classList.add('selected');
+                    selectedAnswers[questionKey] = this.getAttribute('data-value');
+                });
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize with first parameter set
+            renderQuestion();
+
+            const refreshBtn = document.getElementById('refresh-btn');
+            const submitBtn = document.getElementById('submit-btn');
+            const resetBtn = document.getElementById('reset-btn');
+            const resultsContainer = document.getElementById('results');
+
+            // Refresh button
+            refreshBtn.addEventListener('click', function() {
+                let newParams;
+                do {
+                    newParams = parameterSets[Math.floor(Math.random() * parameterSets.length)];
+                } while (newParams === currentParams && parameterSets.length > 1);
+
+                currentParams = newParams;
+                renderQuestion();
+
+                // Reset UI
+                document.querySelectorAll('.option').forEach(option => {
+                    option.classList.remove('selected', 'correct', 'incorrect');
+                });
+
+                resultsContainer.style.display = 'none';
+            });
+
+            // Submit button
+            submitBtn.addEventListener('click', function() {
+                let score = 0;
+
+                // Check question 1
+                const q1Options = document.querySelectorAll('#options-container-1 .option');
+                const q1Correct = selectedAnswers['question1'] === 'A';
+                q1Options.forEach(option => {
+                    option.classList.remove('selected');
+                    if (option.getAttribute('data-value') === selectedAnswers['question1'] && !q1Correct) {
+                        option.classList.add('incorrect');
+                    }
+                });
+
+                if (q1Correct) {
+                    score++;
+                    document.getElementById('feedback1').innerHTML = `<p>✓ 回答正确！您选择了 <span class="correct-answer">${selectedAnswers['question1']}</span>。</p>`;
+                } else {
+                    document.getElementById('feedback1').innerHTML = `<p>✗ 回答错误。正确答案是 <span class="correct-answer">A</span>。</p>`;
+                }
+
+                // Check question 2
+                const q2Options = document.querySelectorAll('#options-container-2 .option');
+                const q2Correct = selectedAnswers['question2'] === 'A';
+                q2Options.forEach(option => {
+                    option.classList.remove('selected');
+                    if (option.getAttribute('data-value') === selectedAnswers['question2'] && !q2Correct) {
+                        option.classList.add('incorrect');
+                    }
+                });
+
+                if (q2Correct) {
+                    score++;
+                    document.getElementById('feedback2').innerHTML = `<p>✓ 回答正确！您选择了 <span class="correct-answer">${selectedAnswers['question2']}</span>。</p>`;
+                } else {
+                    document.getElementById('feedback2').innerHTML = `<p>✗ 回答错误。正确答案是 <span class="correct-answer">A</span>。</p>`;
+                }
+
+                // Display score
+                document.getElementById('score').textContent = score;
+
+                // Show results
+                resultsContainer.style.display = 'block';
+                resultsContainer.scrollIntoView({ behavior: 'smooth' });
+            });
+
+            // Reset button
+            resetBtn.addEventListener('click', function() {
+                document.querySelectorAll('.option').forEach(option => {
+                    option.classList.remove('selected', 'correct', 'incorrect');
+                });
+
+                selectedAnswers = { 'question1': null, 'question2': null };
+                resultsContainer.style.display = 'none';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
+    </script>
+</body>
+</html>

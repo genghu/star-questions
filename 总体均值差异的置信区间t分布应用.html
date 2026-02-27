@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>总体均值差异的置信区间t分布应用</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background-color: #f8fafc;
+            color: #334155;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        h1 {
+            color: #1e40af;
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #64748b;
+            font-size: 1rem;
+        }
+        .info-box {
+            background-color: #e0f2fe;
+            border-left: 5px solid #0ea5e9;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+            font-size: 0.95rem;
+        }
+        .question-container {
+            background-color: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+        }
+        .question-title {
+            color: #1e3a8a;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .refresh-btn {
+            background-color: #34a853;
+            color: white;
+            padding: 8px 16px;
+            font-size: 0.9rem;
+            border-radius: 6px;
+            margin-left: auto;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .refresh-btn:hover {
+            background-color: #2d9248;
+        }
+        .question-text {
+            margin-bottom: 25px;
+            white-space: pre-line;
+            background-color: #f8fafc;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px dashed #cbd5e1;
+            font-size: 1rem;
+        }
+        .param {
+            color: #1e40af;
+            font-weight: bold;
+        }
+        .formula {
+            font-family: 'Cambria Math', serif;
+            background-color: #f1f5f9;
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+            overflow-x: auto;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+        .answer-inputs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 25px;
+        }
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+        .input-group label {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #475569;
+            font-size: 1rem;
+        }
+        .input-group input {
+            padding: 14px;
+            border: 2px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            background-color: #f8fafc;
+        }
+        .input-group input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+        }
+        .input-group input.correct {
+            border-color: #10b981;
+            background-color: #d1fae5;
+        }
+        .input-group input.incorrect {
+            border-color: #ef4444;
+            background-color: #fee2e2;
+        }
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        button {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        #submitBtn {
+            background-color: #3b82f6;
+            color: white;
+        }
+        #submitBtn:hover {
+            background-color: #2563eb;
+            transform: translateY(-2px);
+        }
+        #resetBtn {
+            background-color: #94a3b8;
+            color: white;
+        }
+        #resetBtn:hover {
+            background-color: #64748b;
+            transform: translateY(-2px);
+        }
+        .feedback {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 10px;
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .feedback.correct {
+            background-color: #d1fae5;
+            border: 2px solid #10b981;
+            color: #065f46;
+        }
+        .feedback.incorrect {
+            background-color: #fee2e2;
+            border: 2px solid #ef4444;
+            color: #7f1d1d;
+        }
+        .feedback-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .feedback-details {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            background-color: #e0f2fe;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+            text-align: center;
+            font-weight: 600;
+            color: #1e3a8a;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .stat-item {
+            flex: 1;
+            min-width: 150px;
+        }
+        .stat-value {
+            font-size: 2rem;
+            color: #3b82f6;
+        }
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+            h1 {
+                font-size: 1.5rem;
+            }
+            .question-container {
+                padding: 20px;
+            }
+            .answer-inputs {
+                grid-template-columns: 1fr;
+            }
+            .buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            button {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+
+    <style>
+    .show-explanation-btn {
+        display: none;
+        margin: 20px auto;
+        padding: 14px 28px;
+        background: linear-gradient(135deg, #9b59b6, #8e44ad);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 1.1rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
+    }
+    .show-explanation-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
+    }
+    .explanation-section {
+        display: none;
+        margin-top: 20px;
+    }
+    </style>
+    </head>
+<body>
+    <header>
+        <h1>总体均值差异的置信区间t分布应用</h1>
+        <p class="subtitle">置信区间与假设检验 - 两独立样本t区间</p>
+    </header>
+
+    <div class="info-box" id="info-box">
+        <strong>题目背景：</strong> 某咨询师想要比较两个不同社会群体的平均智商分数。从群体1中随机抽取的<span class="param" id="info-n1">16</span>个智商分数样本显示均值为<span class="param" id="info-xbar1">104</span>，标准差为<span class="param" id="info-s1">16</span>；同时，从群体2中独立抽取的<span class="param" id="info-n2">9</span>个智商分数样本显示均值为<span class="param" id="info-xbar2">116</span>，标准差为<span class="param" id="info-s2">14</span>。假设每个群体的智商分数总体服从正态分布，且这些总体的方差相等。
+    </div>
+
+    <main>
+        <div class="question-container">
+            <div class="question-title">
+                <span>问题：构建<span class="param" id="param-confidence">90%</span>置信区间</span>
+                <button class="refresh-btn" id="refresh-btn">刷新参数</button>
+            </div>
+            <div class="question-text" id="question-text">
+请构建一个关于群体1智商分数均值μ₁与群体2智商分数均值μ₂之差(μ₁ - μ₂)的<span class="param" id="text-confidence">90%</span>置信区间。将中间计算过程至少保留三位小数。最终答案至少保留两位小数。
+
+已知：
+n₁ = <span id="text-n1">16</span>, x̄₁ = <span id="text-xbar1">104</span>, s₁ = <span id="text-s1">16</span>
+n₂ = <span id="text-n2">9</span>, x̄₂ = <span id="text-xbar2">116</span>, s₂ = <span id="text-s2">14</span>
+显著性水平 α = <span id="text-alpha">0.10</span> (<span id="text-confidence2">90%</span>置信度)
+假设两总体方差相等。
+
+计算步骤：
+1. 计算合并样本方差 s²_p：
+   s²_p = [ (n₁ - 1)s₁² + (n₂ - 1)s₂² ] / (n₁ + n₂ - 2)
+        = [ (<span id="calc-n1-1">15</span>)*<span id="calc-s1sq">256</span> + (<span id="calc-n2-1">8</span>)*<span id="calc-s2sq">196</span> ] / (<span id="calc-df">23</span>)
+        = [ <span id="calc-term1">3840</span> + <span id="calc-term2">1568</span> ] / <span id="calc-df2">23</span>
+        = <span id="calc-numerator">5408</span> / <span id="calc-df3">23</span>
+        ≈ <span class="param" id="calc-sp2">235.130</span>
+
+2. 计算标准误：
+   SE = √[ s²_p * (1/n₁ + 1/n₂) ]
+      = √[ <span id="se-sp2">235.130</span> * (<span id="se-1n1">0.0625</span> + <span id="se-1n2">0.111111</span>) ]
+      = √[ <span id="se-sp2-2">235.130</span> * <span id="se-sum">0.173611</span> ]
+      = √<span id="se-variance">40.818</span>
+      ≈ <span class="param" id="se-result">6.388</span>
+
+3. 确定自由度与t临界值：
+   自由度 df = n₁ + n₂ - 2 = <span id="t-df">23</span>
+   t_{α/2} = t_{<span id="t-alpha2">0.05</span>} (df=<span id="t-df2">23</span>) ≈ <span class="param" id="t-critical">1.714</span>
+
+4. 计算均值差：
+   (x̄₁ - x̄₂) = <span id="md-xbar1">104</span> - <span id="md-xbar2">116</span> = <span class="param" id="md-result">-12</span>
+
+5. 计算置信区间：
+   下限 = (x̄₁ - x̄₂) - t_{α/2} * SE = <span id="ci-md1">-12</span> - (<span id="ci-t1">1.714</span> * <span id="ci-se1">6.388</span>) ≈ <span id="ci-md2">-12</span> - <span id="ci-margin">10.950</span> ≈ <span class="param" id="ci-lower">-22.95</span>
+   上限 = (x̄₁ - x̄₂) + t_{α/2} * SE = <span id="ci-md3">-12</span> + (<span id="ci-t2">1.714</span> * <span id="ci-se2">6.388</span>) ≈ <span id="ci-md4">-12</span> + <span id="ci-margin2">10.950</span> ≈ <span class="param" id="ci-upper">-1.05</span>
+            </div>
+
+            <div class="answer-inputs">
+                <div class="input-group">
+                    <label for="lowerBound"><span id="label-confidence">90%</span> 置信区间的下限 (μ₁ - μ₂)</label>
+                    <input type="number" id="lowerBound" step="0.01">
+                </div>
+                <div class="input-group">
+                    <label for="upperBound"><span id="label-confidence2">90%</span> 置信区间的上限 (μ₁ - μ₂)</label>
+                    <input type="number" id="upperBound" step="0.01">
+                </div>
+            </div>
+
+            <div class="buttons">
+                <button id="submitBtn">提交答案</button>
+                <button id="resetBtn">重新作答</button>
+            </div>
+
+            <div id="feedback" class="feedback">
+                <div id="feedbackTitle" class="feedback-title"></div>
+                <p id="feedbackText"></p>
+                <div id="feedbackDetails" class="feedback-details"></div>
+            </div>
+
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-label">答题状态</div>
+                    <div id="statusIndicator" class="stat-value">待作答</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">正确率</div>
+                    <div id="accuracyRate" class="stat-value">0%</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">尝试次数</div>
+                    <div id="attemptCount" class="stat-value">0</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <button class="show-explanation-btn" id="show-explanation-btn">查看答案解析</button>
+    <div class="explanation-section" id="explanation-section" style="display:none; margin-top: 20px; padding: 25px; background-color: #f8fafc; border-radius: 12px; border-left: 5px solid #3b82f6;">
+        <h3 style="color: #1e3a8a; margin-bottom: 15px;">答案解析</h3>
+        <div id="explanation-content"></div>
+    </div>
+
+    <script>
+        // Parameter sets for the question
+        const parameterSets = [
+            {
+                n1: 16, xbar1: 104, s1: 16,
+                n2: 9, xbar2: 116, s2: 14,
+                confidence: 90, alpha: 0.10, tCritical: 1.714,
+                df: 23, sp2: 235.130, se: 6.388,
+                meanDiff: -12, margin: 10.950,
+                lower: -22.95, upper: -1.05
+            },
+            {
+                n1: 20, xbar1: 98, s1: 12,
+                n2: 15, xbar2: 105, s2: 10,
+                confidence: 95, alpha: 0.05, tCritical: 2.034,
+                df: 33, sp2: 126.818, se: 3.831,
+                meanDiff: -7, margin: 7.78,
+                lower: -14.78, upper: 0.78
+            },
+            {
+                n1: 25, xbar1: 85, s1: 14,
+                n2: 18, xbar2: 92, s2: 11,
+                confidence: 90, alpha: 0.10, tCritical: 1.671,
+                df: 41, sp2: 163.780, se: 4.037,
+                meanDiff: -7, margin: 6.75,
+                lower: -13.75, upper: -0.25
+            },
+            {
+                n1: 12, xbar1: 110, s1: 18,
+                n2: 10, xbar2: 120, s2: 15,
+                confidence: 95, alpha: 0.05, tCritical: 2.074,
+                df: 20, sp2: 280.000, se: 7.155,
+                meanDiff: -10, margin: 14.84,
+                lower: -24.84, upper: 4.84
+            },
+            {
+                n1: 30, xbar1: 75, s1: 8,
+                n2: 25, xbar2: 80, s2: 7,
+                confidence: 99, alpha: 0.01, tCritical: 2.660,
+                df: 53, sp2: 57.396, se: 2.295,
+                meanDiff: -5, margin: 6.10,
+                lower: -11.10, upper: 1.10
+            }
+        ];
+
+        let currentParams = parameterSets[0];
+        let attempts = 0;
+        let correctAttempts = 0;
+
+        function renderQuestion() {
+            const params = currentParams;
+
+            // Update info box
+            document.getElementById('info-n1').textContent = params.n1;
+            document.getElementById('info-xbar1').textContent = params.xbar1;
+            document.getElementById('info-s1').textContent = params.s1;
+            document.getElementById('info-n2').textContent = params.n2;
+            document.getElementById('info-xbar2').textContent = params.xbar2;
+            document.getElementById('info-s2').textContent = params.s2;
+
+            // Update question text
+            document.getElementById('param-confidence').textContent = params.confidence + '%';
+            document.getElementById('text-confidence').textContent = params.confidence + '%';
+            document.getElementById('text-confidence2').textContent = params.confidence + '%';
+
+            document.getElementById('text-n1').textContent = params.n1;
+            document.getElementById('text-xbar1').textContent = params.xbar1;
+            document.getElementById('text-s1').textContent = params.s1;
+            document.getElementById('text-n2').textContent = params.n2;
+            document.getElementById('text-xbar2').textContent = params.xbar2;
+            document.getElementById('text-s2').textContent = params.s2;
+            document.getElementById('text-alpha').textContent = params.alpha.toFixed(2);
+
+            // Update calculation steps
+            document.getElementById('calc-n1-1').textContent = params.n1 - 1;
+            document.getElementById('calc-s1sq').textContent = params.s1 * params.s1;
+            document.getElementById('calc-n2-1').textContent = params.n2 - 1;
+            document.getElementById('calc-s2sq').textContent = params.s2 * params.s2;
+            document.getElementById('calc-df').textContent = params.df;
+            document.getElementById('calc-df2').textContent = params.df;
+            document.getElementById('calc-df3').textContent = params.df;
+            const term1 = (params.n1 - 1) * params.s1 * params.s1;
+            const term2 = (params.n2 - 1) * params.s2 * params.s2;
+            document.getElementById('calc-term1').textContent = term1;
+            document.getElementById('calc-term2').textContent = term2;
+            document.getElementById('calc-numerator').textContent = term1 + term2;
+            document.getElementById('calc-sp2').textContent = params.sp2.toFixed(3);
+
+            // Standard error
+            const oneOverN1 = 1 / params.n1;
+            const oneOverN2 = 1 / params.n2;
+            const sumInv = oneOverN1 + oneOverN2;
+            document.getElementById('se-sp2').textContent = params.sp2.toFixed(3);
+            document.getElementById('se-1n1').textContent = oneOverN1.toFixed(6);
+            document.getElementById('se-1n2').textContent = oneOverN2.toFixed(6);
+            document.getElementById('se-sp2-2').textContent = params.sp2.toFixed(3);
+            document.getElementById('se-sum').textContent = sumInv.toFixed(6);
+            const variance = params.sp2 * sumInv;
+            document.getElementById('se-variance').textContent = variance.toFixed(3);
+            document.getElementById('se-result').textContent = params.se.toFixed(3);
+
+            // t critical
+            document.getElementById('t-df').textContent = params.df;
+            document.getElementById('t-alpha2').textContent = (params.alpha / 2).toFixed(2);
+            document.getElementById('t-df2').textContent = params.df;
+            document.getElementById('t-critical').textContent = params.tCritical.toFixed(3);
+
+            // Mean difference
+            document.getElementById('md-xbar1').textContent = params.xbar1;
+            document.getElementById('md-xbar2').textContent = params.xbar2;
+            document.getElementById('md-result').textContent = params.meanDiff;
+
+            // Confidence interval
+            document.getElementById('ci-md1').textContent = params.meanDiff;
+            document.getElementById('ci-t1').textContent = params.tCritical.toFixed(3);
+            document.getElementById('ci-se1').textContent = params.se.toFixed(3);
+            document.getElementById('ci-md2').textContent = params.meanDiff;
+            document.getElementById('ci-margin').textContent = params.margin.toFixed(3);
+            document.getElementById('ci-lower').textContent = params.lower.toFixed(2);
+
+            document.getElementById('ci-md3').textContent = params.meanDiff;
+            document.getElementById('ci-t2').textContent = params.tCritical.toFixed(3);
+            document.getElementById('ci-se2').textContent = params.se.toFixed(3);
+            document.getElementById('ci-md4').textContent = params.meanDiff;
+            document.getElementById('ci-margin2').textContent = params.margin.toFixed(3);
+            document.getElementById('ci-upper').textContent = params.upper.toFixed(2);
+
+            // Update labels
+            document.getElementById('label-confidence').textContent = params.confidence + '%';
+            document.getElementById('label-confidence2').textContent = params.confidence + '%';
+
+            // Update explanation
+            document.getElementById('explanation-content').innerHTML = `
+                <p><strong>置信区间解释：</strong></p>
+                <p>我们构建的${params.confidence}%置信区间为 [${params.lower.toFixed(2)}, ${params.upper.toFixed(2)}]。</p>
+                <p>这意味着我们有${params.confidence}%的把握认为，群体1与群体2的平均智商分数之差(μ₁ - μ₂)落在[${params.lower.toFixed(2)}, ${params.upper.toFixed(2)}]这个区间内。</p>
+                <p><strong>结论：</strong></p>
+                <p>${params.lower > 0 ? '由于整个区间都为正数，可以推断μ₁很可能大于μ₂。' :
+                    params.upper < 0 ? '由于整个区间都为负数，可以推断μ₁很可能小于μ₂。' :
+                    '由于区间包含0，不能断定两个群体的平均智商有显著差异。'}</p>
+            `;
+
+            // Reset input fields
+            document.getElementById('lowerBound').value = '';
+            document.getElementById('upperBound').value = '';
+            document.getElementById('lowerBound').className = '';
+            document.getElementById('upperBound').className = '';
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize with first parameter set
+            renderQuestion();
+
+            const lowerBoundInput = document.getElementById('lowerBound');
+            const upperBoundInput = document.getElementById('upperBound');
+            const submitBtn = document.getElementById('submitBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const refreshBtn = document.getElementById('refresh-btn');
+            const feedbackDiv = document.getElementById('feedback');
+            const feedbackTitle = document.getElementById('feedbackTitle');
+            const feedbackText = document.getElementById('feedbackText');
+            const feedbackDetails = document.getElementById('feedbackDetails');
+            const statusIndicator = document.getElementById('statusIndicator');
+            const accuracyRate = document.getElementById('accuracyRate');
+            const attemptCount = document.getElementById('attemptCount');
+            const showExplanationBtn = document.getElementById('show-explanation-btn');
+            const explanationSection = document.getElementById('explanation-section');
+
+            const tolerance = 0.1;
+
+            // Refresh button
+            refreshBtn.addEventListener('click', function() {
+                let newParams;
+                do {
+                    newParams = parameterSets[Math.floor(Math.random() * parameterSets.length)];
+                } while (newParams === currentParams && parameterSets.length > 1);
+
+                currentParams = newParams;
+                renderQuestion();
+
+                feedbackDiv.style.display = 'none';
+                showExplanationBtn.style.display = 'none';
+                explanationSection.style.display = 'none';
+                showExplanationBtn.textContent = '查看答案解析';
+                statusIndicator.textContent = '待作答';
+                statusIndicator.style.color = '#3b82f6';
+            });
+
+            // Submit answer
+            submitBtn.addEventListener('click', function() {
+                const lowerVal = parseFloat(lowerBoundInput.value);
+                const upperVal = parseFloat(upperBoundInput.value);
+
+                if (isNaN(lowerVal) || isNaN(upperVal)) {
+                    alert('请输入有效的数字！');
+                    return;
+                }
+
+                attempts++;
+                attemptCount.textContent = attempts;
+
+                const lowerCorrect = Math.abs(lowerVal - currentParams.lower) <= tolerance;
+                const upperCorrect = Math.abs(upperVal - currentParams.upper) <= tolerance;
+                const allCorrect = lowerCorrect && upperCorrect;
+
+                if (allCorrect && correctAttempts === 0) {
+                    correctAttempts = 1;
+                }
+                const accuracy = attempts > 0 ? Math.round((correctAttempts / attempts) * 100) : 0;
+                accuracyRate.textContent = `${accuracy}%`;
+
+                feedbackDiv.style.display = 'block';
+                if (allCorrect) {
+                    feedbackDiv.className = 'feedback correct';
+                    feedbackTitle.innerHTML = '回答正确！';
+                    feedbackText.textContent = '恭喜！您正确计算出了两总体均值差的置信区间。';
+                    statusIndicator.textContent = '正确';
+                    statusIndicator.style.color = '#10b981';
+                } else {
+                    feedbackDiv.className = 'feedback incorrect';
+                    feedbackTitle.innerHTML = '回答不完全正确';
+                    feedbackText.textContent = '您的答案与标准答案有差异，请检查计算步骤。';
+                    statusIndicator.textContent = '错误';
+                    statusIndicator.style.color = '#ef4444';
+                }
+
+                let detailsHtml = '<strong>您的答案：</strong><br>';
+                detailsHtml += `下限: ${lowerVal.toFixed(2)} ${lowerCorrect ? '正确' : '错误'}<br>`;
+                detailsHtml += `上限: ${upperVal.toFixed(2)} ${upperCorrect ? '正确' : '错误'}<br><br>`;
+                detailsHtml += '<strong>标准答案：</strong><br>';
+                detailsHtml += `下限: ${currentParams.lower.toFixed(2)}<br>`;
+                detailsHtml += `上限: ${currentParams.upper.toFixed(2)}<br><br>`;
+                detailsHtml += `<strong>解释：</strong> 置信区间为[${currentParams.lower.toFixed(2)}, ${currentParams.upper.toFixed(2)}]，这意味着我们有${currentParams.confidence}%的把握认为群体1的平均智商与群体2的差异在此范围内。`;
+                feedbackDetails.innerHTML = detailsHtml;
+
+                lowerBoundInput.className = lowerCorrect ? 'correct' : 'incorrect';
+                upperBoundInput.className = upperCorrect ? 'correct' : 'incorrect';
+
+                showExplanationBtn.style.display = 'inline-block';
+            });
+
+            // Reset
+            resetBtn.addEventListener('click', function() {
+                lowerBoundInput.value = '';
+                upperBoundInput.value = '';
+                feedbackDiv.style.display = 'none';
+                lowerBoundInput.className = '';
+                upperBoundInput.className = '';
+                statusIndicator.textContent = '待作答';
+                statusIndicator.style.color = '#3b82f6';
+                lowerBoundInput.focus();
+                showExplanationBtn.style.display = 'none';
+                explanationSection.style.display = 'none';
+                showExplanationBtn.textContent = '查看答案解析';
+            });
+
+            // Show explanation
+            showExplanationBtn.addEventListener('click', function() {
+                if (explanationSection.style.display === 'none' || explanationSection.style.display === '') {
+                    explanationSection.style.display = 'block';
+                    this.textContent = '隐藏答案解析';
+                } else {
+                    explanationSection.style.display = 'none';
+                    this.textContent = '查看答案解析';
+                }
+            });
+
+            // Enter key to submit
+            lowerBoundInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') submitBtn.click();
+            });
+            upperBoundInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') submitBtn.click();
+            });
+        });
+    </script>
+</body>
+</html>

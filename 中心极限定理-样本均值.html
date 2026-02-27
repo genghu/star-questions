@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中心极限定理 - 样本均值 答题练习</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+        body {
+            background-color: #f0f7ff;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #4a90e2;
+        }
+        h1 {
+            color: #2c5282;
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #5a6c7d;
+            font-size: 1.1rem;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        .card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 6px 15px rgba(66, 133, 244, 0.1);
+            margin-bottom: 20px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(66, 133, 244, 0.15);
+        }
+        .question-title {
+            color: #2c5282;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed #cbd5e0;
+        }
+        .question-content {
+            font-size: 1.05rem;
+            margin-bottom: 20px;
+            white-space: pre-line;
+        }
+        .math {
+            font-family: 'Cambria Math', 'Times New Roman', serif;
+            background-color: #f7fafc;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin: 0 2px;
+        }
+        .answer-input-container {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #f8fafc;
+            border-radius: 12px;
+            border: 2px solid #e0e7ff;
+        }
+        .answer-label {
+            font-size: 1.1rem;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            display: block;
+            font-weight: 600;
+        }
+        .answer-input {
+            width: 100%;
+            max-width: 300px;
+            padding: 14px 18px;
+            font-size: 1.2rem;
+            border: 2px solid #e0e7ff;
+            border-radius: 10px;
+            transition: all 0.3s;
+            outline: none;
+        }
+        .answer-input:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 10px rgba(52, 152, 219, 0.2);
+        }
+        .answer-input.correct {
+            border-color: #2ecc71;
+            background-color: #e8f8ef;
+        }
+        .answer-input.incorrect {
+            border-color: #e74c3c;
+            background-color: #fdedec;
+        }
+        .tolerance-hint {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-top: 8px;
+        }
+        .feedback-inline {
+            margin-top: 10px;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            display: none;
+        }
+        .feedback-inline.correct {
+            background-color: #e8f8ef;
+            color: #27ae60;
+            display: block;
+        }
+        .feedback-inline.incorrect {
+            background-color: #fdedec;
+            color: #e74c3c;
+            display: block;
+        }
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 25px;
+        }
+        button {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            flex-grow: 1;
+            min-width: 140px;
+        }
+        #submit-btn {
+            background-color: #4299e1;
+            color: white;
+        }
+        #submit-btn:hover {
+            background-color: #3182ce;
+        }
+        #reset-btn {
+            background-color: #a0aec0;
+            color: white;
+        }
+        #reset-btn:hover {
+            background-color: #718096;
+        }
+        #refresh-btn {
+            background: linear-gradient(135deg, #ff9800, #f57c00);
+            color: white;
+        }
+        #refresh-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 152, 0, 0.3);
+        }
+        .feedback {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 10px;
+            display: none;
+        }
+        .feedback.correct {
+            background-color: #c6f6d5;
+            border-left: 5px solid #38a169;
+            display: block;
+        }
+        .feedback.incorrect {
+            background-color: #fed7d7;
+            border-left: 5px solid #e53e3e;
+            display: block;
+        }
+        .feedback-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .score-panel {
+            background: linear-gradient(135deg, #4a90e2, #2b6cb0);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .score-title {
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            opacity: 0.9;
+        }
+        .score-value {
+            font-size: 3rem;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .score-detail {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+        .explanation {
+            margin-top: 30px;
+            padding: 25px;
+            background-color: #edf2f7;
+            border-radius: 10px;
+            border-left: 5px solid #2c5282;
+        }
+        .explanation-title {
+            color: #2c5282;
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+        }
+        .explanation-content {
+            white-space: pre-line;
+            line-height: 1.7;
+        }
+        .highlight {
+            background-color: #fffacd;
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-weight: 600;
+        }
+        .note {
+            font-style: italic;
+            color: #5a6c7d;
+            background-color: #f7fafc;
+            padding: 10px;
+            border-radius: 6px;
+            margin: 15px 0;
+        }
+        .show-explanation-btn {
+            display: none;
+            margin: 20px auto;
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
+        }
+        .show-explanation-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
+        }
+        .explanation-section {
+            display: none;
+            margin-top: 20px;
+        }
+        .explanation-section.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>中心极限定理：样本均值</h1>
+        <p class="subtitle">概率计算与正态分布应用 - 交互式答题练习</p>
+    </header>
+
+    <div class="container">
+        <main class="question-section">
+            <div class="card">
+                <h2 class="question-title">题目内容</h2>
+                <div class="question-content" id="question-content">
+                    <!-- 动态生成 -->
+                </div>
+
+                <div class="note" id="hint-note">
+                    <!-- 动态生成 -->
+                </div>
+
+                <div class="answer-input-container">
+                    <label class="answer-label">请输入概率值（保留三位小数）：</label>
+                    <input type="text" class="answer-input" id="answer-input">
+                    <div class="feedback-inline" id="feedback-inline"></div>
+                </div>
+
+                <div class="controls">
+                    <button id="submit-btn">提交答案</button>
+                    <button id="reset-btn">重新作答</button>
+                    <button id="refresh-btn">刷新参数</button>
+                </div>
+
+                <div class="feedback" id="feedback">
+                    <div class="feedback-title" id="feedback-title"></div>
+                    <p id="feedback-text"></p>
+                </div>
+            </div>
+
+            <button class="show-explanation-btn" id="show-explanation-btn">查看答案解析</button>
+            <div class="explanation-section explanation" id="explanation-section">
+                <h3 class="explanation-title">题目解析与计算过程</h3>
+                <div class="explanation-content" id="explanation-content">
+                    <!-- 动态生成 -->
+                </div>
+            </div>
+        </main>
+
+        <aside class="control-section">
+            <div class="score-panel">
+                <div class="score-title">当前得分</div>
+                <div class="score-value" id="score">0</div>
+                <div class="score-detail">
+                    <span id="correct-count">0</span> 题正确 / <span id="total-count">1</span> 题总数
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="question-title">中心极限定理要点</h2>
+                <div class="question-content">
+                    <p><strong>核心思想：</strong>无论总体分布形状如何，当样本量足够大时，样本均值的抽样分布近似服从正态分布。</p>
+
+                    <p><strong>应用条件：</strong></p>
+                    <ul style="padding-left: 20px; margin-top: 10px;">
+                        <li>样本量 <span class="math">n >= 30</span> 通常被认为足够大</li>
+                        <li>样本是随机抽取的</li>
+                        <li>观测值相互独立</li>
+                    </ul>
+
+                    <p><strong>计算公式：</strong></p>
+                    <ul style="padding-left: 20px; margin-top: 10px;">
+                        <li>样本均值分布的均值：<span class="math">mu_x = mu</span></li>
+                        <li>样本均值分布的标准差（标准误）：<span class="math">sigma_x = sigma / sqrt(n)</span></li>
+                        <li>z 分数：<span class="math">z = (x - mu) / (sigma / sqrt(n))</span></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="question-title">答题指南</h2>
+                <div class="question-content">
+                    <ol style="padding-left: 20px;">
+                        <li>仔细阅读题目，理解已知条件</li>
+                        <li>识别需要计算的概率</li>
+                        <li>应用中心极限定理确定样本均值的分布</li>
+                        <li>计算标准误和 z 分数</li>
+                        <li>使用标准正态分布表或计算器查找概率</li>
+                        <li>输入计算得到的概率值</li>
+                    </ol>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 参数集合 - 不同的场景和数值
+            const parameterSets = [
+                {
+                    scenario: '今年从海岸州立大学毕业的学生获得的平均薪资',
+                    mean: 24215,
+                    std: 3643,
+                    n: 85,
+                    targetValue: 24750,
+                    direction: 'lessOrEqual',  // P(x <= target)
+                    answer: 0.912,
+                    zScore: 1.35
+                },
+                {
+                    scenario: '某城市居民的平均月收入',
+                    mean: 5500,
+                    std: 1200,
+                    n: 100,
+                    targetValue: 5700,
+                    direction: 'lessOrEqual',
+                    answer: 0.952,
+                    zScore: 1.67
+                },
+                {
+                    scenario: '某工厂生产的零件平均长度',
+                    mean: 50,
+                    std: 2.5,
+                    n: 64,
+                    targetValue: 50.5,
+                    direction: 'lessOrEqual',
+                    answer: 0.945,
+                    zScore: 1.60
+                },
+                {
+                    scenario: '某地区成年男性的平均身高',
+                    mean: 175,
+                    std: 8,
+                    n: 81,
+                    targetValue: 176.5,
+                    direction: 'lessOrEqual',
+                    answer: 0.954,
+                    zScore: 1.69
+                },
+                {
+                    scenario: '某品牌电池的平均使用寿命',
+                    mean: 500,
+                    std: 50,
+                    n: 49,
+                    targetValue: 510,
+                    direction: 'lessOrEqual',
+                    answer: 0.917,
+                    zScore: 1.40
+                }
+            ];
+
+            let currentParams = null;
+            let submitted = false;
+            let score = 0;
+            let correctCount = 0;
+            const totalQuestions = 1;
+
+            const answerInput = document.getElementById('answer-input');
+            const submitBtn = document.getElementById('submit-btn');
+            const resetBtn = document.getElementById('reset-btn');
+            const refreshBtn = document.getElementById('refresh-btn');
+            const feedback = document.getElementById('feedback');
+            const feedbackTitle = document.getElementById('feedback-title');
+            const feedbackText = document.getElementById('feedback-text');
+            const feedbackInline = document.getElementById('feedback-inline');
+            const scoreElement = document.getElementById('score');
+            const correctCountElement = document.getElementById('correct-count');
+            const totalCountElement = document.getElementById('total-count');
+            const showExplanationBtn = document.getElementById('show-explanation-btn');
+            const explanationSection = document.getElementById('explanation-section');
+
+            // 初始化问题
+            function initializeQuiz() {
+                // 随机选择参数集
+                const randomIndex = Math.floor(Math.random() * parameterSets.length);
+                currentParams = parameterSets[randomIndex];
+
+                // 计算标准误
+                const standardError = currentParams.std / Math.sqrt(currentParams.n);
+
+                // 更新问题内容
+                document.getElementById('question-content').innerHTML = `
+                    ${currentParams.scenario}为 <span class="math">${currentParams.mean.toLocaleString()}</span>，标准差为 <span class="math">${currentParams.std.toLocaleString()}</span>。已随机抽取 <span class="math">${currentParams.n}</span> 名样本。
+
+<strong>这 ${currentParams.n} 名样本的平均值不高于 ${currentParams.targetValue.toLocaleString()} 的概率是多少？</strong>
+
+中间计算至少保留四位小数。答案至少保留三位小数。`;
+
+                // 更新提示
+                document.getElementById('hint-note').innerHTML = `
+                    提示：样本均值 <span class="math">x</span> 的分布近似服从正态分布，其均值 <span class="math">mu_x = mu = ${currentParams.mean.toLocaleString()}</span>，标准差 <span class="math">sigma_x = sigma / sqrt(n) = ${currentParams.std.toLocaleString()} / sqrt(${currentParams.n})</span>。`;
+
+                // 更新解析内容
+                document.getElementById('explanation-content').innerHTML = `
+根据中心极限定理，当样本量 <span class="math">n = ${currentParams.n}</span> 足够大时，样本均值 <span class="math">x</span> 的分布近似服从正态分布：
+
+1. 总体均值 <span class="math">mu = ${currentParams.mean.toLocaleString()}</span>
+2. 总体标准差 <span class="math">sigma = ${currentParams.std.toLocaleString()}</span>
+3. 样本量 <span class="math">n = ${currentParams.n}</span>
+
+样本均值分布的标准差（标准误）为：
+<span class="math">sigma_x = sigma / sqrt(n) = ${currentParams.std.toLocaleString()} / sqrt(${currentParams.n}) = ${standardError.toFixed(4)}</span>
+
+我们需要计算 <span class="math">P(x <= ${currentParams.targetValue.toLocaleString()})</span>。
+
+首先计算 z 分数：
+<span class="math">z = (${currentParams.targetValue.toLocaleString()} - ${currentParams.mean.toLocaleString()}) / (${currentParams.std.toLocaleString()} / sqrt(${currentParams.n})) = ${(currentParams.targetValue - currentParams.mean).toLocaleString()} / ${standardError.toFixed(4)} = ${currentParams.zScore.toFixed(2)}</span>
+
+查找标准正态分布表或使用计算器：
+<span class="math">P(Z <= ${currentParams.zScore.toFixed(2)}) = ${currentParams.answer.toFixed(3)}</span>
+
+因此，${currentParams.n} 名样本平均值不高于 ${currentParams.targetValue.toLocaleString()} 的概率约为 <span class="highlight">${currentParams.answer.toFixed(3)}</span>。
+
+<strong>正确答案：${currentParams.answer.toFixed(3)}</strong>`;
+
+                // 重置状态
+                submitted = false;
+                score = 0;
+                correctCount = 0;
+
+                // 清除输入和反馈
+                answerInput.value = '';
+                answerInput.classList.remove('correct', 'incorrect');
+                feedbackInline.className = 'feedback-inline';
+                feedbackInline.textContent = '';
+
+                // 隐藏结果和解析
+                feedback.className = 'feedback';
+                feedbackTitle.textContent = '';
+                feedbackText.textContent = '';
+                explanationSection.classList.remove('show');
+                showExplanationBtn.style.display = 'none';
+
+                // 更新分数显示
+                updateScoreDisplay();
+            }
+
+            // 更新分数显示
+            function updateScoreDisplay() {
+                scoreElement.textContent = score;
+                correctCountElement.textContent = correctCount;
+                totalCountElement.textContent = totalQuestions;
+            }
+
+            // 提交答案
+            submitBtn.addEventListener('click', function() {
+                const userAnswer = parseFloat(answerInput.value);
+
+                if (isNaN(userAnswer)) {
+                    alert('请先输入一个有效的数字答案！');
+                    return;
+                }
+
+                if (submitted) return;
+
+                submitted = true;
+
+                const tolerance = 0.01;
+                const isCorrect = Math.abs(userAnswer - currentParams.answer) <= tolerance;
+
+                // 显示反馈
+                if (isCorrect) {
+                    answerInput.classList.add('correct');
+                    feedbackInline.textContent = '正确！';
+                    feedbackInline.className = 'feedback-inline correct';
+                    feedback.className = 'feedback correct';
+                    feedbackTitle.textContent = '回答正确！';
+                    feedbackText.textContent = '恭喜！你正确应用了中心极限定理计算了样本均值的概率。';
+                    score = 100;
+                    correctCount = 1;
+                } else {
+                    answerInput.classList.add('incorrect');
+                    feedbackInline.textContent = `不正确。正确答案是 ${currentParams.answer.toFixed(3)}`;
+                    feedbackInline.className = 'feedback-inline incorrect';
+                    feedback.className = 'feedback incorrect';
+                    feedbackTitle.textContent = '回答不正确';
+                    feedbackText.textContent = `正确答案是 ${currentParams.answer.toFixed(3)}。请查看下方的解析，了解中心极限定理的应用和计算过程。`;
+                    score = 0;
+                    correctCount = 0;
+                }
+
+                // 更新分数显示
+                updateScoreDisplay();
+
+                // 显示解析按钮
+                showExplanationBtn.style.display = 'inline-block';
+
+                // 禁用输入
+                answerInput.disabled = true;
+            });
+
+            // 重置答题
+            resetBtn.addEventListener('click', function() {
+                // 清除输入和样式
+                answerInput.value = '';
+                answerInput.classList.remove('correct', 'incorrect');
+                answerInput.disabled = false;
+                feedbackInline.className = 'feedback-inline';
+                feedbackInline.textContent = '';
+
+                // 隐藏反馈
+                feedback.className = 'feedback';
+                feedbackTitle.textContent = '';
+                feedbackText.textContent = '';
+
+                // 隐藏解析
+                explanationSection.classList.remove('show');
+                showExplanationBtn.style.display = 'none';
+
+                // 重置状态
+                submitted = false;
+                score = 0;
+                correctCount = 0;
+
+                // 更新分数显示
+                updateScoreDisplay();
+            });
+
+            // 刷新参数
+            refreshBtn.addEventListener('click', initializeQuiz);
+
+            // 显示答案解析按钮点击事件
+            showExplanationBtn.addEventListener('click', function() {
+                if (explanationSection.classList.contains('show')) {
+                    explanationSection.classList.remove('show');
+                    this.textContent = '查看答案解析';
+                } else {
+                    explanationSection.classList.add('show');
+                    this.textContent = '隐藏答案解析';
+                }
+            });
+
+            // 初始化
+            totalCountElement.textContent = totalQuestions;
+            initializeQuiz();
+        });
+    </script>
+</body>
+</html>

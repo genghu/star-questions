@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>二项分布正态近似 - 交互式答题</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(50, 90, 140, 0.15);
+            overflow: hidden;
+            padding: 30px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #eaeff5;
+        }
+
+        h1 {
+            color: #2c3e50;
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        h1 i {
+            color: #3498db;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+
+        .question-container {
+            background-color: #f8fafc;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border-left: 5px solid #3498db;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .question-title {
+            color: #2c3e50;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .question-title i {
+            color: #3498db;
+        }
+
+        .refresh-params-btn {
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .refresh-params-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.4);
+        }
+
+        .question-content {
+            font-size: 1.1rem;
+            margin-bottom: 25px;
+            color: #34495e;
+        }
+
+        .question-content p {
+            margin-bottom: 15px;
+        }
+
+        .math {
+            font-family: 'Cambria Math', 'Times New Roman', serif;
+            background-color: #f0f8ff;
+            padding: 3px 8px;
+            border-radius: 5px;
+            margin: 0 3px;
+            border: 1px dashed #b0d0ff;
+        }
+
+        .answer-input-container {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #f8fafc;
+            border-radius: 12px;
+            border: 2px solid #e0e7ff;
+        }
+
+        .answer-label {
+            font-size: 1.1rem;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            display: block;
+            font-weight: 600;
+        }
+
+        .answer-input {
+            width: 100%;
+            max-width: 300px;
+            padding: 14px 18px;
+            font-size: 1.2rem;
+            border: 2px solid #e0e7ff;
+            border-radius: 10px;
+            transition: all 0.3s;
+            outline: none;
+        }
+
+        .answer-input:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 10px rgba(52, 152, 219, 0.2);
+        }
+
+        .answer-input.correct {
+            border-color: #2ecc71;
+            background-color: #e8f8ef;
+        }
+
+        .answer-input.incorrect {
+            border-color: #e74c3c;
+            background-color: #fdedec;
+        }
+
+        .tolerance-hint {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-top: 8px;
+        }
+
+        .feedback-inline {
+            margin-top: 10px;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            display: none;
+        }
+
+        .feedback-inline.correct {
+            background-color: #e8f8ef;
+            color: #27ae60;
+            display: block;
+        }
+
+        .feedback-inline.incorrect {
+            background-color: #fdedec;
+            color: #e74c3c;
+            display: block;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #submit-btn {
+            background: linear-gradient(to right, #3498db, #2980b9);
+            color: white;
+        }
+
+        #submit-btn:hover {
+            background: linear-gradient(to right, #2980b9, #2573a7);
+            box-shadow: 0 7px 15px rgba(52, 152, 219, 0.4);
+        }
+
+        #reset-btn {
+            background-color: #f8f9fa;
+            color: #495057;
+            border: 2px solid #e9ecef;
+        }
+
+        #reset-btn:hover {
+            background-color: #e9ecef;
+            box-shadow: 0 7px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .feedback-container {
+            background-color: #f8fafc;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 20px;
+            display: none;
+            border-left: 5px solid #9b59b6;
+        }
+
+        .feedback-title {
+            color: #2c3e50;
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .feedback-title i {
+            color: #9b59b6;
+        }
+
+        .feedback-content {
+            font-size: 1.1rem;
+            color: #34495e;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            background: linear-gradient(to right, #e3f2fd, #f3e8ff);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .stat-item {
+            flex: 1;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #3498db;
+        }
+
+        .stat-label {
+            font-size: 1rem;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+
+        .correct-answer .stat-value {
+            color: #2ecc71;
+        }
+
+        .incorrect-answer .stat-value {
+            color: #e74c3c;
+        }
+
+        .score .stat-value {
+            color: #9b59b6;
+        }
+
+        .explanation-section {
+            margin-top: 30px;
+            background-color: #f0f7ff;
+            border-radius: 15px;
+            padding: 25px;
+            border-left: 5px solid #3498db;
+            display: none;
+        }
+
+        .explanation-title {
+            color: #2c3e50;
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .explanation-title i {
+            color: #3498db;
+        }
+
+        .explanation-content {
+            font-size: 1.1rem;
+            color: #34495e;
+        }
+
+        .explanation-content p {
+            margin-bottom: 15px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #eaeff5;
+        }
+
+        th {
+            background-color: #3498db;
+            color: white;
+            font-weight: 600;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover {
+            background-color: #f5f9ff;
+        }
+
+        .show-explanation-btn {
+            display: none;
+            margin: 20px auto;
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
+        }
+        .show-explanation-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .stats {
+                flex-direction: column;
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-chart-bar"></i> 二项分布正态近似</h1>
+            <p class="subtitle">交互式答题与解析 - 概率统计</p>
+        </header>
+
+        <div class="question-container">
+            <div class="question-header">
+                <div class="question-title">
+                    <i class="fas fa-question-circle"></i>
+                    <span>题目</span>
+                </div>
+                <button class="refresh-params-btn" id="refresh-btn">
+                    <i class="fas fa-random"></i> 刷新参数
+                </button>
+            </div>
+            <div class="question-content" id="questionContent">
+                <!-- 动态生成 -->
+            </div>
+
+            <div class="answer-input-container">
+                <label class="answer-label">请输入概率值（保留三位小数）：</label>
+                <input type="text" class="answer-input" id="answer-input">
+                <div class="tolerance-hint">容差：±0.01</div>
+                <div class="feedback-inline" id="feedback-inline"></div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button id="submit-btn">
+                <i class="fas fa-paper-plane"></i>
+                <span>提交答案</span>
+            </button>
+            <button id="reset-btn">
+                <i class="fas fa-redo"></i>
+                <span>重新作答</span>
+            </button>
+        </div>
+
+        <div class="feedback-container" id="feedback">
+            <div class="feedback-title">
+                <i class="fas fa-comment-dots"></i>
+                <span>反馈</span>
+            </div>
+            <div class="feedback-content" id="feedback-content">
+                <!-- 反馈内容将通过JavaScript动态填充 -->
+            </div>
+        </div>
+
+        <div class="stats">
+            <div class="stat-item correct-answer">
+                <div class="stat-value" id="correct-count">0</div>
+                <div class="stat-label">正确</div>
+            </div>
+            <div class="stat-item incorrect-answer">
+                <div class="stat-value" id="incorrect-count">0</div>
+                <div class="stat-label">错误</div>
+            </div>
+            <div class="stat-item score">
+                <div class="stat-value" id="score">0%</div>
+                <div class="stat-label">得分</div>
+            </div>
+        </div>
+
+        <button class="show-explanation-btn" id="show-explanation-btn">查看答案解析</button>
+        <div class="explanation-section" id="explanation-section">
+            <div class="explanation-title">
+                <i class="fas fa-lightbulb"></i>
+                <span>题目解析与知识点</span>
+            </div>
+            <div class="explanation-content" id="explanationContent">
+                <!-- 动态生成 -->
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // ==================== 参数化数据集 ====================
+            // 二项分布正态近似参数集：计算 P(X > threshold)
+            // 公式：mu = np, sigma = sqrt[np(1-p)], z = (threshold + 0.5 - mu) / sigma, P = 1 - Phi(z)
+            const questionParams = [
+                {
+                    p: 0.75,
+                    n: 140,
+                    threshold: 104,
+                    successRate: '75%',
+                    context: '一种新疗法在治疗一种常见疾病时有',
+                    answer: 0.539,
+                    mu: 105,
+                    sigma: 5.1235,
+                    z: -0.0976,
+                    thresholdCorrected: 104.5
+                },
+                {
+                    p: 0.70,
+                    n: 100,
+                    threshold: 68,
+                    successRate: '70%',
+                    context: '某产品的合格率为',
+                    answer: 0.579,
+                    mu: 70,
+                    sigma: 4.583,
+                    z: -0.327,
+                    thresholdCorrected: 68.5
+                },
+                {
+                    p: 0.80,
+                    n: 200,
+                    threshold: 158,
+                    successRate: '80%',
+                    context: '某考试的通过率为',
+                    answer: 0.629,
+                    mu: 160,
+                    sigma: 5.657,
+                    z: -0.265,
+                    thresholdCorrected: 158.5
+                },
+                {
+                    p: 0.60,
+                    n: 150,
+                    threshold: 88,
+                    successRate: '60%',
+                    context: '某机器生产的零件合格率为',
+                    answer: 0.583,
+                    mu: 90,
+                    sigma: 6,
+                    z: -0.250,
+                    thresholdCorrected: 88.5
+                },
+                {
+                    p: 0.65,
+                    n: 120,
+                    threshold: 76,
+                    successRate: '65%',
+                    context: '某疫苗接种的有效率为',
+                    answer: 0.516,
+                    mu: 78,
+                    sigma: 5.221,
+                    z: -0.287,
+                    thresholdCorrected: 76.5
+                },
+                {
+                    p: 0.55,
+                    n: 180,
+                    threshold: 97,
+                    successRate: '55%',
+                    context: '某天气预报的准确率为',
+                    answer: 0.538,
+                    mu: 99,
+                    sigma: 6.671,
+                    z: -0.225,
+                    thresholdCorrected: 97.5
+                }
+            ];
+
+            // 当前参数索引
+            let currentParamIndex = 0;
+
+            // ==================== 渲染函数 ====================
+
+            function renderQuestion() {
+                const params = questionParams[currentParamIndex];
+                const questionContent = document.getElementById('questionContent');
+                const explanationContent = document.getElementById('explanationContent');
+
+                // 渲染问题文本
+                questionContent.innerHTML = `
+                    <p>假设${params.context} <span class="math">${params.successRate}</span> 的成功率。如果该事件在一个包含 <span class="math">${params.n}</span> 个样本的随机样本上测试，请近似计算成功次数超过 <span class="math">${params.threshold}</span> 的概率。使用二项分布的正态近似，并进行连续性校正。</p>
+                    <p>将你的答案四舍五入到至少三位小数。不要对任何中间步骤进行四舍五入。</p>
+                    <p>（如有必要，可查阅公式列表。）</p>
+                `;
+
+                // 渲染解析
+                explanationContent.innerHTML = `
+                    <p><strong>解题思路：</strong></p>
+                    <p>成功次数 <span class="math">X</span> 服从二项分布，参数为 <span class="math">n = ${params.n}</span>，<span class="math">p = ${params.p}</span>。</p>
+                    <p>计算均值和标准差：</p>
+                    <p><span class="math">mu = np = ${params.n} x ${params.p} = ${params.mu}</span></p>
+                    <p><span class="math">sigma = sqrt[np(1-p)] = sqrt[${params.n} x ${params.p} x ${(1 - params.p).toFixed(2)}] = ${params.sigma.toFixed(4)}</span></p>
+
+                    <p>使用连续性校正，<span class="math">P(X > ${params.threshold}) = P(X >= ${params.thresholdCorrected})</span></p>
+                    <p>标准化：<span class="math">z = (${params.thresholdCorrected} - ${params.mu}) / ${params.sigma.toFixed(4)} = ${params.z.toFixed(4)}</span></p>
+                    <p>查标准正态分布表得到对应的概率。</p>
+                    <p>因此：<span class="math">P(X > ${params.threshold}) = ${params.answer.toFixed(3)}</span></p>
+
+                    <p><strong>连续性校正规则：</strong></p>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>概率类型</th>
+                                <th>调整后的概率</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="math">P(X >= x)</span></td>
+                                <td><span class="math">P(X >= x - 0.5)</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="math">P(X > x)</span></td>
+                                <td><span class="math">P(X >= x + 0.5)</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="math">P(X <= x)</span></td>
+                                <td><span class="math">P(X <= x + 0.5)</span></td>
+                            </tr>
+                            <tr>
+                                <td><span class="math">P(X < x)</span></td>
+                                <td><span class="math">P(X <= x - 0.5)</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <p><strong>正态近似适用条件：</strong></p>
+                    <p>当 <span class="math">np > 5</span> 且 <span class="math">n(1-p) > 5</span> 时适用。</p>
+                    <p>本题中：<span class="math">np = ${params.mu} > 5</span>，<span class="math">n(1-p) = ${(params.n * (1 - params.p)).toFixed(0)} > 5</span>，因此适用。</p>
+
+                    <p><strong>正确答案：${params.answer.toFixed(3)}</strong></p>
+                `;
+            }
+
+            function refreshParams() {
+                let newIndex;
+                do {
+                    newIndex = Math.floor(Math.random() * questionParams.length);
+                } while (newIndex === currentParamIndex && questionParams.length > 1);
+
+                currentParamIndex = newIndex;
+
+                // 重新渲染问题
+                renderQuestion();
+
+                // 重置状态
+                submitted = false;
+
+                // 清除输入和反馈
+                const answerInput = document.getElementById('answer-input');
+                answerInput.value = '';
+                answerInput.classList.remove('correct', 'incorrect');
+                answerInput.disabled = false;
+
+                const feedbackInline = document.getElementById('feedback-inline');
+                feedbackInline.className = 'feedback-inline';
+                feedbackInline.textContent = '';
+
+                // 隐藏反馈和解析
+                document.getElementById('feedback').style.display = 'none';
+                document.getElementById('explanation-section').style.display = 'none';
+                document.getElementById('show-explanation-btn').style.display = 'none';
+                document.getElementById('show-explanation-btn').textContent = '查看答案解析';
+
+                // 启用提交按钮
+                submitBtn.disabled = false;
+                submitBtn.style.opacity = '1';
+                submitBtn.style.cursor = 'pointer';
+            }
+
+            // ==================== 事件处理 ====================
+
+            const submitBtn = document.getElementById('submit-btn');
+            const resetBtn = document.getElementById('reset-btn');
+            const refreshBtn = document.getElementById('refresh-btn');
+            const feedbackContainer = document.getElementById('feedback');
+            const feedbackContent = document.getElementById('feedback-content');
+            const correctCountEl = document.getElementById('correct-count');
+            const incorrectCountEl = document.getElementById('incorrect-count');
+            const scoreEl = document.getElementById('score');
+            const showExplanationBtn = document.getElementById('show-explanation-btn');
+            const explanationSection = document.getElementById('explanation-section');
+            const answerInput = document.getElementById('answer-input');
+            const feedbackInline = document.getElementById('feedback-inline');
+
+            let submitted = false;
+            let correctCount = 0;
+            let incorrectCount = 0;
+
+            // 刷新参数按钮
+            refreshBtn.addEventListener('click', refreshParams);
+
+            // 显示答案解析按钮点击事件
+            showExplanationBtn.addEventListener('click', function() {
+                if (explanationSection.style.display === 'none' || explanationSection.style.display === '') {
+                    explanationSection.style.display = 'block';
+                    this.textContent = '隐藏答案解析';
+                } else {
+                    explanationSection.style.display = 'none';
+                    this.textContent = '查看答案解析';
+                }
+            });
+
+            // 提交答案
+            submitBtn.addEventListener('click', function() {
+                const userAnswer = parseFloat(answerInput.value);
+
+                if (isNaN(userAnswer)) {
+                    showFeedback('请先输入一个有效的数字答案！', 'warning');
+                    return;
+                }
+
+                if (submitted) return;
+
+                submitted = true;
+
+                const params = questionParams[currentParamIndex];
+                const tolerance = 0.01;
+                const isCorrect = Math.abs(userAnswer - params.answer) <= tolerance;
+
+                // 显示反馈
+                feedbackContainer.style.display = 'block';
+
+                // 更新输入框样式
+                if (isCorrect) {
+                    answerInput.classList.add('correct');
+                    feedbackInline.textContent = '正确！';
+                    feedbackInline.className = 'feedback-inline correct';
+                } else {
+                    answerInput.classList.add('incorrect');
+                    feedbackInline.textContent = `不正确。正确答案是 ${params.answer.toFixed(3)}`;
+                    feedbackInline.className = 'feedback-inline incorrect';
+                }
+
+                // 更新统计
+                if (isCorrect) {
+                    correctCount++;
+                    showFeedback(`<p><strong>正确！</strong> 你输入的答案是 ${userAnswer.toFixed(3)}。</p>
+                                 <p>使用二项分布的正态近似并进行连续性校正，计算得到成功次数超过${params.threshold}的概率约为${params.answer.toFixed(3)}。</p>
+                                 <p>详细计算过程见下方解析。</p>`, 'success');
+                } else {
+                    incorrectCount++;
+                    showFeedback(`<p><strong>不正确。</strong> 你输入的答案是 ${userAnswer.toFixed(3)}。</p>
+                                 <p>使用二项分布的正态近似并进行连续性校正：</p>
+                                 <p><span class="math">mu = np = ${params.n} x ${params.p} = ${params.mu}</span></p>
+                                 <p><span class="math">sigma = sqrt[np(1-p)] = ${params.sigma.toFixed(4)}</span></p>
+                                 <p>使用连续性校正：<span class="math">P(X > ${params.threshold}) = P(X >= ${params.thresholdCorrected})</span></p>
+                                 <p><span class="math">z = (${params.thresholdCorrected} - ${params.mu}) / ${params.sigma.toFixed(4)} = ${params.z.toFixed(4)}</span></p>
+                                 <p>正确答案是 ${params.answer.toFixed(3)}</p>`, 'error');
+                }
+
+                // 更新统计显示
+                updateStats();
+
+                // 显示解析按钮
+                showExplanationBtn.style.display = 'inline-block';
+
+                // 禁用输入
+                answerInput.disabled = true;
+
+                // 禁用提交按钮
+                submitBtn.disabled = true;
+                submitBtn.style.opacity = '0.7';
+                submitBtn.style.cursor = 'not-allowed';
+            });
+
+            // 重新作答
+            resetBtn.addEventListener('click', function() {
+                // 重置输入
+                answerInput.value = '';
+                answerInput.classList.remove('correct', 'incorrect');
+                answerInput.disabled = false;
+
+                feedbackInline.className = 'feedback-inline';
+                feedbackInline.textContent = '';
+
+                submitted = false;
+
+                // 隐藏反馈和解析
+                feedbackContainer.style.display = 'none';
+                explanationSection.style.display = 'none';
+                showExplanationBtn.style.display = 'none';
+                showExplanationBtn.textContent = '查看答案解析';
+
+                // 启用提交按钮
+                submitBtn.disabled = false;
+                submitBtn.style.opacity = '1';
+                submitBtn.style.cursor = 'pointer';
+            });
+
+            // 显示反馈
+            function showFeedback(message, type) {
+                feedbackContent.innerHTML = message;
+
+                // 根据类型设置边框颜色
+                if (type === 'success') {
+                    feedbackContainer.style.borderLeftColor = '#2ecc71';
+                } else if (type === 'error') {
+                    feedbackContainer.style.borderLeftColor = '#e74c3c';
+                } else {
+                    feedbackContainer.style.borderLeftColor = '#f39c12';
+                }
+            }
+
+            // 更新统计
+            function updateStats() {
+                correctCountEl.textContent = correctCount;
+                incorrectCountEl.textContent = incorrectCount;
+
+                // 计算得分
+                const total = correctCount + incorrectCount;
+                const score = total > 0 ? Math.round((correctCount / total) * 100) : 0;
+                scoreEl.textContent = `${score}%`;
+            }
+
+            // ==================== 初始化 ====================
+            renderQuestion();
+        });
+    </script>
+</body>
+</html>

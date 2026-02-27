@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>加权均值 表格数据 - 交互式答题</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+
+        body {
+            background-color: #f0f7ff;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #4a90e2;
+        }
+
+        .header h1 {
+            color: #2c5282;
+            margin-bottom: 10px;
+            font-size: 2.2rem;
+        }
+
+        .header .subtitle {
+            color: #5a6c7d;
+            font-size: 1.1rem;
+        }
+
+        .content-container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .section-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 6px 15px rgba(66, 133, 244, 0.1);
+            border: 1px solid #e1e8f0;
+        }
+
+        .section-title {
+            color: #2c5282;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e1e8f0;
+            font-size: 1.5rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e1e8f0;
+        }
+
+        .refresh-params-btn {
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .refresh-params-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.4);
+        }
+
+        .question-text {
+            margin-bottom: 25px;
+            font-size: 1.1rem;
+            color: #2d3748;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .data-table th {
+            background-color: #4a90e2;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .data-table td {
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .data-table tr:nth-child(even) {
+            background-color: #f7fafc;
+        }
+
+        .formula {
+            background-color: #f0f9ff;
+            border-left: 4px solid #4a90e2;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+            font-family: 'Cambria Math', serif;
+            overflow-x: auto;
+        }
+
+        .formula p {
+            margin: 5px 0;
+        }
+
+        .option-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 25px 0;
+        }
+
+        .option-item {
+            padding: 18px 20px;
+            border: 2px solid #cbd5e0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background-color: white;
+            font-size: 1.05rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .option-item:hover {
+            border-color: #4a90e2;
+            background-color: #f0f7ff;
+            transform: translateY(-2px);
+        }
+
+        .option-item.selected {
+            border-color: #3182ce;
+            background-color: #ebf8ff;
+            font-weight: 600;
+        }
+
+        .option-item.correct {
+            border-color: #38a169;
+            background-color: #f0fff4;
+        }
+
+        .option-item.incorrect {
+            border-color: #e53e3e;
+            background-color: #fff5f5;
+        }
+
+        .option-letter {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            background-color: #4a90e2;
+            color: white;
+            border-radius: 50%;
+            margin-right: 15px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .option-item.correct .option-letter {
+            background-color: #38a169;
+        }
+
+        .option-item.incorrect .option-letter {
+            background-color: #e53e3e;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+            min-width: 140px;
+        }
+
+        #submit-btn {
+            background-color: #4a90e2;
+            color: white;
+        }
+
+        #submit-btn:hover {
+            background-color: #2c5282;
+        }
+
+        #reset-btn {
+            background-color: #a0aec0;
+            color: white;
+        }
+
+        #reset-btn:hover {
+            background-color: #718096;
+        }
+
+        .feedback {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .feedback.correct {
+            background-color: #c6f6d5;
+            border: 1px solid #38a169;
+            color: #22543d;
+        }
+
+        .feedback.incorrect {
+            background-color: #fed7d7;
+            border: 1px solid #e53e3e;
+            color: #742a2a;
+        }
+
+        .feedback.show {
+            display: block;
+        }
+
+        .score-display {
+            text-align: center;
+            font-size: 1.3rem;
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #e6fffa;
+            border-radius: 10px;
+            border: 1px solid #81e6d9;
+            color: #234e52;
+        }
+
+        .explanation {
+            margin-top: 25px;
+            padding: 20px;
+            background-color: #f7fafc;
+            border-radius: 10px;
+            border-left: 4px solid #4299e1;
+        }
+
+        .explanation h3 {
+            color: #2c5282;
+            margin-bottom: 15px;
+        }
+
+        .explanation p {
+            margin-bottom: 10px;
+        }
+
+        .calculation {
+            background-color: #edf2f7;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: 'Cambria Math', serif;
+        }
+
+        .final-answer {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #2c5282;
+            text-align: center;
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #bee3f8;
+            border-radius: 10px;
+        }
+
+        .show-explanation-btn {
+            display: none;
+            margin: 20px auto;
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
+        }
+        .show-explanation-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
+        }
+        .explanation-section {
+            display: none;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 15px;
+            }
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            .section-card {
+                padding: 20px;
+            }
+            button {
+                min-width: 100%;
+            }
+            .controls {
+                flex-direction: column;
+            }
+            .section-header {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>加权均值 表格数据</h1>
+        <div class="subtitle">交互式答题与解析 | 描述性统计</div>
+    </div>
+
+    <div class="content-container">
+        <div class="question-section">
+            <div class="section-card">
+                <div class="section-header">
+                    <h2 class="section-title">题目内容</h2>
+                    <button class="refresh-params-btn" id="refreshParamsBtn">
+                        <span>&#8635;</span> 刷新参数
+                    </button>
+                </div>
+                <div class="question-text" id="question-text">
+                    <!-- 动态生成 -->
+                </div>
+
+                <div class="option-list" id="option-list">
+                    <!-- 动态生成 -->
+                </div>
+
+                <div class="controls">
+                    <button id="submit-btn">提交答案</button>
+                    <button id="reset-btn">重新作答</button>
+                </div>
+
+                <div class="feedback" id="feedback">
+                    <!-- 反馈内容将通过JavaScript动态填充 -->
+                </div>
+
+                <div class="score-display" id="score-display">
+                    得分: <span id="score">0</span> / 1
+                </div>
+            </div>
+        </div>
+
+        <div class="interactive-section">
+            <div class="section-card">
+                <h2 class="section-title">题目解析</h2>
+
+                <button class="show-explanation-btn" id="show-explanation-btn">查看答案解析</button>
+                <div class="explanation-section explanation" id="explanation-section">
+                    <h3>加权平均数计算过程</h3>
+                    <div id="explanation-content">
+                        <!-- 动态生成 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // ==================== 参数化数据集 ====================
+            const questionParams = [
+                {
+                    context: "婴儿出生体重",
+                    data: [
+                        { count: 5, value: 4 },
+                        { count: 9, value: 6 },
+                        { count: 13, value: 7 }
+                    ],
+                    unit: "磅",
+                    answer: 6.1,
+                    answerOption: 'B',
+                    options: [
+                        { letter: 'A', text: '5.8 磅' },
+                        { letter: 'B', text: '6.1 磅' },
+                        { letter: 'C', text: '6.5 磅' },
+                        { letter: 'D', text: '6.8 磅' }
+                    ]
+                },
+                {
+                    context: "学生考试成绩",
+                    data: [
+                        { count: 8, value: 65 },
+                        { count: 12, value: 75 },
+                        { count: 15, value: 85 },
+                        { count: 5, value: 95 }
+                    ],
+                    unit: "分",
+                    answer: 79.5,
+                    answerOption: 'C',
+                    options: [
+                        { letter: 'A', text: '76.5 分' },
+                        { letter: 'B', text: '78.0 分' },
+                        { letter: 'C', text: '79.5 分' },
+                        { letter: 'D', text: '81.0 分' }
+                    ]
+                },
+                {
+                    context: "员工工作时长",
+                    data: [
+                        { count: 6, value: 35 },
+                        { count: 10, value: 40 },
+                        { count: 8, value: 45 },
+                        { count: 4, value: 50 }
+                    ],
+                    unit: "小时/周",
+                    answer: 42.1,
+                    answerOption: 'B',
+                    options: [
+                        { letter: 'A', text: '40.5 小时/周' },
+                        { letter: 'B', text: '42.1 小时/周' },
+                        { letter: 'C', text: '43.8 小时/周' },
+                        { letter: 'D', text: '45.0 小时/周' }
+                    ]
+                },
+                {
+                    context: "商品销售价格",
+                    data: [
+                        { count: 15, value: 20 },
+                        { count: 25, value: 30 },
+                        { count: 10, value: 40 }
+                    ],
+                    unit: "元",
+                    answer: 29.2,
+                    answerOption: 'A',
+                    options: [
+                        { letter: 'A', text: '29.2 元' },
+                        { letter: 'B', text: '30.0 元' },
+                        { letter: 'C', text: '31.5 元' },
+                        { letter: 'D', text: '32.8 元' }
+                    ]
+                },
+                {
+                    context: "运动员体重",
+                    data: [
+                        { count: 4, value: 60 },
+                        { count: 8, value: 70 },
+                        { count: 6, value: 80 },
+                        { count: 2, value: 90 }
+                    ],
+                    unit: "公斤",
+                    answer: 72.5,
+                    answerOption: 'C',
+                    options: [
+                        { letter: 'A', text: '68.5 公斤' },
+                        { letter: 'B', text: '70.0 公斤' },
+                        { letter: 'C', text: '72.5 公斤' },
+                        { letter: 'D', text: '75.0 公斤' }
+                    ]
+                },
+                {
+                    context: "产品生产数量",
+                    data: [
+                        { count: 3, value: 100 },
+                        { count: 7, value: 150 },
+                        { count: 5, value: 200 }
+                    ],
+                    unit: "件/天",
+                    answer: 155.0,
+                    answerOption: 'B',
+                    options: [
+                        { letter: 'A', text: '145.0 件/天' },
+                        { letter: 'B', text: '155.0 件/天' },
+                        { letter: 'C', text: '160.0 件/天' },
+                        { letter: 'D', text: '166.7 件/天' }
+                    ]
+                }
+            ];
+
+            let currentParamIndex = 0;
+            let selectedOption = null;
+            let answered = false;
+            let score = 0;
+
+            // ==================== 渲染函数 ====================
+            function renderQuestion() {
+                const params = questionParams[currentParamIndex];
+                const totalCount = params.data.reduce((sum, d) => sum + d.count, 0);
+
+                // 渲染问题文本
+                let tableRows = '';
+                params.data.forEach(d => {
+                    tableRows += `<tr><td>${d.count}</td><td>${d.value}</td></tr>`;
+                });
+
+                const weightedSum = params.data.reduce((sum, d) => sum + d.count * d.value, 0);
+                const formula1 = params.data.map(d => `${d.count}×${d.value}`).join(' + ');
+                const relativeFreqs = params.data.map(d => `${d.count}/${totalCount}`).join(', ');
+
+                document.getElementById('question-text').innerHTML = `
+                    <p>我们被要求找出样本中的平均${params.context}。为了求出这个均值，我们不能简单地取数值的平均值，因为必须考虑每个值对应的数量。</p>
+
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>数量</th>
+                                <th>${params.context}（${params.unit}）</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${tableRows}
+                        </tbody>
+                    </table>
+
+                    <p>均值的正确计算方法是：</p>
+
+                    <div class="formula">
+                        <p>样本均值 = (${formula1}) / (${params.data.map(d => d.count).join(' + ')})</p>
+                    </div>
+
+                    <p>注意，${params.data.map(d => d.count).join('、')} 是频数，而 ${totalCount} 是样本量，即频数的总和。</p>
+
+                    <p>均值的计算也可以写成：</p>
+
+                    <div class="formula">
+                        <p>(${relativeFreqs}) 分别乘以对应的值</p>
+                    </div>
+
+                    <p>四舍五入到一位小数后，平均${params.context}是多少？</p>
+                `;
+
+                // 渲染选项
+                let optionsHTML = '';
+                params.options.forEach(opt => {
+                    optionsHTML += `
+                        <div class="option-item" data-value="${opt.letter}">
+                            <div class="option-letter">${opt.letter}</div>
+                            <div class="option-text">${opt.text}</div>
+                        </div>
+                    `;
+                });
+                document.getElementById('option-list').innerHTML = optionsHTML;
+
+                // 渲染解析
+                renderExplanation(params, totalCount, weightedSum);
+
+                // 重置状态
+                selectedOption = null;
+                answered = false;
+                document.getElementById('feedback').classList.remove('show', 'correct', 'incorrect');
+                document.getElementById('feedback').textContent = '';
+                document.getElementById('show-explanation-btn').style.display = 'none';
+                document.getElementById('explanation-section').style.display = 'none';
+                document.getElementById('show-explanation-btn').textContent = '查看答案解析';
+
+                // 绑定选项事件
+                bindOptionEvents();
+            }
+
+            function renderExplanation(params, totalCount, weightedSum) {
+                const calculation1 = params.data.map(d => `${d.count} × ${d.value}`).join(' + ');
+                const calculation2 = params.data.map(d => d.count * d.value).join(' + ');
+                const relativeFreqs = params.data.map(d => `${d.count}/${totalCount} × ${d.value}`).join(' + ');
+
+                document.getElementById('explanation-content').innerHTML = `
+                    <p>1. 首先计算总数量（样本量）：</p>
+                    <div class="calculation">
+                        ${params.data.map(d => d.count).join(' + ')} = ${totalCount}
+                    </div>
+
+                    <p>2. 计算加权总和：</p>
+                    <div class="calculation">
+                        (${calculation1}) = ${calculation2} = ${weightedSum}
+                    </div>
+
+                    <p>3. 计算加权平均数：</p>
+                    <div class="calculation">
+                        加权平均数 = 加权总和 / 总数量 = ${weightedSum} / ${totalCount} ≈ ${(weightedSum / totalCount).toFixed(4)}...
+                    </div>
+
+                    <p>4. 四舍五入到一位小数：</p>
+                    <div class="calculation">
+                        ${(weightedSum / totalCount).toFixed(4)} ≈ ${params.answer}
+                    </div>
+
+                    <div class="final-answer">
+                        正确答案: ${params.answer} ${params.unit}
+                    </div>
+
+                    <h3>概念解释</h3>
+                    <p><strong>加权平均数</strong>：当数据集中每个数值的重要性不同时，我们使用加权平均数。每个数值乘以其对应的权重（频率或相对频率），然后将这些乘积相加，最后除以权重的总和。</p>
+
+                    <p>在这个问题中：</p>
+                    <ul style="padding-left: 20px; margin-top: 10px;">
+                        <li>权重：每个值对应的数量（${params.data.map(d => d.count).join(', ')}）</li>
+                        <li>数值：${params.context}（${params.data.map(d => d.value).join(', ')} ${params.unit}）</li>
+                        <li>相对频率权重：${params.data.map(d => `${d.count}/${totalCount}`).join(', ')}</li>
+                    </ul>
+                `;
+            }
+
+            function bindOptionEvents() {
+                const optionItems = document.querySelectorAll('.option-item');
+                optionItems.forEach(item => {
+                    item.addEventListener('click', function() {
+                        if (answered) return;
+
+                        optionItems.forEach(opt => opt.classList.remove('selected'));
+                        this.classList.add('selected');
+                        selectedOption = this.getAttribute('data-value');
+                    });
+                });
+            }
+
+            function refreshParams() {
+                let newIndex;
+                do {
+                    newIndex = Math.floor(Math.random() * questionParams.length);
+                } while (newIndex === currentParamIndex && questionParams.length > 1);
+
+                currentParamIndex = newIndex;
+
+                // 重置选项样式
+                document.querySelectorAll('.option-item').forEach(item => {
+                    item.classList.remove('selected', 'correct', 'incorrect');
+                    item.style.cursor = 'pointer';
+                });
+
+                renderQuestion();
+            }
+
+            // ==================== 事件处理 ====================
+
+            // 刷新参数按钮
+            document.getElementById('refreshParamsBtn').addEventListener('click', refreshParams);
+
+            // 提交答案
+            document.getElementById('submit-btn').addEventListener('click', function() {
+                if (!selectedOption) {
+                    alert('请先选择一个答案！');
+                    return;
+                }
+
+                if (answered) return;
+
+                answered = true;
+                const params = questionParams[currentParamIndex];
+                const feedback = document.getElementById('feedback');
+
+                // 显示正确答案和错误答案的样式
+                document.querySelectorAll('.option-item').forEach(item => {
+                    const value = item.getAttribute('data-value');
+                    if (value === params.answerOption) {
+                        item.classList.add('correct');
+                    } else if (value === selectedOption && value !== params.answerOption) {
+                        item.classList.add('incorrect');
+                    }
+                });
+
+                // 显示反馈
+                feedback.classList.remove('correct', 'incorrect');
+                feedback.textContent = '';
+
+                if (selectedOption === params.answerOption) {
+                    feedback.classList.add('correct', 'show');
+                    feedback.innerHTML = `
+                        <h3>回答正确！</h3>
+                        <p>你选择了正确答案：${params.answer} ${params.unit}。</p>
+                        <p>加权平均数的计算结果是正确的。</p>
+                    `;
+                    score = 1;
+                } else {
+                    feedback.classList.add('incorrect', 'show');
+                    feedback.innerHTML = `
+                        <h3>回答错误</h3>
+                        <p>你选择了选项 ${selectedOption}。</p>
+                        <p>请查看下方的解析部分，了解加权平均数的计算过程。</p>
+                    `;
+                    score = 0;
+                }
+
+                // 更新得分
+                document.getElementById('score').textContent = score;
+
+                // 显示解析按钮
+                document.getElementById('show-explanation-btn').style.display = 'inline-block';
+
+                // 禁用所有选项的点击
+                document.querySelectorAll('.option-item').forEach(item => {
+                    item.style.cursor = 'default';
+                });
+            });
+
+            // 重新作答
+            document.getElementById('reset-btn').addEventListener('click', function() {
+                // 重置所有选项样式
+                document.querySelectorAll('.option-item').forEach(item => {
+                    item.classList.remove('selected', 'correct', 'incorrect');
+                    item.style.cursor = 'pointer';
+                });
+
+                // 隐藏反馈
+                document.getElementById('feedback').classList.remove('show', 'correct', 'incorrect');
+                document.getElementById('feedback').textContent = '';
+
+                // 重置状态
+                selectedOption = null;
+                answered = false;
+                score = 0;
+                document.getElementById('score').textContent = score;
+
+                document.getElementById('show-explanation-btn').style.display = 'none';
+                document.getElementById('explanation-section').style.display = 'none';
+            });
+
+            // 显示答案解析按钮点击事件
+            document.getElementById('show-explanation-btn').addEventListener('click', function() {
+                const explanationSection = document.getElementById('explanation-section');
+                if (explanationSection.style.display === 'none' || explanationSection.style.display === '') {
+                    explanationSection.style.display = 'block';
+                    this.textContent = '隐藏答案解析';
+                } else {
+                    explanationSection.style.display = 'none';
+                    this.textContent = '查看答案解析';
+                }
+            });
+
+            // ==================== 初始化 ====================
+            renderQuestion();
+        });
+    </script>
+</body>
+</html>

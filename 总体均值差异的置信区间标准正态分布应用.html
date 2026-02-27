@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>总体均值差异的置信区间 - 标准正态分布应用</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f8ff;
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 82, 155, 0.1);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        h1 {
+            color: #0052a3;
+            text-align: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e6f2ff;
+        }
+        .subtitle {
+            text-align: center;
+            color: #6699cc;
+            font-style: italic;
+            margin-bottom: 30px;
+        }
+        .question-section {
+            background-color: #f8fbff;
+            border-left: 5px solid #4d94ff;
+            padding: 20px;
+            border-radius: 0 10px 10px 0;
+            margin-bottom: 30px;
+        }
+        .question-title {
+            color: #0052a3;
+            font-weight: 600;
+            margin-top: 0;
+            font-size: 1.2em;
+        }
+        .question-content {
+            white-space: pre-line;
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #e1ecff;
+            font-size: 1em;
+            overflow-x: auto;
+        }
+        .formula {
+            font-family: 'Cambria Math', 'Times New Roman', serif;
+            background-color: #f0f7ff;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            text-align: center;
+            font-size: 1.1em;
+            border: 1px dashed #99ccff;
+        }
+        .answer-input-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin: 25px 0;
+        }
+        .input-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #0052a3;
+            font-weight: 600;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #cce0ff;
+            border-radius: 8px;
+            font-size: 1.1em;
+            transition: border 0.3s;
+        }
+        .input-group input:focus {
+            outline: none;
+            border-color: #4d94ff;
+            box-shadow: 0 0 0 3px rgba(77, 148, 255, 0.2);
+        }
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        button {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        #submitBtn {
+            background-color: #4d94ff;
+            color: white;
+        }
+        #submitBtn:hover {
+            background-color: #2673ff;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(77, 148, 255, 0.4);
+        }
+        #resetBtn {
+            background-color: #f0f7ff;
+            color: #4d94ff;
+            border: 2px solid #4d94ff;
+        }
+        #resetBtn:hover {
+            background-color: #e6f2ff;
+            transform: translateY(-2px);
+        }
+        .feedback {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 10px;
+            display: none;
+        }
+        .feedback.correct {
+            background-color: #f0fff4;
+            border: 2px solid #52c41a;
+            color: #237804;
+        }
+        .feedback.incorrect {
+            background-color: #fff2f0;
+            border: 2px solid #ff4d4f;
+            color: #a8071a;
+        }
+        .feedback-title {
+            font-weight: 700;
+            font-size: 1.2em;
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+        .score-display {
+            text-align: center;
+            font-size: 1.3em;
+            color: #0052a3;
+            margin: 20px 0;
+            padding: 15px;
+            background-color: #e6f2ff;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+        .calculation-steps {
+            background-color: #f8fbff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border: 1px solid #e1ecff;
+        }
+        .steps-title {
+            color: #0052a3;
+            margin-top: 0;
+        }
+        .step {
+            margin-bottom: 15px;
+        }
+        .math {
+            font-family: 'Cambria Math', 'Times New Roman', serif;
+        }
+        .refresh-btn {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.9em;
+            margin-left: 10px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .refresh-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+        }
+        .param-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            h1 {
+                font-size: 1.5em;
+            }
+            .answer-input-section {
+                flex-direction: column;
+            }
+            .input-group {
+                min-width: 100%;
+            }
+        }
+    </style>
+
+    <style>
+    .show-explanation-btn {
+        display: none;
+        margin: 20px auto;
+        padding: 14px 28px;
+        background: linear-gradient(135deg, #9b59b6, #8e44ad);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 1.1rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
+    }
+    .show-explanation-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
+    }
+    .explanation-section {
+        display: none;
+        margin-top: 20px;
+    }
+    </style>
+    </head>
+<body>
+    <div class="container">
+        <h1>总体均值差异的置信区间</h1>
+        <div class="subtitle">标准正态分布应用 - 交互式答题</div>
+
+        <div class="question-section">
+            <div class="param-header">
+                <h3 class="question-title" style="margin: 0;">题目描述</h3>
+                <button class="refresh-btn" onclick="refreshQuestion()">刷新参数</button>
+            </div>
+            <div class="question-content" id="questionContent">
+            </div>
+
+            <div class="formula">
+                ( (x̄₁ - x̄₂) - z<sub>α/2</sub> × √(σ₁²/n₁ + σ₂²/n₂) , (x̄₁ - x̄₂) + z<sub>α/2</sub> × √(σ₁²/n₁ + σ₂²/n₂) )
+            </div>
+
+            <div class="calculation-steps">
+                <h4 class="steps-title">已知条件</h4>
+                <div id="knownConditions"></div>
+            </div>
+        </div>
+
+        <div class="answer-input-section">
+            <div class="input-group">
+                <label for="lowerBound" id="lowerLabel">置信区间的下限是多少？</label>
+                <input type="number" id="lowerBound" step="0.01">
+            </div>
+            <div class="input-group">
+                <label for="upperBound" id="upperLabel">置信区间的上限是多少？</label>
+                <input type="number" id="upperBound" step="0.01">
+            </div>
+        </div>
+
+        <div class="button-container">
+            <button id="submitBtn">提交答案</button>
+            <button id="resetBtn">重新作答</button>
+        </div>
+
+        <div class="score-display" id="scoreDisplay">
+            请填写答案并提交
+        </div>
+
+        <div class="feedback" id="feedback">
+            <h4 class="feedback-title" id="feedbackTitle">反馈标题</h4>
+            <div id="feedbackContent">反馈内容</div>
+        </div>
+    </div>
+
+    <script>
+        // Parameter sets with pre-computed answers
+        const parameterSets = [
+            {
+                n1: 280, xbar1: 17.60, sigma1: 4.40,
+                n2: 205, xbar2: 18.40, sigma2: 3.60,
+                confidenceLevel: 99,
+                zValue: 2.576,
+                correctLower: -1.74,
+                correctUpper: 0.14,
+                description: "某制药公司研究部门进行了一项研究，随机抽取了 280 名个体，要求他们报告每年在处方过敏缓解药物上的花费金额。样本均值计算为 17.60 美元，标准差为 4.40 美元。独立于第一个样本，随机抽取了 205 名个体。这些个体报告了他们在非处方过敏缓解药物上的年度花费。第二个样本的均值计算为 18.40 美元，标准差为 3.60 美元。由于样本量相当大，可以假设处方和非处方过敏缓解药物花费的各自总体标准差可以用上面给出的各自样本标准差值来估计。",
+                questionContext: "处方过敏缓解药物的平均花费 (μ₁) 与非处方过敏缓解药物的平均花费 (μ₂) 之间的差值 μ₁ - μ₂"
+            },
+            {
+                n1: 150, xbar1: 85.20, sigma1: 12.50,
+                n2: 180, xbar2: 82.40, sigma2: 11.80,
+                confidenceLevel: 95,
+                zValue: 1.96,
+                correctLower: 0.30,
+                correctUpper: 5.30,
+                description: "某教育研究机构进行了一项研究，随机抽取了 150 名使用新教学法的学生，他们的平均考试成绩为 85.20 分，标准差为 12.50 分。独立地，随机抽取了 180 名使用传统教学法的学生，他们的平均成绩为 82.40 分，标准差为 11.80 分。由于样本量较大，可以用样本标准差估计总体标准差。",
+                questionContext: "新教学法学生的平均成绩 (μ₁) 与传统教学法学生的平均成绩 (μ₂) 之间的差值 μ₁ - μ₂"
+            },
+            {
+                n1: 200, xbar1: 45.80, sigma1: 8.60,
+                n2: 175, xbar2: 52.30, sigma2: 9.20,
+                confidenceLevel: 95,
+                zValue: 1.96,
+                correctLower: -8.54,
+                correctUpper: -4.66,
+                description: "某市场研究公司调查了两个城市的居民生活成本。第一个城市随机抽取了 200 名居民，月均生活支出为 45.80 百元，标准差为 8.60 百元。第二个城市随机抽取了 175 名居民，月均生活支出为 52.30 百元，标准差为 9.20 百元。由于样本量较大，可以用样本标准差估计总体标准差。",
+                questionContext: "第一个城市居民的平均月支出 (μ₁) 与第二个城市居民的平均月支出 (μ₂) 之间的差值 μ₁ - μ₂"
+            },
+            {
+                n1: 320, xbar1: 125.50, sigma1: 18.40,
+                n2: 280, xbar2: 118.60, sigma2: 16.90,
+                confidenceLevel: 99,
+                zValue: 2.576,
+                correctLower: 3.93,
+                correctUpper: 9.87,
+                description: "某健康研究机构比较两种减肥方法的效果。第一种方法有 320 名参与者，平均减重 125.50 百克，标准差为 18.40 百克。第二种方法有 280 名参与者，平均减重 118.60 百克，标准差为 16.90 百克。由于样本量较大，可以用样本标准差估计总体标准差。",
+                questionContext: "第一种方法参与者的平均减重量 (μ₁) 与第二种方法参与者的平均减重量 (μ₂) 之间的差值 μ₁ - μ₂"
+            },
+            {
+                n1: 250, xbar1: 68.40, sigma1: 10.20,
+                n2: 300, xbar2: 72.80, sigma2: 11.50,
+                confidenceLevel: 90,
+                zValue: 1.645,
+                correctLower: -6.39,
+                correctUpper: -2.41,
+                description: "某消费研究机构调查两种品牌手机的用户满意度评分。品牌A随机调查了 250 名用户，平均满意度评分为 68.40 分，标准差为 10.20 分。品牌B随机调查了 300 名用户，平均满意度评分为 72.80 分，标准差为 11.50 分。由于样本量较大，可以用样本标准差估计总体标准差。",
+                questionContext: "品牌A用户的平均满意度 (μ₁) 与品牌B用户的平均满意度 (μ₂) 之间的差值 μ₁ - μ₂"
+            }
+        ];
+
+        let currentParams = null;
+
+        function refreshQuestion() {
+            // Reset the form first
+            resetForm();
+
+            // Select random parameter set
+            const randomIndex = Math.floor(Math.random() * parameterSets.length);
+            currentParams = parameterSets[randomIndex];
+
+            // Update question content
+            const questionText = `${currentParams.description}
+
+构建一个 ${currentParams.confidenceLevel}% 的置信区间，用于估计${currentParams.questionContext}。
+
+中间计算至少保留三位小数。答案至少保留两位小数。`;
+
+            document.getElementById('questionContent').textContent = questionText;
+
+            // Update labels
+            document.getElementById('lowerLabel').textContent = `${currentParams.confidenceLevel}% 置信区间的下限是多少？`;
+            document.getElementById('upperLabel').textContent = `${currentParams.confidenceLevel}% 置信区间的上限是多少？`;
+
+            // Update known conditions
+            const meanDiff = (currentParams.xbar1 - currentParams.xbar2).toFixed(2);
+            const variance1 = (Math.pow(currentParams.sigma1, 2) / currentParams.n1).toFixed(6);
+            const variance2 = (Math.pow(currentParams.sigma2, 2) / currentParams.n2).toFixed(6);
+            const totalVariance = (parseFloat(variance1) + parseFloat(variance2)).toFixed(6);
+            const stdError = Math.sqrt(parseFloat(totalVariance)).toFixed(4);
+            const marginError = (currentParams.zValue * parseFloat(stdError)).toFixed(4);
+
+            document.getElementById('knownConditions').innerHTML = `
+                <div class="step">样本1: n₁ = ${currentParams.n1}, x̄₁ = ${currentParams.xbar1}, σ₁ = ${currentParams.sigma1}</div>
+                <div class="step">样本2: n₂ = ${currentParams.n2}, x̄₂ = ${currentParams.xbar2}, σ₂ = ${currentParams.sigma2}</div>
+                <div class="step">置信水平: ${currentParams.confidenceLevel}% → z<sub>α/2</sub> = ${currentParams.zValue}</div>
+                <div class="step">样本均值差: x̄₁ - x̄₂ = ${currentParams.xbar1} - ${currentParams.xbar2} = ${meanDiff}</div>
+                <div class="step">标准误: √(σ₁²/n₁ + σ₂²/n₂) = √(${variance1} + ${variance2}) ≈ √${totalVariance} ≈ ${stdError}</div>
+                <div class="step">误差范围: z<sub>α/2</sub> × 标准误 = ${currentParams.zValue} × ${stdError} ≈ ${marginError}</div>
+            `;
+        }
+
+        function resetForm() {
+            document.getElementById('lowerBound').value = '';
+            document.getElementById('upperBound').value = '';
+            document.getElementById('feedback').style.display = 'none';
+            document.getElementById('scoreDisplay').textContent = '请填写答案并提交';
+            document.getElementById('scoreDisplay').style.color = '#0052a3';
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize with first random parameter set
+            refreshQuestion();
+
+            const lowerBoundInput = document.getElementById('lowerBound');
+            const upperBoundInput = document.getElementById('upperBound');
+            const submitBtn = document.getElementById('submitBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const feedback = document.getElementById('feedback');
+            const feedbackTitle = document.getElementById('feedbackTitle');
+            const feedbackContent = document.getElementById('feedbackContent');
+            const scoreDisplay = document.getElementById('scoreDisplay');
+
+            const tolerance = 0.05; // 允许的误差范围
+
+            // 提交答案
+            submitBtn.addEventListener('click', function() {
+                const userLower = parseFloat(lowerBoundInput.value);
+                const userUpper = parseFloat(upperBoundInput.value);
+
+                // 验证输入
+                if (isNaN(userLower) || isNaN(userUpper)) {
+                    alert('请输入有效的数字！');
+                    return;
+                }
+
+                // 检查答案
+                const lowerCorrect = Math.abs(userLower - currentParams.correctLower) <= tolerance;
+                const upperCorrect = Math.abs(userUpper - currentParams.correctUpper) <= tolerance;
+                const allCorrect = lowerCorrect && upperCorrect;
+
+                const meanDiff = (currentParams.xbar1 - currentParams.xbar2).toFixed(2);
+                const variance1 = (Math.pow(currentParams.sigma1, 2) / currentParams.n1).toFixed(6);
+                const variance2 = (Math.pow(currentParams.sigma2, 2) / currentParams.n2).toFixed(6);
+                const totalVariance = (parseFloat(variance1) + parseFloat(variance2)).toFixed(6);
+                const stdError = Math.sqrt(parseFloat(totalVariance)).toFixed(4);
+                const marginError = (currentParams.zValue * parseFloat(stdError)).toFixed(4);
+
+                // 显示反馈
+                if (allCorrect) {
+                    feedback.className = 'feedback correct';
+                    feedbackTitle.textContent = '回答正确！';
+                    feedbackContent.innerHTML = `
+                        <p>恭喜！您的答案完全正确。</p>
+                        <p>计算过程：</p>
+                        <ul>
+                            <li>样本均值差: ${currentParams.xbar1} - ${currentParams.xbar2} = ${meanDiff}</li>
+                            <li>标准误: √(${currentParams.sigma1}²/${currentParams.n1} + ${currentParams.sigma2}²/${currentParams.n2}) ≈ ${stdError}</li>
+                            <li>误差范围: ${currentParams.zValue} × ${stdError} ≈ ${marginError}</li>
+                            <li>下限: ${meanDiff} - ${marginError} ≈ <strong>${currentParams.correctLower}</strong></li>
+                            <li>上限: ${meanDiff} + ${marginError} ≈ <strong>${currentParams.correctUpper}</strong></li>
+                        </ul>
+                    `;
+                    scoreDisplay.textContent = '得分: 2/2 - 优秀！';
+                    scoreDisplay.style.color = '#52c41a';
+                } else {
+                    feedback.className = 'feedback incorrect';
+                    feedbackTitle.textContent = '回答不完全正确';
+
+                    let message = `<p>您的答案: (${userLower.toFixed(2)}, ${userUpper.toFixed(2)})</p>`;
+
+                    if (!lowerCorrect && !upperCorrect) {
+                        message += '<p>下限和上限都不正确。</p>';
+                    } else if (!lowerCorrect) {
+                        message += '<p>下限不正确。</p>';
+                    } else {
+                        message += '<p>上限不正确。</p>';
+                    }
+
+                    message += `
+                        <p><strong>详细计算:</strong></p>
+                        <p>置信区间公式: ( (x̄₁ - x̄₂) - z<sub>α/2</sub> × √(σ₁²/n₁ + σ₂²/n₂) , (x̄₁ - x̄₂) + z<sub>α/2</sub> × √(σ₁²/n₁ + σ₂²/n₂) )</p>
+                        <p>代入数值: ( (${currentParams.xbar1} - ${currentParams.xbar2}) - ${currentParams.zValue} × √(${currentParams.sigma1}²/${currentParams.n1} + ${currentParams.sigma2}²/${currentParams.n2}) , (${currentParams.xbar1} - ${currentParams.xbar2}) + ${currentParams.zValue} × √(${currentParams.sigma1}²/${currentParams.n1} + ${currentParams.sigma2}²/${currentParams.n2}) )</p>
+                        <p>计算结果: ( ${meanDiff} - ${marginError} , ${meanDiff} + ${marginError} ) ≈ ( ${currentParams.correctLower} , ${currentParams.correctUpper} )</p>
+                    `;
+
+                    feedbackContent.innerHTML = message;
+
+                    // 计算得分
+                    let score = 0;
+                    if (lowerCorrect) score++;
+                    if (upperCorrect) score++;
+                    scoreDisplay.textContent = `得分: ${score}/2 - 请再试一次！`;
+                    scoreDisplay.style.color = '#ff4d4f';
+                }
+
+                feedback.style.display = 'block';
+
+                window.scrollTo({
+                    top: document.body.scrollHeight,
+                    behavior: 'smooth'
+                });
+            });
+
+            // 重置答案
+            resetBtn.addEventListener('click', function() {
+                resetForm();
+                lowerBoundInput.focus();
+            });
+
+            // 允许按Enter键提交
+            lowerBoundInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') submitBtn.click();
+            });
+
+            upperBoundInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') submitBtn.click();
+            });
+        });
+    </script>
+</body>
+</html>

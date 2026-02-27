@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>总体方差比置信区间 - 交互式答题</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+
+        body {
+            background-color: #f0f7ff;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .container {
+            background-color: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0, 82, 204, 0.1);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e6f0ff;
+        }
+
+        h1 {
+            color: #0052cc;
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #6699ff;
+            font-size: 1.1rem;
+            font-weight: normal;
+        }
+
+        .question-section {
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            color: #0052cc;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e6f0ff;
+        }
+
+        .question-content {
+            background-color: #f8fbff;
+            border-left: 4px solid #4d94ff;
+            padding: 20px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 25px;
+            white-space: pre-line;
+            line-height: 1.8;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: #f8fbff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .data-table th, .data-table td {
+            padding: 15px;
+            text-align: center;
+            border: 1px solid #d9e6ff;
+        }
+
+        .data-table th {
+            background-color: #4d94ff;
+            color: white;
+            font-weight: 600;
+        }
+
+        .data-table tr:nth-child(even) {
+            background-color: #e6f0ff;
+        }
+
+        .formula {
+            background-color: #f0f7ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-family: 'Cambria Math', serif;
+            text-align: center;
+            border: 1px dashed #99c2ff;
+        }
+
+        .answer-section {
+            margin-top: 30px;
+        }
+
+        .answer-inputs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #0052cc;
+            font-weight: 600;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #c2d6ff;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #4d94ff;
+            box-shadow: 0 0 0 3px rgba(77, 148, 255, 0.2);
+        }
+
+        .buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        #submit-btn {
+            background-color: #0052cc;
+            color: white;
+        }
+
+        #submit-btn:hover {
+            background-color: #0047b3;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 82, 204, 0.2);
+        }
+
+        #reset-btn {
+            background-color: #f0f7ff;
+            color: #0052cc;
+            border: 2px solid #c2d6ff;
+        }
+
+        #reset-btn:hover {
+            background-color: #e6f0ff;
+            transform: translateY(-2px);
+        }
+
+        .feedback-section {
+            margin-top: 30px;
+            padding: 25px;
+            border-radius: 12px;
+            display: none;
+        }
+
+        .feedback-correct {
+            background-color: #f0fff4;
+            border: 2px solid #38a169;
+            color: #22543d;
+        }
+
+        .feedback-incorrect {
+            background-color: #fff5f5;
+            border: 2px solid #e53e3e;
+            color: #742a2a;
+        }
+
+        .feedback-title {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .feedback-title i {
+            font-size: 1.5rem;
+        }
+
+        .correct-answer {
+            font-weight: bold;
+            color: #22543d;
+            font-size: 1.2rem;
+        }
+
+        .explanation {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .score-section {
+            background-color: #e6f0ff;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 30px;
+            text-align: center;
+            display: none;
+        }
+
+        .score-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #0052cc;
+            margin: 10px 0;
+        }
+
+        .score-text {
+            font-size: 1.1rem;
+            color: #6699ff;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .answer-inputs {
+                flex-direction: column;
+            }
+            
+            .input-group {
+                min-width: 100%;
+            }
+            
+            button {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+            
+            .buttons {
+                flex-direction: column;
+            }
+        }
+
+        .math {
+            font-family: 'Cambria Math', serif;
+            font-style: italic;
+        }
+
+        .highlight {
+            background-color: #fffacd;
+            padding: 2px 5px;
+            border-radius: 3px;
+        }
+    </style>
+
+    <style>
+    .show-explanation-btn {
+        display: none;
+        margin: 20px auto;
+        padding: 14px 28px;
+        background: linear-gradient(135deg, #9b59b6, #8e44ad);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 1.1rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
+    }
+    .show-explanation-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
+    }
+    .explanation-section {
+        display: none;
+        margin-top: 20px;
+    }
+    </style>
+    </head>
+<body>
+    <div class="container">
+        <header>
+            <h1>总体方差比置信区间
+                <button class="refresh-btn" id="refresh-btn" style="background-color: #34a853; color: white; padding: 8px 16px; font-size: 0.9rem; border-radius: 6px; margin-left: 20px; border: none; cursor: pointer;">刷新参数</button>
+            </h1>
+            <p class="subtitle">交互式答题练习 - 置信区间与假设检验</p>
+        </header>
+
+        <section class="question-section">
+            <h2 class="section-title">题目内容</h2>
+            <div class="question-content">
+一项关于广泛使用的抗抑郁药AD+的新研究已经发表。该研究包含了关于药物副作用的信息。对于参与研究的每一位随机选择的AD+使用者，根据药物副作用的严重程度和种类，分配了一个从0到100的分数（0分表示没有副作用）。对独立且随机选择的15名竞争对手抗抑郁药XAD24的使用者也进行了类似的评估。数据汇总于下表：
+            </div>
+
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>AD+ 使用者</th>
+                        <th>XAD24 使用者</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>样本容量 (n)</td>
+                        <td>16</td>
+                        <td>15</td>
+                    </tr>
+                    <tr>
+                        <td>样本均值 (x̄)</td>
+                        <td>49.7</td>
+                        <td>45.1</td>
+                    </tr>
+                    <tr>
+                        <td>样本方差 (s²)</td>
+                        <td>156.3</td>
+                        <td>161.3</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="question-content">
+假设每种药物的副作用分数总体近似服从正态分布。
+构建一个90%的置信区间，用于估计所有AD+使用者分数方差与所有XAD24使用者分数方差之比 σ²₁ / σ²₂。
+            </div>
+
+            <div class="formula">
+                F = (s²₁ / σ²₁) / (s²₂ / σ²₂) = (s²₁ / s²₂) / (σ²₁ / σ²₂)
+            </div>
+
+            <div class="question-content">
+随机变量 F 服从分子自由度为 n₁ - 1 = 15、分母自由度为 n₂ - 1 = 14 的 F 分布。
+对于 90% 置信区间，α = 0.10，α/2 = 0.05，1 - α/2 = 0.95。
+已知 F 分布临界值：F₀.₉₅ ≈ 0.412，F₀.₀₅ ≈ 2.463。
+置信区间公式为：
+            </div>
+
+            <div class="formula">
+                [ (s²₁ / s²₂) × (1 / F_{α/2}) , (s²₁ / s²₂) × (1 / F_{1-α/2}) ]
+            </div>
+
+            <div class="question-content">
+请计算 σ²₁ / σ²₂ 的 90% 置信区间，并填写下表。
+中间计算至少保留三位小数。最终答案至少保留两位小数。
+            </div>
+        </section>
+
+        <section class="answer-section">
+            <h2 class="section-title">填写答案</h2>
+            
+            <div class="answer-inputs">
+                <div class="input-group">
+                    <label for="lower-bound">90% 置信区间的下限是多少？</label>
+                    <input type="number" id="lower-bound" step="0.01">
+                </div>
+                
+                <div class="input-group">
+                    <label for="upper-bound">90% 置信区间的上限是多少？</label>
+                    <input type="number" id="upper-bound" step="0.01">
+                </div>
+            </div>
+
+            <div class="buttons">
+                <button id="submit-btn">提交答案</button>
+                <button id="reset-btn">重新作答</button>
+            </div>
+
+            <div id="feedback" class="feedback-section">
+                <div class="feedback-title">
+                    <i>📊</i>
+                    <span id="feedback-title">反馈标题</span>
+                </div>
+                <div id="feedback-content">
+                    <div class="explanation" id="explanation">
+                        计算过程：<br>
+                        1. 计算样本方差比：s²₁ / s²₂ = 156.3 / 161.3 ≈ 0.969<br>
+                        2. 计算下限：(s²₁ / s²₂) × (1 / F_{0.05}) = 0.969 × (1 / 2.463) ≈ 0.969 × 0.406 ≈ 0.393 ≈ 0.39<br>
+                        3. 计算上限：(s²₁ / s²₂) × (1 / F_{0.95}) = 0.969 × (1 / 0.412) ≈ 0.969 × 2.427 ≈ 2.352 ≈ 2.35<br>
+                        因此，σ²₁ / σ²₂ 的 90% 置信区间为 [0.39, 2.35]。
+                    </div>
+                </div>
+            </div>
+
+            <div id="score" class="score-section">
+                <h3>答题结果</h3>
+                <div class="score-value" id="score-value">0/2</div>
+                <p class="score-text" id="score-text">您答对了 0 个问题</p>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Parameter sets for the question
+        const parameterSets = [
+            {
+                n1: 16, n2: 15,
+                mean1: 49.7, mean2: 45.1,
+                var1: 156.3, var2: 161.3,
+                df1: 15, df2: 14,
+                f95: 0.412, f05: 2.463,
+                lower: 0.39, upper: 2.35,
+                varianceRatio: 0.969
+            },
+            {
+                n1: 20, n2: 18,
+                mean1: 52.3, mean2: 48.6,
+                var1: 142.5, var2: 138.2,
+                df1: 19, df2: 17,
+                f95: 0.445, f05: 2.196,
+                lower: 0.47, upper: 2.31,
+                varianceRatio: 1.031
+            },
+            {
+                n1: 25, n2: 22,
+                mean1: 45.8, mean2: 42.3,
+                var1: 178.4, var2: 165.7,
+                df1: 24, df2: 21,
+                f95: 0.476, f05: 2.052,
+                lower: 0.53, upper: 2.28,
+                varianceRatio: 1.077
+            },
+            {
+                n1: 12, n2: 14,
+                mean1: 55.2, mean2: 51.8,
+                var1: 125.6, var2: 132.4,
+                df1: 11, df2: 13,
+                f95: 0.365, f05: 2.876,
+                lower: 0.33, upper: 2.80,
+                varianceRatio: 0.949
+            },
+            {
+                n1: 18, n2: 20,
+                mean1: 47.6, mean2: 44.2,
+                var1: 168.9, var2: 155.3,
+                df1: 17, df2: 19,
+                f95: 0.432, f05: 2.348,
+                lower: 0.45, upper: 2.46,
+                varianceRatio: 1.088
+            }
+        ];
+
+        let currentParams = parameterSets[0];
+        let correctAnswers = { lower: currentParams.lower, upper: currentParams.upper };
+
+        function initializeQuestion() {
+            const params = currentParams;
+            correctAnswers = { lower: params.lower, upper: params.upper };
+
+            // Update data table
+            const tbody = document.querySelector('.data-table tbody');
+            tbody.innerHTML = `
+                <tr>
+                    <td>样本容量 (n)</td>
+                    <td>${params.n1}</td>
+                    <td>${params.n2}</td>
+                </tr>
+                <tr>
+                    <td>样本均值 (x̄)</td>
+                    <td>${params.mean1}</td>
+                    <td>${params.mean2}</td>
+                </tr>
+                <tr>
+                    <td>样本方差 (s²)</td>
+                    <td>${params.var1}</td>
+                    <td>${params.var2}</td>
+                </tr>
+            `;
+
+            // Update degrees of freedom text
+            const questionContents = document.querySelectorAll('.question-content');
+            questionContents[2].innerHTML = `随机变量 F 服从分子自由度为 n₁ - 1 = ${params.df1}、分母自由度为 n₂ - 1 = ${params.df2} 的 F 分布。
+对于 90% 置信区间，α = 0.10，α/2 = 0.05，1 - α/2 = 0.95。
+已知 F 分布临界值：F₀.₉₅ ≈ ${params.f95}，F₀.₀₅ ≈ ${params.f05}。
+置信区间公式为：`;
+
+            // Update explanation
+            const explanation = document.getElementById('explanation');
+            explanation.innerHTML = `计算过程：<br>
+1. 计算样本方差比：s²₁ / s²₂ = ${params.var1} / ${params.var2} ≈ ${params.varianceRatio.toFixed(3)}<br>
+2. 计算下限：(s²₁ / s²₂) × (1 / F_{0.05}) = ${params.varianceRatio.toFixed(3)} × (1 / ${params.f05}) ≈ ${params.varianceRatio.toFixed(3)} × ${(1/params.f05).toFixed(3)} ≈ ${(params.varianceRatio / params.f05).toFixed(3)} ≈ ${params.lower}<br>
+3. 计算上限：(s²₁ / s²₂) × (1 / F_{0.95}) = ${params.varianceRatio.toFixed(3)} × (1 / ${params.f95}) ≈ ${params.varianceRatio.toFixed(3)} × ${(1/params.f95).toFixed(3)} ≈ ${(params.varianceRatio / params.f95).toFixed(3)} ≈ ${params.upper}<br>
+因此，σ²₁ / σ²₂ 的 90% 置信区间为 [${params.lower}, ${params.upper}]。`;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize question
+            initializeQuestion();
+
+            // Get DOM elements
+            const lowerInput = document.getElementById('lower-bound');
+            const upperInput = document.getElementById('upper-bound');
+            const submitBtn = document.getElementById('submit-btn');
+            const resetBtn = document.getElementById('reset-btn');
+            const refreshBtn = document.getElementById('refresh-btn');
+            const feedback = document.getElementById('feedback');
+            const feedbackTitle = document.getElementById('feedback-title');
+            const scoreValue = document.getElementById('score-value');
+            const scoreText = document.getElementById('score-text');
+            const scoreContainer = document.getElementById('score');
+
+            // Refresh button functionality
+            refreshBtn.addEventListener('click', function() {
+                // Select random parameter set different from current
+                let newParams;
+                do {
+                    newParams = parameterSets[Math.floor(Math.random() * parameterSets.length)];
+                } while (newParams === currentParams && parameterSets.length > 1);
+
+                currentParams = newParams;
+                initializeQuestion();
+
+                // Reset quiz state
+                lowerInput.value = '';
+                upperInput.value = '';
+                feedback.style.display = 'none';
+                scoreContainer.style.display = 'none';
+                lowerInput.focus();
+            });
+
+            // Submit answer
+            submitBtn.addEventListener('click', function() {
+                const userLower = parseFloat(lowerInput.value);
+                const userUpper = parseFloat(upperInput.value);
+
+                // Validate input
+                if (isNaN(userLower) || isNaN(userUpper)) {
+                    alert('请输入有效的数值！');
+                    return;
+                }
+
+                // Calculate score
+                let score = 0;
+                const lowerTolerance = 0.05;
+                const upperTolerance = 0.05;
+
+                const isLowerCorrect = Math.abs(userLower - correctAnswers.lower) <= lowerTolerance;
+                const isUpperCorrect = Math.abs(userUpper - correctAnswers.upper) <= upperTolerance;
+
+                if (isLowerCorrect) score++;
+                if (isUpperCorrect) score++;
+
+                // Display feedback
+                if (score === 2) {
+                    feedback.className = 'feedback-section feedback-correct';
+                    feedbackTitle.innerHTML = '<i>✅</i> 回答正确！';
+                } else {
+                    feedback.className = 'feedback-section feedback-incorrect';
+                    feedbackTitle.innerHTML = '<i>❌</i> 回答不完全正确';
+                }
+
+                feedback.style.display = 'block';
+
+                // Show score
+                scoreValue.textContent = `${score}/2`;
+                scoreText.textContent = `您答对了 ${score} 个问题`;
+                scoreContainer.style.display = 'block';
+
+                // Scroll to feedback
+                feedback.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            });
+
+            // Reset
+            resetBtn.addEventListener('click', function() {
+                lowerInput.value = '';
+                upperInput.value = '';
+                feedback.style.display = 'none';
+                scoreContainer.style.display = 'none';
+                lowerInput.focus();
+            });
+
+            // Allow Enter key to submit
+            lowerInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    submitBtn.click();
+                }
+            });
+
+            upperInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    submitBtn.click();
+                }
+            });
+
+            // Initial focus
+            lowerInput.focus();
+        });
+    </script>
+</body>
+</html>

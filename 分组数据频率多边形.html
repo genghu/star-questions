@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>分组数据频率多边形 - 交互式答题</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+
+        body {
+            background-color: #f8fafc;
+            color: #334155;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .header h1 {
+            color: #1e40af;
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+
+        .header .subtitle {
+            color: #64748b;
+            font-size: 1.1rem;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        /* Single column layout */
+
+        .card {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            padding: 25px;
+            margin-bottom: 20px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .card:hover {
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+        }
+
+        .section-title {
+            color: #1e40af;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .question-content {
+            font-size: 1.05rem;
+            line-height: 1.7;
+        }
+
+        .question-content p {
+            margin-bottom: 15px;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.95rem;
+        }
+
+        .data-table th, .data-table td {
+            border: 1px solid #cbd5e1;
+            padding: 10px 12px;
+            text-align: center;
+        }
+
+        .data-table th {
+            background-color: #eff6ff;
+            color: #1e40af;
+            font-weight: 600;
+        }
+
+        .data-table tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+
+        .math {
+            font-family: 'Cambria Math', 'Times New Roman', serif;
+            font-style: italic;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin: 25px 0;
+        }
+
+        .option {
+            padding: 16px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            font-size: 1rem;
+        }
+
+        .option:hover {
+            background-color: #f1f5f9;
+            border-color: #94a3b8;
+        }
+
+        .option.selected {
+            border-color: #3b82f6;
+            background-color: #eff6ff;
+        }
+
+        .option.correct {
+            border-color: #10b981;
+            background-color: #d1fae5;
+        }
+
+        .option.incorrect {
+            border-color: #ef4444;
+            background-color: #fee2e2;
+        }
+
+        .option-label {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            background-color: #e2e8f0;
+            border-radius: 50%;
+            margin-right: 15px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .selected .option-label {
+            background-color: #3b82f6;
+            color: white;
+        }
+
+        .correct .option-label {
+            background-color: #10b981;
+            color: white;
+        }
+
+        .incorrect .option-label {
+            background-color: #ef4444;
+            color: white;
+        }
+
+        .buttons-container {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background-color: #3b82f6;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2563eb;
+        }
+
+        .btn-secondary {
+            background-color: #e2e8f0;
+            color: #475569;
+        }
+
+        .btn-secondary:hover {
+            background-color: #cbd5e1;
+        }
+
+        .feedback {
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 25px;
+            display: none;
+        }
+
+        .feedback.show {
+            display: block;
+        }
+
+        .feedback.correct {
+            background-color: #d1fae5;
+            border-left: 5px solid #10b981;
+        }
+
+        .feedback.incorrect {
+            background-color: #fee2e2;
+            border-left: 5px solid #ef4444;
+        }
+
+        .feedback-title {
+            font-weight: 700;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .score-container {
+            text-align: center;
+            padding: 20px;
+            background-color: #eff6ff;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .score-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1e40af;
+            margin: 10px 0;
+        }
+
+        .score-text {
+            font-size: 1.1rem;
+            color: #475569;
+        }
+
+        .polygon-container {
+            margin: 30px 0;
+            padding: 20px;
+            background-color: #f8fafc;
+            border-radius: 10px;
+            border: 1px dashed #cbd5e1;
+        }
+
+        .polygon-title {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #475569;
+            font-weight: 600;
+        }
+
+        .polygon-canvas {
+            width: 100%;
+            height: 300px;
+            background-color: white;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .explanation {
+            background-color: #fefce8;
+            border-left: 5px solid #f59e0b;
+            padding: 20px;
+            border-radius: 0 8px 8px 0;
+            margin-top: 25px;
+        }
+
+        .explanation-title {
+            color: #92400e;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 767px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .card {
+                padding: 20px;
+            }
+            
+            .btn {
+                padding: 12px 20px;
+                width: 100%;
+            }
+            
+            .buttons-container {
+                flex-direction: column;
+            }
+        }
+    </style>
+
+    <style>
+    .show-explanation-btn {
+        display: none;
+        margin: 20px auto;
+        padding: 14px 28px;
+        background: linear-gradient(135deg, #9b59b6, #8e44ad);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 1.1rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
+    }
+    .show-explanation-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
+    }
+    .explanation-section {
+        display: none;
+        margin-top: 20px;
+    }
+    </style>
+    </head>
+<body>
+    <div class="header">
+        <h1>分组数据频率多边形 <button id="refresh-btn" style="margin-left: 15px; padding: 8px 16px; background: linear-gradient(135deg, #34a853, #2ecc71); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(52, 168, 83, 0.3);">刷新参数</button></h1>
+        <div class="subtitle">交互式学习与评估</div>
+    </div>
+
+    <div class="container">
+        <div class="question-section">
+            <div class="card">
+                <h2 class="section-title">题目内容</h2>
+                <div class="question-content">
+                    <p><strong>学生姓名：</strong>Genghu Shi</p>
+                    <p><strong>日期：</strong>04/25/2019</p>
+                    <p><strong>描述性统计：</strong>分组数据的频数多边形</p>
+                    
+                    <p>数据：7, 2, 37, 32, 27, 22, 16, 11, 25, 25, 25, 20, 20, 20, 15, 15。</p>
+                    
+                    <p>使用初始组边界为 1.5，结束组边界为 41.5，以及 5 个等宽组，为这些数据绘制频数多边形。注意，您可以在图中添加或移除组。用其组中值标记每个组。</p>
+                    
+                    <p>频数多边形是数据集频数分布的图形化汇总，即，它汇总了数据值的组（类别）以及这些组的频数。在为数据集构建频数多边形时，需要将数据值的范围划分为组，并计算落入每个组的测量值数量。</p>
+                    
+                    <p>本问题中数据集的频数多边形要求初始组边界为 1.5，结束组边界为 41.5，以及 5 个组。初始组边界是第一个组的左端点，结束组边界是最后一个组的右端点。为了确定这些组，我们需要将区间从 1.5 到 41.5 分割成 5 个等宽的区间。（为方便起见，组几乎总是等宽的。）由于 (41.5 - 1.5) / 5 = 8，每个组的宽度是 8。因此，这些组是：</p>
+                    
+                    <ul>
+                        <li>1.5 至 9.5</li>
+                        <li>9.5 至 17.5</li>
+                        <li>17.5 至 25.5</li>
+                        <li>25.5 至 33.5</li>
+                        <li>33.5 至 41.5</li>
+                    </ul>
+                    
+                    <p>排序后的数据是：2, 7, 11, 15, 15, 16, 20, 20, 20, 22, 25, 25, 25, 27, 32, 37。</p>
+                    
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>距离（英里）</th>
+                                <th>频数</th>
+                                <th>组中值</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>1.5 至 9.5</td>
+                                <td>2</td>
+                                <td>(1.5+9.5) / 2 = 5.5</td>
+                            </tr>
+                            <tr>
+                                <td>9.5 至 17.5</td>
+                                <td>4</td>
+                                <td>(9.5+17.5) / 2 = 13.5</td>
+                            </tr>
+                            <tr>
+                                <td>17.5 至 25.5</td>
+                                <td>7</td>
+                                <td>(17.5+25.5) / 2 = 21.5</td>
+                            </tr>
+                            <tr>
+                                <td>25.5 至 33.5</td>
+                                <td>2</td>
+                                <td>(25.5+33.5) / 2 = 29.5</td>
+                            </tr>
+                            <tr>
+                                <td>33.5 至 41.5</td>
+                                <td>1</td>
+                                <td>(33.5+41.5) / 2 = 37.5</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <p>在频数多边形中，每个组由其组中值表示，组中值是组左端点和右端点的平均值。频数多边形包含代表各组频数的绘制点，以及连接连续点的线，包括将端点连接到坐标轴的线，使图形呈现"多边形"的外观。</p>
+                </div>
+            </div>
+            
+            <div class="polygon-container">
+                <div class="polygon-title">频率多边形图示</div>
+                <div class="polygon-canvas" id="polygonCanvas">
+                    <!-- 频率多边形将通过JavaScript绘制 -->
+                </div>
+            </div>
+        </div>
+        
+        <div class="interaction-section">
+            <div class="card">
+                <h2 class="section-title">回答问题</h2>
+                <p>根据以上数据和表格，哪个选项正确地表示了频率多边形中每个组中值对应的频数？</p>
+                
+                <div class="options-container" id="optionsContainer">
+                    <div class="option" data-value="A">
+                        <div class="option-label">A</div>
+                        <div class="option-text">5.5:2, 13.5:4, 21.5:7, 29.5:2, 37.5:1</div>
+                    </div>
+                    <div class="option" data-value="B">
+                        <div class="option-label">B</div>
+                        <div class="option-text">5.5:2, 13.5:4, 21.5:6, 29.5:3, 37.5:1</div>
+                    </div>
+                    <div class="option" data-value="C">
+                        <div class="option-label">C</div>
+                        <div class="option-text">5.5:3, 13.5:4, 21.5:5, 29.5:3, 37.5:1</div>
+                    </div>
+                    <div class="option" data-value="D">
+                        <div class="option-label">D</div>
+                        <div class="option-text">5.5:2, 13.5:5, 21.5:6, 29.5:2, 37.5:1</div>
+                    </div>
+                </div>
+                
+                <div class="buttons-container">
+                    <button class="btn btn-primary" id="submitBtn">提交答案</button>
+                    <button class="btn btn-secondary" id="resetBtn">重新作答</button>
+                </div>
+                
+                <div class="feedback" id="feedback">
+                    <div class="feedback-title" id="feedbackTitle"></div>
+                    <div id="feedbackContent"></div>
+                </div>
+                
+                <div class="score-container" id="scoreContainer" style="display: none;">
+                    <div class="score-text">你的得分</div>
+                    <div class="score-value" id="scoreValue">0/1</div>
+                    <div class="score-text" id="scoreMessage"></div>
+                </div>
+            </div>
+            
+            <button class="show-explanation-btn" id="showExplanationBtn">查看答案解析</button>
+            <div class="explanation-section" id="explanationSection">
+                <div class="explanation">
+                    <div class="explanation-title">知识要点与解析</div>
+                    <p>1. 首先计算组宽度：(41.5 - 1.5) / 5 = 8，所以每组宽度为8。</p>
+                    <p>2. 确定各组区间：1.5-9.5, 9.5-17.5, 17.5-25.5, 25.5-33.5, 33.5-41.5。</p>
+                    <p>3. 计算各组中值：(1.5+9.5)/2=5.5, (9.5+17.5)/2=13.5, (17.5+25.5)/2=21.5, (25.5+33.5)/2=29.5, (33.5+41.5)/2=37.5。</p>
+                    <p>4. 统计各组的频数：</p>
+                    <ul>
+                        <li>1.5-9.5组：包含数据2,7 → 频数2</li>
+                        <li>9.5-17.5组：包含数据11,15,15,16 → 频数4</li>
+                        <li>17.5-25.5组：包含数据20,20,20,22,25,25,25 → 频数7</li>
+                        <li>25.5-33.5组：包含数据27,32 → 频数2</li>
+                        <li>33.5-41.5组：包含数据37 → 频数1</li>
+                    </ul>
+                    <p>5. 因此，正确的频率多边形点应为：5.5:2, 13.5:4, 21.5:7, 29.5:2, 37.5:1。</p>
+                    <p><strong>正确答案：A</strong></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+            // 显示答案解析按钮点击事件
+            document.querySelectorAll('.show-explanation-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    var questionId = this.getAttribute('data-question') || this.id;
+                    var explanation;
+                    if (questionId) {
+                        explanation = this.nextElementSibling;
+                    }
+                    if (explanation) {
+                        if (explanation.classList.contains('show')) {
+                            explanation.classList.remove('show');
+                            this.textContent = '查看答案解析';
+                        } else {
+                            explanation.classList.add('show');
+                            this.textContent = '隐藏答案解析';
+                        }
+                    }
+                });
+            });
+
+            // 获取DOM元素
+            const options = document.querySelectorAll('.option');
+            const submitBtn = document.getElementById('submitBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const feedback = document.getElementById('feedback');
+            const feedbackTitle = document.getElementById('feedbackTitle');
+            const feedbackContent = document.getElementById('feedbackContent');
+            const scoreContainer = document.getElementById('scoreContainer');
+            const scoreValue = document.getElementById('scoreValue');
+            const scoreMessage = document.getElementById('scoreMessage');
+            const polygonCanvas = document.getElementById('polygonCanvas');
+            const showExplanationBtn = document.getElementById('showExplanationBtn');
+            const explanationSection = document.getElementById('explanationSection');
+            
+            // 正确答案
+            const correctAnswer = 'A';
+            let selectedOption = null;
+            let answered = false;
+            
+            // 绘制频率多边形
+            function drawFrequencyPolygon() {
+                // 清除画布
+                polygonCanvas.innerHTML = '';
+                
+                // 数据点：组中值和频数
+                const dataPoints = [
+                    { mid: 5.5, freq: 2 },
+                    { mid: 13.5, freq: 4 },
+                    { mid: 21.5, freq: 7 },
+                    { mid: 29.5, freq: 2 },
+                    { mid: 37.5, freq: 1 }
+                ];
+                
+                // 画布尺寸
+                const width = polygonCanvas.clientWidth;
+                const height = polygonCanvas.clientHeight;
+                const padding = { top: 30, right: 30, bottom: 50, left: 50 };
+                
+                // 创建SVG元素
+                const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                svg.setAttribute("width", "100%");
+                svg.setAttribute("height", "100%");
+                svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+                
+                // 计算比例尺
+                const xMin = 0;
+                const xMax = 45;
+                const yMin = 0;
+                const yMax = 8;
+                
+                const xScale = (value) => padding.left + (value - xMin) / (xMax - xMin) * (width - padding.left - padding.right);
+                const yScale = (value) => height - padding.bottom - (value - yMin) / (yMax - yMin) * (height - padding.top - padding.bottom);
+                
+                // 绘制坐标轴
+                // X轴
+                const xAxis = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                xAxis.setAttribute("x1", xScale(xMin));
+                xAxis.setAttribute("y1", yScale(yMin));
+                xAxis.setAttribute("x2", xScale(xMax));
+                xAxis.setAttribute("y2", yScale(yMin));
+                xAxis.setAttribute("stroke", "#475569");
+                xAxis.setAttribute("stroke-width", "2");
+                svg.appendChild(xAxis);
+                
+                // Y轴
+                const yAxis = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                yAxis.setAttribute("x1", xScale(xMin));
+                yAxis.setAttribute("y1", yScale(yMin));
+                yAxis.setAttribute("x2", xScale(xMin));
+                yAxis.setAttribute("y2", yScale(yMax));
+                yAxis.setAttribute("stroke", "#475569");
+                yAxis.setAttribute("stroke-width", "2");
+                svg.appendChild(yAxis);
+                
+                // X轴标签
+                const xLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                xLabel.setAttribute("x", width / 2);
+                xLabel.setAttribute("y", height - 10);
+                xLabel.setAttribute("text-anchor", "middle");
+                xLabel.setAttribute("fill", "#475569");
+                xLabel.setAttribute("font-size", "14");
+                xLabel.setAttribute("font-weight", "600");
+                xLabel.textContent = "距离（英里）";
+                svg.appendChild(xLabel);
+                
+                // Y轴标签
+                const yLabel = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                yLabel.setAttribute("x", 20);
+                yLabel.setAttribute("y", height / 2);
+                yLabel.setAttribute("text-anchor", "middle");
+                yLabel.setAttribute("fill", "#475569");
+                yLabel.setAttribute("font-size", "14");
+                yLabel.setAttribute("font-weight", "600");
+                yLabel.setAttribute("transform", `rotate(-90, 20, ${height/2})`);
+                yLabel.textContent = "频数";
+                svg.appendChild(yLabel);
+                
+                // 绘制刻度线和标签
+                // X轴刻度
+                dataPoints.forEach(point => {
+                    const tickX = xScale(point.mid);
+                    
+                    // 刻度线
+                    const tick = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                    tick.setAttribute("x1", tickX);
+                    tick.setAttribute("y1", yScale(yMin));
+                    tick.setAttribute("x2", tickX);
+                    tick.setAttribute("y2", yScale(yMin) + 5);
+                    tick.setAttribute("stroke", "#475569");
+                    tick.setAttribute("stroke-width", "1");
+                    svg.appendChild(tick);
+                    
+                    // 刻度标签
+                    const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                    label.setAttribute("x", tickX);
+                    label.setAttribute("y", yScale(yMin) + 20);
+                    label.setAttribute("text-anchor", "middle");
+                    label.setAttribute("fill", "#475569");
+                    label.setAttribute("font-size", "12");
+                    label.textContent = point.mid.toString();
+                    svg.appendChild(label);
+                });
+                
+                // Y轴刻度
+                for (let i = 0; i <= yMax; i++) {
+                    const tickY = yScale(i);
+                    
+                    // 刻度线
+                    const tick = document.createElementNS("http://www.w3.org/2000/svg", "line");
+                    tick.setAttribute("x1", xScale(xMin));
+                    tick.setAttribute("y1", tickY);
+                    tick.setAttribute("x2", xScale(xMin) - 5);
+                    tick.setAttribute("y2", tickY);
+                    tick.setAttribute("stroke", "#475569");
+                    tick.setAttribute("stroke-width", "1");
+                    svg.appendChild(tick);
+                    
+                    // 刻度标签
+                    const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                    label.setAttribute("x", xScale(xMin) - 10);
+                    label.setAttribute("y", tickY + 4);
+                    label.setAttribute("text-anchor", "end");
+                    label.setAttribute("fill", "#475569");
+                    label.setAttribute("font-size", "12");
+                    label.textContent = i.toString();
+                    svg.appendChild(label);
+                }
+                
+                // 绘制数据点并连接成多边形
+                const points = [];
+                
+                // 起点在x=0, y=0
+                points.push(`${xScale(0)},${yScale(0)}`);
+                
+                // 添加数据点
+                dataPoints.forEach(point => {
+                    const x = xScale(point.mid);
+                    const y = yScale(point.freq);
+                    points.push(`${x},${y}`);
+                    
+                    // 绘制点
+                    const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+                    circle.setAttribute("cx", x);
+                    circle.setAttribute("cy", y);
+                    circle.setAttribute("r", "6");
+                    circle.setAttribute("fill", "#3b82f6");
+                    circle.setAttribute("stroke", "#1e40af");
+                    circle.setAttribute("stroke-width", "2");
+                    svg.appendChild(circle);
+                    
+                    // 显示频数值
+                    const freqText = document.createElementNS("http://www.w3.org/2000/svg", "text");
+                    freqText.setAttribute("x", x);
+                    freqText.setAttribute("y", y - 15);
+                    freqText.setAttribute("text-anchor", "middle");
+                    freqText.setAttribute("fill", "#1e40af");
+                    freqText.setAttribute("font-size", "14");
+                    freqText.setAttribute("font-weight", "600");
+                    freqText.textContent = point.freq.toString();
+                    svg.appendChild(freqText);
+                });
+                
+                // 终点在x=45, y=0
+                points.push(`${xScale(45)},${yScale(0)}`);
+                
+                // 绘制多边形
+                const polygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+                polygon.setAttribute("points", points.join(" "));
+                polygon.setAttribute("fill", "rgba(59, 130, 246, 0.1)");
+                polygon.setAttribute("stroke", "#3b82f6");
+                polygon.setAttribute("stroke-width", "3");
+                polygon.setAttribute("stroke-linejoin", "round");
+                svg.appendChild(polygon);
+                
+                // 将SVG添加到画布
+                polygonCanvas.appendChild(svg);
+            }
+            
+            // 初始化绘制频率多边形
+            drawFrequencyPolygon();
+            
+            // 窗口大小改变时重新绘制
+            window.addEventListener('resize', drawFrequencyPolygon);
+            
+            // 选项点击事件
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    if (answered) return;
+                    
+                    // 移除之前的选择
+                    options.forEach(opt => opt.classList.remove('selected'));
+                    
+                    // 设置当前选择
+                    this.classList.add('selected');
+                    selectedOption = this.getAttribute('data-value');
+                });
+            });
+            
+            // 提交答案
+            submitBtn.addEventListener('click', function() {
+                if (!selectedOption) {
+                    alert('请先选择一个答案！');
+                    return;
+                }
+                
+                answered = true;
+                
+                // 禁用所有选项
+                options.forEach(option => {
+                    option.style.cursor = 'default';
+                });
+                
+                // 显示正确答案和错误答案
+                options.forEach(option => {
+                    const optionValue = option.getAttribute('data-value');
+                    
+                    // Only mark incorrect, don't reveal correct answer
+                    if (optionValue === selectedOption && selectedOption !== correctAnswer) {
+                        option.classList.add('incorrect');
+                    }
+                });
+                
+                // 显示反馈
+                if (selectedOption === correctAnswer) {
+                    feedbackTitle.textContent = '正确！';
+                    feedbackContent.innerHTML = '<p>恭喜你！你正确地识别了频率多边形中每个组中值对应的频数。</p><p>频率多边形正确显示了数据分布：大多数数据集中在17.5-25.5组（频数7），而两端的数据较少。</p>';
+                    feedback.classList.add('correct');
+                } else {
+                    feedbackTitle.textContent = '不正确';
+                    feedbackContent.innerHTML = `<p>你选择了选项 ${selectedOption}，但正确答案是 ${correctAnswer}。</p><p>请参考题目解析，理解如何根据分组数据计算频数并构建频率多边形。</p>`;
+                    feedback.classList.add('incorrect');
+                }
+                
+                feedback.classList.add('show');
+                
+                // 显示得分
+                const score = selectedOption === correctAnswer ? 1 : 0;
+                scoreValue.textContent = `${score}/1`;
+                scoreMessage.textContent = selectedOption === correctAnswer ? 
+                    '优秀！你完全理解了频率多边形的构建。' : 
+                    '请仔细研究题目解析，然后重新尝试。';
+                scoreContainer.style.display = 'block';
+
+                // 显示解析按钮
+                showExplanationBtn.style.display = 'inline-block';
+
+                // 滚动到反馈区域
+                feedback.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            });
+            
+            // 重新作答
+            resetBtn.addEventListener('click', function() {
+                // 重置所有选项
+                options.forEach(option => {
+                    option.classList.remove('selected', 'correct', 'incorrect');
+                    option.style.cursor = 'pointer';
+                });
+
+                // 隐藏反馈和得分
+                feedback.classList.remove('show', 'correct', 'incorrect');
+                scoreContainer.style.display = 'none';
+
+                // 隐藏解析按钮和解析
+                showExplanationBtn.style.display = 'none';
+                explanationSection.style.display = 'none';
+                showExplanationBtn.textContent = '查看答案解析';
+
+                // 重置状态
+                selectedOption = null;
+                answered = false;
+            });
+
+            // 刷新按钮事件
+            document.getElementById('refresh-btn').addEventListener('click', function() {
+                // 重置所有选项
+                options.forEach(option => {
+                    option.classList.remove('selected', 'correct', 'incorrect');
+                    option.style.cursor = 'pointer';
+                });
+
+                // 隐藏反馈和得分
+                feedback.classList.remove('show', 'correct', 'incorrect');
+                scoreContainer.style.display = 'none';
+
+                // 隐藏解析按钮和解析
+                showExplanationBtn.style.display = 'none';
+                explanationSection.style.display = 'none';
+                showExplanationBtn.textContent = '查看答案解析';
+
+                // 重置状态
+                selectedOption = null;
+                answered = false;
+
+                // 滚动到顶部
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+
+            // 显示答案解析按钮点击事件
+            showExplanationBtn.addEventListener('click', function() {
+                if (explanationSection.style.display === 'none' || explanationSection.style.display === '') {
+                    explanationSection.style.display = 'block';
+                    this.textContent = '隐藏答案解析';
+                } else {
+                    explanationSection.style.display = 'none';
+                    this.textContent = '查看答案解析';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

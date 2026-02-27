@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第一类错误与第二类错误 - 交互式答题</title>
+    <style>
+        :root {
+            --primary-blue: #3498db;
+            --light-blue: #e3f2fd;
+            --dark-blue: #2980b9;
+            --success-green: #2ecc71;
+            --error-red: #e74c3c;
+            --neutral-gray: #ecf0f1;
+            --text-dark: #2c3e50;
+            --text-light: #7f8c8d;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --border-radius: 8px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+
+        body {
+            background-color: #f9f9f9;
+            color: var(--text-dark);
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--primary-blue);
+        }
+
+        h1 {
+            color: var(--dark-blue);
+            margin-bottom: 10px;
+            font-size: 2.2rem;
+        }
+
+        .subtitle {
+            color: var(--text-light);
+            font-size: 1.1rem;
+        }
+
+        .problem-container {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .problem-title {
+            color: var(--primary-blue);
+            border-left: 4px solid var(--primary-blue);
+            padding-left: 15px;
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+        }
+
+        .problem-text {
+            margin-bottom: 20px;
+            font-size: 1.05rem;
+        }
+
+        .question {
+            background-color: var(--light-blue);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            margin: 25px 0;
+            border-left: 4px solid var(--dark-blue);
+        }
+
+        .question-title {
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--dark-blue);
+            font-size: 1.2rem;
+        }
+
+        .options-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .option {
+            background-color: white;
+            border: 2px solid var(--neutral-gray);
+            border-radius: var(--border-radius);
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .option:hover {
+            border-color: var(--primary-blue);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .option.selected {
+            border-color: var(--primary-blue);
+            background-color: var(--light-blue);
+        }
+
+        .option.correct {
+            border-color: var(--success-green);
+            background-color: rgba(46, 204, 113, 0.1);
+        }
+
+        .option.incorrect {
+            border-color: var(--error-red);
+            background-color: rgba(231, 76, 60, 0.1);
+        }
+
+        .option-letter {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            background-color: var(--primary-blue);
+            color: white;
+            border-radius: 50%;
+            margin-right: 12px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .option-text {
+            flex-grow: 1;
+        }
+
+        .dropdown-container {
+            display: inline-block;
+            margin: 0 5px;
+        }
+
+        select {
+            padding: 8px 12px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            background-color: white;
+            font-size: 1rem;
+            min-width: 120px;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        #submit-btn {
+            background-color: var(--primary-blue);
+            color: white;
+        }
+
+        #submit-btn:hover {
+            background-color: var(--dark-blue);
+        }
+
+        #reset-btn {
+            background-color: var(--neutral-gray);
+            color: var(--text-dark);
+        }
+
+        #reset-btn:hover {
+            background-color: #d5dbdb;
+        }
+
+        .results {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 25px;
+            margin-top: 30px;
+            display: none;
+        }
+
+        .results.show {
+            display: block;
+        }
+
+        .score-display {
+            text-align: center;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: var(--dark-blue);
+        }
+
+        .score-number {
+            font-weight: bold;
+            color: var(--primary-blue);
+        }
+
+        .feedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            background-color: var(--light-blue);
+        }
+
+        .feedback-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--dark-blue);
+        }
+
+        .explanation {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed #ccc;
+        }
+
+        .correct-answer {
+            color: var(--success-green);
+            font-weight: 600;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+        }
+
+        th {
+            background-color: var(--light-blue);
+            font-weight: 600;
+        }
+
+        .math {
+            font-family: "Times New Roman", serif;
+            font-style: italic;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .options-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .controls {
+                flex-direction: column;
+            }
+            
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+
+    <style>
+    .show-explanation-btn {
+        display: none;
+        margin: 20px auto;
+        padding: 14px 28px;
+        background: linear-gradient(135deg, #9b59b6, #8e44ad);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 1.1rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
+    }
+    .show-explanation-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
+    }
+    .explanation-section {
+        display: none;
+        margin-top: 20px;
+    }
+    </style>
+    </head>
+<body>
+    <header>
+        <h1>第一类错误与第二类错误
+            <button class="refresh-btn" id="refresh-btn" style="background-color: #34a853; color: white; padding: 8px 16px; font-size: 0.9rem; border-radius: 6px; margin-left: 20px; border: none; cursor: pointer;">刷新参数</button>
+        </h1>
+        <p class="subtitle">置信区间与假设检验 - 交互式答题练习</p>
+    </header>
+
+    <main>
+        <div class="problem-container">
+            <h2 class="problem-title">问题背景</h2>
+            <div class="problem-text">
+                <p>一家连锁超市的高管对顾客在购物行程中花费的时间感兴趣。据报道，顾客在该超市的平均购物时间 μ 为 <span id="param-mu" class="math">36</span> 分钟，但高管聘请了一位统计顾问，并要求她确定是否可以得出 μ 小于 <span id="param-mu2" class="math">36</span> 分钟的结论。</p>
+                <p>为了进行统计检验，该顾问收集了超市购物时间的一个随机样本。她计算出这些时间的均值为 <span id="param-sample-mean" class="math">32</span> 分钟，时间的标准差为 <span id="param-std" class="math">16</span> 分钟。</p>
+                <p>基于这些信息，回答以下问题。</p>
+            </div>
+
+            <div class="question" id="question-a">
+                <div class="question-title">(a) 用于检验的原假设 (H₀) 和备择假设 (H₁) 是什么？</div>
+                <p>H₀: μ
+                    <span class="dropdown-container">
+                        <select id="h0-operator">
+                            <option value="a">小于</option>
+                            <option value="b">小于或等于</option>
+                            <option value="c">大于</option>
+                            <option value="d" selected>大于或等于</option>
+                            <option value="e">不等于</option>
+                            <option value="f">等于</option>
+                        </select>
+                    </span>
+                    <span class="dropdown-container">
+                        <select id="h0-value">
+                            <!-- Options will be dynamically generated -->
+                        </select>
+                    </span>
+                </p>
+                <p>H₁: μ
+                    <span class="dropdown-container">
+                        <select id="h1-operator">
+                            <option value="a" selected>小于</option>
+                            <option value="b">小于或等于</option>
+                            <option value="c">大于</option>
+                            <option value="d">大于或等于</option>
+                            <option value="e">不等于</option>
+                            <option value="f">等于</option>
+                        </select>
+                    </span>
+                    <span class="dropdown-container">
+                        <select id="h1-value">
+                            <!-- Options will be dynamically generated -->
+                        </select>
+                    </span>
+                </p>
+            </div>
+
+            <div class="question" id="question-b">
+                <div class="question-title">(b) 在此检验的背景下，什么是第一类错误？</div>
+                <p>第一类错误是
+                    <span class="dropdown-container">
+                        <select id="type1-action">
+                            <option value="a" selected>拒绝</option>
+                            <option value="b">未能拒绝</option>
+                        </select>
+                    </span>
+                    假设 μ 是
+                    <span class="dropdown-container">
+                        <select id="type1-hypothesis-operator">
+                            <option value="a">小于</option>
+                            <option value="b">小于或等于</option>
+                            <option value="c">大于</option>
+                            <option value="d" selected>大于或等于</option>
+                            <option value="e">不等于</option>
+                            <option value="f">等于</option>
+                        </select>
+                    </span>
+                    <span class="dropdown-container">
+                        <select id="type1-hypothesis-value">
+                            <!-- Options will be dynamically generated -->
+                        </select>
+                    </span>
+                    ，而事实上 μ 是
+                    <span class="dropdown-container">
+                        <select id="type1-truth-operator">
+                            <option value="a">小于</option>
+                            <option value="b">小于或等于</option>
+                            <option value="c">大于</option>
+                            <option value="d" selected>大于或等于</option>
+                            <option value="e">不等于</option>
+                            <option value="f">等于</option>
+                        </select>
+                    </span>
+                    <span class="dropdown-container">
+                        <select id="type1-truth-value">
+                            <!-- Options will be dynamically generated -->
+                        </select>
+                    </span>
+                    。
+                </p>
+            </div>
+
+            <div class="question" id="question-c">
+                <div class="question-title">(c) 假设顾问决定拒绝原假设。她可能犯哪种错误？</div>
+                <div class="options-container">
+                    <div class="option" data-value="a">
+                        <div class="option-letter">A</div>
+                        <div class="option-text">第一类错误</div>
+                    </div>
+                    <div class="option" data-value="b">
+                        <div class="option-letter">B</div>
+                        <div class="option-text">第二类错误</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button id="submit-btn">提交答案</button>
+            <button id="reset-btn">重新作答</button>
+        </div>
+
+        <div class="results" id="results">
+            <div class="score-display">得分: <span class="score-number" id="score">0</span> / 3</div>
+            
+            <div class="feedback">
+                <div class="feedback-title">题目解析</div>
+                
+                <div class="explanation">
+                    <p><strong>(a) 正确答案:</strong> <span class="correct-answer">H₀: μ 大于或等于 36, H₁: μ 小于 36</span></p>
+                    <p>商店高管认为平均购物时间 μ 小于 36 分钟。被检验的陈述是 μ 不小于 36 分钟。在进行检验时，统计顾问将暂时假设 μ 不小于 36 分钟，然后她会检查样本证据，看这个假设是否可以被拒绝。因此，原假设是 μ 不小于 36 分钟，备择假设是 μ 小于 36 分钟。</p>
+                </div>
+                
+                <div class="explanation">
+                    <p><strong>(b) 正确答案:</strong> <span class="correct-answer">第一类错误是拒绝假设 μ 是大于或等于 36，而事实上 μ 是大于或等于 36。</span></p>
+                    <p>一般来说，第一类错误是当原假设为真时拒绝了它。在此假设检验中，因为原假设是 H₀: μ 大于或等于 36，所以第一类错误是拒绝了 μ 大于或等于 36 分钟的假设，而事实上 μ 大于或等于 36 分钟。</p>
+                </div>
+                
+                <div class="explanation">
+                    <p><strong>(c) 正确答案:</strong> <span class="correct-answer">第一类错误</span></p>
+                    <p>当原假设被拒绝时，只可能发生一种类型的错误：错误地拒绝原假设，即当原假设为真时拒绝了它。因此，顾问可能犯的是第一类错误。</p>
+                </div>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th></th>
+                                <th>未被拒绝</th>
+                                <th>被拒绝</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>H₀ 为真</strong></td>
+                                <td>正确决策</td>
+                                <td>错误决策：<strong>第一类错误</strong></td>
+                            </tr>
+                            <tr>
+                                <td><strong>H₀ 为假</strong></td>
+                                <td>错误决策：<strong>第二类错误</strong></td>
+                                <td>正确决策</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Parameter sets for hypothesis testing questions
+        const parameterSets = [
+            {
+                mu: 36,
+                sampleMean: 32,
+                std: 16,
+                valueOptions: ['a', 'b', 'c'], // mu, std, sampleMean
+                valueLabels: ['36', '16', '32']
+            },
+            {
+                mu: 45,
+                sampleMean: 40,
+                std: 12,
+                valueOptions: ['a', 'b', 'c'],
+                valueLabels: ['45', '12', '40']
+            },
+            {
+                mu: 50,
+                sampleMean: 44,
+                std: 15,
+                valueOptions: ['a', 'b', 'c'],
+                valueLabels: ['50', '15', '44']
+            },
+            {
+                mu: 28,
+                sampleMean: 24,
+                std: 10,
+                valueOptions: ['a', 'b', 'c'],
+                valueLabels: ['28', '10', '24']
+            },
+            {
+                mu: 60,
+                sampleMean: 52,
+                std: 20,
+                valueOptions: ['a', 'b', 'c'],
+                valueLabels: ['60', '20', '52']
+            }
+        ];
+
+        let currentParams = parameterSets[0];
+
+        // Populate dropdown options
+        function populateValueDropdowns() {
+            const selects = [
+                'h0-value', 'h1-value',
+                'type1-hypothesis-value', 'type1-truth-value'
+            ];
+
+            selects.forEach(selectId => {
+                const select = document.getElementById(selectId);
+                select.innerHTML = '';
+
+                currentParams.valueLabels.forEach((label, index) => {
+                    const option = document.createElement('option');
+                    option.value = currentParams.valueOptions[index];
+                    option.textContent = label;
+                    if (index === 0) option.selected = true;
+                    select.appendChild(option);
+                });
+            });
+        }
+
+        // Update parameter display
+        function updateParameterDisplay() {
+            document.getElementById('param-mu').textContent = currentParams.mu;
+            document.getElementById('param-mu2').textContent = currentParams.mu;
+            document.getElementById('param-sample-mean').textContent = currentParams.sampleMean;
+            document.getElementById('param-std').textContent = currentParams.std;
+        }
+
+        // Initialize question
+        function initializeQuestion() {
+            updateParameterDisplay();
+            populateValueDropdowns();
+
+            // Reset dropdown selections
+            document.getElementById('h0-operator').value = 'd';
+            document.getElementById('h0-value').value = 'a';
+            document.getElementById('h1-operator').value = 'a';
+            document.getElementById('h1-value').value = 'a';
+
+            document.getElementById('type1-action').value = 'a';
+            document.getElementById('type1-hypothesis-operator').value = 'd';
+            document.getElementById('type1-hypothesis-value').value = 'a';
+            document.getElementById('type1-truth-operator').value = 'd';
+            document.getElementById('type1-truth-value').value = 'a';
+
+            // Reset options (c)
+            const optionsC = document.querySelectorAll('#question-c .option');
+            optionsC.forEach(option => {
+                option.classList.remove('selected', 'correct', 'incorrect');
+            });
+
+            // Hide results
+            document.getElementById('results').classList.remove('show');
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize
+            initializeQuestion();
+
+            // Get DOM elements
+            const submitBtn = document.getElementById('submit-btn');
+            const resetBtn = document.getElementById('reset-btn');
+            const refreshBtn = document.getElementById('refresh-btn');
+            const resultsDiv = document.getElementById('results');
+            const scoreSpan = document.getElementById('score');
+            const optionsC = document.querySelectorAll('#question-c .option');
+
+            // Correct answers (operators are fixed, values are always 'a' for mu)
+            const correctAnswers = {
+                a: {
+                    h0Operator: 'd', // 大于或等于
+                    h0Value: 'a',    // mu value
+                    h1Operator: 'a', // 小于
+                    h1Value: 'a'     // mu value
+                },
+                b: {
+                    action: 'a',                 // 拒绝
+                    hypothesisOperator: 'd',     // 大于或等于
+                    hypothesisValue: 'a',        // mu value
+                    truthOperator: 'd',          // 大于或等于
+                    truthValue: 'a'              // mu value
+                },
+                c: 'a' // 第一类错误
+            };
+
+            // Refresh button
+            refreshBtn.addEventListener('click', function() {
+                let newParams;
+                do {
+                    newParams = parameterSets[Math.floor(Math.random() * parameterSets.length)];
+                } while (newParams === currentParams && parameterSets.length > 1);
+
+                currentParams = newParams;
+                initializeQuestion();
+            });
+
+            // Add click events for question (c) options
+            optionsC.forEach(option => {
+                option.addEventListener('click', function() {
+                    optionsC.forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                });
+            });
+
+            // Submit answer
+            submitBtn.addEventListener('click', function() {
+                let score = 0;
+
+                // Check question (a)
+                const h0Operator = document.getElementById('h0-operator').value;
+                const h0Value = document.getElementById('h0-value').value;
+                const h1Operator = document.getElementById('h1-operator').value;
+                const h1Value = document.getElementById('h1-value').value;
+
+                if (h0Operator === correctAnswers.a.h0Operator &&
+                    h0Value === correctAnswers.a.h0Value &&
+                    h1Operator === correctAnswers.a.h1Operator &&
+                    h1Value === correctAnswers.a.h1Value) {
+                    score++;
+                }
+
+                // Check question (b)
+                const type1Action = document.getElementById('type1-action').value;
+                const type1HypothesisOperator = document.getElementById('type1-hypothesis-operator').value;
+                const type1HypothesisValue = document.getElementById('type1-hypothesis-value').value;
+                const type1TruthOperator = document.getElementById('type1-truth-operator').value;
+                const type1TruthValue = document.getElementById('type1-truth-value').value;
+
+                if (type1Action === correctAnswers.b.action &&
+                    type1HypothesisOperator === correctAnswers.b.hypothesisOperator &&
+                    type1HypothesisValue === correctAnswers.b.hypothesisValue &&
+                    type1TruthOperator === correctAnswers.b.truthOperator &&
+                    type1TruthValue === correctAnswers.b.truthValue) {
+                    score++;
+                }
+
+                // Check question (c)
+                const selectedOptionC = document.querySelector('#question-c .option.selected');
+                if (selectedOptionC && selectedOptionC.getAttribute('data-value') === correctAnswers.c) {
+                    score++;
+                    selectedOptionC.classList.add('correct');
+                } else if (selectedOptionC) {
+                    selectedOptionC.classList.add('incorrect');
+                    optionsC.forEach(opt => {
+                        if (opt.getAttribute('data-value') === correctAnswers.c) {
+                            opt.classList.add('correct');
+                        }
+                    });
+                }
+
+                // Show results
+                scoreSpan.textContent = score;
+                resultsDiv.classList.add('show');
+
+                // Scroll to results
+                resultsDiv.scrollIntoView({ behavior: 'smooth' });
+            });
+
+            // Reset
+            resetBtn.addEventListener('click', function() {
+                initializeQuestion();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
+    </script>
+</body>
+</html>

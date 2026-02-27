@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>总体比例假设检验 - 交互式答题</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f0f7ff;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #4a90e2;
+        }
+
+        .header h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2.2rem;
+        }
+
+        .header .subtitle {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+
+        .quiz-container {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0, 82, 204, 0.1);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .question-section {
+            margin-bottom: 30px;
+        }
+
+        .question-number {
+            display: inline-block;
+            background-color: #4a90e2;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 32px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .question-content {
+            background-color: #f8fafd;
+            border-left: 4px solid #4a90e2;
+            padding: 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 15px 0 25px 0;
+            font-size: 1.05rem;
+        }
+
+        .question-content p {
+            margin-bottom: 10px;
+        }
+
+        .options-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .option {
+            background-color: #f8fafd;
+            border: 2px solid #d1e3ff;
+            border-radius: 8px;
+            padding: 18px 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .option:hover {
+            background-color: #e6f0ff;
+            border-color: #4a90e2;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(74, 144, 226, 0.1);
+        }
+
+        .option.selected {
+            background-color: #e6f0ff;
+            border-color: #4a90e2;
+            font-weight: 600;
+        }
+
+        .option.correct {
+            background-color: #e7f7ef;
+            border-color: #27ae60;
+            color: #27ae60;
+        }
+
+        .option.incorrect {
+            background-color: #fdeded;
+            border-color: #e74c3c;
+            color: #e74c3c;
+        }
+
+        .option-letter {
+            display: inline-block;
+            background-color: #4a90e2;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 28px;
+            font-weight: bold;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .option.correct .option-letter {
+            background-color: #27ae60;
+        }
+
+        .option.incorrect .option-letter {
+            background-color: #e74c3c;
+        }
+
+        .formula {
+            font-family: 'Cambria Math', 'Times New Roman', serif;
+            background-color: #f8f9fa;
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin: 10px 0;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        button {
+            padding: 14px 32px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        #submit-btn {
+            background-color: #4a90e2;
+            color: white;
+        }
+
+        #submit-btn:hover {
+            background-color: #3a7bc8;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(74, 144, 226, 0.3);
+        }
+
+        #reset-btn {
+            background-color: #f8f9fa;
+            color: #4a90e2;
+            border: 2px solid #4a90e2;
+        }
+
+        #reset-btn:hover {
+            background-color: #e6f0ff;
+            transform: translateY(-3px);
+        }
+
+        .results {
+            margin-top: 30px;
+            padding: 25px;
+            background-color: #f8fafd;
+            border-radius: 12px;
+            border-left: 5px solid #4a90e2;
+            display: none;
+        }
+
+        .results.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .score {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .score-value {
+            color: #4a90e2;
+            font-size: 2.2rem;
+        }
+
+        .feedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #f0f7ff;
+        }
+
+        .feedback h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+
+        .feedback p {
+            margin-bottom: 8px;
+        }
+
+        .correct-answer {
+            color: #27ae60;
+            font-weight: 600;
+        }
+
+        .explanation {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed #bdc3c7;
+        }
+
+        .explanation h4 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .explanation-content {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            font-size: 0.95rem;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+            
+            .quiz-container {
+                padding: 20px;
+            }
+            
+            .options-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .controls {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            button {
+                width: 100%;
+            }
+            
+            .question-text {
+                font-size: 1.1rem;
+            }
+        }
+
+        .math {
+            font-family: 'Cambria Math', 'Times New Roman', serif;
+        }
+    </style>
+
+    <style>
+    .show-explanation-btn {
+        display: none;
+        margin: 20px auto;
+        padding: 14px 28px;
+        background: linear-gradient(135deg, #9b59b6, #8e44ad);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 1.1rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
+    }
+    .show-explanation-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
+    }
+    .explanation-section {
+        display: none;
+        margin-top: 20px;
+    }
+    </style>
+    </head>
+<body>
+    <div class="header">
+        <h1>总体比例假设检验 <button onclick="refreshParams()" style="margin-left: 15px; padding: 8px 16px; background: linear-gradient(135deg, #e74c3c, #c0392b); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-weight: 600; transition: all 0.3s ease;">刷新参数</button></h1>
+        <div class="subtitle">交互式答题练习 - 根据题目内容完成假设检验</div>
+    </div>
+
+    <div class="quiz-container">
+        <div class="question-section">
+            <div class="question-text">
+                <span class="question-number">1</span>
+                <span>原假设：H₀:</span>
+            </div>
+            <div class="question-content">
+                <p>一项十年前的研究发现，相信"致富"是重要个人目标的高中毕业生的比例 p 为 70%。一位研究员决定检验这个百分比是否仍然成立。他在其随机抽取的 215 名高中毕业生样本中发现，有 164 人相信"致富"是一个重要目标。</p>
+                <p>在 0.1 的显著性水平下，他能否得出比例确实已经改变的结论？</p>
+                <p>执行一个双尾检验。</p>
+                <div class="formula">H₀: p = 0.70</div>
+            </div>
+            <div class="options-container">
+                <div class="option" data-question="1" data-option="a">
+                    <span class="option-letter">A</span>
+                    <span>p = 0.70</span>
+                </div>
+                <div class="option" data-question="1" data-option="b">
+                    <span class="option-letter">B</span>
+                    <span>p ≠ 0.70</span>
+                </div>
+                <div class="option" data-question="1" data-option="c">
+                    <span class="option-letter">C</span>
+                    <span>p > 0.70</span>
+                </div>
+                <div class="option" data-question="1" data-option="d">
+                    <span class="option-letter">D</span>
+                    <span>p < 0.70</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="question-section">
+            <div class="question-text">
+                <span class="question-number">2</span>
+                <span>备择假设：H₁:</span>
+            </div>
+            <div class="question-content">
+                <p>由于我们正在寻找证据来确定 p 是否与 0.70 不同，因此假设应表述为：</p>
+                <div class="formula">H₁: p ≠ 0.70</div>
+            </div>
+            <div class="options-container">
+                <div class="option" data-question="2" data-option="a">
+                    <span class="option-letter">A</span>
+                    <span>p = 0.70</span>
+                </div>
+                <div class="option" data-question="2" data-option="b">
+                    <span class="option-letter">B</span>
+                    <span>p ≠ 0.70</span>
+                </div>
+                <div class="option" data-question="2" data-option="c">
+                    <span class="option-letter">C</span>
+                    <span>p > 0.70</span>
+                </div>
+                <div class="option" data-question="2" data-option="d">
+                    <span class="option-letter">D</span>
+                    <span>p < 0.70</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="question-section">
+            <div class="question-text">
+                <span class="question-number">3</span>
+                <span>检验统计量的类型：</span>
+            </div>
+            <div class="question-content">
+                <p>此处，样本量 n = 215，样本比例 p̂ = 164/215。</p>
+                <p>虽然样本计数服从二项分布，但如果 np > 5 且 n(1-p) > 5，则正态近似是合适的。假设原假设为真，我们检验 np = 215 * 0.70 = 150.5 > 5 且 n(1-p) = 215 * (1-0.70) = 64.5 > 5。因此，样本比例具有近似正态分布，期望为 p，方差为 p(1-p)/n。因此，Z = (p̂ - p) / √[p(1-p)/n] 具有近似标准正态分布。所以我们使用 Z 检验统计量。</p>
+            </div>
+            <div class="options-container">
+                <div class="option" data-question="3" data-option="a">
+                    <span class="option-letter">A</span>
+                    <span>Z</span>
+                </div>
+                <div class="option" data-question="3" data-option="b">
+                    <span class="option-letter">B</span>
+                    <span>t</span>
+                </div>
+                <div class="option" data-question="3" data-option="c">
+                    <span class="option-letter">C</span>
+                    <span>卡方</span>
+                </div>
+                <div class="option" data-question="3" data-option="d">
+                    <span class="option-letter">D</span>
+                    <span>F</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="question-section">
+            <div class="question-text">
+                <span class="question-number">4</span>
+                <span>检验统计量的值（至少四舍五入到三位小数）：</span>
+            </div>
+            <div class="question-content">
+                <p>该检验统计量的值是在假设 H₀ 为真的情况下，对应于样本比例的 z 值。即，其值为：</p>
+                <div class="formula">
+                    z = (p̂ - p) / √[p(1-p)/n] = (164/215 - 0.70) / √[0.70(1-0.70)/215] ≈ 2.009
+                </div>
+            </div>
+            <div class="options-container">
+                <div class="option" data-question="4" data-option="a">
+                    <span class="option-letter">A</span>
+                    <span>1.645</span>
+                </div>
+                <div class="option" data-question="4" data-option="b">
+                    <span class="option-letter">B</span>
+                    <span>2.009</span>
+                </div>
+                <div class="option" data-question="4" data-option="c">
+                    <span class="option-letter">C</span>
+                    <span>1.960</span>
+                </div>
+                <div class="option" data-question="4" data-option="d">
+                    <span class="option-letter">D</span>
+                    <span>2.576</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="question-section">
+            <div class="question-text">
+                <span class="question-number">5</span>
+                <span>在 0.1 显著性水平下的两个临界值（至少四舍五入到三位小数）：</span>
+            </div>
+            <div class="question-content">
+                <p>由于 H₁ 包含符号 ≠，此假设检验是双尾的，我们有两个临界值。</p>
+                <p>临界值为 -z_{α/2} 和 z_{α/2}，其中 z_{α/2} 是在标准正态密度曲线右尾截取面积为 α/2 的 z 值。</p>
+                <p>显著性水平 α = 0.1。因此，四舍五入到三位小数的临界值为 -1.645 和 1.645。</p>
+            </div>
+            <div class="options-container">
+                <div class="option" data-question="5" data-option="a">
+                    <span class="option-letter">A</span>
+                    <span>-1.960 和 1.960</span>
+                </div>
+                <div class="option" data-question="5" data-option="b">
+                    <span class="option-letter">B</span>
+                    <span>-1.645 和 1.645</span>
+                </div>
+                <div class="option" data-question="5" data-option="c">
+                    <span class="option-letter">C</span>
+                    <span>-2.576 和 2.576</span>
+                </div>
+                <div class="option" data-question="5" data-option="d">
+                    <span class="option-letter">D</span>
+                    <span>-1.282 和 1.282</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="question-section">
+            <div class="question-text">
+                <span class="question-number">6</span>
+                <span>我们能否得出结论，相信"致富"是重要目标的高中毕业生的比例已经改变？</span>
+            </div>
+            <div class="question-content">
+                <p>由于检验值 2.009 落在临界区域（大于 1.645）内，决策是拒绝原假设。</p>
+                <p>我们拒绝了 H₀（即旧的比例）。也就是说，我们得出结论，有足够的证据拒绝"恰好有 70% 的高中毕业生相信'致富'是重要的个人目标"这一论断。</p>
+            </div>
+            <div class="options-container">
+                <div class="option" data-question="6" data-option="a">
+                    <span class="option-letter">A</span>
+                    <span>是</span>
+                </div>
+                <div class="option" data-question="6" data-option="b">
+                    <span class="option-letter">B</span>
+                    <span>否</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button id="submit-btn">提交答案</button>
+            <button id="reset-btn">重新作答</button>
+        </div>
+
+        <div class="results" id="results">
+            <div class="score">得分: <span class="score-value" id="score-value">0</span> / 6</div>
+            
+            <div class="feedback">
+                <h3>答题反馈</h3>
+                <div id="feedback-content">
+                    <!-- 反馈内容将通过JavaScript动态生成 -->
+                </div>
+                
+                <div class="explanation">
+                    <h4>题目解析</h4>
+                    <div class="explanation-content">
+                        <p><strong>1. 原假设 H₀:</strong> 由于我们要检验比例是否改变（双尾检验），原假设应为比例没有改变，即 p = 0.70。</p>
+                        <p><strong>2. 备择假设 H₁:</strong> 由于我们要检验比例是否改变，备择假设应为 p ≠ 0.70。</p>
+                        <p><strong>3. 检验统计量的类型:</strong> 对于总体比例的假设检验，当样本量足够大时（np>5且n(1-p)>5），使用Z检验统计量。</p>
+                        <p><strong>4. 检验统计量的值:</strong> 计算得 z = (164/215 - 0.70) / √[0.70(1-0.70)/215] ≈ 2.009。</p>
+                        <p><strong>5. 临界值:</strong> 显著性水平 α=0.1，双尾检验，临界值为 -1.645 和 1.645。</p>
+                        <p><strong>6. 结论:</strong> 由于检验统计量 2.009 > 1.645，落在拒绝域，因此拒绝原假设，得出结论比例已经改变。</p>
+                    </div>
+                </div>
+
+                <button class="show-explanation-btn" id="show-explanation-btn">查看答案解析</button>
+                <div class="explanation-section explanation" style="display:none;">
+                    <h4>详细解析</h4>
+                    <div class="explanation-content">
+                        <p>此部分包含更详细的解题步骤和公式推导。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+
+    <script>
+        // 参数化配置 - 预先计算好的参数集合
+        const questionParams = [
+            {
+                // 参数集1: 原始题目
+                p0: 0.70,
+                n: 215,
+                x: 164,
+                alpha: 0.1,
+                context: "相信'致富'是重要个人目标的高中毕业生",
+                researchContext: "十年前的研究发现",
+                pHat: (164/215).toFixed(4),
+                zValue: 2.009,
+                criticalValues: "-1.645 和 1.645",
+                conclusion: "是",
+                answer1: 'a',
+                answer2: 'b',
+                answer3: 'a',
+                answer4: 'b',
+                answer5: 'b',
+                answer6: 'a',
+                q1Options: ['p = 0.70', 'p ≠ 0.70', 'p > 0.70', 'p < 0.70'],
+                q2Options: ['p = 0.70', 'p ≠ 0.70', 'p > 0.70', 'p < 0.70'],
+                q4Options: ['1.645', '2.009', '1.960', '2.576'],
+                q5Options: ['-1.960 和 1.960', '-1.645 和 1.645', '-2.576 和 2.576', '-1.282 和 1.282']
+            },
+            {
+                // 参数集2: 选举支持率
+                p0: 0.55,
+                n: 300,
+                x: 186,
+                alpha: 0.05,
+                context: "支持某位候选人的选民",
+                researchContext: "民调机构预测",
+                pHat: (186/300).toFixed(4),
+                zValue: 2.366,
+                criticalValues: "-1.960 和 1.960",
+                conclusion: "是",
+                answer1: 'a',
+                answer2: 'b',
+                answer3: 'a',
+                answer4: 'b',
+                answer5: 'a',
+                answer6: 'a',
+                q1Options: ['p = 0.55', 'p ≠ 0.55', 'p > 0.55', 'p < 0.55'],
+                q2Options: ['p = 0.55', 'p ≠ 0.55', 'p > 0.55', 'p < 0.55'],
+                q4Options: ['1.645', '2.366', '1.960', '2.576'],
+                q5Options: ['-1.960 和 1.960', '-1.645 和 1.645', '-2.576 和 2.576', '-1.282 和 1.282']
+            },
+            {
+                // 参数集3: 产品满意度
+                p0: 0.80,
+                n: 250,
+                x: 215,
+                alpha: 0.01,
+                context: "对某产品满意的顾客",
+                researchContext: "公司声称",
+                pHat: (215/250).toFixed(4),
+                zValue: 2.500,
+                criticalValues: "-2.576 和 2.576",
+                conclusion: "否",
+                answer1: 'a',
+                answer2: 'b',
+                answer3: 'a',
+                answer4: 'b',
+                answer5: 'c',
+                answer6: 'b',
+                q1Options: ['p = 0.80', 'p ≠ 0.80', 'p > 0.80', 'p < 0.80'],
+                q2Options: ['p = 0.80', 'p ≠ 0.80', 'p > 0.80', 'p < 0.80'],
+                q4Options: ['1.645', '2.500', '1.960', '2.576'],
+                q5Options: ['-1.960 和 1.960', '-1.645 和 1.645', '-2.576 和 2.576', '-1.282 和 1.282']
+            },
+            {
+                // 参数集4: 员工培训通过率
+                p0: 0.75,
+                n: 180,
+                x: 126,
+                alpha: 0.1,
+                context: "通过培训考试的员工",
+                researchContext: "人力资源部门记录",
+                pHat: (126/180).toFixed(4),
+                zValue: 1.543,
+                criticalValues: "-1.645 和 1.645",
+                conclusion: "否",
+                answer1: 'a',
+                answer2: 'b',
+                answer3: 'a',
+                answer4: 'c',
+                answer5: 'b',
+                answer6: 'b',
+                q1Options: ['p = 0.75', 'p ≠ 0.75', 'p > 0.75', 'p < 0.75'],
+                q2Options: ['p = 0.75', 'p ≠ 0.75', 'p > 0.75', 'p < 0.75'],
+                q4Options: ['1.645', '2.009', '1.543', '2.576'],
+                q5Options: ['-1.960 和 1.960', '-1.645 和 1.645', '-2.576 和 2.576', '-1.282 和 1.282']
+            },
+            {
+                // 参数集5: 疫苗接种率
+                p0: 0.60,
+                n: 400,
+                x: 272,
+                alpha: 0.05,
+                context: "接种了某疫苗的居民",
+                researchContext: "卫生部门统计",
+                pHat: (272/400).toFixed(4),
+                zValue: 2.582,
+                criticalValues: "-1.960 和 1.960",
+                conclusion: "是",
+                answer1: 'a',
+                answer2: 'b',
+                answer3: 'a',
+                answer4: 'b',
+                answer5: 'a',
+                answer6: 'a',
+                q1Options: ['p = 0.60', 'p ≠ 0.60', 'p > 0.60', 'p < 0.60'],
+                q2Options: ['p = 0.60', 'p ≠ 0.60', 'p > 0.60', 'p < 0.60'],
+                q4Options: ['1.645', '2.582', '1.960', '2.576'],
+                q5Options: ['-1.960 和 1.960', '-1.645 和 1.645', '-2.576 和 2.576', '-1.282 和 1.282']
+            },
+            {
+                // 参数集6: 大学毕业率
+                p0: 0.65,
+                n: 200,
+                x: 148,
+                alpha: 0.1,
+                context: "按时毕业的大学生",
+                researchContext: "教育部报告",
+                pHat: (148/200).toFixed(4),
+                zValue: 2.227,
+                criticalValues: "-1.645 和 1.645",
+                conclusion: "是",
+                answer1: 'a',
+                answer2: 'b',
+                answer3: 'a',
+                answer4: 'b',
+                answer5: 'b',
+                answer6: 'a',
+                q1Options: ['p = 0.65', 'p ≠ 0.65', 'p > 0.65', 'p < 0.65'],
+                q2Options: ['p = 0.65', 'p ≠ 0.65', 'p > 0.65', 'p < 0.65'],
+                q4Options: ['1.645', '2.227', '1.960', '2.576'],
+                q5Options: ['-1.960 和 1.960', '-1.645 和 1.645', '-2.576 和 2.576', '-1.282 和 1.282']
+            }
+        ];
+
+        let currentParamIndex = Math.floor(Math.random() * questionParams.length);
+
+        // 渲染问题的函数
+        function renderQuestion() {
+            const params = questionParams[currentParamIndex];
+            const questionContent = document.querySelectorAll('.question-content');
+
+            // 更新题目1的内容
+            questionContent[0].innerHTML = `
+                <p>${params.researchContext}，${params.context}的比例 p 为 ${(params.p0 * 100).toFixed(0)}%。一位研究员决定检验这个百分比是否仍然成立。他在其随机抽取的 ${params.n} 名样本中发现，有 ${params.x} 人${params.context.replace('的', '是')}。</p>
+                <p>在 ${params.alpha} 的显著性水平下，他能否得出比例确实已经改变的结论？</p>
+                <p>执行一个双尾检验。</p>
+                <div class="formula">H₀: p = ${params.p0.toFixed(2)}</div>
+            `;
+
+            // 更新题目2的内容
+            questionContent[1].innerHTML = `
+                <p>由于我们正在寻找证据来确定 p 是否与 ${params.p0.toFixed(2)} 不同，因此假设应表述为：</p>
+                <div class="formula">H₁: p ≠ ${params.p0.toFixed(2)}</div>
+            `;
+
+            // 更新题目3的内容
+            questionContent[2].innerHTML = `
+                <p>此处，样本量 n = ${params.n}，样本比例 p̂ = ${params.x}/${params.n}。</p>
+                <p>虽然样本计数服从二项分布，但如果 np > 5 且 n(1-p) > 5，则正态近似是合适的。假设原假设为真，我们检验 np = ${params.n} * ${params.p0.toFixed(2)} = ${(params.n * params.p0).toFixed(1)} > 5 且 n(1-p) = ${params.n} * (1-${params.p0.toFixed(2)}) = ${(params.n * (1 - params.p0)).toFixed(1)} > 5。因此，样本比例具有近似正态分布，期望为 p，方差为 p(1-p)/n。因此，Z = (p̂ - p) / √[p(1-p)/n] 具有近似标准正态分布。所以我们使用 Z 检验统计量。</p>
+            `;
+
+            // 更新题目4的内容
+            questionContent[3].innerHTML = `
+                <p>该检验统计量的值是在假设 H₀ 为真的情况下，对应于样本比例的 z 值。即，其值为：</p>
+                <div class="formula">
+                    z = (p̂ - p) / √[p(1-p)/n] = (${params.x}/${params.n} - ${params.p0.toFixed(2)}) / √[${params.p0.toFixed(2)}(1-${params.p0.toFixed(2)})/${params.n}] ≈ ${params.zValue}
+                </div>
+            `;
+
+            // 更新题目5的内容
+            questionContent[4].innerHTML = `
+                <p>由于 H₁ 包含符号 ≠，此假设检验是双尾的，我们有两个临界值。</p>
+                <p>临界值为 -z_{α/2} 和 z_{α/2}，其中 z_{α/2} 是在标准正态密度曲线右尾截取面积为 α/2 的 z 值。</p>
+                <p>显著性水平 α = ${params.alpha}。因此，四舍五入到三位小数的临界值为 ${params.criticalValues}。</p>
+            `;
+
+            // 更新题目6的内容
+            questionContent[5].innerHTML = `
+                <p>由于检验值 ${params.zValue} ${params.conclusion === '是' ? '落在临界区域内' : '未落在临界区域内'}，决策是${params.conclusion === '是' ? '拒绝' : '不拒绝'}原假设。</p>
+                <p>我们${params.conclusion === '是' ? '拒绝了' : '不拒绝'} H₀（即旧的比例）。也就是说，我们得出结论，${params.conclusion === '是' ? '有足够的证据拒绝' : '没有足够的证据拒绝'}"恰好有 ${(params.p0 * 100).toFixed(0)}% 的样本${params.context}"这一论断。</p>
+            `;
+
+            // 更新选项
+            updateOptions(params);
+
+            // 更新正确答案
+            updateCorrectAnswers(params);
+        }
+
+        function updateOptions(params) {
+            // 问题1选项
+            const q1Options = document.querySelectorAll('.option[data-question="1"]');
+            q1Options.forEach((opt, i) => {
+                opt.querySelector('span:last-child').textContent = params.q1Options[i];
+            });
+
+            // 问题2选项
+            const q2Options = document.querySelectorAll('.option[data-question="2"]');
+            q2Options.forEach((opt, i) => {
+                opt.querySelector('span:last-child').textContent = params.q2Options[i];
+            });
+
+            // 问题4选项
+            const q4Options = document.querySelectorAll('.option[data-question="4"]');
+            q4Options.forEach((opt, i) => {
+                opt.querySelector('span:last-child').textContent = params.q4Options[i];
+            });
+
+            // 问题5选项
+            const q5Options = document.querySelectorAll('.option[data-question="5"]');
+            q5Options.forEach((opt, i) => {
+                opt.querySelector('span:last-child').textContent = params.q5Options[i];
+            });
+        }
+
+        function updateCorrectAnswers(params) {
+            correctAnswers[1] = params.answer1;
+            correctAnswers[2] = params.answer2;
+            correctAnswers[3] = params.answer3;
+            correctAnswers[4] = params.answer4;
+            correctAnswers[5] = params.answer5;
+            correctAnswers[6] = params.answer6;
+        }
+
+        // 刷新参数函数
+        function refreshParams() {
+            // 随机选择一个新的参数集
+            let newIndex;
+            do {
+                newIndex = Math.floor(Math.random() * questionParams.length);
+            } while (newIndex === currentParamIndex && questionParams.length > 1);
+            currentParamIndex = newIndex;
+
+            // 重置用户答案
+            userAnswers = {};
+
+            // 重置所有选项样式
+            document.querySelectorAll('.option').forEach(option => {
+                option.classList.remove('selected', 'correct', 'incorrect');
+                option.style.pointerEvents = 'auto';
+            });
+
+            // 隐藏结果区域
+            document.getElementById('results').classList.remove('show');
+
+            // Hide explanation button and section
+            document.getElementById('show-explanation-btn').style.display = 'none';
+            var explanationSection = document.querySelector('.explanation-section');
+            if (explanationSection) {
+                explanationSection.style.display = 'none';
+            }
+
+            // 重置提交按钮
+            const submitBtn = document.getElementById('submit-btn');
+            submitBtn.textContent = '提交答案';
+            submitBtn.disabled = false;
+            submitBtn.style.backgroundColor = '#4a90e2';
+
+            // 重新渲染问题
+            renderQuestion();
+
+            // 重新绑定选项点击事件
+            bindOptionEvents();
+        }
+
+        function bindOptionEvents() {
+            document.querySelectorAll('.option').forEach(option => {
+                option.removeEventListener('click', handleOptionClick);
+                option.addEventListener('click', handleOptionClick);
+            });
+        }
+
+        function handleOptionClick() {
+            const question = this.getAttribute('data-question');
+            const selectedOption = this.getAttribute('data-option');
+
+            // 清除同一问题的其他选项的选中状态
+            document.querySelectorAll(`.option[data-question="${question}"]`).forEach(opt => {
+                opt.classList.remove('selected');
+            });
+
+            // 设置当前选项为选中状态
+            this.classList.add('selected');
+
+            // 保存用户答案
+            userAnswers[question] = selectedOption;
+        }
+
+        // Show explanation button functionality
+        document.getElementById('show-explanation-btn').addEventListener('click', function() {
+            var explanation = document.querySelector('.explanation-section');
+            if (explanation) {
+                if (explanation.style.display === 'block') {
+                    explanation.style.display = 'none';
+                    this.textContent = '查看答案解析';
+                } else {
+                    explanation.style.display = 'block';
+                    this.textContent = '隐藏答案解析';
+                }
+            }
+        });
+
+const correctAnswers = {
+            1: 'a',
+            2: 'b',
+            3: 'a',
+            4: 'b',
+            5: 'b',
+            6: 'a'
+        };
+
+        // 用户选择的答案
+        let userAnswers = {};
+        
+        // 初始化选项点击事件
+        document.querySelectorAll('.option').forEach(option => {
+            option.addEventListener('click', function() {
+                const question = this.getAttribute('data-question');
+                const selectedOption = this.getAttribute('data-option');
+                
+                // 清除同一问题的其他选项的选中状态
+                document.querySelectorAll(`.option[data-question="${question}"]`).forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                
+                // 设置当前选项为选中状态
+                this.classList.add('selected');
+                
+                // 保存用户答案
+                userAnswers[question] = selectedOption;
+            });
+        });
+        
+        // 提交按钮事件
+        document.getElementById('submit-btn').addEventListener('click', function() {
+            // 检查是否所有问题都已作答
+            const totalQuestions = Object.keys(correctAnswers).length;
+            const answeredQuestions = Object.keys(userAnswers).length;
+            
+            if (answeredQuestions < totalQuestions) {
+                alert(`请完成所有题目！您已回答了 ${answeredQuestions} 题，还有 ${totalQuestions - answeredQuestions} 题未完成。`);
+                return;
+            }
+            
+            // 计算得分
+            let score = 0;
+            let feedbackHTML = '';
+            
+            for (let i = 1; i <= totalQuestions; i++) {
+                const userAnswer = userAnswers[i];
+                const correctAnswer = correctAnswers[i];
+                const isCorrect = userAnswer === correctAnswer;
+                
+                if (isCorrect) {
+                    score++;
+                }
+                
+                // 更新选项样式
+                const userOption = document.querySelector(`.option[data-question="${i}"][data-option="${userAnswer}"]`);
+                // correctOption reference removed
+                
+                if (userOption) {
+                    userOption.classList.add(isCorrect ? 'correct' : 'incorrect');
+                }
+
+                // 构建反馈内容
+                feedbackHTML += `
+                    <p><strong>第 ${i} 题:</strong>
+                    您的选择: <span class="${isCorrect ? 'correct-answer' : ''}">${getOptionText(i, userAnswer)}</span>
+                    ${isCorrect ? '✓ 正确' : '✗ 错误</p>'}
+                `;
+            }
+            
+            // 显示得分和反馈
+            document.getElementById('score-value').textContent = score;
+            document.getElementById('feedback-content').innerHTML = feedbackHTML;
+
+            // Show explanation button after submit
+            document.getElementById('show-explanation-btn').style.display = 'block';
+
+            document.getElementById('results').classList.add('show');
+
+            // 滚动到结果区域
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+            
+            // 禁用所有选项的点击
+            document.querySelectorAll('.option').forEach(option => {
+                option.style.pointerEvents = 'none';
+            });
+            
+            // 更改提交按钮文本
+            this.textContent = '已提交';
+            this.disabled = true;
+            this.style.backgroundColor = '#95a5a6';
+        });
+        
+        // 重新作答按钮事件
+        document.getElementById('reset-btn').addEventListener('click', function() {
+            // 重置用户答案
+            userAnswers = {};
+
+            // 重置所有选项样式
+            document.querySelectorAll('.option').forEach(option => {
+                option.classList.remove('selected', 'correct', 'incorrect');
+                option.style.pointerEvents = 'auto';
+            });
+
+            // 隐藏结果区域
+            document.getElementById('results').classList.remove('show');
+
+            // Hide explanation button and section on reset
+            document.getElementById('show-explanation-btn').style.display = 'none';
+            var explanationSection = document.querySelector('.explanation-section');
+            if (explanationSection) {
+                explanationSection.style.display = 'none';
+            }
+
+            // 重置提交按钮
+            const submitBtn = document.getElementById('submit-btn');
+            submitBtn.textContent = '提交答案';
+            submitBtn.disabled = false;
+            submitBtn.style.backgroundColor = '#4a90e2';
+        });
+        
+        // 辅助函数：获取选项文本
+        function getOptionText(question, option) {
+            const optionElement = document.querySelector(`.option[data-question="${question}"][data-option="${option}"]`);
+            if (optionElement) {
+                // 获取选项文本（排除选项字母）
+                const text = optionElement.textContent.trim();
+                return text;
+            }
+            return option;
+        }
+
+        // 初始化 - 页面加载时渲染问题
+        renderQuestion();
+        bindOptionEvents();
+    </script>
+</body>
+</html>

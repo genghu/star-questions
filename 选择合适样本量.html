@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>置信区间与假设检验 - 选择合适的样本量</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #f0f7ff;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #4a90e2;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2.2rem;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            padding: 25px;
+            margin-bottom: 20px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        .question-title {
+            color: #2c3e50;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eaeaea;
+            display: flex;
+            align-items: center;
+        }
+
+        .refresh-btn {
+            background-color: #34a853;
+            color: white;
+            padding: 8px 16px;
+            font-size: 0.9rem;
+            border-radius: 6px;
+            margin-left: auto;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .refresh-btn:hover {
+            background-color: #2d9248;
+        }
+
+        .question-content {
+            font-size: 1.05rem;
+            margin-bottom: 25px;
+        }
+
+        .question-content p {
+            margin-bottom: 15px;
+        }
+
+        .param {
+            color: #4a90e2;
+            font-weight: bold;
+        }
+
+        .formula {
+            background-color: #f8f9fa;
+            border-left: 4px solid #4a90e2;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+            overflow-x: auto;
+        }
+
+        .answer-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .option {
+            padding: 18px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .option:hover {
+            background-color: #f5f9ff;
+            border-color: #a0c8ff;
+        }
+
+        .option.selected {
+            background-color: #e8f2ff;
+            border-color: #4a90e2;
+            font-weight: 600;
+        }
+
+        .option.correct {
+            background-color: #e7f7e7;
+            border-color: #2ecc71;
+        }
+
+        .option.incorrect {
+            background-color: #fdeaea;
+            border-color: #e74c3c;
+        }
+
+        .option-label {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            background-color: #4a90e2;
+            color: white;
+            border-radius: 50%;
+            margin-right: 15px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        #submit-btn {
+            background-color: #4a90e2;
+            color: white;
+            flex: 1;
+        }
+
+        #submit-btn:hover {
+            background-color: #3a7bc8;
+            transform: translateY(-2px);
+        }
+
+        #reset-btn {
+            background-color: #f8f9fa;
+            color: #555;
+            border: 2px solid #ddd;
+            flex: 1;
+        }
+
+        #reset-btn:hover {
+            background-color: #e9ecef;
+            border-color: #ccc;
+        }
+
+        .feedback {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .feedback.correct {
+            background-color: #e7f7e7;
+            border-left: 5px solid #2ecc71;
+            display: block;
+        }
+
+        .feedback.incorrect {
+            background-color: #fdeaea;
+            border-left: 5px solid #e74c3c;
+            display: block;
+        }
+
+        .feedback-title {
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 30px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #4a90e2;
+        }
+
+        .stat-label {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        .explanation {
+            margin-top: 30px;
+            padding: 25px;
+            background-color: #f8f9fa;
+            border-radius: 12px;
+            border-left: 5px solid #3498db;
+        }
+
+        .explanation h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+
+        .explanation p {
+            margin-bottom: 15px;
+        }
+
+        .highlight {
+            background-color: #fffacd;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+
+        .step {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed #ddd;
+        }
+
+        .step:last-child {
+            border-bottom: none;
+        }
+
+        .note {
+            background-color: #fff8e1;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+            font-size: 0.95rem;
+        }
+
+        .answer-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.2rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        .answer-input:focus {
+            outline: none;
+            border-color: #4a90e2;
+        }
+
+        @media (max-width: 767px) {
+            body {
+                padding: 15px;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .btn {
+                min-width: 100%;
+            }
+        }
+    </style>
+
+    <style>
+    .show-explanation-btn {
+        display: none;
+        margin: 20px auto;
+        padding: 14px 28px;
+        background: linear-gradient(135deg, #9b59b6, #8e44ad);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 1.1rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
+    }
+    .show-explanation-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
+    }
+    .explanation-section {
+        display: none;
+        margin-top: 20px;
+    }
+    </style>
+    </head>
+<body>
+    <header>
+        <h1>选择合适样本量</h1>
+        <div class="subtitle">置信区间与假设检验 · 交互式学习</div>
+    </header>
+
+    <div class="container">
+        <section class="question-section">
+            <div class="card">
+                <h2 class="question-title">
+                    问题描述
+                    <button class="refresh-btn" id="refresh-btn">刷新参数</button>
+                </h2>
+                <div class="question-content">
+                    <p>许多全职工作的大学毕业生每周工作时间超过40小时。假设我们希望估计全职工作的大学毕业生每周工作的平均小时数 μ。我们将选择一个全职工作的大学毕业生随机样本，并使用该样本的均值来估计 μ。</p>
+
+                    <p>假设大学毕业生每周工作小时数的标准差为 <span class="param" id="param-sigma">6.30</span> 小时，为了使我们有 <span class="param" id="param-confidence">95%</span> 的把握相信我们的估计值在 μ 的 <span class="param" id="param-E">1.5</span> 小时/周范围内，所需的最小样本量是多少？</p>
+
+                    <div class="formula">
+                        已知：置信水平 = <span id="formula-confidence">95%</span>，边际误差 E = <span id="formula-E">1.5</span>，总体标准差 σ = <span id="formula-sigma">6.30</span>
+                    </div>
+
+                    <p>请将中间计算至少保留三位小数。将你的答案写成一个整数（并确保它是满足要求的最小整数）。</p>
+                </div>
+
+                <div class="answer-options" id="options-container">
+                    <!-- Options will be dynamically generated -->
+                </div>
+
+                <div class="note">
+                    <strong>提示：</strong> 你也可以直接输入你的答案：
+                    <input type="number" id="direct-answer" class="answer-input" min="1" max="1000">
+                </div>
+
+                <div class="controls">
+                    <button id="submit-btn">提交答案</button>
+                    <button id="reset-btn">重新作答</button>
+                </div>
+
+                <div id="feedback" class="feedback">
+                    <div class="feedback-title" id="feedback-title"></div>
+                    <p id="feedback-text"></p>
+                </div>
+            </div>
+
+            <button class="show-explanation-btn" id="show-explanation-btn">查看答案解析</button>
+            <div class="explanation-section explanation" id="explanation-section" style="display:none;">
+                <h3>题目解析与计算步骤</h3>
+
+                <div class="step">
+                    <p><strong>步骤 1：确定已知条件</strong></p>
+                    <p>置信水平：<span id="exp-confidence">95%</span> → α = 0.05 → α/2 = 0.025</p>
+                    <p>边际误差 E = <span id="exp-E">1.5</span> 小时</p>
+                    <p>总体标准差 σ = <span id="exp-sigma">6.30</span> 小时</p>
+                    <p>z<sub>α/2</sub> = z<sub>0.025</sub> ≈ <span id="exp-z">1.96</span>（标准正态分布临界值）</p>
+                </div>
+
+                <div class="step">
+                    <p><strong>步骤 2：应用样本量公式</strong></p>
+                    <p>所需最小样本量公式：</p>
+                    <div class="formula">
+                        n ≥ ( z<sub>α/2</sub> × σ ÷ E )²
+                    </div>
+                </div>
+
+                <div class="step" id="step3">
+                    <p><strong>步骤 3：代入数值计算</strong></p>
+                    <p id="calc-step3"></p>
+                </div>
+
+                <div class="step">
+                    <p><strong>步骤 4：确定最小整数样本量</strong></p>
+                    <p id="calc-step4"></p>
+                </div>
+
+                <div class="step">
+                    <p><strong>步骤 5：验证</strong></p>
+                    <p>样本量满足大样本条件（n ≥ 30），因此使用置信区间公式是合理的。</p>
+                    <p id="calc-verification"></p>
+                </div>
+            </div>
+        </section>
+
+        <section class="interaction-section">
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-value" id="score">0</div>
+                    <div class="stat-label">得分</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="attempts">0</div>
+                    <div class="stat-label">尝试次数</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="accuracy">0%</div>
+                    <div class="stat-label">正确率</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="question-title">学习要点</h2>
+                <div class="question-content">
+                    <p><strong>置信区间：</strong> 总体均值 μ 的 (1-α)100% 置信区间公式为：</p>
+                    <div class="formula">
+                        x̄ ± z<sub>α/2</sub> × σ/√n
+                    </div>
+
+                    <p><strong>边际误差：</strong> 置信区间的半宽度，表示估计的精度：</p>
+                    <div class="formula">
+                        E = z<sub>α/2</sub> × σ/√n
+                    </div>
+
+                    <p><strong>样本量公式：</strong> 要保证在 (1-α)100% 置信水平下，边际误差不超过 E，所需最小样本量为：</p>
+                    <div class="formula">
+                        n = ( z<sub>α/2</sub> × σ ÷ E )²
+                    </div>
+
+                    <p><strong>注意：</strong> 如果计算结果不是整数，必须向上取整到下一个整数。</p>
+
+                    <div class="note">
+                        <strong>记忆技巧：</strong> 样本量与置信水平（z值）和总体变异性（σ）成正比，与要求的精度（E）成反比。
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="question-title">练习计算</h2>
+                <div class="question-content">
+                    <p>使用下面的计算器验证你的答案：</p>
+
+                    <div style="margin: 20px 0;">
+                        <div style="margin: 20px 0;">
+                            <label for="calc-z">z<sub>α/2</sub> 值：</label>
+                            <input type="number" id="calc-z" value="1.96" step="0.01" style="width: 100px; padding: 8px; margin: 0 10px;">
+                        </div>
+
+                        <div style="margin: 20px 0;">
+                            <label for="calc-sigma">总体标准差 σ：</label>
+                            <input type="number" id="calc-sigma" value="6.30" step="0.01" style="width: 100px; padding: 8px; margin: 0 10px;">
+                        </div>
+
+                        <div style="margin: 20px 0;">
+                            <label for="calc-e">边际误差 E：</label>
+                            <input type="number" id="calc-e" value="1.5" step="0.01" style="width: 100px; padding: 8px; margin: 0 10px;">
+                        </div>
+
+                        <button id="calculate-btn" style="width: 100%; margin-top: 15px;">计算样本量</button>
+
+                        <div id="calc-result" class="formula" style="margin-top: 20px; text-align: center; font-size: 1.3rem;">
+                            结果将显示在这里
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+
+
+    <script>
+        // Parameter sets for the question
+        const parameterSets = [
+            { confidence: 95, z: 1.96, sigma: 6.30, E: 1.5, answer: 68 },
+            { confidence: 95, z: 1.96, sigma: 5.0, E: 1.0, answer: 97 },
+            { confidence: 90, z: 1.645, sigma: 8.0, E: 2.0, answer: 44 },
+            { confidence: 99, z: 2.576, sigma: 7.5, E: 1.5, answer: 166 },
+            { confidence: 95, z: 1.96, sigma: 4.5, E: 0.8, answer: 122 }
+        ];
+
+        let currentParams = parameterSets[0];
+        let selectedOption = null;
+        let isSubmitted = false;
+        let score = 0;
+        let attempts = 0;
+        let correctAttempts = 0;
+
+        function generateOptions(correctAnswer) {
+            const options = [];
+            const usedValues = new Set();
+
+            // Add correct answer
+            options.push({ value: correctAnswer, isCorrect: true });
+            usedValues.add(correctAnswer);
+
+            // Generate 3 distractors
+            const variations = [-3, -1, 2, 4, -5, 7];
+            let idx = 0;
+
+            while (options.length < 4 && idx < variations.length) {
+                const distractor = correctAnswer + variations[idx];
+                if (!usedValues.has(distractor) && distractor > 0) {
+                    options.push({ value: distractor, isCorrect: false });
+                    usedValues.add(distractor);
+                }
+                idx++;
+            }
+
+            // Shuffle options
+            for (let i = options.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [options[i], options[j]] = [options[j], options[i]];
+            }
+
+            return options;
+        }
+
+        function renderQuestion() {
+            const params = currentParams;
+
+            // Update question text
+            document.getElementById('param-sigma').textContent = params.sigma.toFixed(2);
+            document.getElementById('param-confidence').textContent = params.confidence + '%';
+            document.getElementById('param-E').textContent = params.E.toFixed(1);
+
+            document.getElementById('formula-confidence').textContent = params.confidence + '%';
+            document.getElementById('formula-E').textContent = params.E.toFixed(1);
+            document.getElementById('formula-sigma').textContent = params.sigma.toFixed(2);
+
+            // Update explanation
+            document.getElementById('exp-confidence').textContent = params.confidence + '%';
+            document.getElementById('exp-E').textContent = params.E.toFixed(1);
+            document.getElementById('exp-sigma').textContent = params.sigma.toFixed(2);
+            document.getElementById('exp-z').textContent = params.z.toFixed(3);
+
+            // Calculate intermediate values
+            const numerator = params.z * params.sigma;
+            const divided = numerator / params.E;
+            const squared = divided * divided;
+
+            document.getElementById('calc-step3').innerHTML = `
+                n ≥ (${params.z.toFixed(3)} × ${params.sigma.toFixed(2)} ÷ ${params.E.toFixed(1)})²<br>
+                首先计算分子：${params.z.toFixed(3)} × ${params.sigma.toFixed(2)} = <span class="highlight">${numerator.toFixed(3)}</span><br>
+                然后除以 E：${numerator.toFixed(3)} ÷ ${params.E.toFixed(1)} = <span class="highlight">${divided.toFixed(3)}</span><br>
+                最后平方：(${divided.toFixed(3)})² = <span class="highlight">${squared.toFixed(6)}</span>
+            `;
+
+            document.getElementById('calc-step4').innerHTML = `
+                由于样本量必须是整数，且 n ≥ ${squared.toFixed(4)}...<br>
+                根据向上取整原则：n = <span class="highlight">${params.answer}</span><br>
+                因此，所需的最小样本量为 <span class="highlight">${params.answer}</span>。
+            `;
+
+            document.getElementById('calc-verification').innerHTML = `
+                我们有 ${params.confidence}% 的把握相信，使用 ${params.answer} 个样本得到的样本均值会在总体均值 μ 的 ${params.E.toFixed(1)} 小时范围内。
+            `;
+
+            // Generate and render options
+            const options = generateOptions(params.answer);
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+
+            const letters = ['A', 'B', 'C', 'D'];
+            options.forEach((opt, index) => {
+                const optionDiv = document.createElement('div');
+                optionDiv.className = 'option';
+                optionDiv.setAttribute('data-value', opt.value);
+                optionDiv.setAttribute('data-correct', opt.isCorrect);
+                optionDiv.innerHTML = `
+                    <span class="option-label">${letters[index]}</span>
+                    <span class="option-text">${opt.value}</span>
+                `;
+                optionsContainer.appendChild(optionDiv);
+            });
+
+            // Update calculator defaults
+            document.getElementById('calc-z').value = params.z;
+            document.getElementById('calc-sigma').value = params.sigma;
+            document.getElementById('calc-e').value = params.E;
+
+            // Reset state
+            selectedOption = null;
+            isSubmitted = false;
+            document.getElementById('direct-answer').value = '';
+
+            // Re-attach event listeners
+            attachOptionListeners();
+        }
+
+        function attachOptionListeners() {
+            const options = document.querySelectorAll('.option');
+            const directAnswerInput = document.getElementById('direct-answer');
+
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    if (isSubmitted) return;
+
+                    options.forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+
+                    this.classList.add('selected');
+                    selectedOption = parseInt(this.getAttribute('data-value'));
+                    directAnswerInput.value = selectedOption;
+                });
+            });
+
+            directAnswerInput.addEventListener('input', function() {
+                const value = parseInt(this.value);
+                if (!isNaN(value)) {
+                    options.forEach(opt => {
+                        opt.classList.remove('selected');
+                        if (parseInt(opt.getAttribute('data-value')) === value) {
+                            opt.classList.add('selected');
+                        }
+                    });
+                    selectedOption = value;
+                }
+            });
+        }
+
+        function updateStats() {
+            document.getElementById('score').textContent = score;
+            document.getElementById('attempts').textContent = attempts;
+            const accuracy = attempts > 0 ? Math.round((correctAttempts / attempts) * 100) : 0;
+            document.getElementById('accuracy').textContent = `${accuracy}%`;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize with first parameter set
+            renderQuestion();
+
+            const refreshBtn = document.getElementById('refresh-btn');
+            const submitBtn = document.getElementById('submit-btn');
+            const resetBtn = document.getElementById('reset-btn');
+            const feedback = document.getElementById('feedback');
+            const feedbackTitle = document.getElementById('feedback-title');
+            const feedbackText = document.getElementById('feedback-text');
+            const directAnswerInput = document.getElementById('direct-answer');
+            const showExplanationBtn = document.getElementById('show-explanation-btn');
+            const explanationSection = document.getElementById('explanation-section');
+
+            // Refresh button
+            refreshBtn.addEventListener('click', function() {
+                let newParams;
+                do {
+                    newParams = parameterSets[Math.floor(Math.random() * parameterSets.length)];
+                } while (newParams === currentParams && parameterSets.length > 1);
+
+                currentParams = newParams;
+                renderQuestion();
+
+                // Reset UI
+                document.querySelectorAll('.option').forEach(option => {
+                    option.classList.remove('selected', 'correct', 'incorrect');
+                });
+
+                feedback.className = 'feedback';
+                showExplanationBtn.style.display = 'none';
+                explanationSection.style.display = 'none';
+                showExplanationBtn.textContent = '查看答案解析';
+            });
+
+            // Submit answer
+            submitBtn.addEventListener('click', function() {
+                let userAnswer;
+
+                if (directAnswerInput.value && !isNaN(parseInt(directAnswerInput.value))) {
+                    userAnswer = parseInt(directAnswerInput.value);
+                } else if (selectedOption !== null) {
+                    userAnswer = selectedOption;
+                } else {
+                    alert('请选择一个答案或输入你的答案！');
+                    return;
+                }
+
+                attempts++;
+
+                const isCorrect = userAnswer === currentParams.answer;
+
+                if (isCorrect) {
+                    feedback.className = 'feedback correct';
+                    feedbackTitle.textContent = '正确！';
+                    feedbackText.textContent = `你的答案 ${userAnswer} 是正确的。`;
+                    score += 10;
+                    correctAttempts++;
+                } else {
+                    feedback.className = 'feedback incorrect';
+                    feedbackTitle.textContent = '不正确';
+                    feedbackText.textContent = `你的答案 ${userAnswer} 不正确。请查看解析了解计算步骤。`;
+
+                    document.querySelectorAll('.option').forEach(opt => {
+                        const value = parseInt(opt.getAttribute('data-value'));
+                        if (value === userAnswer) {
+                            opt.classList.add('incorrect');
+                        }
+                    });
+                }
+
+                // Disable options
+                document.querySelectorAll('.option').forEach(opt => {
+                    opt.style.pointerEvents = 'none';
+                });
+                submitBtn.disabled = true;
+                directAnswerInput.disabled = true;
+                isSubmitted = true;
+
+                // Show explanation button
+                showExplanationBtn.style.display = 'inline-block';
+
+                updateStats();
+            });
+
+            // Explanation button
+            showExplanationBtn.addEventListener('click', function() {
+                if (explanationSection.style.display === 'none' || explanationSection.style.display === '') {
+                    explanationSection.style.display = 'block';
+                    this.textContent = '隐藏答案解析';
+                } else {
+                    explanationSection.style.display = 'none';
+                    this.textContent = '查看答案解析';
+                }
+            });
+
+            // Reset
+            resetBtn.addEventListener('click', function() {
+                document.querySelectorAll('.option').forEach(opt => {
+                    opt.classList.remove('selected', 'correct', 'incorrect');
+                    opt.style.pointerEvents = 'auto';
+                });
+
+                directAnswerInput.value = '';
+                directAnswerInput.disabled = false;
+
+                feedback.className = 'feedback';
+                feedbackTitle.textContent = '';
+                feedbackText.textContent = '';
+
+                selectedOption = null;
+                isSubmitted = false;
+                submitBtn.disabled = false;
+
+                showExplanationBtn.style.display = 'none';
+                explanationSection.style.display = 'none';
+                showExplanationBtn.textContent = '查看答案解析';
+            });
+
+            // Calculator
+            document.getElementById('calculate-btn').addEventListener('click', function() {
+                const z = parseFloat(document.getElementById('calc-z').value);
+                const sigma = parseFloat(document.getElementById('calc-sigma').value);
+                const e = parseFloat(document.getElementById('calc-e').value);
+
+                if (isNaN(z) || isNaN(sigma) || isNaN(e) || e === 0) {
+                    document.getElementById('calc-result').textContent = '请输入有效的数值！';
+                    document.getElementById('calc-result').style.color = '#e74c3c';
+                    return;
+                }
+
+                const n = Math.pow((z * sigma) / e, 2);
+                const nRounded = Math.ceil(n);
+
+                document.getElementById('calc-result').innerHTML = `
+                    n = (${z} × ${sigma} ÷ ${e})² = (${(z * sigma).toFixed(3)} ÷ ${e})² = (${(z * sigma / e).toFixed(3)})² = <strong>${n.toFixed(6)}</strong><br>
+                    向上取整: <strong style="color: #2ecc71;">${nRounded}</strong>
+                `;
+                document.getElementById('calc-result').style.color = '#333';
+            });
+
+            // Initialize stats
+            updateStats();
+        });
+    </script>
+</body>
+</html>

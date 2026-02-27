@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>全概率定律 - 交互式答题</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(50, 50, 93, 0.1), 0 5px 15px rgba(0, 0, 0, 0.07);
+            overflow: hidden;
+            padding: 30px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #eaeaea;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2.2rem;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+
+        .question-container {
+            margin-bottom: 30px;
+        }
+
+        .page-separator {
+            text-align: center;
+            margin: 25px 0;
+            position: relative;
+        }
+
+        .page-separator::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(to right, transparent, #3498db, transparent);
+            z-index: 1;
+        }
+
+        .page-label {
+            background-color: white;
+            padding: 0 15px;
+            color: #3498db;
+            font-weight: bold;
+            position: relative;
+            z-index: 2;
+            display: inline-block;
+        }
+
+        .question-content {
+            background-color: #f8f9fa;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 5px solid #3498db;
+            white-space: pre-line;
+        }
+
+        .refresh-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 6px 12px;
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-left: 10px;
+            box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3);
+        }
+
+        .refresh-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4);
+            background: linear-gradient(135deg, #2980b9, #1f618d);
+        }
+
+        .answer-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .answer-option {
+            background-color: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .answer-option:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
+            border-color: #3498db;
+        }
+
+        .answer-option.selected {
+            border-color: #3498db;
+            background-color: #e3f2fd;
+        }
+
+        .answer-option.correct {
+            border-color: #2ecc71;
+            background-color: #d5f4e6;
+        }
+
+        .answer-option.incorrect {
+            border-color: #e74c3c;
+            background-color: #fadbd8;
+        }
+
+        .option-letter {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            background-color: #3498db;
+            color: white;
+            border-radius: 50%;
+            margin-right: 15px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .option-text {
+            font-size: 1.05rem;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        #submit-btn {
+            background-color: #3498db;
+            color: white;
+        }
+
+        #submit-btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-3px);
+            box-shadow: 0 7px 14px rgba(52, 152, 219, 0.3);
+        }
+
+        #reset-btn {
+            background-color: #95a5a6;
+            color: white;
+        }
+
+        #reset-btn:hover {
+            background-color: #7f8c8d;
+            transform: translateY(-3px);
+            box-shadow: 0 7px 14px rgba(149, 165, 166, 0.3);
+        }
+
+        .feedback {
+            margin-top: 30px;
+            padding: 25px;
+            border-radius: 12px;
+            display: none;
+        }
+
+        .feedback.correct {
+            background-color: #d5f4e6;
+            border-left: 5px solid #2ecc71;
+        }
+
+        .feedback.incorrect {
+            background-color: #fadbd8;
+            border-left: 5px solid #e74c3c;
+        }
+
+        .feedback-title {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .feedback-title i {
+            margin-right: 10px;
+            font-size: 1.6rem;
+        }
+
+        .explanation {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.7);
+            border-radius: 8px;
+            white-space: pre-line;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .stat-item {
+            flex: 1;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #3498db;
+        }
+
+        .stat-label {
+            color: #7f8c8d;
+            font-size: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .answer-options {
+                grid-template-columns: 1fr;
+            }
+
+            .stats {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            button {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+        }
+
+        .math {
+            font-family: "Times New Roman", Times, serif;
+            font-style: italic;
+        }
+        .answer-input-container {
+            margin: 25px 0;
+            text-align: center;
+        }
+        .answer-label {
+            display: block;
+            font-size: 1.1rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        .answer-input {
+            width: 200px;
+            padding: 15px 20px;
+            font-size: 1.3rem;
+            border: 3px solid #e0e0e0;
+            border-radius: 12px;
+            text-align: center;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+        .answer-input:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.1);
+        }
+        .answer-input.correct {
+            border-color: #2ecc71;
+            background-color: #d5f4e6;
+        }
+        .answer-input.incorrect {
+            border-color: #e74c3c;
+            background-color: #fadbd8;
+        }
+    </style>
+
+    <style>
+    .show-explanation-btn {
+        display: none;
+        margin: 20px auto;
+        padding: 14px 28px;
+        background: linear-gradient(135deg, #9b59b6, #8e44ad);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 1.1rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
+    }
+    .show-explanation-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
+    }
+    .explanation-section {
+        display: none;
+        margin-top: 20px;
+    }
+    </style>
+    </head>
+<body>
+    <div class="container">
+        <header>
+            <h1>全概率定律</h1>
+            <div class="subtitle">交互式概率问题解答</div>
+        </header>
+
+        <div class="question-container">
+            <div class="page-separator">
+                <span class="page-label">--- 第 1 页 ---</span>
+            </div>
+
+            <div class="question-content" id="question-text">
+学生姓名：Genghu Shi
+日期：04/25/2019
+概率
+全概率定律
+
+Archie被困在Xhosas地区的战区中。他唯一的生存机会是到达100英里外的Sudland。到达Sudland只有两条路线：一条是穿过沙漠，另一条是漫长而危险的翻山跋涉。两条路线都非常危险。过去，所有试图到达Sudland的人中有56%失败了。在所有尝试到达Sudland的尝试中，每17次中有11次是走沙漠路线。虽然山路更长，但似乎成功率更高：55%尝试通过山脉到达Sudland的人成功了。为了节省时间，Archie打算走沙漠路线。他成功到达Sudland的几率是多少？将你的答案四舍五入到两位小数。
+
+有必要对给定的信息进行解码。
+让我们用 Sudland 表示事件"从Xhosa成功到达Sudland"。已知该事件的概率是 1 - 0.56 = 0.44。只有两条路线：通过山脉或通过沙漠。每17次尝试中只有11次是通过沙漠跋涉进行的；即，P(沙漠) = 11/17。因此，P(山脉) = 6/17。给定选择山脉路线，到达Sudland的概率为 P(Sudland | 山脉) = 0.55。
+应用于当前情况的全概率定律为：
+P(Sudland) = P(Sudland | 沙漠) * P(沙漠) + P(Sudland | 山脉) * P(山脉)。
+代入数值信息，我们看到：
+0.44 = P(Sudland | 沙漠) * (11/17) + 0.55 * (6/17)。
+我们推导出：
+P(Sudland | 沙漠) = [0.44 - 0.55 * (6/17)] * (17/11) ≈ 0.38。
+            </div>
+
+            <div class="page-separator">
+                <span class="page-label">--- 第 2 页 ---</span>
+            </div>
+
+            <h2 style="margin: 25px 0 15px 0; color: #2c3e50;">
+                <span id="question-number">问题 1</span>
+                <button class="refresh-btn" id="refresh-btn" onclick="refreshQuestion()">刷新参数</button>
+            </h2>
+
+            <div class="question-content" id="question-summary">
+因此，答案是 0.38。
+答案
+0.38
+            </div>
+
+            <h2 style="margin: 25px 0 15px 0; color: #2c3e50;">请输入你的答案：</h2>
+
+            <div class="answer-input-container" id="input-container">
+                <label for="answer-input" class="answer-label">Archie成功到达Sudland的概率（保留两位小数）：</label>
+                <input type="text" id="answer-input" class="answer-input">
+            </div>
+
+            <div class="controls">
+                <button id="submit-btn">提交答案</button>
+                <button id="reset-btn">重新作答</button>
+            </div>
+
+            <div class="feedback" id="feedback">
+                <div class="feedback-title">
+                    <span id="feedback-icon"></span>
+                    <span id="feedback-text"></span>
+                </div>
+                <div class="explanation" id="explanation"></div>
+            </div>
+
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-value" id="score">0</div>
+                    <div class="stat-label">得分</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="attempts">0</div>
+                    <div class="stat-label">尝试次数</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="accuracy">0%</div>
+                    <div class="stat-label">正确率</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Parameter sets with pre-computed answers
+        // Formula: P(Sudland|Desert) = [P(Sudland) - P(Sudland|Mountain) * P(Mountain)] / P(Desert)
+        // where P(Sudland) = 1 - failRate, P(Desert) = desertAttempts/totalAttempts, P(Mountain) = 1 - P(Desert)
+        const parameterSets = [
+            {
+                failRate: 0.56,
+                totalAttempts: 17,
+                desertAttempts: 11,
+                mountainSuccessRate: 0.55,
+                answer: 0.38,
+                options: ['0.28', '0.38', '0.48', '0.58'],
+                pSudland: 0.44,
+                pDesert: 11/17,
+                pMountain: 6/17
+            },
+            {
+                failRate: 0.48,
+                totalAttempts: 15,
+                desertAttempts: 9,
+                mountainSuccessRate: 0.62,
+                answer: 0.42,
+                options: ['0.32', '0.42', '0.52', '0.62'],
+                pSudland: 0.52,
+                pDesert: 9/15,
+                pMountain: 6/15
+            },
+            {
+                failRate: 0.62,
+                totalAttempts: 20,
+                desertAttempts: 13,
+                mountainSuccessRate: 0.48,
+                answer: 0.32,
+                options: ['0.22', '0.32', '0.42', '0.52'],
+                pSudland: 0.38,
+                pDesert: 13/20,
+                pMountain: 7/20
+            },
+            {
+                failRate: 0.52,
+                totalAttempts: 18,
+                desertAttempts: 10,
+                mountainSuccessRate: 0.58,
+                answer: 0.45,
+                options: ['0.35', '0.45', '0.55', '0.65'],
+                pSudland: 0.48,
+                pDesert: 10/18,
+                pMountain: 8/18
+            },
+            {
+                failRate: 0.45,
+                totalAttempts: 16,
+                desertAttempts: 12,
+                mountainSuccessRate: 0.52,
+                answer: 0.42,
+                options: ['0.32', '0.42', '0.52', '0.62'],
+                pSudland: 0.55,
+                pDesert: 12/16,
+                pMountain: 4/16
+            }
+        ];
+
+        let currentSetIndex = 0;
+        let correctAnswer = parameterSets[0].answer;
+
+        function refreshQuestion() {
+            // Randomly select a new parameter set
+            let newIndex;
+            do {
+                newIndex = Math.floor(Math.random() * parameterSets.length);
+            } while (newIndex === currentSetIndex && parameterSets.length > 1);
+
+            currentSetIndex = newIndex;
+            const params = parameterSets[currentSetIndex];
+            correctAnswer = params.answer;
+
+            // Update question text
+            const questionText = document.getElementById('question-text');
+            questionText.innerHTML = `学生姓名：Genghu Shi
+日期：04/25/2019
+概率
+全概率定律
+
+Archie被困在Xhosas地区的战区中。他唯一的生存机会是到达100英里外的Sudland。到达Sudland只有两条路线：一条是穿过沙漠，另一条是漫长而危险的翻山跋涉。两条路线都非常危险。过去，所有试图到达Sudland的人中有${(params.failRate * 100).toFixed(0)}%失败了。在所有尝试到达Sudland的尝试中，每${params.totalAttempts}次中有${params.desertAttempts}次是走沙漠路线。虽然山路更长，但似乎成功率更高：${(params.mountainSuccessRate * 100).toFixed(0)}%尝试通过山脉到达Sudland的人成功了。为了节省时间，Archie打算走沙漠路线。他成功到达Sudland的几率是多少？将你的答案四舍五入到两位小数。
+
+有必要对给定的信息进行解码。
+让我们用 Sudland 表示事件"从Xhosa成功到达Sudland"。已知该事件的概率是 1 - ${params.failRate.toFixed(2)} = ${params.pSudland.toFixed(2)}。只有两条路线：通过山脉或通过沙漠。每${params.totalAttempts}次尝试中只有${params.desertAttempts}次是通过沙漠跋涉进行的；即，P(沙漠) = ${params.desertAttempts}/${params.totalAttempts}。因此，P(山脉) = ${params.totalAttempts - params.desertAttempts}/${params.totalAttempts}。给定选择山脉路线，到达Sudland的概率为 P(Sudland | 山脉) = ${params.mountainSuccessRate.toFixed(2)}。
+应用于当前情况的全概率定律为：
+P(Sudland) = P(Sudland | 沙漠) * P(沙漠) + P(Sudland | 山脉) * P(山脉)。
+代入数值信息，我们看到：
+${params.pSudland.toFixed(2)} = P(Sudland | 沙漠) * (${params.desertAttempts}/${params.totalAttempts}) + ${params.mountainSuccessRate.toFixed(2)} * (${params.totalAttempts - params.desertAttempts}/${params.totalAttempts})。
+我们推导出：
+P(Sudland | 沙漠) = [${params.pSudland.toFixed(2)} - ${params.mountainSuccessRate.toFixed(2)} * (${params.totalAttempts - params.desertAttempts}/${params.totalAttempts})] * (${params.totalAttempts}/${params.desertAttempts}) ≈ ${params.answer.toFixed(2)}。`;
+
+            // Update question summary
+            const questionSummary = document.getElementById('question-summary');
+            questionSummary.innerHTML = `因此，答案是 ${params.answer.toFixed(2)}。
+答案
+${params.answer.toFixed(2)}`;
+
+            // Reset selection and feedback
+            resetAnswerState();
+        }
+
+        function resetAnswerState() {
+            const answerInput = document.getElementById('answer-input');
+            if (answerInput) {
+                answerInput.value = '';
+                answerInput.disabled = false;
+                answerInput.classList.remove('correct', 'incorrect');
+            }
+            document.getElementById('feedback').style.display = 'none';
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始化变量
+            let score = 0;
+            let attempts = 0;
+            let correctAnswers = 0;
+            let isSubmitted = false;
+
+            // 获取DOM元素
+            const answerInput = document.getElementById('answer-input');
+            const submitBtn = document.getElementById('submit-btn');
+            const resetBtn = document.getElementById('reset-btn');
+            const feedback = document.getElementById('feedback');
+            const feedbackIcon = document.getElementById('feedback-icon');
+            const feedbackText = document.getElementById('feedback-text');
+            const explanation = document.getElementById('explanation');
+            const scoreElement = document.getElementById('score');
+            const attemptsElement = document.getElementById('attempts');
+            const accuracyElement = document.getElementById('accuracy');
+
+            const tolerance = 0.01; // 容差范围
+
+            // 提交按钮点击事件
+            submitBtn.addEventListener('click', function() {
+                const userAnswer = parseFloat(answerInput.value.trim());
+
+                if (isNaN(userAnswer)) {
+                    alert('请输入一个有效的数字！');
+                    return;
+                }
+
+                if (isSubmitted) return;
+
+                isSubmitted = true;
+                attempts++;
+                const params = parameterSets[currentSetIndex];
+                const isCorrect = Math.abs(userAnswer - correctAnswer) <= tolerance;
+
+                // 禁用输入框
+                answerInput.disabled = true;
+
+                // 显示反馈
+                feedback.style.display = 'block';
+                feedback.className = 'feedback ' + (isCorrect ? 'correct' : 'incorrect');
+
+                // 更新输入框样式
+                if (isCorrect) {
+                    answerInput.classList.add('correct');
+                    feedbackIcon.innerHTML = '✓';
+                    feedbackText.textContent = '回答正确！';
+                    score += 10;
+                    correctAnswers++;
+                } else {
+                    answerInput.classList.add('incorrect');
+                    feedbackIcon.innerHTML = '✗';
+                    feedbackText.textContent = '回答错误。正确答案是：' + correctAnswer.toFixed(2);
+                }
+
+                // 显示解释
+                explanation.innerHTML = `
+                <strong>解析：</strong><br>
+                根据全概率定律：<br>
+                P(Sudland) = P(Sudland | 沙漠) × P(沙漠) + P(Sudland | 山脉) × P(山脉)<br><br>
+                已知：<br>
+                • P(Sudland) = 1 - ${params.failRate.toFixed(2)} = ${params.pSudland.toFixed(2)}<br>
+                • P(沙漠) = ${params.desertAttempts}/${params.totalAttempts} ≈ ${params.pDesert.toFixed(3)}<br>
+                • P(山脉) = ${params.totalAttempts - params.desertAttempts}/${params.totalAttempts} ≈ ${params.pMountain.toFixed(3)}<br>
+                • P(Sudland | 山脉) = ${params.mountainSuccessRate.toFixed(2)}<br><br>
+                代入公式：<br>
+                ${params.pSudland.toFixed(2)} = P(Sudland | 沙漠) × (${params.desertAttempts}/${params.totalAttempts}) + ${params.mountainSuccessRate.toFixed(2)} × (${params.totalAttempts - params.desertAttempts}/${params.totalAttempts})<br>
+                解得：P(Sudland | 沙漠) = [${params.pSudland.toFixed(2)} - ${params.mountainSuccessRate.toFixed(2)} × (${params.totalAttempts - params.desertAttempts}/${params.totalAttempts})] × (${params.totalAttempts}/${params.desertAttempts}) ≈ ${correctAnswer.toFixed(2)}<br><br>
+                因此，Archie走沙漠路线成功到达Sudland的几率是 <strong>${correctAnswer.toFixed(2)}</strong>。
+                `;
+
+                // 更新统计显示
+                updateStats();
+            });
+
+            // 重新作答按钮点击事件
+            resetBtn.addEventListener('click', function() {
+                resetAnswerState();
+            });
+
+            // 更新统计信息
+            function updateStats() {
+                scoreElement.textContent = score;
+                attemptsElement.textContent = attempts;
+                const accuracy = attempts > 0 ? Math.round((correctAnswers / attempts) * 100) : 0;
+                accuracyElement.textContent = accuracy + '%';
+            }
+
+        });
+    </script>
+</body>
+</html>

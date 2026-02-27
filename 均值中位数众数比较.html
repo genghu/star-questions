@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>均值中位数众数比较 - 交互式答题</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+
+        body {
+            background-color: #f8fafc;
+            color: #334155;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        h1 {
+            color: #1e40af;
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #64748b;
+            font-size: 1rem;
+            margin-bottom: 15px;
+        }
+
+        .data-display {
+            background-color: #eff6ff;
+            border-left: 4px solid #3b82f6;
+            padding: 15px;
+            margin: 25px 0;
+            border-radius: 0 8px 8px 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+
+        .question-container {
+            background-color: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+        }
+
+        .question-title {
+            color: #1e3a8a;
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .question-title::before {
+            content: '';
+            display: inline-block;
+            width: 8px;
+            height: 24px;
+            background-color: #3b82f6;
+            border-radius: 4px;
+            margin-right: 12px;
+        }
+
+        .options-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .option {
+            background-color: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 18px 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .option:hover {
+            background-color: #f1f5f9;
+            border-color: #cbd5e1;
+            transform: translateY(-2px);
+        }
+
+        .option.selected {
+            border-color: #3b82f6;
+            background-color: #eff6ff;
+            box-shadow: 0 4px 8px rgba(59, 130, 246, 0.1);
+        }
+
+        .option.correct {
+            border-color: #10b981;
+            background-color: #d1fae5;
+        }
+
+        .option.incorrect {
+            border-color: #ef4444;
+            background-color: #fee2e2;
+        }
+
+        .option-label {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            background-color: #e2e8f0;
+            border-radius: 50%;
+            margin-right: 15px;
+            font-weight: bold;
+            color: #475569;
+            flex-shrink: 0;
+        }
+
+        .option.selected .option-label {
+            background-color: #3b82f6;
+            color: white;
+        }
+
+        .option.correct .option-label {
+            background-color: #10b981;
+            color: white;
+        }
+
+        .option.incorrect .option-label {
+            background-color: #ef4444;
+            color: white;
+        }
+
+        .option-text {
+            font-size: 1.05rem;
+        }
+
+        .feedback {
+            padding: 18px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .feedback.show {
+            display: block;
+        }
+
+        .feedback.correct {
+            background-color: #d1fae5;
+            border-left: 4px solid #10b981;
+        }
+
+        .feedback.incorrect {
+            background-color: #fee2e2;
+            border-left: 4px solid #ef4444;
+        }
+
+        .feedback-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+
+        .feedback-title::before {
+            content: '';
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            background-size: contain;
+            background-repeat: no-repeat;
+        }
+
+        .feedback.correct .feedback-title::before {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2310b981'%3E%3Cpath d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'/%3E%3C/svg%3E");
+        }
+
+        .feedback.incorrect .feedback-title::before {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ef4444'%3E%3Cpath d='M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z'/%3E%3C/svg%3E");
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 40px;
+            margin-bottom: 30px;
+        }
+
+        button {
+            padding: 14px 32px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        #submit-btn {
+            background-color: #3b82f6;
+            color: white;
+        }
+
+        #submit-btn:hover {
+            background-color: #2563eb;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(37, 99, 235, 0.2);
+        }
+
+        #reset-btn {
+            background-color: #f1f5f9;
+            color: #475569;
+            border: 2px solid #cbd5e1;
+        }
+
+        #reset-btn:hover {
+            background-color: #e2e8f0;
+            transform: translateY(-2px);
+        }
+
+        .score-container {
+            text-align: center;
+            background-color: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            display: none;
+        }
+
+        .score-container.show {
+            display: block;
+        }
+
+        .score-title {
+            font-size: 1.5rem;
+            color: #1e3a8a;
+            margin-bottom: 15px;
+        }
+
+        .score-value {
+            font-size: 3.5rem;
+            font-weight: bold;
+            color: #3b82f6;
+            margin: 10px 0;
+        }
+
+        .score-detail {
+            color: #64748b;
+            font-size: 1.1rem;
+        }
+
+        .explanation {
+            background-color: #f8fafc;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 30px;
+            border-left: 4px solid #94a3b8;
+        }
+
+        .explanation-title {
+            color: #475569;
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .explanation-content {
+            color: #475569;
+        }
+
+        .explanation-content p {
+            margin-bottom: 10px;
+        }
+
+        .dataset {
+            font-weight: bold;
+            color: #1e40af;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .question-container {
+                padding: 20px;
+            }
+
+            .options-container {
+                grid-template-columns: 1fr;
+            }
+
+            .controls {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+
+    <style>
+    .show-explanation-btn {
+        display: none;
+        margin: 20px auto;
+        padding: 14px 28px;
+        background: linear-gradient(135deg, #9b59b6, #8e44ad);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 1.1rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
+    }
+    .show-explanation-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
+    }
+    .explanation-section {
+        display: none;
+        margin-top: 20px;
+    }
+    </style>
+    </head>
+<body>
+    <header>
+        <h1>均值、中位数和众数：比较
+            <button class="refresh-btn" id="refresh-btn" style="background-color: #34a853; color: white; padding: 8px 16px; font-size: 0.9rem; border-radius: 6px; margin-left: 20px; border: none; cursor: pointer;">刷新参数</button>
+        </h1>
+        <div class="subtitle">描述性统计 - 交互式答题练习</div>
+        <div class="data-display" id="data-display">
+            数据集: -9, -3, -1, 2, 4, 8, 8, 9, 11, 11, 13, 14, 15, 15, 15, 18, 22, 24, 24, 26, 27, 32, 34, 35
+        </div>
+    </header>
+
+    <main>
+        <div class="question-container" id="question-a">
+            <div class="question-title">(a) 对于这些数据，哪些集中趋势度量会取多于一个值？选择所有适用的选项。</div>
+            <div class="options-container">
+                <div class="option" data-question="a" data-option="1">
+                    <div class="option-label">1</div>
+                    <div class="option-text">均值</div>
+                </div>
+                <div class="option" data-question="a" data-option="2">
+                    <div class="option-label">2</div>
+                    <div class="option-text">中位数</div>
+                </div>
+                <div class="option" data-question="a" data-option="3">
+                    <div class="option-label">3</div>
+                    <div class="option-text">众数</div>
+                </div>
+                <div class="option" data-question="a" data-option="4">
+                    <div class="option-label">4</div>
+                    <div class="option-text">以上都不是</div>
+                </div>
+            </div>
+            <div class="feedback" id="feedback-a"></div>
+        </div>
+
+        <div class="question-container" id="question-b">
+            <div class="question-title">(b) 假设测量值 -9（数据集中的最小值）被替换为 -39。哪些集中趋势度量会因此改变？选择所有适用的选项。</div>
+            <div class="options-container">
+                <div class="option" data-question="b" data-option="1">
+                    <div class="option-label">1</div>
+                    <div class="option-text">均值</div>
+                </div>
+                <div class="option" data-question="b" data-option="2">
+                    <div class="option-label">2</div>
+                    <div class="option-text">中位数</div>
+                </div>
+                <div class="option" data-question="b" data-option="3">
+                    <div class="option-label">3</div>
+                    <div class="option-text">众数</div>
+                </div>
+                <div class="option" data-question="b" data-option="4">
+                    <div class="option-label">4</div>
+                    <div class="option-text">以上都不是</div>
+                </div>
+            </div>
+            <div class="feedback" id="feedback-b"></div>
+        </div>
+
+        <div class="question-container" id="question-c">
+            <div class="question-title">(c) 假设从原始数据集开始，移除最大的测量值。哪些集中趋势度量会相对于原始数据集发生改变？选择所有适用的选项。</div>
+            <div class="options-container">
+                <div class="option" data-question="c" data-option="1">
+                    <div class="option-label">1</div>
+                    <div class="option-text">均值</div>
+                </div>
+                <div class="option" data-question="c" data-option="2">
+                    <div class="option-label">2</div>
+                    <div class="option-text">中位数</div>
+                </div>
+                <div class="option" data-question="c" data-option="3">
+                    <div class="option-label">3</div>
+                    <div class="option-text">众数</div>
+                </div>
+                <div class="option" data-question="c" data-option="4">
+                    <div class="option-label">4</div>
+                    <div class="option-text">以上都不是</div>
+                </div>
+            </div>
+            <div class="feedback" id="feedback-c"></div>
+        </div>
+
+        <div class="question-container" id="question-d">
+            <div class="question-title">(d) 以下哪项最恰当地描述了原始数据的分布？只选择一项。</div>
+            <div class="options-container">
+                <div class="option" data-question="d" data-option="1">
+                    <div class="option-label">1</div>
+                    <div class="option-text">负偏态</div>
+                </div>
+                <div class="option" data-question="d" data-option="2">
+                    <div class="option-label">2</div>
+                    <div class="option-text">正偏态</div>
+                </div>
+                <div class="option" data-question="d" data-option="3">
+                    <div class="option-label">3</div>
+                    <div class="option-text">大致对称</div>
+                </div>
+            </div>
+            <div class="feedback" id="feedback-d"></div>
+        </div>
+
+        <div class="controls">
+            <button id="submit-btn">提交答案</button>
+            <button id="reset-btn">重新作答</button>
+        </div>
+
+        <div class="score-container" id="score-container">
+            <div class="score-title">答题结果</div>
+            <div class="score-value" id="score-value">0/4</div>
+            <div class="score-detail" id="score-detail">您答对了0题，答错了0题</div>
+        </div>
+
+        <button class="show-explanation-btn" id="show-explanation-btn">查看答案解析</button>
+        <div class="explanation" id="explanation-section" style="display:none;">
+            <div class="explanation-title">知识要点与解析</div>
+            <div class="explanation-content">
+                <p><strong>数据集分析：</strong> 原始数据集包含24个测量值：<span class="dataset">-9, -3, -1, 2, 4, 8, 8, 9, 11, 11, 13, 14, 15, 15, 15, 18, 22, 24, 24, 26, 27, 32, 34, 35</span></p>
+                <p><strong>(a) 解析：</strong> 对于一个数据集，均值和中位数必然各自只取一个值。众数只有在有多个数字以相同最大频率出现时才会取多于一个值。在此数据集中，数字15出现了3次（最大频率），没有其他数字出现3次，因此只有一个众数。所以没有一个集中趋势度量会取多于一个值。</p>
+                <p><strong>(b) 解析：</strong> 将最小值-9替换为-39会降低均值（从约14.8降至约13.5），因为均值对极端值敏感。中位数对极端值具有抵抗力，不会改变。众数不会改变，因为-9不是众数，替换为-39不影响其他值的频率。</p>
+                <p><strong>(c) 解析：</strong> 移除最大值35会降低均值（从约14.8降至约13.9）。中位数也会从14.5变为14。众数没有改变，因为35不是众数。</p>
+                <p><strong>(d) 解析：</strong> 观察数据的直方图（题目中提供），右半部分大致是左半部分的镜像，表明分布大致对称。</p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Parameter sets for the question
+        const parameterSets = [
+            {
+                data: [-9, -3, -1, 2, 4, 8, 8, 9, 11, 11, 13, 14, 15, 15, 15, 18, 22, 24, 24, 26, 27, 32, 34, 35],
+                minValue: -9, newMinValue: -39,
+                answers: { a: ['4'], b: ['1'], c: ['1', '2'], d: ['3'] },
+                description: '单众数，大致对称',
+                mean: 14.8, median: 14.5
+            },
+            {
+                data: [-12, -5, -2, 1, 3, 7, 7, 10, 12, 12, 14, 16, 18, 18, 18, 20, 24, 28, 28, 30, 32, 36, 38, 42],
+                minValue: -12, newMinValue: -42,
+                answers: { a: ['4'], b: ['1'], c: ['1', '2'], d: ['3'] },
+                description: '单众数，大致对称',
+                mean: 16.5, median: 16
+            },
+            {
+                data: [-8, -4, 0, 2, 5, 8, 8, 8, 12, 12, 15, 15, 15, 18, 20, 24, 28, 32, 36, 40, 44, 48, 52, 60],
+                minValue: -8, newMinValue: -38,
+                answers: { a: ['4'], b: ['1'], c: ['1', '2'], d: ['2'] },
+                description: '单众数，正偏态',
+                mean: 19.3, median: 15
+            },
+            {
+                data: [-20, -15, -10, -8, -5, -3, -3, -3, 0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30],
+                minValue: -20, newMinValue: -50,
+                answers: { a: ['4'], b: ['1'], c: ['1', '2'], d: ['1'] },
+                description: '单众数，负偏态',
+                mean: 4.2, median: 5
+            },
+            {
+                data: [-6, -2, 2, 6, 10, 10, 14, 14, 18, 22, 26, 26, 30, 30, 34, 38, 42, 46, 50, 54, 58, 62, 66, 70],
+                minValue: -6, newMinValue: -36,
+                answers: { a: ['3'], b: ['1'], c: ['1', '2'], d: ['2'] },
+                description: '多众数，正偏态',
+                mean: 28, median: 26
+            }
+        ];
+
+        let currentParams = parameterSets[0];
+        let correctAnswers = currentParams.answers;
+
+        function initializeQuestion() {
+            const params = currentParams;
+            correctAnswers = params.answers;
+
+            // Update data display
+            document.getElementById('data-display').textContent = `数据集: ${params.data.join(', ')}`;
+
+            // Update question (b) text with new min value
+            const questionB = document.querySelector('#question-b .question-title');
+            if (questionB) {
+                questionB.textContent = `(b) 假设测量值 ${params.minValue}（数据集中的最小值）被替换为 ${params.newMinValue}。哪些集中趋势度量会因此改变？选择所有适用的选项。`;
+            }
+
+            // Update explanation
+            const explanationContent = document.querySelector('.explanation-content');
+            if (explanationContent) {
+                explanationContent.innerHTML = `
+                    <p><strong>数据集分析：</strong> 原始数据集包含24个测量值：<span class="dataset">${params.data.join(', ')}</span></p>
+                    <p><strong>(a) 解析：</strong> 对于一个数据集，均值和中位数必然各自只取一个值。众数只有在有多个数字以相同最大频率出现时才会取多于一个值。${params.answers.a.includes('3') ? '在此数据集中，有多个众数。' : '在此数据集中，只有一个众数。'}</p>
+                    <p><strong>(b) 解析：</strong> 将最小值${params.minValue}替换为${params.newMinValue}会降低均值，因为均值对极端值敏感。中位数对极端值具有抵抗力，不会改变。众数不会改变，因为${params.minValue}不是众数。</p>
+                    <p><strong>(c) 解析：</strong> 移除最大值会降低均值。中位数也会改变。众数没有改变，因为最大值不是众数。</p>
+                    <p><strong>(d) 解析：</strong> ${params.description === '单众数，大致对称' ? '观察数据的直方图，右半部分大致是左半部分的镜像，表明分布大致对称。' : params.description === '单众数，正偏态' ? '观察数据的直方图，右侧有较长的尾巴，表明分布为正偏态。' : params.description === '单众数，负偏态' ? '观察数据的直方图，左侧有较长的尾巴，表明分布为负偏态。' : '观察数据的直方图，分布呈现特定的偏态特征。'}</p>
+                `;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize question
+            initializeQuestion();
+
+            // User answers
+            let userAnswers = {
+                'a': [],
+                'b': [],
+                'c': [],
+                'd': []
+            };
+
+            // Refresh button functionality
+            document.getElementById('refresh-btn').addEventListener('click', function() {
+                let newParams;
+                do {
+                    newParams = parameterSets[Math.floor(Math.random() * parameterSets.length)];
+                } while (newParams === currentParams && parameterSets.length > 1);
+
+                currentParams = newParams;
+                initializeQuestion();
+
+                // Reset quiz state
+                resetQuiz();
+            });
+
+            function resetQuiz() {
+                userAnswers = {
+                    'a': [],
+                    'b': [],
+                    'c': [],
+                    'd': []
+                };
+
+                document.querySelectorAll('.option').forEach(option => {
+                    option.classList.remove('selected', 'correct', 'incorrect');
+                });
+
+                document.querySelectorAll('.feedback').forEach(feedback => {
+                    feedback.classList.remove('show', 'correct', 'incorrect');
+                    feedback.innerHTML = '';
+                });
+
+                document.getElementById('score-container').classList.remove('show');
+
+                var showBtn = document.getElementById('show-explanation-btn');
+                var explanationSection = document.getElementById('explanation-section');
+                if (showBtn) {
+                    showBtn.style.display = 'none';
+                    showBtn.textContent = '查看答案解析';
+                }
+                if (explanationSection) {
+                    explanationSection.style.display = 'none';
+                }
+            }
+
+            // Initialize option click events
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const questionId = this.getAttribute('data-question');
+                    const optionValue = this.getAttribute('data-option');
+
+                    if (questionId === 'd') {
+                        document.querySelectorAll(`.option[data-question="${questionId}"]`).forEach(opt => {
+                            opt.classList.remove('selected');
+                        });
+                        userAnswers[questionId] = [optionValue];
+                    } else {
+                        const index = userAnswers[questionId].indexOf(optionValue);
+                        if (index === -1) {
+                            userAnswers[questionId].push(optionValue);
+                        } else {
+                            userAnswers[questionId].splice(index, 1);
+                        }
+                    }
+
+                    updateOptionSelection(questionId, optionValue);
+                });
+            });
+
+            function updateOptionSelection(questionId, optionValue) {
+                const options = document.querySelectorAll(`.option[data-question="${questionId}"]`);
+
+                options.forEach(option => {
+                    const value = option.getAttribute('data-option');
+
+                    if (userAnswers[questionId].includes(value)) {
+                        option.classList.add('selected');
+                    } else {
+                        option.classList.remove('selected');
+                    }
+                });
+            }
+
+            // Submit button
+            document.getElementById('submit-btn').addEventListener('click', function() {
+                let score = 0;
+                let totalQuestions = Object.keys(correctAnswers).length;
+
+                for (const questionId in correctAnswers) {
+                    const correct = correctAnswers[questionId];
+                    const user = userAnswers[questionId];
+
+                    const correctSorted = [...correct].sort().join(',');
+                    const userSorted = [...user].sort().join(',');
+
+                    const isCorrect = correctSorted === userSorted;
+
+                    if (isCorrect) score++;
+
+                    showFeedback(questionId, isCorrect, correct, user);
+                }
+
+                showScore(score, totalQuestions);
+            });
+
+            function showFeedback(questionId, isCorrect, correctAnswersArray, userAnswersArray) {
+                const feedbackEl = document.getElementById(`feedback-${questionId}`);
+                const questionLetters = { 'a': '(a)', 'b': '(b)', 'c': '(c)', 'd': '(d)' };
+
+                let message = '';
+                if (isCorrect) {
+                    message = `<div class="feedback-title">${questionLetters[questionId]} 回答正确！</div>`;
+                    message += `<p>您的选择是正确的。</p>`;
+                    feedbackEl.className = 'feedback correct show';
+                } else {
+                    message = `<div class="feedback-title">${questionLetters[questionId]} 回答不正确</div>`;
+                    message += `<p>您的选择: ${userAnswersArray.length > 0 ? formatAnswers(userAnswersArray) : '未选择'}</p>`;
+                    feedbackEl.className = 'feedback incorrect show';
+                }
+
+                feedbackEl.innerHTML = message;
+
+                const options = document.querySelectorAll(`.option[data-question="${questionId}"]`);
+                options.forEach(option => {
+                    const value = option.getAttribute('data-option');
+                    option.classList.remove('correct', 'incorrect');
+
+                    if (userAnswersArray.includes(value) && !correctAnswersArray.includes(value)) {
+                        option.classList.add('incorrect');
+                    }
+                });
+            }
+
+            function formatAnswers(answersArray) {
+                const optionTexts = {
+                    '1': '均值',
+                    '2': '中位数',
+                    '3': '众数',
+                    '4': '以上都不是'
+                };
+
+                const answerTexts = answersArray.map(ans => optionTexts[ans] || ans);
+                return answerTexts.join(', ');
+            }
+
+            function showScore(score, total) {
+                const scoreContainer = document.getElementById('score-container');
+                const scoreValue = document.getElementById('score-value');
+                const scoreDetail = document.getElementById('score-detail');
+
+                scoreValue.textContent = `${score}/${total}`;
+                scoreDetail.textContent = `您答对了${score}题，答错了${total - score}题`;
+
+                if (score === total) {
+                    scoreValue.style.color = '#10b981';
+                } else if (score >= total / 2) {
+                    scoreValue.style.color = '#f59e0b';
+                } else {
+                    scoreValue.style.color = '#ef4444';
+                }
+
+                scoreContainer.classList.add('show');
+
+                var showBtn = document.getElementById('show-explanation-btn');
+                if (showBtn) {
+                    showBtn.style.display = 'inline-block';
+                }
+
+                scoreContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+
+            // Reset button
+            document.getElementById('reset-btn').addEventListener('click', resetQuiz);
+
+            // Show explanation button
+            var showBtn = document.getElementById('show-explanation-btn');
+            var explanationSection = document.getElementById('explanation-section');
+            if (showBtn && explanationSection) {
+                showBtn.addEventListener('click', function() {
+                    if (explanationSection.style.display === 'none' || explanationSection.style.display === '') {
+                        explanationSection.style.display = 'block';
+                        this.textContent = '隐藏答案解析';
+                    } else {
+                        explanationSection.style.display = 'none';
+                        this.textContent = '查看答案解析';
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

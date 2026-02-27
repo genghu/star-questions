@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>结果与事件概率 - 交互式答题</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: #f0f8ff;
+            color: #333;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 100, 200, 0.1);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e1f0ff;
+        }
+        h1 {
+            color: #1a5fb4;
+            margin-top: 0;
+        }
+        .subtitle {
+            color: #666;
+            font-size: 1.1em;
+        }
+        .question-section {
+            background-color: #f8fbff;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border-left: 5px solid #1a5fb4;
+        }
+        .question-title {
+            color: #1a5fb4;
+            margin-top: 0;
+            font-size: 1.4em;
+        }
+        .instructions {
+            background-color: #e8f4ff;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-size: 0.95em;
+        }
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 15px;
+            margin: 25px 0;
+        }
+        .result-item {
+            background-color: white;
+            border: 2px solid #c5e1ff;
+            border-radius: 10px;
+            padding: 15px 10px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+        .result-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 100, 200, 0.1);
+            border-color: #1a5fb4;
+        }
+        .result-item.selected {
+            background-color: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+        .result-item.incorrect {
+            background-color: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+        .events-container {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            margin-top: 30px;
+        }
+        .event-card {
+            background-color: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border: 2px solid #e1f0ff;
+            transition: all 0.3s ease;
+        }
+        .event-card:hover {
+            border-color: #1a5fb4;
+        }
+        .event-title {
+            color: #1a5fb4;
+            margin-top: 0;
+            font-size: 1.2em;
+        }
+        .event-description {
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+        .selected-results {
+            min-height: 50px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+        .selected-result-chip {
+            background-color: #1a5fb4;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            display: inline-flex;
+            align-items: center;
+        }
+        .probability-display {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #1a5fb4;
+            text-align: center;
+            padding: 10px;
+            background-color: #e8f4ff;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+        button {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        #submit-btn {
+            background-color: #1a5fb4;
+            color: white;
+        }
+        #submit-btn:hover {
+            background-color: #0d4a9c;
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(26, 95, 180, 0.3);
+        }
+        #reset-btn {
+            background-color: #6c757d;
+            color: white;
+        }
+        #reset-btn:hover {
+            background-color: #5a6268;
+            transform: translateY(-3px);
+            box-shadow: 0 7px 15px rgba(108, 117, 125, 0.3);
+        }
+        .results-panel {
+            background-color: #f8fbff;
+            border-radius: 15px;
+            padding: 25px;
+            margin-top: 30px;
+            display: none;
+            border-top: 5px solid #1a5fb4;
+        }
+        .score-display {
+            font-size: 2em;
+            font-weight: bold;
+            text-align: center;
+            color: #1a5fb4;
+            margin: 20px 0;
+        }
+        .feedback {
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+        .correct-feedback {
+            background-color: #d4edda;
+            border-left: 5px solid #28a745;
+            color: #155724;
+        }
+        .incorrect-feedback {
+            background-color: #f8d7da;
+            border-left: 5px solid #dc3545;
+            color: #721c24;
+        }
+        .explanation {
+            background-color: #e8f4ff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        .probability-formula {
+            font-family: 'Courier New', monospace;
+            background-color: #f1f8ff;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            display: inline-block;
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            .results-grid {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            }
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            button {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
+
+    <style>
+    .show-explanation-btn {
+        display: none;
+        margin: 20px auto;
+        padding: 14px 28px;
+        background: linear-gradient(135deg, #9b59b6, #8e44ad);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 1.1rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
+    }
+    .show-explanation-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
+    }
+    .explanation-section {
+        display: none;
+        margin-top: 20px;
+    }
+    </style>
+    </head>
+<body>
+    <div class="container">
+        <header>
+            <h1>结果与事件概率
+                <button class="refresh-btn" id="refresh-btn" style="background-color: #34a853; color: white; padding: 8px 16px; font-size: 0.9rem; border-radius: 6px; margin-left: 20px; border: none; cursor: pointer;">刷新参数</button>
+            </h1>
+            <p class="subtitle">一枚硬币被抛掷三次 - 交互式概率练习</p>
+        </header>
+        
+        <section class="question-section">
+            <h2 class="question-title">问题描述</h2>
+            <p>一枚硬币被抛掷三次。一个结果由一串字母表示，例如 HTT（表示第一次抛掷为正面，随后两次为反面）。所有可能的结果已列在下表中。注意，每个结果具有相同的概率。</p>
+            <p>对于下面的三个事件，请勾选包含在该事件中的结果。然后，在最后一列填入该事件的概率。</p>
+            
+            <div class="instructions">
+                <p><strong>说明：</strong> 由于所有可能的结果具有相同的概率，每个结果的概率为 1/8。要计算一个事件的概率，我们只需将构成该事件的所有结果的概率相加。</p>
+                <p>点击下面的结果将其添加到事件中，再次点击可移除。</p>
+            </div>
+            
+            <h3>所有可能的结果 (概率各为 <span class="probability-formula">1/8</span>)</h3>
+            <div class="results-grid" id="results-container">
+                <!-- 结果将通过JavaScript动态生成 -->
+            </div>
+        </section>
+        
+        <section class="events-container" id="events-container">
+            <!-- 事件将通过JavaScript动态生成 -->
+        </section>
+        
+        <div class="controls">
+            <button id="submit-btn">提交答案</button>
+            <button id="reset-btn">重新作答</button>
+        </div>
+        
+        <div class="results-panel" id="results-panel">
+            <h2 class="question-title">答题结果</h2>
+            <div class="score-display" id="score-display">得分: 0/3</div>
+            
+            <div id="event1-feedback" class="feedback"></div>
+            <div id="event2-feedback" class="feedback"></div>
+            <div id="event3-feedback" class="feedback"></div>
+            
+            <button class="show-explanation-btn" id="show-explanation-btn">📖 查看答案解析</button>
+<div class="explanation-section explanation">
+                <h3>题目解析</h3>
+                <p><strong>事件1: "第二次抛掷或第三次抛掷出现正面（或两者都出现）"</strong></p>
+                <p>该事件中的结果有: HTH, TTH, THT, THH, HHT, HHH</p>
+                <p>概率计算: <span class="probability-formula">6/8 = 3/4</span></p>
+                
+                <p><strong>事件2: "第一次和最后一次抛掷都出现正面"</strong></p>
+                <p>该事件中的结果有: HTH, HHH</p>
+                <p>概率计算: <span class="probability-formula">2/8 = 1/4</span></p>
+                
+                <p><strong>事件3: "恰好出现一次反面"</strong></p>
+                <p>该事件中的结果有: HTH, THH, HHT</p>
+                <p>概率计算: <span class="probability-formula">3/8</span></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Parameter sets for different event configurations
+        const parameterSets = [
+            {
+                events: [
+                    {
+                        id: 'event1',
+                        title: '事件 1',
+                        description: '第二次抛掷或第三次抛掷出现正面（或两者都出现）',
+                        correctResults: ['HTH', 'TTH', 'THT', 'THH', 'HHT', 'HHH'],
+                        probability: '3/4'
+                    },
+                    {
+                        id: 'event2',
+                        title: '事件 2',
+                        description: '第一次和最后一次抛掷都出现正面',
+                        correctResults: ['HTH', 'HHH'],
+                        probability: '1/4'
+                    },
+                    {
+                        id: 'event3',
+                        title: '事件 3',
+                        description: '恰好出现一次反面',
+                        correctResults: ['HTH', 'THH', 'HHT'],
+                        probability: '3/8'
+                    }
+                ]
+            },
+            {
+                events: [
+                    {
+                        id: 'event1',
+                        title: '事件 1',
+                        description: '第一次抛掷出现正面',
+                        correctResults: ['HHH', 'HHT', 'HTH', 'HTT'],
+                        probability: '1/2'
+                    },
+                    {
+                        id: 'event2',
+                        title: '事件 2',
+                        description: '至少出现两次正面',
+                        correctResults: ['HHH', 'HHT', 'HTH', 'THH'],
+                        probability: '1/2'
+                    },
+                    {
+                        id: 'event3',
+                        title: '事件 3',
+                        description: '三次抛掷结果相同',
+                        correctResults: ['HHH', 'TTT'],
+                        probability: '1/4'
+                    }
+                ]
+            },
+            {
+                events: [
+                    {
+                        id: 'event1',
+                        title: '事件 1',
+                        description: '第一次抛掷出现反面',
+                        correctResults: ['THH', 'THT', 'TTH', 'TTT'],
+                        probability: '1/2'
+                    },
+                    {
+                        id: 'event2',
+                        title: '事件 2',
+                        description: '恰好出现两次正面',
+                        correctResults: ['HHT', 'HTH', 'THH'],
+                        probability: '3/8'
+                    },
+                    {
+                        id: 'event3',
+                        title: '事件 3',
+                        description: '正面次数多于反面',
+                        correctResults: ['HHH', 'HHT', 'HTH', 'THH'],
+                        probability: '1/2'
+                    }
+                ]
+            },
+            {
+                events: [
+                    {
+                        id: 'event1',
+                        title: '事件 1',
+                        description: '最后一次抛掷出现正面',
+                        correctResults: ['HHH', 'HTH', 'THH', 'TTH'],
+                        probability: '1/2'
+                    },
+                    {
+                        id: 'event2',
+                        title: '事件 2',
+                        description: '不出现正面',
+                        correctResults: ['TTT'],
+                        probability: '1/8'
+                    },
+                    {
+                        id: 'event3',
+                        title: '事件 3',
+                        description: '至少出现一次正面和一次反面',
+                        correctResults: ['HHT', 'HTH', 'HTT', 'THH', 'THT', 'TTH'],
+                        probability: '3/4'
+                    }
+                ]
+            },
+            {
+                events: [
+                    {
+                        id: 'event1',
+                        title: '事件 1',
+                        description: '第二次抛掷出现正面',
+                        correctResults: ['HHH', 'HHT', 'THH', 'THT'],
+                        probability: '1/2'
+                    },
+                    {
+                        id: 'event2',
+                        title: '事件 2',
+                        description: '恰好出现一次正面',
+                        correctResults: ['HTT', 'THT', 'TTH'],
+                        probability: '3/8'
+                    },
+                    {
+                        id: 'event3',
+                        title: '事件 3',
+                        description: '前两次抛掷结果相同',
+                        correctResults: ['HHH', 'HHT', 'TTH', 'TTT'],
+                        probability: '1/2'
+                    }
+                ]
+            }
+        ];
+
+        let currentParams = parameterSets[0];
+        let userSelections = { event1: [], event2: [], event3: [] };
+        let isSubmitted = false;
+
+        const allResults = ['HHH', 'HHT', 'HTH', 'HTT', 'THH', 'THT', 'TTH', 'TTT'];
+
+        // Initialize the question
+        function initializeQuestion() {
+            const events = currentParams.events;
+
+            // Initialize results grid
+            const resultsContainer = document.getElementById('results-container');
+            resultsContainer.innerHTML = '';
+            allResults.forEach(result => {
+                const resultElement = document.createElement('div');
+                resultElement.className = 'result-item';
+                resultElement.textContent = result;
+                resultElement.dataset.result = result;
+
+                resultElement.addEventListener('click', function() {
+                    if (isSubmitted) return;
+                    toggleResultSelection(result);
+                });
+
+                resultsContainer.appendChild(resultElement);
+            });
+
+            // Initialize event cards
+            const eventsContainer = document.getElementById('events-container');
+            eventsContainer.innerHTML = '';
+            events.forEach(event => {
+                const eventCard = document.createElement('div');
+                eventCard.className = 'event-card';
+                eventCard.id = event.id + '-card';
+
+                eventCard.innerHTML = `
+                    <h3 class="event-title">${event.title}</h3>
+                    <p class="event-description">${event.description}</p>
+                    <p>请选择属于该事件的结果：</p>
+                    <div class="selected-results" id="${event.id}-selected"></div>
+                    <div class="probability-display">
+                        概率: <span id="${event.id}-probability">?</span>
+                    </div>
+                `;
+
+                eventsContainer.appendChild(eventCard);
+            });
+
+            // Reset state
+            userSelections = { event1: [], event2: [], event3: [] };
+            isSubmitted = false;
+
+            // Hide results panel
+            document.getElementById('results-panel').style.display = 'none';
+        }
+
+        // Toggle result selection
+        function toggleResultSelection(result) {
+            const resultElement = document.querySelector(`.result-item[data-result="${result}"]`);
+            resultElement.classList.toggle('selected');
+
+            currentParams.events.forEach(event => {
+                const selectedContainer = document.getElementById(`${event.id}-selected`);
+                const resultChip = selectedContainer.querySelector(`[data-result="${result}"]`);
+
+                if (resultElement.classList.contains('selected')) {
+                    if (!userSelections[event.id].includes(result)) {
+                        userSelections[event.id].push(result);
+
+                        if (!resultChip) {
+                            const chip = document.createElement('div');
+                            chip.className = 'selected-result-chip';
+                            chip.textContent = result;
+                            chip.dataset.result = result;
+                            chip.addEventListener('click', function(e) {
+                                e.stopPropagation();
+                                if (!isSubmitted) toggleResultSelection(result);
+                            });
+                            selectedContainer.appendChild(chip);
+                        }
+                    }
+                } else {
+                    const index = userSelections[event.id].indexOf(result);
+                    if (index > -1) {
+                        userSelections[event.id].splice(index, 1);
+                        if (resultChip) resultChip.remove();
+                    }
+                }
+
+                updateProbabilityDisplay(event.id);
+            });
+        }
+
+        // Update probability display
+        function updateProbabilityDisplay(eventId) {
+            const selectedCount = userSelections[eventId].length;
+            const probabilityElement = document.getElementById(`${eventId}-probability`);
+
+            if (selectedCount === 0) {
+                probabilityElement.textContent = '?';
+            } else {
+                probabilityElement.textContent = `${selectedCount}/8`;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize
+            initializeQuestion();
+
+            // Show explanation button click event
+            document.querySelectorAll('.show-explanation-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    var explanation = this.nextElementSibling;
+                    if (explanation) {
+                        if (explanation.classList.contains('show')) {
+                            explanation.classList.remove('show');
+                            this.textContent = '查看答案解析';
+                        } else {
+                            explanation.classList.add('show');
+                            this.textContent = '隐藏答案解析';
+                        }
+                    }
+                });
+            });
+
+            // Refresh button
+            document.getElementById('refresh-btn').addEventListener('click', function() {
+                let newParams;
+                do {
+                    newParams = parameterSets[Math.floor(Math.random() * parameterSets.length)];
+                } while (newParams === currentParams && parameterSets.length > 1);
+
+                currentParams = newParams;
+                initializeQuestion();
+            });
+
+            // Submit answer
+            document.getElementById('submit-btn').addEventListener('click', function() {
+                if (isSubmitted) return;
+
+                isSubmitted = true;
+                let score = 0;
+                const events = currentParams.events;
+
+                events.forEach(event => {
+                    const userSelected = userSelections[event.id];
+                    const correctResults = event.correctResults;
+
+                    const allCorrectSelected = correctResults.every(result => userSelected.includes(result));
+                    const noIncorrectSelected = userSelected.every(result => correctResults.includes(result));
+                    const isCorrect = allCorrectSelected && noIncorrectSelected;
+
+                    if (isCorrect) score++;
+
+                    const feedbackElement = document.getElementById(`${event.id}-feedback`);
+                    feedbackElement.className = isCorrect ? 'feedback correct-feedback' : 'feedback incorrect-feedback';
+
+                    if (isCorrect) {
+                        feedbackElement.innerHTML = `<strong>${event.title}: 正确!</strong> 你正确选择了所有结果: ${correctResults.join(', ')}。概率为 ${event.probability}。`;
+                    } else {
+                        const missing = correctResults.filter(r => !userSelected.includes(r));
+                        const extra = userSelected.filter(r => !correctResults.includes(r));
+
+                        let feedbackText = `<strong>${event.title}: 不正确。</strong>`;
+                        if (missing.length > 0) feedbackText += ` 缺少的结果: ${missing.join(', ')}。`;
+                        if (extra.length > 0) feedbackText += ` 多余的结果: ${extra.join(', ')}。`;
+                        feedbackText += ` 正确的结果是: ${correctResults.join(', ')}。概率为 ${event.probability}。`;
+
+                        feedbackElement.innerHTML = feedbackText;
+                    }
+                });
+
+                document.getElementById('score-display').textContent = `得分: ${score}/${events.length}`;
+                document.getElementById('results-panel').style.display = 'block';
+                document.getElementById('results-panel').scrollIntoView({ behavior: 'smooth' });
+
+                document.querySelectorAll('.result-item').forEach(item => {
+                    item.style.pointerEvents = 'none';
+                });
+            });
+
+            // Reset
+            document.getElementById('reset-btn').addEventListener('click', function() {
+                userSelections = { event1: [], event2: [], event3: [] };
+
+                document.querySelectorAll('.result-item').forEach(item => {
+                    item.classList.remove('selected', 'incorrect');
+                    item.style.pointerEvents = 'auto';
+                });
+
+                currentParams.events.forEach(event => {
+                    document.getElementById(`${event.id}-selected`).innerHTML = '';
+                    document.getElementById(`${event.id}-probability`).textContent = '?';
+
+                    const feedbackElement = document.getElementById(`${event.id}-feedback`);
+                    feedbackElement.className = 'feedback';
+                    feedbackElement.innerHTML = '';
+                });
+
+                document.getElementById('results-panel').style.display = 'none';
+                isSubmitted = false;
+            });
+        });
+    </script>
+</body>
+</html>

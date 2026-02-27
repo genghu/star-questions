@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商务衬衫颜色调查 · 饼图解读 (c题改为选择)</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+        }
+        body {
+            background: #f5f7fa;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .card {
+            max-width: 950px;
+            width: 100%;
+            background: white;
+            border-radius: 28px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08), 0 8px 20px rgba(0,0,0,0.06);
+            padding: 30px 25px;
+            transition: all 0.2s;
+        }
+        h2 {
+            font-size: 1.9rem;
+            font-weight: 500;
+            color: #1e2b3c;
+            margin: 0 0 10px 0;
+            letter-spacing: -0.01em;
+            border-left: 6px solid #2b6c94;
+            padding-left: 20px;
+        }
+        .subhead {
+            font-size: 1rem;
+            color: #3f5468;
+            margin: 5px 0 25px 40px;
+            background: #ecf2f9;
+            padding: 8px 20px;
+            border-radius: 40px;
+            display: inline-block;
+        }
+        .chart-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: #fafcff;
+            border-radius: 48px;
+            padding: 20px 10px 15px 10px;
+            margin: 15px 0 25px 0;
+            border: 1px solid #e2e9f2;
+        }
+        canvas {
+            display: block;
+            width: 100%;
+            max-width: 340px;
+            height: auto;
+            border-radius: 50%;
+            background: #ffffff;
+            box-shadow: 0 8px 18px rgba(0,20,40,0.1);
+            margin: 0 auto;
+        }
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 18px 25px;
+            margin: 20px 0 5px 0;
+            padding: 12px 18px;
+            background: #ffffffd9;
+            border-radius: 60px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+        .color-box {
+            width: 24px;
+            height: 24px;
+            border-radius: 24px;
+            border: 1px solid rgba(0,0,0,0.08);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .question-section {
+            background: #f2f6fd;
+            border-radius: 30px;
+            padding: 25px 25px 15px 25px;
+            margin: 20px 0 25px 0;
+        }
+        .question {
+            margin-bottom: 30px;
+            border-bottom: 1px dashed #b6c9db;
+            padding-bottom: 20px;
+        }
+        .question:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+        .q-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #153b4f;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .q-title span {
+            background: #1e5a7d;
+            color: white;
+            width: 30px;
+            height: 30px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 30px;
+            font-size: 1rem;
+        }
+        .options {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 20px 35px;
+        }
+        .radio-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px 20px;
+        }
+        .radio-group label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: white;
+            padding: 6px 16px 6px 10px;
+            border-radius: 40px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+            border: 1px solid #cdddec;
+            cursor: pointer;
+            transition: 0.1s;
+        }
+        .radio-group label:hover {
+            background: #e1effa;
+            border-color: #2b6c94;
+        }
+        input[type="radio"] {
+            accent-color: #1e5a7d;
+            width: 18px;
+            height: 18px;
+            margin: 0;
+        }
+        select, input[type="number"] {
+            background: white;
+            border: 1px solid #b8cde0;
+            border-radius: 50px;
+            padding: 12px 24px;
+            font-size: 1.1rem;
+            color: #102331;
+            font-weight: 500;
+            outline: none;
+            cursor: pointer;
+            transition: 0.15s;
+            min-width: 160px;
+        }
+        select {
+            appearance: none;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%231e5a7d" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>');
+            background-repeat: no-repeat;
+            background-position: right 18px center;
+            background-size: 18px;
+        }
+        select:focus, input:focus {
+            border-color: #1e5a7d;
+            box-shadow: 0 0 0 3px rgba(30,90,125,0.15);
+        }
+        .hint {
+            font-size: 0.9rem;
+            color: #3d637b;
+            margin-top: 8px;
+            margin-left: 10px;
+        }
+        .action-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 18px;
+            margin: 20px 0 10px;
+        }
+        button {
+            background: white;
+            border: 1.5px solid #1e5a7d;
+            color: #1e5a7d;
+            font-size: 1.2rem;
+            font-weight: 600;
+            padding: 14px 32px;
+            border-radius: 60px;
+            cursor: pointer;
+            transition: 0.15s;
+            box-shadow: 0 4px 8px rgba(0, 30, 60, 0.04);
+            min-width: 160px;
+        }
+        button.primary {
+            background: #1e5a7d;
+            color: white;
+            border: 1.5px solid #1e5a7d;
+        }
+        button.primary:hover {
+            background: #123b52;
+            border-color: #123b52;
+        }
+        button:hover {
+            background: #e0effa;
+            border-color: #123b52;
+        }
+        .feedback {
+            background: #e8f0fa;
+            border-radius: 40px;
+            padding: 20px 25px;
+            font-size: 1.1rem;
+            color: #032436;
+            margin-top: 25px;
+            border-left: 6px solid #1e5a7d;
+        }
+        .feedback p {
+            margin: 8px 0;
+        }
+        .correct {
+            color: #1b7c43;
+            font-weight: 600;
+            background: #e0f0e3;
+            padding: 2px 12px;
+            border-radius: 40px;
+            display: inline-block;
+        }
+        .wrong {
+            color: #aa2020;
+            font-weight: 600;
+            background: #ffe6e6;
+            padding: 2px 12px;
+            border-radius: 40px;
+            display: inline-block;
+        }
+        hr {
+            border: none;
+            border-top: 2px dotted #b0cde0;
+            margin: 20px 0;
+        }
+    </style>
+
+    <style>
+    .show-explanation-btn {
+        display: none;
+        margin: 20px auto;
+        padding: 14px 28px;
+        background: linear-gradient(135deg, #9b59b6, #8e44ad);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 1.1rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
+    }
+    .show-explanation-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
+    }
+    .explanation-section {
+        display: none;
+        margin-top: 20px;
+    }
+    </style>
+    </head>
+<body>
+<div class="card">
+    <h2>👔 正装衬衫 · 颜色偏好 <button id="refresh-btn" style="margin-left: 15px; padding: 8px 16px; background: linear-gradient(135deg, #34a853, #2ecc71); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(52, 168, 83, 0.3);">刷新参数</button></h2>
+    <div class="subhead">基于百货商店顾客的调查</div>
+
+    <!-- 饼图区域（与题目描述一致） -->
+    <div class="chart-container">
+        <canvas id="favoriteShirtPie" width="500" height="500" style="max-width: 340px; width: 100%;"></canvas>
+        <div class="legend" id="pieLegend"></div>
+        <div style="font-size:0.9rem; color:#426579; margin-top:5px;">每块切片面积对应选择比例</div>
+    </div>
+
+    <!-- 题目部分（中文翻译，c题改为下拉选择） -->
+    <div class="question-section">
+        <!-- 问题 (a) -->
+        <div class="question" id="q-a">
+            <div class="q-title"><span>a</span> 哪种颜色被大约五分之一 (1/5) 的顾客选中？</div>
+            <div class="options">
+                <div class="radio-group" id="radioGroupA">
+                    <label><input type="radio" name="colorFifth" value="白色"> 🟫 白色</label>
+                    <label><input type="radio" name="colorFifth" value="蓝色"> 🔵 蓝色</label>
+                    <label><input type="radio" name="colorFifth" value="黑色"> ⚫ 黑色</label>
+                    <label><input type="radio" name="colorFifth" value="粉色"> 🌸 粉色</label>
+                    <label><input type="radio" name="colorFifth" value="其他"> 🟢 其他</label>
+                    <label><input type="radio" name="colorFifth" value="茶色"> 🟤 茶色</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- 问题 (b) -->
+        <div class="question" id="q-b">
+            <div class="q-title"><span>b</span> 选择白色或蓝色的顾客大约占百分之多少？</div>
+            <div class="options">
+                <select id="whiteBlueSelect">
+                    <option value="" disabled selected>— 请选择 —</option>
+                    <option value="10">10%</option>
+                    <option value="20">20%</option>
+                    <option value="30">30%</option>
+                    <option value="40">40%</option>
+                    <option value="50">50%</option>
+                    <option value="60">60%</option>
+                    <option value="70">70%</option>
+                    <option value="80">80%</option>
+                    <option value="90">90%</option>
+                    <option value="100">100%</option>
+                </select>
+                <span class="hint">以10%的倍数作答</span>
+            </div>
+        </div>
+
+        <!-- 问题 (c) —— 已改为下拉选择 -->
+        <div class="question" id="q-c">
+            <div class="q-title"><span>c</span> 假如有10%的顾客选择了粉色，那么选择「其他」的顾客大约占百分之多少？</div>
+            <div class="options">
+                <select id="otherPercent">
+                    <option value="" disabled selected>— 请选择 —</option>
+                    <option value="0">0%</option>
+                    <option value="5">5%</option>
+                    <option value="10">10%</option>
+                    <option value="15">15%</option>
+                    <option value="20">20%</option>
+                    <option value="25">25%</option>
+                </select>
+                <span class="hint">根据饼图估计</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 操作按钮组 -->
+    <div class="action-buttons">
+        <button class="primary" id="checkAnswersBtn">📋 核对答案</button>
+        <button id="clearBtn">⟲ 清空作答</button>
+        <button id="showAnswerBtn">🔍 显示正确答案</button>
+    </div>
+
+    <!-- 反馈区域 -->
+    <div class="feedback" id="feedbackArea">
+        <p>👆 点击"核对答案"查看结果。</p>
+    </div>
+
+    <button class="show-explanation-btn" id="show-explanation-btn">📖 查看答案解析</button>
+    <div class="explanation-section" style="display:none;">
+        <div style="background: #e8f4fc; border-radius: 10px; padding: 20px; margin-top: 15px; border-left: 5px solid #1e5a7d;">
+            <h3 style="color: #1e5a7d; margin-bottom: 15px;">答案解析</h3>
+            <p><strong>(a) 黑色</strong> - 黑色占20%，即1/5，符合"五分之一"的要求。</p>
+            <p><strong>(b) 50%</strong> - 白色(30%) + 蓝色(20%) = 50%，占一半。</p>
+            <p><strong>(c) 5%</strong> - 当粉色为10%时，其他切片(5%)约为粉色的一半。</p>
+        </div>
+    </div>
+    <hr>
+</div>
+
+<script>
+    (function() {
+        // ----- 饼图数据（与题目解释一致） -----
+        const slices = [
+            { label: '白色', percent: 30, color: '#f0f5fa' },
+            { label: '蓝色', percent: 20, color: '#4292c6' },
+            { label: '黑色', percent: 20, color: '#3a3f44' },
+            { label: '粉色', percent: 10, color: '#f7adb9' },
+            { label: '其他', percent: 5, color: '#9fc5a4' },
+            { label: '茶色', percent: 15, color: '#9c7c5b' }
+        ];
+
+        const canvas = document.getElementById('favoriteShirtPie');
+        const ctx = canvas.getContext('2d');
+        const legendDiv = document.getElementById('pieLegend');
+
+        function drawPie() {
+            const width = canvas.width;
+            const height = canvas.height;
+            const radius = Math.min(width, height) * 0.35;
+            const centerX = width / 2;
+            const centerY = height / 2;
+
+            ctx.clearRect(0, 0, width, height);
+            let startAngle = -Math.PI / 2; // 从顶部开始
+
+            slices.forEach(slice => {
+                const sliceAngle = (slice.percent / 100) * (Math.PI * 2);
+                const endAngle = startAngle + sliceAngle;
+
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+                ctx.closePath();
+                ctx.fillStyle = slice.color;
+                ctx.fill();
+                ctx.strokeStyle = '#ffffff';
+                ctx.lineWidth = 1.5;
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.arc(centerX, centerY, radius, startAngle, endAngle);
+                ctx.lineTo(centerX, centerY);
+                ctx.stroke();
+
+                startAngle = endAngle;
+            });
+
+            // 中心小圆装饰
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius*0.1, 0, 2*Math.PI);
+            ctx.fillStyle = '#ffffff';
+            ctx.fill();
+            ctx.strokeStyle = '#dddddd';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+        }
+
+        function buildLegend() {
+            legendDiv.innerHTML = '';
+            slices.forEach(slice => {
+                const item = document.createElement('div');
+                item.className = 'legend-item';
+                item.innerHTML = `<div class="color-box" style="background: ${slice.color}; border: 1px solid #9faaad;"></div> ${slice.label}`;
+                legendDiv.appendChild(item);
+            });
+        }
+
+        drawPie();
+        buildLegend();
+
+        // ----- 标准答案 -----
+        const ANSWERS = {
+            a: '黑色',          // 20% = 1/5
+            b: 50,              // 白色+蓝色 = 50%
+            c: 5                // 粉色10%时，其他约为5%
+        };
+
+        // DOM 元素
+        const radioA = document.getElementsByName('colorFifth');
+        const selectB = document.getElementById('whiteBlueSelect');
+        const selectC = document.getElementById('otherPercent');  // 改为select
+        const feedbackDiv = document.getElementById('feedbackArea');
+        const checkBtn = document.getElementById('checkAnswersBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const showBtn = document.getElementById('showAnswerBtn');
+
+        // 清空作答
+        clearBtn.addEventListener('click', function() {
+            for (let radio of radioA) {
+                radio.checked = false;
+            }
+            selectB.value = '';
+            selectC.value = '';    // 清空下拉
+            feedbackDiv.innerHTML = '<p>🧽 已清空你的作答。可以重新选择。</p>';
+        });
+
+        // 显示正确答案（仅提示，不自动填写）
+        showBtn.addEventListener('click', function() {
+            feedbackDiv.innerHTML = `
+                <p>📌 参考答案：<br>
+                (a) 黑色 <span class="correct">✔ 约1/5 (20%)</span><br>
+                (b) 50% <span class="correct">✔ 白色+蓝色占一半</span><br>
+                (c) 5% <span class="correct">✔ 其他切片约为粉色的一半</span></p>
+                <p style="font-size:0.95rem; opacity:0.8;">(提示：使用核对按钮可检查你的选择)</p>
+            `;
+        });
+
+        // 核对答案
+        checkBtn.addEventListener('click', function() {
+            // (a)
+            let selectedA = null;
+            for (let radio of radioA) {
+                if (radio.checked) {
+                    selectedA = radio.value;
+                    break;
+                }
+            }
+
+            // (b)
+            let selectedBVal = selectB.value;
+            let numB = selectedBVal ? parseInt(selectedBVal, 10) : null;
+
+            // (c) 从下拉获取
+            let selectedCVal = selectC.value;
+            let numC = selectedCVal === '' ? null : parseFloat(selectedCVal);
+
+            // 结果对象
+            let resultA = { status: '未选', ok: false };
+            if (selectedA) {
+                const isCorrectA = (selectedA === ANSWERS.a);
+                resultA = { status: isCorrectA ? '正确' : '错误', ok: isCorrectA, value: selectedA };
+            } else {
+                resultA = { status: '未作答', ok: false, value: null };
+            }
+
+            let resultB = { status: '未选', ok: false };
+            if (numB !== null && !isNaN(numB)) {
+                const isCorrectB = (numB === ANSWERS.b);
+                resultB = { status: isCorrectB ? '正确' : '错误', ok: isCorrectB, value: numB + '%' };
+            } else {
+                resultB = { status: '未作答', ok: false, value: null };
+            }
+
+            let resultC = { status: '未选', ok: false };
+            if (numC !== null && !isNaN(numC)) {
+                const isCorrectC = (Math.abs(numC - ANSWERS.c) < 0.1); // 严格5%
+                resultC = { status: isCorrectC ? '正确' : '错误', ok: isCorrectC, value: numC + '%' };
+            } else {
+                resultC = { status: '未作答', ok: false, value: null };
+            }
+
+            // 构建反馈
+            let feedbackHtml = '<p>📊 核对结果：</p>';
+            // (a)
+            feedbackHtml += `<p>🔸 (a) 你的答案：${resultA.value ? resultA.value : '—'}  `;
+            if (resultA.ok) feedbackHtml += `<span class="correct">✓ 正确</span>`;
+            else if (resultA.value) feedbackHtml += `<span class="wrong">✗ 错误</span> (应为黑色)`;
+            else feedbackHtml += `<span style="color:#9b5f00;">⚠ 未作答</span>`;
+            feedbackHtml += '</p>';
+
+            // (b)
+            feedbackHtml += `<p>🔸 (b) 你的答案：${resultB.value ? resultB.value : '—'}  `;
+            if (resultB.ok) feedbackHtml += `<span class="correct">✓ 正确 (50%)</span>`;
+            else if (resultB.value) feedbackHtml += `<span class="wrong">✗ 错误</span> (白色+蓝色共占50%)`;
+            else feedbackHtml += `<span style="color:#9b5f00;">⚠ 未作答</span>`;
+            feedbackHtml += '</p>';
+
+            // (c)
+            feedbackHtml += `<p>🔸 (c) 你的答案：${resultC.value ? resultC.value : '—'}  `;
+            if (resultC.ok) feedbackHtml += `<span class="correct">✓ 正确 (5%)</span>`;
+            else if (resultC.value) feedbackHtml += `<span class="wrong">✗ 错误</span> (若粉色10%，其他约为5%)`;
+            else feedbackHtml += `<span style="color:#9b5f00;">⚠ 未作答</span>`;
+            feedbackHtml += '</p>';
+
+            if (resultA.ok && resultB.ok && resultC.ok) {
+                feedbackHtml += '<p>🎉 完美！所有答案都正确。</p>';
+            } else {
+                feedbackHtml += '<p>💡 再观察一下饼图，或点击「显示正确答案」查看。</p>';
+            }
+
+            feedbackDiv.innerHTML = feedbackHtml;
+
+            // Show explanation button after submit
+            var showBtn = document.getElementById('show-explanation-btn');
+            if (showBtn) {
+                showBtn.style.display = 'inline-block';
+            }
+        });
+
+        // Explanation button click handler
+        document.getElementById('show-explanation-btn').addEventListener('click', function() {
+            var explanation = this.nextElementSibling;
+            if (explanation) {
+                if (explanation.style.display === 'none' || explanation.style.display === '') {
+                    explanation.style.display = 'block';
+                    this.textContent = '📖 隐藏答案解析';
+                } else {
+                    explanation.style.display = 'none';
+                    this.textContent = '📖 查看答案解析';
+                }
+            }
+        });
+    })();
+</script>
+
+<!-- 饼图数据已完整，茶色用于凑足100% -->
+</body>
+</html>

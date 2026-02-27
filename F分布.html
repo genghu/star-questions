@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F分布 - 答题练习</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background-color: #f0f7ff;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #4a90e2;
+        }
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2.2rem;
+        }
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1rem;
+        }
+        .question-container {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 82, 204, 0.08);
+            padding: 25px;
+            margin-bottom: 25px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .question-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0, 82, 204, 0.12);
+        }
+        .question-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .question-title {
+            color: #2980b9;
+            font-size: 1.4rem;
+            flex: 1;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed #d6eaf8;
+        }
+        .refresh-btn {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+        }
+        .refresh-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+        .question-content {
+            margin-bottom: 20px;
+            font-size: 1.05rem;
+        }
+        .question-content p {
+            margin-bottom: 10px;
+        }
+        .answer-options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .option {
+            background-color: #f8fafc;
+            border: 2px solid #e3f2fd;
+            border-radius: 10px;
+            padding: 15px 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+        }
+        .option:hover {
+            background-color: #e3f2fd;
+            border-color: #4a90e2;
+        }
+        .option.selected {
+            background-color: #e8f4fc;
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        .option.correct {
+            background-color: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+        .option.incorrect {
+            background-color: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+        .option-letter {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            background-color: #4a90e2;
+            color: white;
+            border-radius: 50%;
+            margin-right: 15px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        .option.correct .option-letter {
+            background-color: #28a745;
+        }
+        .option.incorrect .option-letter {
+            background-color: #dc3545;
+        }
+        .explanation {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-left: 4px solid #3498db;
+            border-radius: 0 8px 8px 0;
+            display: none;
+            font-size: 0.95rem;
+        }
+        .explanation.show {
+            display: block;
+        }
+        .explanation-title {
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 8px;
+        }
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        button {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        #submit-btn {
+            background-color: #3498db;
+            color: white;
+        }
+        #submit-btn:hover {
+            background-color: #2980b9;
+            transform: scale(1.05);
+        }
+        #reset-btn {
+            background-color: #95a5a6;
+            color: white;
+        }
+        #reset-btn:hover {
+            background-color: #7f8c8d;
+            transform: scale(1.05);
+        }
+        button:disabled {
+            background-color: #bdc3c7;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+        .results {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 82, 204, 0.08);
+            padding: 25px;
+            text-align: center;
+            margin-top: 30px;
+            display: none;
+        }
+        .results.show {
+            display: block;
+        }
+        .score {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #3498db;
+            margin: 15px 0;
+        }
+        .score-text {
+            font-size: 1.2rem;
+            color: #7f8c8d;
+            margin-bottom: 20px;
+        }
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .stat-box {
+            flex: 1;
+            min-width: 150px;
+            padding: 15px;
+            border-radius: 10px;
+            background-color: #f8fafc;
+        }
+        .stat-box.correct {
+            border-top: 4px solid #28a745;
+        }
+        .stat-box.incorrect {
+            border-top: 4px solid #dc3545;
+        }
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        .stat-value.correct {
+            color: #28a745;
+        }
+        .stat-value.incorrect {
+            color: #dc3545;
+        }
+        .stat-label {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+        .math {
+            font-family: 'Cambria Math', 'Times New Roman', serif;
+            font-style: italic;
+        }
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+            .question-container {
+                padding: 20px;
+            }
+            .question-title {
+                font-size: 1.2rem;
+            }
+            .option {
+                padding: 12px 15px;
+            }
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            button {
+                width: 100%;
+                max-width: 300px;
+            }
+            .stats {
+                flex-direction: column;
+                align-items: center;
+            }
+            .stat-box {
+                width: 100%;
+                max-width: 250px;
+            }
+        }
+    </style>
+
+    <style>
+    .show-explanation-btn {
+        display: none;
+        margin: 20px auto;
+        padding: 14px 28px;
+        background: linear-gradient(135deg, #9b59b6, #8e44ad);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 1.1rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
+    }
+    .show-explanation-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
+    }
+    .explanation-section {
+        display: none;
+        margin-top: 20px;
+    }
+    </style>
+    </head>
+<body>
+    <header>
+        <h1>F分布</h1>
+        <p class="subtitle">概率统计练习题 - 交互式答题</p>
+    </header>
+
+    <main>
+        <div class="question-container" id="question1">
+            <div class="question-header">
+                <div class="question-title">问题 1</div>
+                <button class="refresh-btn" onclick="refreshQuestion(1)">刷新参数</button>
+            </div>
+            <div class="question-content" id="question-content-1">
+                <p>考虑一个分子自由度为 <span class="math" id="dfn1-1">47</span>，分母自由度为 <span class="math" id="dfd1-1">13</span> 的 F 分布。</p>
+                <p>计算 <span class="math">P(F ≤ <span id="fval-1">0.82</span>)</span>。将你的答案四舍五入到至少三位小数。</p>
+            </div>
+            <div class="input-section" data-question="1" style="background-color: #f8fafc; padding: 20px; border-radius: 10px; margin-top: 20px; border: 2px solid #e3f2fd;">
+                <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+                    <label style="font-size: 1.1rem; color: #2980b9; font-weight: 600;">P(F ≤ <span id="fval-label-1">0.82</span>) = </label>
+                    <input type="text" id="answer-1" style="padding: 12px 15px; font-size: 1.1rem; border: 2px solid #3498db; border-radius: 8px; width: 120px; outline: none; transition: all 0.3s ease;">
+                    <span style="font-size: 0.9rem; color: #7f8c8d;">（保留三位小数）</span>
+                </div>
+                <div class="correct-answer-display" id="correct-display-1" style="display: none; margin-top: 10px; color: #7f8c8d;">
+                    正确答案: <strong id="correct-value-1">0.296</strong>
+                </div>
+            </div>
+            <button class="show-explanation-btn" data-question="1">查看答案解析</button>
+            <div class="explanation" id="explanation1">
+                <div class="explanation-title">知识要点与解析</div>
+                <p><strong>解题提示：</strong>该计算器仅计算 F 分布的右尾概率。为了求左尾概率 <span class="math">P(F ≤ <span id="exp-fval-1">0.82</span>)</span>，我们使用互补法则：<span class="math">P(F ≤ <span id="exp-fval2-1">0.82</span>) = 1 - P(F > <span id="exp-fval3-1">0.82</span>)</span>。</p>
+                <p><strong>计算过程：</strong></p>
+                <p><span class="math">P(F ≤ <span id="exp-fval4-1">0.82</span>) = 1 - P(F > <span id="exp-fval5-1">0.82</span>) = 1 - <span id="exp-right-1">0.704</span> ≈ <span id="exp-result-1">0.296</span></span></p>
+                <p>其中，<span class="math">P(F > <span id="exp-fval6-1">0.82</span>)</span> 使用计算器得到，分子自由度 dfn = <span id="exp-dfn1-1">47</span>，分母自由度 dfd = <span id="exp-dfd1-1">13</span>。</p>
+            </div>
+        </div>
+
+        <div class="question-container" id="question2">
+            <div class="question-header">
+                <div class="question-title">问题 2</div>
+                <button class="refresh-btn" onclick="refreshQuestion(2)">刷新参数</button>
+            </div>
+            <div class="question-content" id="question-content-2">
+                <p>考虑一个分子自由度为 <span class="math" id="dfn1-2">30</span>，分母自由度为 <span class="math" id="dfd1-2">9</span> 的 F 分布。</p>
+                <p>求 <span class="math">c</span> 使得 <span class="math">P(F > c) = <span id="alpha-2">0.1</span></span>。将你的答案四舍五入到至少两位小数。</p>
+            </div>
+            <div class="input-section" data-question="2" style="background-color: #f8fafc; padding: 20px; border-radius: 10px; margin-top: 20px; border: 2px solid #e3f2fd;">
+                <div style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+                    <label style="font-size: 1.1rem; color: #2980b9; font-weight: 600;">c = </label>
+                    <input type="text" id="answer-2" style="padding: 12px 15px; font-size: 1.1rem; border: 2px solid #3498db; border-radius: 8px; width: 120px; outline: none; transition: all 0.3s ease;">
+                    <span style="font-size: 0.9rem; color: #7f8c8d;">（保留两位小数）</span>
+                </div>
+                <div class="correct-answer-display" id="correct-display-2" style="display: none; margin-top: 10px; color: #7f8c8d;">
+                    正确答案: <strong id="correct-value-2">2.25</strong>
+                </div>
+            </div>
+            <button class="show-explanation-btn" data-question="2">查看答案解析</button>
+            <div class="explanation" id="explanation2">
+                <div class="explanation-title">知识要点与解析</div>
+                <p><strong>解题提示：</strong>这样的 <span class="math">c</span> 是截断该分布右尾面积为 <span id="exp-alpha-2">0.1</span> 的值，即该分布的 <span class="math">F<sub><span id="exp-alpha2-2">0.1</span></sub></span> 值。</p>
+                <p><strong>计算过程：</strong></p>
+                <p>使用计算器，对于分子自由度 dfn = <span id="exp-dfn1-2">30</span>，分母自由度 dfd = <span id="exp-dfd1-2">9</span> 的 F 分布，求 <span class="math">F<sub><span id="exp-alpha3-2">0.1</span></sub></span> 值：</p>
+                <p><span class="math">c = F<sub><span id="exp-alpha4-2">0.1</span></sub> = <span id="exp-fval-2">2.2547201</span> ≈ <span id="exp-result-2">2.25</span></span></p>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button id="submit-btn">提交答案</button>
+            <button id="reset-btn">重新作答</button>
+        </div>
+
+        <div class="results" id="results">
+            <h2>答题结果</h2>
+            <div class="score" id="score">0/2</div>
+            <div class="score-text" id="score-text"></div>
+            <div class="stats">
+                <div class="stat-box correct">
+                    <div class="stat-value correct" id="correct-count">0</div>
+                    <div class="stat-label">正确</div>
+                </div>
+                <div class="stat-box incorrect">
+                    <div class="stat-value incorrect" id="incorrect-count">0</div>
+                    <div class="stat-label">错误</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Parameter datasets for questions
+        const questionParams = {
+            1: [
+                { dfn1: 47, dfd1: 13, fval: 0.82, rightProb: 0.704, result: 0.296 },
+                { dfn1: 35, dfd1: 15, fval: 0.75, rightProb: 0.718, result: 0.282 },
+                { dfn1: 50, dfd1: 10, fval: 0.90, rightProb: 0.562, result: 0.438 },
+                { dfn1: 40, dfd1: 20, fval: 0.65, rightProb: 0.823, result: 0.177 },
+                { dfn1: 25, dfd1: 12, fval: 0.88, rightProb: 0.591, result: 0.409 }
+            ],
+            2: [
+                { dfn1: 30, dfd1: 9, alpha: 0.1, fval: 2.25 },
+                { dfn1: 20, dfd1: 15, alpha: 0.05, fval: 2.33 },
+                { dfn1: 15, dfd1: 10, alpha: 0.025, fval: 3.52 },
+                { dfn1: 25, dfd1: 12, alpha: 0.01, fval: 3.90 },
+                { dfn1: 10, dfd1: 20, alpha: 0.1, fval: 1.94 }
+            ]
+        };
+
+        // Current parameter index for each question
+        let currentParamIndex = { 1: 0, 2: 0 };
+        let correctAnswers = { 1: 0.296, 2: 2.25 };
+        let tolerance = { 1: 0.01, 2: 0.05 };
+        const userAnswers = { 1: null, 2: null };
+
+        // Helper function to normalize numeric answers
+        function normalizeAnswer(answer) {
+            if (answer === null || answer === undefined || answer === '') return null;
+            const normalized = parseFloat(answer.toString().trim());
+            return isNaN(normalized) ? null : normalized;
+        }
+
+        // Check if answer is correct within tolerance
+        function checkAnswer(userAnswer, correctAnswer, tol) {
+            const userNum = normalizeAnswer(userAnswer);
+            const correctNum = normalizeAnswer(correctAnswer);
+            if (userNum === null || correctNum === null) return false;
+            return Math.abs(userNum - correctNum) <= tol;
+        }
+
+        // Initialize question display
+        function initQuestion(qId) {
+            const params = questionParams[qId][currentParamIndex[qId]];
+
+            if (qId === 1) {
+                document.getElementById('dfn1-1').textContent = params.dfn1;
+                document.getElementById('dfd1-1').textContent = params.dfd1;
+                document.getElementById('fval-1').textContent = params.fval;
+                document.getElementById('fval-label-1').textContent = params.fval;
+
+                // Update correct answer
+                correctAnswers[1] = params.result;
+                document.getElementById('correct-value-1').textContent = params.result.toFixed(3);
+
+                // Update explanation
+                document.getElementById('exp-fval-1').textContent = params.fval;
+                document.getElementById('exp-fval2-1').textContent = params.fval;
+                document.getElementById('exp-fval3-1').textContent = params.fval;
+                document.getElementById('exp-fval4-1').textContent = params.fval;
+                document.getElementById('exp-fval5-1').textContent = params.fval;
+                document.getElementById('exp-fval6-1').textContent = params.fval;
+                document.getElementById('exp-right-1').textContent = params.rightProb.toFixed(5);
+                document.getElementById('exp-result-1').textContent = params.result.toFixed(3);
+                document.getElementById('exp-dfn1-1').textContent = params.dfn1;
+                document.getElementById('exp-dfd1-1').textContent = params.dfd1;
+
+            } else if (qId === 2) {
+                document.getElementById('dfn1-2').textContent = params.dfn1;
+                document.getElementById('dfd1-2').textContent = params.dfd1;
+                document.getElementById('alpha-2').textContent = params.alpha;
+
+                // Update correct answer
+                correctAnswers[2] = params.fval;
+                document.getElementById('correct-value-2').textContent = params.fval.toFixed(2);
+
+                // Update explanation
+                document.getElementById('exp-alpha-2').textContent = params.alpha;
+                document.getElementById('exp-alpha2-2').textContent = params.alpha;
+                document.getElementById('exp-alpha3-2').textContent = params.alpha;
+                document.getElementById('exp-alpha4-2').textContent = params.alpha;
+                document.getElementById('exp-dfn1-2').textContent = params.dfn1;
+                document.getElementById('exp-dfd1-2').textContent = params.dfd1;
+                document.getElementById('exp-fval-2').textContent = params.fval.toFixed(5);
+                document.getElementById('exp-result-2').textContent = params.fval.toFixed(2);
+            }
+        }
+
+        // Refresh question with random parameters
+        function refreshQuestion(qId) {
+            let newIndex;
+            do {
+                newIndex = Math.floor(Math.random() * questionParams[qId].length);
+            } while (newIndex === currentParamIndex[qId] && questionParams[qId].length > 1);
+
+            currentParamIndex[qId] = newIndex;
+
+            // Clear input for this question
+            userAnswers[qId] = null;
+            const inputEl = document.getElementById(`answer-${qId}`);
+            inputEl.value = '';
+            inputEl.style.borderColor = '#3498db';
+            inputEl.style.backgroundColor = 'white';
+            inputEl.disabled = false;
+
+            // Hide correct answer display
+            document.getElementById(`correct-display-${qId}`).style.display = 'none';
+
+            // Hide explanation
+            document.getElementById(`explanation${qId}`).classList.remove('show');
+            document.querySelector(`.show-explanation-btn[data-question="${qId}"]`).style.display = 'none';
+            document.querySelector(`.show-explanation-btn[data-question="${qId}"]`).textContent = '查看答案解析';
+
+            // Update display
+            initQuestion(qId);
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize questions
+            initQuestion(1);
+            initQuestion(2);
+
+            // Input change events
+            for (let i = 1; i <= 2; i++) {
+                const inputEl = document.getElementById(`answer-${i}`);
+                inputEl.addEventListener('input', function() {
+                    userAnswers[i] = this.value.trim();
+                    // Enable submit button when user starts typing
+                    document.getElementById('submit-btn').disabled = false;
+                });
+            }
+
+            // 显示答案解析按钮点击事件
+            document.querySelectorAll('.show-explanation-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const questionId = this.getAttribute('data-question');
+                    const explanation = document.getElementById(`explanation${questionId}`);
+                    if (explanation) {
+                        if (explanation.classList.contains('show')) {
+                            explanation.classList.remove('show');
+                            this.textContent = '查看答案解析';
+                        } else {
+                            explanation.classList.add('show');
+                            this.textContent = '隐藏答案解析';
+                        }
+                    }
+                });
+            });
+
+            // 提交答案
+            document.getElementById('submit-btn').addEventListener('click', function() {
+                let correctCount = 0;
+                let totalQuestions = Object.keys(correctAnswers).length;
+
+                // 检查每个问题的答案
+                for (let i = 1; i <= totalQuestions; i++) {
+                    const userAnswer = userAnswers[i];
+                    const correctAnswer = correctAnswers[i];
+                    const tol = tolerance[i];
+
+                    const inputEl = document.getElementById(`answer-${i}`);
+                    const correctDisplayEl = document.getElementById(`correct-display-${i}`);
+
+                    const isCorrect = checkAnswer(userAnswer, correctAnswer, tol);
+
+                    inputEl.disabled = true;
+
+                    if (isCorrect) {
+                        inputEl.style.borderColor = '#28a745';
+                        inputEl.style.backgroundColor = '#d4edda';
+                        correctCount++;
+                    } else {
+                        inputEl.style.borderColor = '#dc3545';
+                        inputEl.style.backgroundColor = '#f8d7da';
+                        correctDisplayEl.style.display = 'block';
+                    }
+                }
+
+                // 显示答案解析按钮
+                document.querySelectorAll('.show-explanation-btn').forEach(btn => {
+                    btn.style.display = 'inline-block';
+                });
+
+                // 显示结果
+                const results = document.getElementById('results');
+                results.classList.add('show');
+
+                // 更新分数
+                const scoreElement = document.getElementById('score');
+                scoreElement.textContent = `${correctCount}/${totalQuestions}`;
+
+                // 更新分数文本
+                const scoreText = document.getElementById('score-text');
+                const percentage = (correctCount / totalQuestions) * 100;
+                if (percentage === 100) {
+                    scoreText.textContent = "完美！所有答案都正确！";
+                } else if (percentage >= 70) {
+                    scoreText.textContent = "做得不错！继续努力！";
+                } else if (percentage >= 50) {
+                    scoreText.textContent = "还可以，但需要更多练习。";
+                } else {
+                    scoreText.textContent = "需要加强学习，请查看解析。";
+                }
+
+                // 更新统计
+                document.getElementById('correct-count').textContent = correctCount;
+                document.getElementById('incorrect-count').textContent = totalQuestions - correctCount;
+
+                // 禁用提交按钮
+                this.disabled = true;
+
+                // 滚动到结果
+                results.scrollIntoView({ behavior: 'smooth' });
+            });
+
+            // 重新作答
+            document.getElementById('reset-btn').addEventListener('click', function() {
+                // Clear all inputs
+                for (let i = 1; i <= 2; i++) {
+                    const inputEl = document.getElementById(`answer-${i}`);
+                    inputEl.value = '';
+                    inputEl.style.borderColor = '#3498db';
+                    inputEl.style.backgroundColor = 'white';
+                    inputEl.disabled = false;
+                    userAnswers[i] = null;
+
+                    document.getElementById(`correct-display-${i}`).style.display = 'none';
+                }
+
+                // 隐藏所有解析
+                document.querySelectorAll('.explanation').forEach(explanation => {
+                    explanation.classList.remove('show');
+                });
+
+                // 隐藏答案解析按钮
+                document.querySelectorAll('.show-explanation-btn').forEach(btn => {
+                    btn.style.display = 'none';
+                    btn.textContent = '查看答案解析';
+                });
+
+                // 隐藏结果
+                document.getElementById('results').classList.remove('show');
+
+                // 启用提交按钮
+                document.getElementById('submit-btn').disabled = true;
+
+                // 滚动到顶部
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+
+            // 初始禁用提交按钮
+            document.getElementById('submit-btn').disabled = true;
+        });
+    </script>
+</body>
+</html>

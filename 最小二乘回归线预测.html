@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>最小二乘回归线预测 - 交互式答题</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+
+        body {
+            background-color: #f8fafc;
+            color: #334155;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .header h1 {
+            color: #1e40af;
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+
+        .header .subtitle {
+            color: #64748b;
+            font-size: 1.1rem;
+        }
+
+        .content-container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        /* Single column layout */
+
+        .section-card {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            color: #1e40af;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .question {
+            margin-bottom: 30px;
+            padding-bottom: 25px;
+            border-bottom: 1px dashed #e2e8f0;
+        }
+
+        .question:last-child {
+            border-bottom: none;
+        }
+
+        .question-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #1e293b;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .option {
+            padding: 14px 18px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background-color: #f8fafc;
+            display: flex;
+            align-items: center;
+        }
+
+        .option:hover {
+            background-color: #f1f5f9;
+            border-color: #cbd5e1;
+        }
+
+        .option.selected {
+            border-color: #3b82f6;
+            background-color: #eff6ff;
+        }
+
+        .option.correct {
+            border-color: #10b981;
+            background-color: #d1fae5;
+        }
+
+        .option.incorrect {
+            border-color: #ef4444;
+            background-color: #fee2e2;
+        }
+
+        .option-letter {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            background-color: #e2e8f0;
+            border-radius: 50%;
+            margin-right: 12px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .option.selected .option-letter {
+            background-color: #3b82f6;
+            color: white;
+        }
+
+        .option.correct .option-letter {
+            background-color: #10b981;
+            color: white;
+        }
+
+        .option.incorrect .option-letter {
+            background-color: #ef4444;
+            color: white;
+        }
+
+        .feedback {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-size: 0.95rem;
+            display: none;
+        }
+
+        .feedback.correct {
+            background-color: #d1fae5;
+            color: #065f46;
+            border-left: 4px solid #10b981;
+            display: block;
+        }
+
+        .feedback.incorrect {
+            background-color: #fee2e2;
+            color: #991b1b;
+            border-left: 4px solid #ef4444;
+            display: block;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.95rem;
+        }
+
+        .data-table th, .data-table td {
+            border: 1px solid #cbd5e1;
+            padding: 10px 15px;
+            text-align: center;
+        }
+
+        .data-table th {
+            background-color: #f1f5f9;
+            font-weight: 600;
+        }
+
+        .data-table tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+
+        .equation {
+            font-family: 'Cambria Math', serif;
+            font-size: 1.2rem;
+            background-color: #f8fafc;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            text-align: center;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 12px 28px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background-color: #3b82f6;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #2563eb;
+        }
+
+        .btn-secondary {
+            background-color: #e2e8f0;
+            color: #475569;
+        }
+
+        .btn-secondary:hover {
+            background-color: #cbd5e1;
+        }
+
+        .score-container {
+            text-align: center;
+            margin-top: 25px;
+            padding: 20px;
+            background-color: #f1f5f9;
+            border-radius: 10px;
+        }
+
+        .score-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1e40af;
+            margin: 10px 0;
+        }
+
+        .score-text {
+            font-size: 1.1rem;
+            color: #475569;
+        }
+
+        .explanation {
+            background-color: #f0f9ff;
+            padding: 18px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border-left: 4px solid #0ea5e9;
+            font-size: 0.95rem;
+        }
+
+        .explanation-title {
+            font-weight: 600;
+            color: #0369a1;
+            margin-bottom: 8px;
+        }
+
+        .info-section .section-card {
+            position: sticky;
+            top: 20px;
+        }
+
+        .highlight {
+            background-color: #fef3c7;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .formula {
+            font-family: 'Cambria Math', serif;
+            font-style: italic;
+        }
+
+        .note {
+            font-size: 0.9rem;
+            color: #64748b;
+            font-style: italic;
+            margin-top: 5px;
+        }
+    </style>
+
+    <style>
+    .show-explanation-btn {
+        display: none;
+        margin: 20px auto;
+        padding: 14px 28px;
+        background: linear-gradient(135deg, #9b59b6, #8e44ad);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 1.1rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
+    }
+    .show-explanation-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
+    }
+    .explanation-section {
+        display: none;
+        margin-top: 20px;
+    }
+    </style>
+    </head>
+<body>
+    <div class="header">
+        <h1>最小二乘回归线预测
+            <button class="refresh-btn" id="refresh-btn" style="background-color: #34a853; color: white; padding: 8px 16px; font-size: 0.9rem; border-radius: 6px; margin-left: 20px; border: none; cursor: pointer;">刷新参数</button>
+        </h1>
+        <div class="subtitle">回归与相关 · 韦伯定律实验数据分析</div>
+    </div>
+
+    <div class="content-container">
+        <div class="questions-section">
+            <div class="section-card">
+                <h2 class="section-title">题目</h2>
+                
+                <div class="question" id="q1">
+                    <div class="question-title">1. 填空：对于这些数据，<span id="q1-relation">大于</span>韦伯分数均值的韦伯分数，往往与 _____ 刺激强度均值的刺激强度配对。</div>
+
+                    <div class="options-container" id="options-q1">
+                        <div class="option" data-option="a">
+                            <div class="option-letter">A</div>
+                            <div class="option-text">大于</div>
+                        </div>
+                        <div class="option" data-option="b">
+                            <div class="option-letter">B</div>
+                            <div class="option-text">小于</div>
+                        </div>
+                    </div>
+
+                    <div class="feedback" id="feedback1"></div>
+
+                    <div class="explanation">
+                        <div class="explanation-title">知识要点与解析</div>
+                        <p id="explanation-q1">从散点图可以看出，y值（韦伯分数）随着x值（刺激强度）的增加而减少。因此，大于韦伯分数均值的韦伯分数（即y值较大）往往与小于刺激强度均值的刺激强度（即x值较小）配对。回归线的斜率为负也表明了这种负相关关系。</p>
+                    </div>
+                </div>
+
+                <div class="question" id="q2">
+                    <div class="question-title">2. 根据回归方程，刺激强度每增加一分贝，韦伯分数相应<span id="q2-change">减少</span>多少分贝？</div>
+
+                    <div class="options-container" id="options-q2">
+                        <!-- Options will be dynamically generated -->
+                    </div>
+
+                    <div class="feedback" id="feedback2"></div>
+
+                    <div class="explanation">
+                        <div class="explanation-title">知识要点与解析</div>
+                        <p id="explanation-q2">最小二乘回归线的斜率是给定x变量增加一个单位时y变量的预测变化量。斜率为负值，这意味着刺激强度每增加一分贝，韦伯分数预测减少相应数值分贝。</p>
+                    </div>
+                </div>
+
+                <div class="question" id="q3">
+                    <div class="question-title">3. 当刺激强度为<span id="q3-xvalue">70</span>分贝时，观察到的韦伯分数（分贝）是多少？</div>
+
+                    <div class="options-container" id="options-q3">
+                        <!-- Options will be dynamically generated -->
+                    </div>
+
+                    <div class="feedback" id="feedback3"></div>
+
+                    <div class="explanation">
+                        <div class="explanation-title">知识要点与解析</div>
+                        <p id="explanation-q3">从数据表中可以直接查找到对应的韦伯分数。</p>
+                    </div>
+                </div>
+
+                <div class="question" id="q4">
+                    <div class="question-title">4. 根据回归方程，当刺激强度为<span id="q4-xvalue">70</span>分贝时，预测的韦伯分数（分贝）是多少？（将答案四舍五入到至少两位小数。）</div>
+
+                    <div class="options-container" id="options-q4">
+                        <!-- Options will be dynamically generated -->
+                    </div>
+
+                    <div class="feedback" id="feedback4"></div>
+
+                    <div class="explanation">
+                        <div class="explanation-title">知识要点与解析</div>
+                        <p id="explanation-q4">根据回归方程代入x值计算预测值。</p>
+                    </div>
+                </div>
+                
+                <div class="controls">
+                    <button class="btn btn-primary" id="submitBtn">提交答案</button>
+                    <button class="btn btn-secondary" id="resetBtn">重新作答</button>
+                </div>
+                
+                <div class="score-container">
+                    <div class="score-text">得分</div>
+                    <div class="score-value" id="scoreValue">0/4</div>
+                    <div class="score-text" id="scoreText">请回答所有问题并提交</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="info-section">
+            <div class="section-card">
+                <h2 class="section-title">实验数据与回归方程</h2>
+
+                <div class="equation" id="regression-equation">ŷ = -2.9570 - 0.0895x</div>
+                <p>其中：</p>
+                <ul style="padding-left: 20px; margin-bottom: 15px;">
+                    <li><span class="formula">x</span> = 刺激强度（分贝）</li>
+                    <li><span class="formula">ŷ</span> = 预测的韦伯分数（分贝）</li>
+                </ul>
+
+                <table class="data-table" id="data-table">
+                    <thead>
+                        <tr>
+                            <th>刺激强度, x (分贝)</th>
+                            <th>韦伯分数, y (分贝)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="data-table-body">
+                        <!-- Data will be dynamically generated -->
+                    </tbody>
+                </table>
+
+                <div class="explanation" style="margin-top: 20px;">
+                    <div class="explanation-title">背景知识</div>
+                    <p><strong>韦伯定律</strong>指出刺激强度与"刚好可察觉"的强度增量之比是恒定的，该比值称为"韦伯分数"。</p>
+                    <p>对于某些听觉刺激，韦伯分数系统地依赖于刺激强度，如本实验数据所示。</p>
+                    <p><strong>最小二乘回归线</strong>是通过数据点拟合的最佳直线，使所有数据点到直线的垂直距离平方和最小。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Parameter sets for regression questions
+        const parameterSets = [
+            {
+                intercept: -2.9570,
+                slope: -0.0895,
+                slopeAbs: 0.0895,
+                correlation: 'negative',
+                q1Relation: '大于',
+                q1Answer: 'b',
+                q2Change: '减少',
+                data: [
+                    {x: 35, y: -0.42}, {x: 40, y: -0.45}, {x: 45, y: -1.12}, {x: 50, y: -1.16},
+                    {x: 55, y: -1.90}, {x: 60, y: -2.73}, {x: 65, y: -3.11}, {x: 70, y: -2.73},
+                    {x: 75, y: -4.16}, {x: 80, y: -4.10}
+                ],
+                q3X: 70,
+                q3Answer: -2.73,
+                q4Answer: -3.31
+            },
+            {
+                intercept: -1.2450,
+                slope: -0.0523,
+                slopeAbs: 0.0523,
+                correlation: 'negative',
+                q1Relation: '大于',
+                q1Answer: 'b',
+                q2Change: '减少',
+                data: [
+                    {x: 30, y: -0.25}, {x: 35, y: -0.38}, {x: 40, y: -0.62}, {x: 45, y: -0.85},
+                    {x: 50, y: -1.12}, {x: 55, y: -1.45}, {x: 60, y: -1.72}, {x: 65, y: -2.05},
+                    {x: 70, y: -2.38}, {x: 75, y: -2.65}
+                ],
+                q3X: 65,
+                q3Answer: -2.05,
+                q4Answer: -2.40
+            },
+            {
+                intercept: 3.8250,
+                slope: 0.0654,
+                slopeAbs: 0.0654,
+                correlation: 'positive',
+                q1Relation: '大于',
+                q1Answer: 'a',
+                q2Change: '增加',
+                data: [
+                    {x: 20, y: 5.13}, {x: 25, y: 5.46}, {x: 30, y: 5.78}, {x: 35, y: 6.11},
+                    {x: 40, y: 6.44}, {x: 45, y: 6.77}, {x: 50, y: 7.10}, {x: 55, y: 7.42},
+                    {x: 60, y: 7.75}, {x: 65, y: 8.08}
+                ],
+                q3X: 50,
+                q3Answer: 7.10,
+                q4Answer: 7.10
+            },
+            {
+                intercept: -4.1200,
+                slope: -0.0732,
+                slopeAbs: 0.0732,
+                correlation: 'negative',
+                q1Relation: '大于',
+                q1Answer: 'b',
+                q2Change: '减少',
+                data: [
+                    {x: 25, y: -0.85}, {x: 30, y: -1.22}, {x: 35, y: -1.58}, {x: 40, y: -1.95},
+                    {x: 45, y: -2.32}, {x: 50, y: -2.68}, {x: 55, y: -3.05}, {x: 60, y: -3.42},
+                    {x: 65, y: -3.78}, {x: 70, y: -4.15}
+                ],
+                q3X: 55,
+                q3Answer: -3.05,
+                q4Answer: -3.65
+            },
+            {
+                intercept: 2.5680,
+                slope: 0.0456,
+                slopeAbs: 0.0456,
+                correlation: 'positive',
+                q1Relation: '大于',
+                q1Answer: 'a',
+                q2Change: '增加',
+                data: [
+                    {x: 15, y: 3.25}, {x: 20, y: 3.48}, {x: 25, y: 3.71}, {x: 30, y: 3.94},
+                    {x: 35, y: 4.16}, {x: 40, y: 4.39}, {x: 45, y: 4.62}, {x: 50, y: 4.85},
+                    {x: 55, y: 5.08}, {x: 60, y: 5.30}
+                ],
+                q3X: 40,
+                q3Answer: 4.39,
+                q4Answer: 4.39
+            }
+        ];
+
+        let currentParams = parameterSets[0];
+        let userAnswers = { q1: null, q2: null, q3: null, q4: null };
+        let submitted = false;
+
+        // Fisher-Yates shuffle algorithm
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        // Generate distractors for numeric answers
+        function generateNumericOptions(correctAnswer, numOptions = 4) {
+            const options = [{ value: correctAnswer, isCorrect: true }];
+            const usedValues = new Set([correctAnswer.toFixed(2)]);
+
+            while (options.length < numOptions) {
+                const variation = (Math.random() - 0.5) * Math.abs(correctAnswer) * 0.3;
+                let distractor = correctAnswer + variation;
+                const rounded = distractor.toFixed(2);
+
+                if (!usedValues.has(rounded)) {
+                    options.push({ value: distractor, isCorrect: false });
+                    usedValues.add(rounded);
+                }
+            }
+
+            return shuffleArray(options);
+        }
+
+        // Render data table
+        function renderDataTable() {
+            const tbody = document.getElementById('data-table-body');
+            tbody.innerHTML = '';
+
+            currentParams.data.forEach((row, index) => {
+                const tr = document.createElement('tr');
+                if (row.x === currentParams.q3X) {
+                    tr.style.backgroundColor = '#eff6ff';
+                    tr.innerHTML = `<td><strong>${row.x}</strong></td><td><strong>${row.y.toFixed(2)}</strong></td>`;
+                } else {
+                    tr.innerHTML = `<td>${row.x}</td><td>${row.y.toFixed(2)}</td>`;
+                }
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Render options for Q2
+        function renderQ2Options() {
+            const container = document.getElementById('options-q2');
+            const options = generateNumericOptions(currentParams.slopeAbs, 4);
+
+            container.innerHTML = '';
+            options.forEach((opt, index) => {
+                const letter = String.fromCharCode(65 + index);
+                const div = document.createElement('div');
+                div.className = 'option';
+                div.setAttribute('data-option', letter.toLowerCase());
+                div.setAttribute('data-correct', opt.isCorrect);
+                div.innerHTML = `<div class="option-letter">${letter}</div><div class="option-text">${opt.value.toFixed(4)} 分贝</div>`;
+                container.appendChild(div);
+            });
+        }
+
+        // Render options for Q3
+        function renderQ3Options() {
+            const container = document.getElementById('options-q3');
+            const options = generateNumericOptions(currentParams.q3Answer, 4);
+
+            container.innerHTML = '';
+            options.forEach((opt, index) => {
+                const letter = String.fromCharCode(65 + index);
+                const div = document.createElement('div');
+                div.className = 'option';
+                div.setAttribute('data-option', letter.toLowerCase());
+                div.setAttribute('data-correct', opt.isCorrect);
+                div.innerHTML = `<div class="option-letter">${letter}</div><div class="option-text">${opt.value.toFixed(2)} 分贝</div>`;
+                container.appendChild(div);
+            });
+        }
+
+        // Render options for Q4
+        function renderQ4Options() {
+            const container = document.getElementById('options-q4');
+            const options = generateNumericOptions(currentParams.q4Answer, 4);
+
+            container.innerHTML = '';
+            options.forEach((opt, index) => {
+                const letter = String.fromCharCode(65 + index);
+                const div = document.createElement('div');
+                div.className = 'option';
+                div.setAttribute('data-option', letter.toLowerCase());
+                div.setAttribute('data-correct', opt.isCorrect);
+                div.innerHTML = `<div class="option-letter">${letter}</div><div class="option-text">${opt.value.toFixed(2)} 分贝</div>`;
+                container.appendChild(div);
+            });
+        }
+
+        // Initialize question
+        function initializeQuestion() {
+            // Update equation display
+            const slopeStr = currentParams.slope >= 0 ? `+ ${currentParams.slopeAbs}` : `- ${currentParams.slopeAbs}`;
+            document.getElementById('regression-equation').textContent = `ŷ = ${currentParams.intercept.toFixed(4)} ${slopeStr}x`;
+
+            // Update Q1
+            document.getElementById('q1-relation').textContent = currentParams.q1Relation;
+
+            // Update Q2
+            document.getElementById('q2-change').textContent = currentParams.q2Change;
+
+            // Update Q3 and Q4 x values
+            document.getElementById('q3-xvalue').textContent = currentParams.q3X;
+            document.getElementById('q4-xvalue').textContent = currentParams.q3X;
+
+            // Update explanations
+            if (currentParams.correlation === 'negative') {
+                document.getElementById('explanation-q1').textContent = '从散点图可以看出，y值（韦伯分数）随着x值（刺激强度）的增加而减少。因此，大于韦伯分数均值的韦伯分数（即y值较大）往往与小于刺激强度均值的刺激强度（即x值较小）配对。回归线的斜率为负也表明了这种负相关关系。';
+                document.getElementById('explanation-q2').textContent = `最小二乘回归线的斜率是给定x变量增加一个单位时y变量的预测变化量。斜率为 ${currentParams.slope.toFixed(4)}，这意味着刺激强度每增加一分贝，韦伯分数预测减少 ${currentParams.slopeAbs.toFixed(4)} 分贝。`;
+            } else {
+                document.getElementById('explanation-q1').textContent = '从散点图可以看出，y值（韦伯分数）随着x值（刺激强度）的增加而增加。因此，大于韦伯分数均值的韦伯分数（即y值较大）往往与大于刺激强度均值的刺激强度（即x值较大）配对。回归线的斜率为正也表明了这种正相关关系。';
+                document.getElementById('explanation-q2').textContent = `最小二乘回归线的斜率是给定x变量增加一个单位时y变量的预测变化量。斜率为 ${currentParams.slope.toFixed(4)}，这意味着刺激强度每增加一分贝，韦伯分数预测增加 ${currentParams.slopeAbs.toFixed(4)} 分贝。`;
+            }
+            document.getElementById('explanation-q3').textContent = `从数据表中可以直接查找到，当刺激强度为${currentParams.q3X}分贝时，对应的韦伯分数为 ${currentParams.q3Answer.toFixed(2)} 分贝。`;
+            document.getElementById('explanation-q4').textContent = `根据回归方程ŷ = ${currentParams.intercept.toFixed(4)} ${slopeStr}(${currentParams.q3X}) ≈ ${currentParams.q4Answer.toFixed(2)} 分贝。`;
+
+            // Render dynamic content
+            renderDataTable();
+            renderQ2Options();
+            renderQ3Options();
+            renderQ4Options();
+
+            // Reset state
+            userAnswers = { q1: null, q2: null, q3: null, q4: null };
+            submitted = false;
+
+            // Attach event listeners
+            attachOptionListeners();
+        }
+
+        // Attach option listeners
+        function attachOptionListeners() {
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', function() {
+                    if (submitted) return;
+
+                    const questionId = this.closest('.question').id;
+                    const optionValue = this.getAttribute('data-option');
+
+                    // Clear other selections in same question
+                    const questionOptions = document.querySelectorAll(`#${questionId} .option`);
+                    questionOptions.forEach(opt => opt.classList.remove('selected'));
+
+                    this.classList.add('selected');
+                    userAnswers[questionId] = optionValue;
+                });
+            });
+        }
+
+        // Get correct answer for a question
+        function getCorrectAnswer(questionId) {
+            if (questionId === 'q1') return currentParams.q1Answer;
+            if (questionId === 'q2' || questionId === 'q3' || questionId === 'q4') {
+                const container = document.getElementById(`options-${questionId}`);
+                const correctOption = container.querySelector('.option[data-correct="true"]');
+                return correctOption ? correctOption.getAttribute('data-option') : null;
+            }
+            return null;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize
+            initializeQuestion();
+
+            const submitBtn = document.getElementById('submitBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const refreshBtn = document.getElementById('refresh-btn');
+
+            // Refresh button
+            refreshBtn.addEventListener('click', function() {
+                let newParams;
+                do {
+                    newParams = parameterSets[Math.floor(Math.random() * parameterSets.length)];
+                } while (newParams === currentParams && parameterSets.length > 1);
+
+                currentParams = newParams;
+                initializeQuestion();
+
+                // Reset UI
+                document.querySelectorAll('.option').forEach(opt => {
+                    opt.classList.remove('selected', 'correct', 'incorrect');
+                });
+                document.querySelectorAll('.feedback').forEach(fb => {
+                    fb.textContent = '';
+                    fb.className = 'feedback';
+                });
+                document.getElementById('scoreValue').textContent = '0/4';
+                document.getElementById('scoreText').textContent = '请回答所有问题并提交';
+                document.getElementById('scoreText').style.color = '';
+
+                submitBtn.textContent = '提交答案';
+                submitBtn.disabled = false;
+                submitBtn.style.opacity = '1';
+            });
+
+            // Submit button
+            submitBtn.addEventListener('click', function() {
+                if (submitted) return;
+
+                let score = 0;
+                const totalQuestions = 4;
+
+                for (const questionId of ['q1', 'q2', 'q3', 'q4']) {
+                    const userAnswer = userAnswers[questionId];
+                    const correctAnswer = getCorrectAnswer(questionId);
+                    const feedbackElement = document.getElementById(`feedback${questionId.slice(1)}`);
+                    const options = document.querySelectorAll(`#${questionId} .option`);
+
+                    if (userAnswer === null) {
+                        feedbackElement.textContent = '请先选择答案！';
+                        feedbackElement.className = 'feedback incorrect';
+                        continue;
+                    }
+
+                    options.forEach(option => {
+                        const optionValue = option.getAttribute('data-option');
+                        if (optionValue === userAnswer && userAnswer !== correctAnswer) {
+                            option.classList.add('incorrect');
+                        }
+                        option.classList.remove('selected');
+                    });
+
+                    if (userAnswer === correctAnswer) {
+                        score++;
+                        feedbackElement.textContent = '正确！';
+                        feedbackElement.className = 'feedback correct';
+                    } else {
+                        feedbackElement.textContent = `不正确。正确答案是 ${correctAnswer.toUpperCase()}。`;
+                        feedbackElement.className = 'feedback incorrect';
+                    }
+                }
+
+                // Update score display
+                const scoreValueElement = document.getElementById('scoreValue');
+                const scoreTextElement = document.getElementById('scoreText');
+
+                scoreValueElement.textContent = `${score}/${totalQuestions}`;
+
+                if (score === totalQuestions) {
+                    scoreTextElement.textContent = '优秀！全部回答正确！';
+                    scoreTextElement.style.color = '#10b981';
+                } else if (score >= totalQuestions / 2) {
+                    scoreTextElement.textContent = '不错！继续努力！';
+                    scoreTextElement.style.color = '#3b82f6';
+                } else {
+                    scoreTextElement.textContent = '需要更多练习，加油！';
+                    scoreTextElement.style.color = '#ef4444';
+                }
+
+                submitted = true;
+                submitBtn.textContent = '已提交';
+                submitBtn.disabled = true;
+                submitBtn.style.opacity = '0.7';
+            });
+
+            // Reset button
+            resetBtn.addEventListener('click', function() {
+                document.querySelectorAll('.option').forEach(option => {
+                    option.classList.remove('selected', 'correct', 'incorrect');
+                });
+
+                document.querySelectorAll('.feedback').forEach(feedback => {
+                    feedback.textContent = '';
+                    feedback.className = 'feedback';
+                });
+
+                userAnswers = { q1: null, q2: null, q3: null, q4: null };
+                submitted = false;
+
+                submitBtn.textContent = '提交答案';
+                submitBtn.disabled = false;
+                submitBtn.style.opacity = '1';
+
+                document.getElementById('scoreValue').textContent = '0/4';
+                document.getElementById('scoreText').textContent = '请回答所有问题并提交';
+                document.getElementById('scoreText').style.color = '';
+            });
+        });
+    </script>
+</body>
+</html>

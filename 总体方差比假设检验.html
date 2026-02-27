@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>总体方差比假设检验 - 交互式答题</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(50, 50, 93, 0.1), 0 5px 15px rgba(0, 0, 0, 0.07);
+            overflow: hidden;
+            padding: 30px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #eaeaea;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2.2rem;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+
+        .question-container {
+            margin-bottom: 30px;
+            padding: 25px;
+            background-color: #f8fafc;
+            border-radius: 15px;
+            border-left: 5px solid #3498db;
+            transition: transform 0.3s ease;
+        }
+
+        .question-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        .question-title {
+            font-size: 1.4rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .question-title i {
+            margin-right: 10px;
+            color: #3498db;
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            color: #34495e;
+            white-space: pre-line;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .data-table th {
+            background-color: #3498db;
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .data-table td {
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .options-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .option {
+            padding: 18px;
+            background-color: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            font-size: 1.05rem;
+        }
+
+        .option:hover {
+            border-color: #3498db;
+            background-color: #f0f8ff;
+            transform: translateY(-3px);
+        }
+
+        .option.selected {
+            border-color: #3498db;
+            background-color: #e3f2fd;
+        }
+
+        .option.correct {
+            border-color: #2ecc71;
+            background-color: #d5f4e6;
+        }
+
+        .option.incorrect {
+            border-color: #e74c3c;
+            background-color: #fadbd8;
+        }
+
+        .option-letter {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 30px;
+            height: 30px;
+            background-color: #3498db;
+            color: white;
+            border-radius: 50%;
+            margin-right: 15px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .option.correct .option-letter {
+            background-color: #2ecc71;
+        }
+
+        .option.incorrect .option-letter {
+            background-color: #e74c3c;
+        }
+
+        .input-answer {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+            margin-top: 10px;
+            transition: border-color 0.3s;
+        }
+
+        .input-answer:focus {
+            border-color: #3498db;
+            outline: none;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        button {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        #submit-btn {
+            background-color: #3498db;
+            color: white;
+        }
+
+        #submit-btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-3px);
+            box-shadow: 0 7px 14px rgba(52, 152, 219, 0.3);
+        }
+
+        #reset-btn {
+            background-color: #95a5a6;
+            color: white;
+        }
+
+        #reset-btn:hover {
+            background-color: #7f8c8d;
+            transform: translateY(-3px);
+            box-shadow: 0 7px 14px rgba(149, 165, 166, 0.3);
+        }
+
+        .results {
+            margin-top: 40px;
+            padding: 25px;
+            background-color: #f8fafc;
+            border-radius: 15px;
+            text-align: center;
+            display: none;
+        }
+
+        .results.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .score {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #3498db;
+            margin: 10px 0;
+        }
+
+        .feedback {
+            font-size: 1.2rem;
+            margin: 15px 0;
+            padding: 15px;
+            border-radius: 10px;
+            background-color: #e3f2fd;
+        }
+
+        .correct-answer {
+            color: #2ecc71;
+            font-weight: bold;
+        }
+
+        .incorrect-answer {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        .explanation {
+            text-align: left;
+            margin-top: 25px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 10px;
+            border-left: 5px solid #f1c40f;
+        }
+
+        .explanation h3 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .math {
+            font-family: "Times New Roman", serif;
+            font-style: italic;
+            font-weight: bold;
+        }
+
+        .formula {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            text-align: center;
+            font-family: "Times New Roman", serif;
+            font-size: 1.2rem;
+            border-left: 4px solid #3498db;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .options-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .controls {
+                flex-direction: column;
+            }
+            
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+
+    <style>
+    .show-explanation-btn {
+        display: none;
+        margin: 20px auto;
+        padding: 14px 28px;
+        background: linear-gradient(135deg, #9b59b6, #8e44ad);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 1.1rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
+    }
+    .show-explanation-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
+    }
+    .explanation-section {
+        display: none;
+        margin-top: 20px;
+    }
+    </style>
+    </head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-chart-bar"></i> 总体方差比假设检验 <button onclick="refreshParams()" style="margin-left: 15px; padding: 8px 16px; background: linear-gradient(135deg, #e74c3c, #c0392b); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-weight: 600; transition: all 0.3s ease;">刷新参数</button></h1>
+            <p class="subtitle">交互式答题系统 - 检验您对F检验的理解</p>
+        </header>
+
+        <div class="question-container">
+            <div class="question-title">
+                <i class="fas fa-database"></i> 题目数据
+            </div>
+            <div class="question-text">
+                从两个正态分布总体中独立抽取的随机样本得出以下统计量：
+            </div>
+            
+            <table class="data-table" id="data-table">
+                <thead>
+                    <tr>
+                        <th>统计量</th>
+                        <th>组 1</th>
+                        <th>组 2</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>样本量 (n)</td>
+                        <td id="n1">20</td>
+                        <td id="n2">17</td>
+                    </tr>
+                    <tr>
+                        <td>样本均值 (x̄)</td>
+                        <td id="mean1">264.7</td>
+                        <td id="mean2">244.3</td>
+                    </tr>
+                    <tr>
+                        <td>样本方差 (s²)</td>
+                        <td id="var1">615.04</td>
+                        <td id="var2">252.81</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="question-text">
+                我们能否在 0.05 的显著性水平下，得出两个总体方差 σ²₁ 和 σ²₂ 存在差异的结论？
+                执行一个双尾检验。然后回答以下问题。
+                将中间计算过程至少保留三位小数，并按照表格中的要求对答案进行四舍五入。
+            </div>
+        </div>
+
+        <div class="question-container">
+            <div class="question-title">
+                <i class="fas fa-question-circle"></i> 问题 1: 原假设 H₀
+            </div>
+            <div class="options-container" id="q1-options">
+                <div class="option" data-question="1" data-option="a">
+                    <div class="option-letter">A</div>
+                    <span>H₀: σ²₁ = σ²₂ 或 H₀: σ²₁ / σ²₂ = 1</span>
+                </div>
+                <div class="option" data-question="1" data-option="b">
+                    <div class="option-letter">B</div>
+                    <span>H₀: σ²₁ ≠ σ²₂</span>
+                </div>
+                <div class="option" data-question="1" data-option="c">
+                    <div class="option-letter">C</div>
+                    <span>H₀: σ²₁ > σ²₂</span>
+                </div>
+                <div class="option" data-question="1" data-option="d">
+                    <div class="option-letter">D</div>
+                    <span>H₀: σ²₁ < σ²₂</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="question-container">
+            <div class="question-title">
+                <i class="fas fa-question-circle"></i> 问题 2: 备择假设 H₁
+            </div>
+            <div class="options-container" id="q2-options">
+                <div class="option" data-question="2" data-option="a">
+                    <div class="option-letter">A</div>
+                    <span>H₁: σ²₁ = σ²₂</span>
+                </div>
+                <div class="option" data-question="2" data-option="b">
+                    <div class="option-letter">B</div>
+                    <span>H₁: σ²₁ ≠ σ²₂ 或 H₁: σ²₁ / σ²₂ ≠ 1</span>
+                </div>
+                <div class="option" data-question="2" data-option="c">
+                    <div class="option-letter">C</div>
+                    <span>H₁: σ²₁ > σ²₂</span>
+                </div>
+                <div class="option" data-question="2" data-option="d">
+                    <div class="option-letter">D</div>
+                    <span>H₁: σ²₁ < σ²₂</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="question-container">
+            <div class="question-title">
+                <i class="fas fa-question-circle"></i> 问题 3: 检验统计量的类型和自由度
+            </div>
+            <div class="options-container" id="q3-options">
+                <div class="option" data-question="3" data-option="a">
+                    <div class="option-letter">A</div>
+                    <span>Z 检验 (无需自由度)</span>
+                </div>
+                <div class="option" data-question="3" data-option="b">
+                    <div class="option-letter">B</div>
+                    <span id="q3-option-b">t 检验 (自由度 = 35)</span>
+                </div>
+                <div class="option" data-question="3" data-option="c">
+                    <div class="option-letter">C</div>
+                    <span id="q3-option-c">卡方检验 (自由度 = 19)</span>
+                </div>
+                <div class="option" data-question="3" data-option="d">
+                    <div class="option-letter">D</div>
+                    <span id="q3-option-d">F 检验 (分子自由度 = 19, 分母自由度 = 16)</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="question-container">
+            <div class="question-title">
+                <i class="fas fa-question-circle"></i> 问题 4: 检验统计量的值 (至少保留三位小数)
+            </div>
+            <div class="question-text">
+                计算 F 统计量: F = s²₁ / s²₂
+            </div>
+            <div class="formula" id="q4-formula">
+                F = 615.04 / 252.81 ≈ <span class="math">2.433</span>
+            </div>
+            <input type="text" class="input-answer" id="q4-answer">
+        </div>
+
+        <div class="question-container">
+            <div class="question-title">
+                <i class="fas fa-question-circle"></i> 问题 5: p值 (至少保留三位小数)
+            </div>
+            <div class="question-text" id="q5-text">
+                对于双尾F检验，p值 = 2 × P(F > 2.433)
+            </div>
+            <input type="text" class="input-answer" id="q5-answer">
+        </div>
+
+        <div class="question-container">
+            <div class="question-title">
+                <i class="fas fa-question-circle"></i> 问题 6: 我们能否得出两个总体方差存在差异的结论?
+            </div>
+            <div class="options-container" id="q6-options">
+                <div class="option" data-question="6" data-option="a">
+                    <div class="option-letter">A</div>
+                    <span>是 (在0.05显著性水平下拒绝H₀)</span>
+                </div>
+                <div class="option" data-question="6" data-option="b">
+                    <div class="option-letter">B</div>
+                    <span>否 (在0.05显著性水平下不拒绝H₀)</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button id="submit-btn">
+                <i class="fas fa-paper-plane"></i> 提交答案
+            </button>
+            <button id="reset-btn">
+                <i class="fas fa-redo"></i> 重新作答
+            </button>
+        </div>
+
+        <div class="results" id="results">
+            <h2><i class="fas fa-poll"></i> 答题结果</h2>
+            <div class="score" id="score">0/6</div>
+            <div class="feedback" id="feedback"></div>
+            
+            <button class="show-explanation-btn" id="show-explanation-btn">📖 查看答案解析</button>
+<div class="explanation-section explanation">
+                <h3><i class="fas fa-lightbulb"></i> 题目解析</h3>
+                <p><strong>1. 原假设与备择假设：</strong> 我们需要检验两个总体方差是否相等。原假设应为方差相等，备择假设为方差不相等（双尾检验）。</p>
+                <p><strong>2. 检验统计量类型：</strong> 比较两个正态总体方差时，使用F检验。F统计量服从分子自由度为n₁-1=19，分母自由度为n₂-1=16的F分布。</p>
+                <p><strong>3. 检验统计量计算：</strong> F = s²₁ / s²₂ = 615.04 / 252.81 ≈ 2.433</p>
+                <p><strong>4. p值计算：</strong> 对于双尾检验，p值 = 2 × P(F > 2.433) ≈ 0.078 (使用F分布表或统计软件计算)。</p>
+                <p><strong>5. 决策：</strong> 由于p值(0.078) > 显著性水平(0.05)，我们不能拒绝原假设。</p>
+                <p><strong>6. 结论：</strong> 没有足够的证据表明两个总体方差存在显著差异。</p>
+                
+            </div>
+        </div>
+
+        
+    </div>
+
+    <script>
+        // 参数化配置 - 预先计算好的参数集合
+        const questionParams = [
+            {
+                // 参数集1: 原始题目
+                n1: 20, n2: 17,
+                mean1: 264.7, mean2: 244.3,
+                var1: 615.04, var2: 252.81,
+                df1: 19, df2: 16,
+                fValue: "2.433",
+                pValue: "0.078",
+                conclusion: "b", // 否
+                alpha: 0.05
+            },
+            {
+                // 参数集2: 显著差异的情况
+                n1: 25, n2: 22,
+                mean1: 150.5, mean2: 138.2,
+                var1: 845.21, var2: 289.63,
+                df1: 24, df2: 21,
+                fValue: "2.918",
+                pValue: "0.012",
+                conclusion: "a", // 是
+                alpha: 0.05
+            },
+            {
+                // 参数集3: 边缘情况
+                n1: 30, n2: 28,
+                mean1: 85.3, mean2: 79.6,
+                var1: 156.25, var2: 64.00,
+                df1: 29, df2: 27,
+                fValue: "2.441",
+                pValue: "0.048",
+                conclusion: "a", // 是
+                alpha: 0.05
+            },
+            {
+                // 参数集4: 不显著的情况
+                n1: 18, n2: 15,
+                mean1: 420.8, mean2: 395.2,
+                var1: 324.09, var2: 196.00,
+                df1: 17, df2: 14,
+                fValue: "1.654",
+                pValue: "0.312",
+                conclusion: "b", // 否
+                alpha: 0.05
+            },
+            {
+                // 参数集5: 大样本显著差异
+                n1: 40, n2: 35,
+                mean1: 72.5, mean2: 68.3,
+                var1: 225.00, var2: 81.00,
+                df1: 39, df2: 34,
+                fValue: "2.778",
+                pValue: "0.008",
+                conclusion: "a", // 是
+                alpha: 0.05
+            },
+            {
+                // 参数集6: 小样本不显著
+                n1: 12, n2: 10,
+                mean1: 56.4, mean2: 52.1,
+                var1: 121.00, var2: 81.00,
+                df1: 11, df2: 9,
+                fValue: "1.494",
+                pValue: "0.524",
+                conclusion: "b", // 否
+                alpha: 0.05
+            }
+        ];
+
+        let currentParamIndex = Math.floor(Math.random() * questionParams.length);
+
+        // 正确答案
+        let correctAnswers = {
+            1: 'a',
+            2: 'b',
+            3: 'd',
+            4: '2.433',
+            5: '0.078',
+            6: 'b'
+        };
+
+        // 用户答案
+        let userAnswers = {
+            1: null,
+            2: null,
+            3: null,
+            4: '',
+            5: '',
+            6: null
+        };
+
+        // 渲染问题的函数
+        function renderQuestion() {
+            const params = questionParams[currentParamIndex];
+
+            // 更新数据表格
+            document.getElementById('n1').textContent = params.n1;
+            document.getElementById('n2').textContent = params.n2;
+            document.getElementById('mean1').textContent = params.mean1;
+            document.getElementById('mean2').textContent = params.mean2;
+            document.getElementById('var1').textContent = params.var1;
+            document.getElementById('var2').textContent = params.var2;
+
+            // 更新问题3的选项D
+            document.getElementById('q3-option-d').textContent =
+                `F 检验 (分子自由度 = ${params.df1}, 分母自由度 = ${params.df2})`;
+
+            // 更新问题4的公式显示
+            document.getElementById('q4-formula').innerHTML =
+                `F = ${params.var1} / ${params.var2} ≈ <span class="math">${params.fValue}</span>`;
+
+            // 更新问题5的文本
+            document.getElementById('q5-text').textContent =
+                `对于双尾F检验，p值 = 2 × P(F > ${params.fValue})`;
+
+            // 更新正确答案
+            correctAnswers[4] = params.fValue;
+            correctAnswers[5] = params.pValue;
+            correctAnswers[6] = params.conclusion;
+        }
+
+        // 刷新参数函数
+        function refreshParams() {
+            let newIndex;
+            do {
+                newIndex = Math.floor(Math.random() * questionParams.length);
+            } while (newIndex === currentParamIndex && questionParams.length > 1);
+            currentParamIndex = newIndex;
+
+            // 重置用户答案
+            userAnswers = {
+                1: null,
+                2: null,
+                3: null,
+                4: '',
+                5: '',
+                6: null
+            };
+
+            // 清除所有选项的样式
+            document.querySelectorAll('.option').forEach(option => {
+                option.classList.remove('selected', 'correct', 'incorrect');
+            });
+
+            // 重置输入框
+            document.getElementById('q4-answer').value = '';
+            document.getElementById('q4-answer').style.borderColor = '';
+            document.getElementById('q4-answer').style.backgroundColor = '';
+
+            document.getElementById('q5-answer').value = '';
+            document.getElementById('q5-answer').style.borderColor = '';
+            document.getElementById('q5-answer').style.backgroundColor = '';
+
+            // 隐藏结果区域
+            document.getElementById('results').classList.remove('show');
+
+            // 隐藏答案解析按钮
+            document.getElementById('show-explanation-btn').style.display = 'none';
+            document.querySelector('.explanation-section').style.display = 'none';
+
+            // 重新渲染问题
+            renderQuestion();
+        }
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始化渲染
+            renderQuestion();
+
+            // Show explanation button functionality
+            document.getElementById('show-explanation-btn').addEventListener('click', function() {
+                var explanation = document.querySelector('.explanation-section');
+                if (explanation) {
+                    if (explanation.style.display === 'block') {
+                        explanation.style.display = 'none';
+                        this.textContent = '查看答案解析';
+                    } else {
+                        explanation.style.display = 'block';
+                        this.textContent = '隐藏答案解析';
+                    }
+                }
+            });
+
+            // 初始化选项点击事件
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const questionNum = this.getAttribute('data-question');
+                    const optionValue = this.getAttribute('data-option');
+
+                    // 清除同一问题的其他选项的选中状态
+                    document.querySelectorAll(`.option[data-question="${questionNum}"]`).forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+
+                    // 设置当前选项为选中状态
+                    this.classList.add('selected');
+
+                    // 保存用户答案
+                    userAnswers[questionNum] = optionValue;
+                });
+            });
+
+            // 初始化输入框事件
+            document.getElementById('q4-answer').addEventListener('input', function() {
+                userAnswers[4] = this.value.trim();
+            });
+
+            document.getElementById('q5-answer').addEventListener('input', function() {
+                userAnswers[5] = this.value.trim();
+            });
+
+            // 提交按钮事件
+            document.getElementById('submit-btn').addEventListener('click', function() {
+                // 检查是否所有问题都已作答
+                let allAnswered = true;
+                for (let i = 1; i <= 6; i++) {
+                    if (i <= 3 || i === 6) {
+                        if (userAnswers[i] === null) {
+                            allAnswered = false;
+                            break;
+                        }
+                    } else {
+                        if (userAnswers[i] === '') {
+                            allAnswered = false;
+                            break;
+                        }
+                    }
+                }
+
+                if (!allAnswered) {
+                    alert('请回答所有问题后再提交！');
+                    return;
+                }
+
+                // 计算得分
+                let score = 0;
+                const totalQuestions = 6;
+
+                // 检查每个问题的答案
+                for (let i = 1; i <= totalQuestions; i++) {
+                    const userAnswer = userAnswers[i];
+                    const correctAnswer = correctAnswers[i];
+
+                    // 对于选择题
+                    if (i <= 3 || i === 6) {
+                        const optionElement = document.querySelector(`.option[data-question="${i}"][data-option="${userAnswer}"]`);
+
+                        if (userAnswer === correctAnswer) {
+                            score++;
+                            optionElement.classList.add('correct');
+                        } else {
+                            optionElement.classList.add('incorrect');
+                        }
+                    }
+                    // 对于填空题
+                    else {
+                        // 使用数值容差进行比较
+                        const userAnswerNumeric = parseFloat(userAnswer);
+                        const correctAnswerNumeric = parseFloat(correctAnswer);
+                        const tolerance = 0.01; // 容差范围
+
+                        const inputElement = document.getElementById(`q${i}-answer`);
+
+                        if (!isNaN(userAnswerNumeric) && Math.abs(userAnswerNumeric - correctAnswerNumeric) <= tolerance) {
+                            score++;
+                            inputElement.style.borderColor = '#2ecc71';
+                            inputElement.style.backgroundColor = '#d5f4e6';
+                        } else {
+                            inputElement.style.borderColor = '#e74c3c';
+                            inputElement.style.backgroundColor = '#fadbd8';
+                        }
+                    }
+                }
+
+                // 显示结果
+                const resultsElement = document.getElementById('results');
+                const scoreElement = document.getElementById('score');
+                const feedbackElement = document.getElementById('feedback');
+
+                scoreElement.textContent = `${score}/${totalQuestions}`;
+
+                // 根据得分给出反馈
+                if (score === totalQuestions) {
+                    feedbackElement.innerHTML = '<span class="correct-answer">优秀！您完全掌握了总体方差比假设检验！</span>';
+                } else if (score >= totalQuestions * 0.7) {
+                    feedbackElement.innerHTML = '<span class="correct-answer">很好！您对F检验有较好的理解！</span>';
+                } else if (score >= totalQuestions * 0.5) {
+                    feedbackElement.innerHTML = '<span class="incorrect-answer">不错，但还需要进一步学习F检验的原理。</span>';
+                } else {
+                    feedbackElement.innerHTML = '<span class="incorrect-answer">需要加强学习，请仔细阅读题目解析。</span>';
+                }
+
+                resultsElement.classList.add('show');
+
+                // Show the explanation button after submit
+                document.getElementById('show-explanation-btn').style.display = 'block';
+
+                // 滚动到结果区域
+                resultsElement.scrollIntoView({ behavior: 'smooth' });
+            });
+
+            // 重置按钮事件
+            document.getElementById('reset-btn').addEventListener('click', function() {
+                // 重置用户答案
+                userAnswers = {
+                    1: null,
+                    2: null,
+                    3: null,
+                    4: '',
+                    5: '',
+                    6: null
+                };
+
+                // 清除所有选项的选中状态和样式
+                document.querySelectorAll('.option').forEach(option => {
+                    option.classList.remove('selected', 'correct', 'incorrect');
+                });
+
+                // 重置输入框
+                document.getElementById('q4-answer').value = '';
+                document.getElementById('q4-answer').style.borderColor = '';
+                document.getElementById('q4-answer').style.backgroundColor = '';
+
+                document.getElementById('q5-answer').value = '';
+                document.getElementById('q5-answer').style.borderColor = '';
+                document.getElementById('q5-answer').style.backgroundColor = '';
+
+                // 隐藏结果区域
+                document.getElementById('results').classList.remove('show');
+
+                // Hide explanation button and section on reset
+                document.getElementById('show-explanation-btn').style.display = 'none';
+                document.querySelector('.explanation-section').style.display = 'none';
+
+                // 滚动到顶部
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
+    </script>
+</body>
+</html>

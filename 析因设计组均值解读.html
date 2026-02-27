@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>析因设计组均值解读 - 交互式答题</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f0f7ff;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #4a90e2;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 2.2rem;
+        }
+
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+
+        .question-container {
+            background-color: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border-left: 5px solid #4a90e2;
+        }
+
+        .question-title {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .question-title::before {
+            content: "Q";
+            background-color: #4a90e2;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-weight: bold;
+        }
+
+        .question-text {
+            margin-bottom: 25px;
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        .charts-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .chart-box {
+            background-color: #f8fafc;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            border: 2px solid #e1e8f0;
+            transition: all 0.3s ease;
+        }
+
+        .chart-box:hover {
+            border-color: #4a90e2;
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(74, 144, 226, 0.1);
+        }
+
+        .chart-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+
+        .chart-placeholder {
+            width: 100%;
+            height: 180px;
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #4a90e2;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .options-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .option {
+            flex: 1 1 calc(25% - 15px);
+            min-width: 150px;
+            background-color: #f8fafc;
+            border: 2px solid #e1e8f0;
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .option:hover {
+            background-color: #e3f2fd;
+            border-color: #4a90e2;
+        }
+
+        .option.selected {
+            background-color: #e3f2fd;
+            border-color: #4a90e2;
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+        }
+
+        .option.correct {
+            background-color: #e8f5e9;
+            border-color: #4caf50;
+            color: #2e7d32;
+        }
+
+        .option.incorrect {
+            background-color: #ffebee;
+            border-color: #f44336;
+            color: #c62828;
+        }
+
+        .feedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .feedback.correct {
+            background-color: #e8f5e9;
+            border-left: 5px solid #4caf50;
+            display: block;
+        }
+
+        .feedback.incorrect {
+            background-color: #ffebee;
+            border-left: 5px solid #f44336;
+            display: block;
+        }
+
+        .feedback-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .explanation {
+            margin-top: 10px;
+            font-size: 0.95rem;
+            color: #555;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+            margin-bottom: 40px;
+        }
+
+        button {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        #submit-btn {
+            background-color: #4a90e2;
+            color: white;
+        }
+
+        #submit-btn:hover {
+            background-color: #3a7bc8;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(74, 144, 226, 0.3);
+        }
+
+        #reset-btn {
+            background-color: #f5f5f5;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+
+        #reset-btn:hover {
+            background-color: #e0e0e0;
+            transform: translateY(-2px);
+        }
+
+        .results {
+            background-color: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            display: none;
+        }
+
+        .results.show {
+            display: block;
+        }
+
+        .score {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #4a90e2;
+            margin: 10px 0;
+        }
+
+        .score-text {
+            font-size: 1.2rem;
+            color: #7f8c8d;
+            margin-bottom: 20px;
+        }
+
+        .answer-summary {
+            margin-top: 20px;
+            text-align: left;
+            background-color: #f8fafc;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .summary-item {
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e1e8f0;
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+
+        .summary-question {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .summary-answer {
+            color: #555;
+        }
+
+        .summary-answer.correct {
+            color: #4caf50;
+        }
+
+        .summary-answer.incorrect {
+            color: #f44336;
+        }
+
+        @media (max-width: 768px) {
+            .options-container {
+                flex-direction: column;
+            }
+            
+            .option {
+                flex: 1 1 100%;
+            }
+            
+            .charts-container {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .question-title {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+
+    <style>
+    .show-explanation-btn {
+        display: none;
+        margin: 20px auto;
+        padding: 14px 28px;
+        background: linear-gradient(135deg, #9b59b6, #8e44ad);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 1.1rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
+    }
+    .show-explanation-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
+    }
+    .explanation-section {
+        display: none;
+        margin-top: 20px;
+    }
+    </style>
+    </head>
+<body>
+    <header>
+        <h1>析因设计组均值解读 <button id="refresh-btn" style="margin-left: 15px; padding: 8px 16px; background: linear-gradient(135deg, #34a853, #2ecc71); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(52, 168, 83, 0.3);">刷新参数</button></h1>
+        <p class="subtitle">方差分析、卡方检验与非参数检验 - 交互式答题练习</p>
+    </header>
+
+    <div class="question-container">
+        <div class="question-title">问题描述</div>
+        <div class="question-text">
+            <p>某些类型的电影是否倾向于比其他类型赚更多的钱？一个电影行业分析师团队正在通过考察两个可能影响票房总收入的因素来研究这个问题：电影类型（喜剧、恐怖或动作）以及电影上映的时间（夏季或冬季）。分析师在三种类型中各自选择了数量相等的电影。每种类型中选出的电影，一半在夏季上映，另一半在冬季上映。所有电影都是在过去五年内上映的。</p>
+            <p>分析师记录了每部电影的票房收入（以百万美元计），然后计算了六个组中每一组的组均值。下面显示了四张可能展示这些组均值的图表。请根据这些图表回答以下问题。</p>
+        </div>
+        
+        <div class="charts-container">
+            <div class="chart-box">
+                <div class="chart-title">图 1</div>
+                <div class="chart-placeholder">交互式图表区域</div>
+                <p style="margin-top: 10px; font-size: 0.9rem;">夏季和冬季的折线图不平行</p>
+            </div>
+            <div class="chart-box">
+                <div class="chart-title">图 2</div>
+                <div class="chart-placeholder">交互式图表区域</div>
+                <p style="margin-top: 10px; font-size: 0.9rem;">红色折线图完全在蓝色之上</p>
+            </div>
+            <div class="chart-box">
+                <div class="chart-title">图 3</div>
+                <div class="chart-placeholder">交互式图表区域</div>
+                <p style="margin-top: 10px; font-size: 0.9rem;">红色折线图完全在蓝色之上</p>
+            </div>
+            <div class="chart-box">
+                <div class="chart-title">图 4</div>
+                <div class="chart-placeholder">交互式图表区域</div>
+                <p style="margin-top: 10px; font-size: 0.9rem;">蓝色折线图完全在红色之上</p>
+            </div>
+        </div>
+        
+        <div class="question-text">
+            <p>本问题描述的研究采用了一个析因设计。有两个被考察的因素：上映时间和类型。因素"上映时间"有两个水平：夏季和冬季。因素"类型"有三个水平：喜剧、恐怖和动作。每个上映时间水平都与每个类型水平组合进行评估，总共得到 2 × 3 = 6 个组。</p>
+            <p>在每张图中，这 6 个组的均值使用两个折线图绘制——其中一个折线图是红色的，另一个是蓝色的。我们可以利用这些折线图中给出的信息来回答问题。</p>
+        </div>
+    </div>
+
+    <div class="question-container" id="question1">
+        <div class="question-title">问题 1</div>
+        <div class="question-text">
+            <p>哪些图显示至少有一种类型的总体均值与其他类型不同？选择所有适用的图。</p>
+            
+        </div>
+        
+        <div class="options-container">
+            <div class="option" data-question="1" data-option="图1">图 1</div>
+            <div class="option" data-question="1" data-option="图2">图 2</div>
+            <div class="option" data-question="1" data-option="图3">图 3</div>
+            <div class="option" data-question="1" data-option="图4">图 4</div>
+        </div>
+        
+        <button class="show-explanation-btn" data-question="1" style="display:none;">查看答案解析</button>
+        <div class="explanation-section" id="explanation1" style="display:none;">
+            <p>我们可以通过找出某类型夏季平均票房和冬季平均票房的中点来找到该类型的总体平均票房。</p>
+            <p>比较这些总体均值：</p>
+            <ul>
+                <li>图 1：喜剧、恐怖和动作的均值相等。</li>
+                <li>图 2：恐怖片的均值低于喜剧片和动作片。</li>
+                <li>图 3：喜剧、恐怖和动作的均值相等。</li>
+                <li>图 4：喜剧片的均值高于恐怖片，恐怖片的均值高于动作片。</li>
+            </ul>
+            <p>因此，<strong>图 2 和图 4</strong> 显示至少有一种类型的总体均值与其他类型不同。</p>
+        </div>
+        <div class="feedback" id="feedback1">
+            <div class="feedback-title">结果</div>
+        </div>
+    </div>
+
+    <div class="question-container" id="question2">
+        <div class="question-title">问题 2</div>
+        <div class="question-text">
+            <p>哪些图显示两个上映时间的总体均值不同？选择所有适用的图。</p>
+            
+        </div>
+        
+        <div class="options-container">
+            <div class="option" data-question="2" data-option="图1">图 1</div>
+            <div class="option" data-question="2" data-option="图2">图 2</div>
+            <div class="option" data-question="2" data-option="图3">图 3</div>
+            <div class="option" data-question="2" data-option="图4">图 4</div>
+        </div>
+        
+        <button class="show-explanation-btn" data-question="2" style="display:none;">查看答案解析</button>
+        <div class="explanation-section" id="explanation2" style="display:none;">
+            <p>有一个快速的视觉线索可以判断两个上映时间的总体均值是否不同：如果其中一个折线图完全位于另一个之上，那么两个上映时间的总体均值就不同。</p>
+            <p>在所有图中，上映时间的总体均值都不相等：</p>
+            <ul>
+                <li>图 1：冬季上映影片的总体均值高于夏季上映影片的总体均值。</li>
+                <li>图 2：夏季上映影片的折线图完全位于冬季上映影片的折线图之上。</li>
+                <li>图 3：夏季上映影片的折线图完全位于冬季上映影片的折线图之上。</li>
+                <li>图 4：冬季上映影片的折线图完全位于夏季上映影片的折线图之上。</li>
+            </ul>
+            <p>因此，<strong>所有图（图 1, 图 2, 图 3, 图 4）</strong> 都显示两个上映时间的总体均值不同。</p>
+        </div>
+        <div class="feedback" id="feedback2">
+            <div class="feedback-title">结果</div>
+        </div>
+    </div>
+
+    <div class="question-container" id="question3">
+        <div class="question-title">问题 3</div>
+        <div class="question-text">
+            <p>哪些图显示两个因素（上映时间和类型）之间存在交互作用的证据？选择所有适用的图。</p>
+            <p><em>提示：当一个因素的效应取决于另一个因素的水平时，就发生了交互作用。简单的视觉线索：如果图中的折线图不平行，则存在交互作用的证据。</em></p>
+        </div>
+        
+        <div class="options-container">
+            <div class="option" data-question="3" data-option="图1">图 1</div>
+            <div class="option" data-question="3" data-option="图2">图 2</div>
+            <div class="option" data-question="3" data-option="图3">图 3</div>
+            <div class="option" data-question="3" data-option="图4">图 4</div>
+        </div>
+        
+        <button class="show-explanation-btn" data-question="3" style="display:none;">查看答案解析</button>
+        <div class="explanation-section" id="explanation3" style="display:none;">
+            <p>有一个简单的交互作用视觉线索：如果图中的折线图不平行，则存在交互作用的证据。</p>
+            <ul>
+                <li>图 1：两个折线图不平行。它们在比较类型时讲述了不同的故事，存在交互作用的证据。</li>
+                <li>图 2：两个折线图平行。每个图在比较类型时讲述了相同的故事，没有交互作用的证据。</li>
+                <li>图 3：两个折线图平行。每个图在比较类型时讲述了相同的故事，没有交互作用的证据。</li>
+                <li>图 4：两个折线图平行。每个图在比较类型时讲述了相同的故事，没有交互作用的证据。</li>
+            </ul>
+            <p>因此，只有 <strong>图 1</strong> 显示两个因素之间存在交互作用的证据。</p>
+        </div>
+        <div class="feedback" id="feedback3">
+            <div class="feedback-title">结果</div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button id="submit-btn">提交答案</button>
+        <button id="reset-btn">重新作答</button>
+    </div>
+
+    <div class="results" id="results">
+        <h2>答题结果</h2>
+        <div class="score" id="score">0/3</div>
+        <div class="score-text" id="score-text"></div>
+        
+        <div class="answer-summary">
+            <div class="summary-item">
+                <div class="summary-question">问题 1: 哪些图显示至少有一种类型的总体均值与其他类型不同？</div>
+                <div class="summary-answer" id="summary1">您的答案：未选择</div>
+            </div>
+            <div class="summary-item">
+                <div class="summary-question">问题 2: 哪些图显示两个上映时间的总体均值不同？</div>
+                <div class="summary-answer" id="summary2">您的答案：未选择</div>
+            </div>
+            <div class="summary-item">
+                <div class="summary-question">问题 3: 哪些图显示两个因素之间存在交互作用的证据？</div>
+                <div class="summary-answer" id="summary3">您的答案：未选择</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 正确答案
+        const correctAnswers = {
+            1: ["图2", "图4"],
+            2: ["图1", "图2", "图3", "图4"],
+            3: ["图1"]
+        };
+        
+        // 用户选择的答案
+        let userAnswers = {
+            1: [],
+            2: [],
+            3: []
+        };
+        
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+
+            // 显示答案解析按钮点击事件
+            document.querySelectorAll('.show-explanation-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    var questionId = this.getAttribute('data-question');
+                    var explanation = document.getElementById('explanation' + questionId);
+                    if (explanation) {
+                        if (explanation.style.display === 'block') {
+                            explanation.style.display = 'none';
+                            this.textContent = '查看答案解析';
+                        } else {
+                            explanation.style.display = 'block';
+                            this.textContent = '隐藏答案解析';
+                        }
+                    }
+                });
+            });
+
+            // 为每个选项添加点击事件
+            document.querySelectorAll('.option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const questionNum = this.getAttribute('data-question');
+                    const optionValue = this.getAttribute('data-option');
+                    
+                    // 如果是多选问题，切换选择状态
+                    if (this.classList.contains('selected')) {
+                        this.classList.remove('selected');
+                        const index = userAnswers[questionNum].indexOf(optionValue);
+                        if (index > -1) {
+                            userAnswers[questionNum].splice(index, 1);
+                        }
+                    } else {
+                        this.classList.add('selected');
+                        userAnswers[questionNum].push(optionValue);
+                    }
+                });
+            });
+            
+            // 提交按钮事件
+            document.getElementById('submit-btn').addEventListener('click', function() {
+                checkAnswers();
+            });
+            
+            // 重置按钮事件
+            document.getElementById('reset-btn').addEventListener('click', function() {
+                resetQuiz();
+            });
+        });
+        
+        // 检查答案
+        function checkAnswers() {
+            let score = 0;
+            const totalQuestions = 3;
+            
+            // 检查每个问题
+            for (let i = 1; i <= totalQuestions; i++) {
+                const userAnswer = userAnswers[i].sort();
+                const correctAnswer = correctAnswers[i].sort();
+                
+                // 转换为字符串比较
+                const userAnswerStr = JSON.stringify(userAnswer);
+                const correctAnswerStr = JSON.stringify(correctAnswer);
+                
+                // 获取问题容器和反馈元素
+                const questionContainer = document.getElementById(`question${i}`);
+                const feedback = document.getElementById(`feedback${i}`);
+                const summary = document.getElementById(`summary${i}`);
+                
+                // 更新反馈
+                if (userAnswerStr === correctAnswerStr) {
+                    score++;
+                    feedback.classList.add('correct');
+                    feedback.classList.remove('incorrect');
+                    summary.textContent = `您的答案：${userAnswer.join(', ')}`;
+                    summary.classList.add('correct');
+                    summary.classList.remove('incorrect');
+                } else {
+                    feedback.classList.add('incorrect');
+                    feedback.classList.remove('correct');
+                    summary.textContent = `您的答案：${userAnswer.length > 0 ? userAnswer.join(', ') : '未选择'}`;
+                    summary.classList.add('incorrect');
+                    summary.classList.remove('correct');
+                }
+                
+                // 标记选项的正确/错误状态
+                const options = questionContainer.querySelectorAll('.option');
+                options.forEach(option => {
+                    const optionValue = option.getAttribute('data-option');
+
+                    // 移除之前的样式
+                    option.classList.remove('correct', 'incorrect');
+
+                    // 如果用户选择了错误答案
+                    if (userAnswers[i].includes(optionValue) && !correctAnswers[i].includes(optionValue)) {
+                        option.classList.add('incorrect');
+                    }
+                });
+            }
+            
+            // 显示结果
+            const results = document.getElementById('results');
+            const scoreElement = document.getElementById('score');
+            const scoreText = document.getElementById('score-text');
+            
+            scoreElement.textContent = `${score}/${totalQuestions}`;
+            
+            // 根据得分显示不同的文本
+            if (score === totalQuestions) {
+                scoreText.textContent = "太棒了！您全部答对了！";
+                scoreElement.style.color = "#4caf50";
+            } else if (score >= totalQuestions / 2) {
+                scoreText.textContent = "不错！再复习一下可以做得更好！";
+                scoreElement.style.color = "#ff9800";
+            } else {
+                scoreText.textContent = "需要更多练习，请查看解析并再试一次！";
+                scoreElement.style.color = "#f44336";
+            }
+            
+            
+                // 显示答案解析按钮
+                document.querySelectorAll('.show-explanation-btn').forEach(btn => {
+                    btn.style.display = 'inline-block';
+                });
+
+results.classList.add('show');
+            results.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // 重置测验
+        function resetQuiz() {
+            // 重置用户答案
+            userAnswers = {
+                1: [],
+                2: [],
+                3: []
+            };
+
+            // 移除所有选项的选择状态
+            document.querySelectorAll('.option').forEach(option => {
+                option.classList.remove('selected', 'correct', 'incorrect');
+            });
+
+            // 隐藏反馈
+            for (let i = 1; i <= 3; i++) {
+                const feedback = document.getElementById(`feedback${i}`);
+                feedback.classList.remove('correct', 'incorrect');
+
+                const summary = document.getElementById(`summary${i}`);
+                summary.textContent = `您的答案：未选择`;
+                summary.classList.remove('correct', 'incorrect');
+            }
+
+
+                // 隐藏答案解析按钮
+                document.querySelectorAll('.show-explanation-btn').forEach(btn => {
+                    btn.style.display = 'none';
+                    btn.textContent = '查看答案解析';
+                });
+
+                // 隐藏解析内容
+                document.querySelectorAll('.explanation-section').forEach(explanation => {
+                    explanation.style.display = 'none';
+                });
+
+document.getElementById('results').classList.remove('show');
+
+            // 滚动到顶部
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>

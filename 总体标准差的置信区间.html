@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>总体标准差的置信区间 - 交互式答题</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f0f7ff;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .container {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 82, 204, 0.1);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e6f0ff;
+        }
+
+        h1 {
+            color: #0052cc;
+            margin-bottom: 10px;
+            font-size: 2.2rem;
+        }
+
+        .subtitle {
+            color: #6699ff;
+            font-size: 1.1rem;
+        }
+
+        .question-section {
+            margin-bottom: 40px;
+        }
+
+        .question-title {
+            color: #0052cc;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed #c2d9ff;
+        }
+
+        .question-content {
+            background-color: #f8fbff;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            border-left: 5px solid #4d94ff;
+            font-size: 1.05rem;
+        }
+
+        .question-content p {
+            margin-bottom: 15px;
+        }
+
+        .math {
+            font-family: 'Cambria Math', 'Times New Roman', serif;
+            background-color: #f0f5ff;
+            padding: 2px 8px;
+            border-radius: 4px;
+            display: inline-block;
+            margin: 2px 0;
+        }
+
+        .answer-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .answer-option {
+            flex: 1 1 calc(50% - 15px);
+            min-width: 250px;
+            background-color: #f8fbff;
+            border: 2px solid #c2d9ff;
+            border-radius: 10px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+        }
+
+        .answer-option:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0, 82, 204, 0.15);
+            border-color: #4d94ff;
+            background-color: #e6f0ff;
+        }
+
+        .answer-option.selected {
+            border-color: #0052cc;
+            background-color: #e6f0ff;
+        }
+
+        .answer-option.correct {
+            border-color: #00cc66;
+            background-color: #e6ffe6;
+        }
+
+        .answer-option.incorrect {
+            border-color: #ff6666;
+            background-color: #ffe6e6;
+        }
+
+        .option-label {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            background-color: #4d94ff;
+            color: white;
+            border-radius: 50%;
+            margin-right: 15px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .option-text {
+            font-size: 1.1rem;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        button {
+            padding: 14px 32px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        #submit-btn {
+            background-color: #0052cc;
+            color: white;
+        }
+
+        #submit-btn:hover {
+            background-color: #0047b3;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 82, 204, 0.3);
+        }
+
+        #reset-btn {
+            background-color: #f0f5ff;
+            color: #0052cc;
+            border: 2px solid #c2d9ff;
+        }
+
+        #reset-btn:hover {
+            background-color: #e6f0ff;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 82, 204, 0.1);
+        }
+
+        .result-section {
+            margin-top: 30px;
+            padding: 25px;
+            background-color: #f8fbff;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .result-section.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .score-display {
+            font-size: 1.3rem;
+            color: #0052cc;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .feedback {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #e6f0ff;
+        }
+
+        .feedback-title {
+            color: #0052cc;
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .explanation {
+            margin-top: 25px;
+            padding: 20px;
+            background-color: #f0f7ff;
+            border-radius: 8px;
+            border-left: 4px solid #4d94ff;
+        }
+
+        .explanation h3 {
+            color: #0052cc;
+            margin-bottom: 15px;
+        }
+
+        .explanation p {
+            margin-bottom: 15px;
+        }
+
+        .formula {
+            background-color: #e6f0ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            text-align: center;
+            font-family: 'Cambria Math', 'Times New Roman', serif;
+            font-size: 1.1rem;
+        }
+
+        .correct-answer {
+            color: #00cc66;
+            font-weight: bold;
+        }
+
+        .incorrect-answer {
+            color: #ff6666;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .answer-option {
+                flex: 1 1 100%;
+            }
+            
+            .controls {
+                flex-direction: column;
+            }
+            
+            button {
+                width: 100%;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+
+    <style>
+    .show-explanation-btn {
+        display: none;
+        margin: 20px auto;
+        padding: 14px 28px;
+        background: linear-gradient(135deg, #9b59b6, #8e44ad);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-size: 1.1rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
+    }
+    .show-explanation-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
+    }
+    .explanation-section {
+        display: none;
+        margin-top: 20px;
+    }
+    </style>
+    </head>
+<body>
+    <div class="container">
+        <header>
+            <h1>总体标准差的置信区间
+                <button id="refresh-btn" style="margin-left: 15px; padding: 8px 16px; background: linear-gradient(135deg, #34a853, #2ecc71); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(52, 168, 83, 0.3);">刷新参数</button>
+            </h1>
+            <div class="subtitle">交互式答题练习 - 置信区间与假设检验</div>
+        </header>
+        
+        <div class="question-section">
+            <h2 class="question-title">题目内容</h2>
+            <div class="question-content">
+                <p>产品每日需求的标准差是控制该产品库存的一个重要因素。</p>
+                <p>假设一家药店想要估计某种抗生素每日需求的标准差。已知该抗生素的每日需求近似服从正态分布。一个包含 30 天的随机样本中，该抗生素的样本均值为 124.5 份订单，标准差为 10 份订单。求该抗生素每日需求的总体标准差的 99% 置信区间。</p>
+                <p>将中间计算过程保留至少三位小数。将答案四舍五入到至少两位小数。</p>
+            </div>
+            
+            <h2 class="question-title">请选择正确答案</h2>
+            <div class="answer-section">
+                <div class="answer-option" data-option="A">
+                    <div class="option-label">A</div>
+                    <div class="option-text">下限: 7.44, 上限: 14.87</div>
+                </div>
+                <div class="answer-option" data-option="B">
+                    <div class="option-label">B</div>
+                    <div class="option-text">下限: 7.20, 上限: 15.10</div>
+                </div>
+                <div class="answer-option" data-option="C">
+                    <div class="option-label">C</div>
+                    <div class="option-text">下限: 8.05, 上限: 13.95</div>
+                </div>
+                <div class="answer-option" data-option="D">
+                    <div class="option-label">D</div>
+                    <div class="option-text">下限: 6.85, 上限: 16.25</div>
+                </div>
+            </div>
+            
+            <div class="controls">
+                <button id="submit-btn">提交答案</button>
+                <button id="reset-btn">重新作答</button>
+            </div>
+            
+            <div class="result-section" id="result-section">
+                <div class="score-display" id="score-display"></div>
+                
+                <div class="feedback" id="feedback">
+                    <div class="feedback-title" id="feedback-title"></div>
+                    <p id="feedback-text"></p>
+                </div>
+                
+                <button class="show-explanation-btn" id="show-explanation-btn">📖 查看答案解析</button>
+<div class="explanation-section explanation">
+                    <h3>题目解析</h3>
+                    <p>我们需要求总体标准差 σ 的 99% 置信区间。我们将先求总体方差 σ² 的 99% 置信区间，然后通过取平方根得到 σ 的置信区间。</p>
+                    
+                    <p>样本方差 s² 是我们用来估计 σ² 的量。当 s² 是从正态总体中抽取的容量为 n 的随机样本的方差时，则</p>
+                    
+                    <div class="formula">
+                        (n-1)s² / σ²
+                    </div>
+                    
+                    <p>近似服从自由度为 n-1 的卡方分布。在此问题中，n = 30，所以</p>
+                    
+                    <div class="formula">
+                        (30-1)s² / σ² = 29 s² / σ²
+                    </div>
+                    
+                    <p>服从自由度为 29 的卡方分布。我们将使用这个分布来求置信区间。</p>
+                    
+                    <p>为了找出自由度为 29 的卡方分布的"中间 99%"，我们使用截取该分布下尾 0.5% 和上尾 0.5% 的数值。这些数值分别是 χ²₀.₉₉₅ 和 χ²₀.₀₀₅。</p>
+                    
+                    <p>因此，大约 99% 的来自该总体的容量为 30 的随机样本满足：</p>
+                    
+                    <div class="formula">
+                        χ²₀.₉₉₅ < (30-1)s² / σ² < χ²₀.₀₀₅
+                    </div>
+                    
+                    <p>解出 σ²，我们看到大约 99% 的来自该总体的容量为 30 的样本满足：</p>
+                    
+                    <div class="formula">
+                        (30-1)s² / χ²₀.₀₀₅ < σ² < (30-1)s² / χ²₀.₉₉₅
+                    </div>
+                    
+                    <p>或者等价地，</p>
+                    
+                    <div class="formula">
+                        √[ (30-1)s² / χ²₀.₀₀₅ ] < σ < √[ (30-1)s² / χ²₀.₉₉₅ ]
+                    </div>
+                    
+                    <p>s 的观测值给定为 10，我们可以计算 χ²₀.₉₉₅ 和 χ²₀.₀₀₅（这些计算基于自由度为 29 的卡方分布）。</p>
+                    
+                    <p>因此，基于该样本的 σ 的 99% 置信区间为：</p>
+                    
+                    <div class="formula">
+                        ( √[ (30-1)*10² / χ²₀.₀₀₅ ] , √[ (30-1)*10² / χ²₀.₉₉₅ ] ) ≈ ( √[ 29*100 / 52.336 ] , √[ 29*100 / 13.121 ] ) ≈ (7.44, 14.87)
+                    </div>
+
+                    <p>一般而言，如果从正态总体中抽取容量为 n 的随机样本，则总体标准差 σ 的 (1-α)100% 置信区间为：</p>
+                    
+                    <div class="formula">
+                        ( √[ (n-1)s² / χ²_{α/2} ] , √[ (n-1)s² / χ²_{1-α/2} ] )
+                    </div>
+                    
+                    <p>其中 s 是样本标准差，χ²_{1-α/2} 和 χ²_{α/2} 分别是自由度为 n-1 的卡方分布中截取左尾和右尾 α/2 面积的数值。</p>
+                </div>
+            </div>
+        </div>
+        
+        
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+            // Show explanation button functionality
+            document.getElementById('show-explanation-btn').addEventListener('click', function() {
+                var explanation = document.querySelector('.explanation-section');
+                if (explanation) {
+                    if (explanation.style.display === 'block') {
+                        explanation.style.display = 'none';
+                        this.textContent = '查看答案解析';
+                    } else {
+                        explanation.style.display = 'block';
+                        this.textContent = '隐藏答案解析';
+                    }
+                }
+            });
+
+            const answerOptions = document.querySelectorAll('.answer-option');
+            const submitBtn = document.getElementById('submit-btn');
+            const resetBtn = document.getElementById('reset-btn');
+            const resultSection = document.getElementById('result-section');
+            const scoreDisplay = document.getElementById('score-display');
+            const feedbackTitle = document.getElementById('feedback-title');
+            const feedbackText = document.getElementById('feedback-text');
+            
+            let selectedOption = null;
+            let isSubmitted = false;
+            const correctAnswer = 'A';
+            
+            // 点击选项
+            answerOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    if (isSubmitted) return;
+                    
+                    // 移除之前的选择
+                    answerOptions.forEach(opt => {
+                        opt.classList.remove('selected');
+                    });
+                    
+                    // 设置当前选择
+                    this.classList.add('selected');
+                    selectedOption = this.getAttribute('data-option');
+                });
+            });
+            
+            // 提交答案
+            submitBtn.addEventListener('click', function() {
+                if (!selectedOption) {
+                    alert('请先选择一个答案！');
+                    return;
+                }
+                
+                isSubmitted = true;
+                
+                // 显示结果区域
+                resultSection.classList.add('show');
+
+                // Show explanation button after submit
+                document.getElementById('show-explanation-btn').style.display = 'block';
+
+                // 禁用所有选项的点击
+                answerOptions.forEach(option => {
+                    option.style.cursor = 'default';
+                });
+                
+                // 标记正确和错误答案
+                answerOptions.forEach(option => {
+                    const optionValue = option.getAttribute('data-option');
+                    
+                    // Only mark incorrect, don't reveal correct answer
+                    if (optionValue === selectedOption && optionValue !== correctAnswer) {
+                        option.classList.add('incorrect');
+                    }
+                });
+                
+                // 计算得分
+                const isCorrect = selectedOption === correctAnswer;
+                const score = isCorrect ? 100 : 0;
+                
+                // 显示得分
+                scoreDisplay.textContent = `得分: ${score}/100`;
+                
+                // 显示反馈
+                if (isCorrect) {
+                    feedbackTitle.textContent = '回答正确！';
+                    feedbackTitle.style.color = '#00cc66';
+                    feedbackText.textContent = '恭喜你！你正确计算出了总体标准差的99%置信区间。你的答案与解析中的计算结果一致。';
+                    feedbackText.style.color = '#00cc66';
+                } else {
+                    feedbackTitle.textContent = '回答错误！';
+                    feedbackTitle.style.color = '#ff6666';
+                    feedbackText.innerHTML = `你选择了选项 <span class="incorrect-answer">${selectedOption}</span>，但。请查看下方的详细解析，了解如何计算总体标准差的置信区间。`;
+                    feedbackText.style.color = '#ff6666';
+                }
+                
+                // 滚动到结果区域
+                resultSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            });
+            
+            // 重新作答
+            resetBtn.addEventListener('click', function() {
+                // 重置所有选项
+                answerOptions.forEach(option => {
+                    option.classList.remove('selected', 'correct', 'incorrect');
+                    option.style.cursor = 'pointer';
+                });
+
+                // 隐藏结果区域
+                resultSection.classList.remove('show');
+
+                // Hide explanation button and section on reset
+                document.getElementById('show-explanation-btn').style.display = 'none';
+                var explanationSection = document.querySelector('.explanation-section');
+                if (explanationSection) {
+                    explanationSection.style.display = 'none';
+                }
+
+                // 重置状态
+                selectedOption = null;
+                isSubmitted = false;
+
+                // 滚动到顶部
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
+    </script>
+</body>
+</html>

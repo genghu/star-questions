@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>标准正态概率 - 交互式答题</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f7ff;
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0, 82, 204, 0.1);
+            padding: 30px;
+            overflow: hidden;
+        }
+        header {
+            text-align: center;
+            border-bottom: 2px solid #e6f0ff;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        h1 {
+            color: #0052cc;
+            margin-top: 0;
+            font-size: 2.2rem;
+        }
+        .subtitle {
+            color: #6699ff;
+            font-size: 1.1rem;
+        }
+        .question-section {
+            margin-bottom: 40px;
+            padding: 25px;
+            border-radius: 12px;
+            background-color: #f8fbff;
+            border-left: 5px solid #4d94ff;
+            transition: transform 0.3s ease;
+        }
+        .question-section:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 82, 204, 0.1);
+        }
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .question-title {
+            color: #0052cc;
+            margin-top: 0;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
+        }
+        .question-title::before {
+            content: "问题";
+            background-color: #4d94ff;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-right: 12px;
+        }
+        .refresh-btn {
+            background-color: #34a853;
+            color: white;
+            padding: 8px 16px;
+            font-size: 0.9rem;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .refresh-btn:hover {
+            background-color: #2d9248;
+        }
+        .question-content {
+            font-size: 1.1rem;
+            margin: 20px 0;
+            padding: 15px;
+            background-color: white;
+            border-radius: 8px;
+            border: 1px solid #e6f0ff;
+        }
+        .answer-input-container {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #f8fafc;
+            border-radius: 10px;
+            border: 2px solid #e0e7ff;
+        }
+        .answer-label {
+            font-size: 1rem;
+            color: #2c3e50;
+            margin-bottom: 8px;
+            display: block;
+            font-weight: 600;
+        }
+        .answer-input {
+            width: 100%;
+            max-width: 250px;
+            padding: 12px 15px;
+            font-size: 1.1rem;
+            border: 2px solid #e0e7ff;
+            border-radius: 8px;
+            transition: all 0.3s;
+            outline: none;
+        }
+        .answer-input:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 10px rgba(52, 152, 219, 0.2);
+        }
+        .answer-input.correct {
+            border-color: #2ecc71;
+            background-color: #e8f8ef;
+        }
+        .answer-input.incorrect {
+            border-color: #e74c3c;
+            background-color: #fdedec;
+        }
+        .tolerance-hint {
+            font-size: 0.85rem;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+        .feedback-inline {
+            margin-top: 8px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            display: none;
+        }
+        .feedback-inline.correct {
+            background-color: #e8f8ef;
+            color: #27ae60;
+            display: block;
+        }
+        .feedback-inline.incorrect {
+            background-color: #fdedec;
+            color: #e74c3c;
+            display: block;
+        }
+        .explanation {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f0f9ff;
+            border-left: 4px solid #4d94ff;
+            display: none;
+        }
+        .explanation.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .explanation-title {
+            color: #0052cc;
+            margin-top: 0;
+            font-size: 1.1rem;
+        }
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+        button {
+            padding: 14px 32px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        #submit-btn {
+            background-color: #0052cc;
+            color: white;
+        }
+        #submit-btn:hover {
+            background-color: #0047b3;
+            transform: scale(1.05);
+        }
+        #reset-btn {
+            background-color: #f0f7ff;
+            color: #0052cc;
+            border: 2px solid #cce0ff;
+        }
+        #reset-btn:hover {
+            background-color: #e6f0ff;
+            transform: scale(1.05);
+        }
+        .score-panel {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            background-color: #f8fbff;
+            border-radius: 12px;
+            border: 2px solid #cce0ff;
+            display: none;
+        }
+        .score-panel.show {
+            display: block;
+            animation: fadeIn 0.8s ease;
+        }
+        .score-title {
+            color: #0052cc;
+            font-size: 1.5rem;
+            margin-top: 0;
+        }
+        .score-value {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #0052cc;
+            margin: 10px 0;
+        }
+        .score-details {
+            color: #6699ff;
+            font-size: 1.1rem;
+        }
+        .math {
+            font-family: 'Cambria Math', 'Times New Roman', serif;
+            font-style: italic;
+        }
+        .figure {
+            text-align: center;
+            margin: 15px 0;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            font-style: italic;
+            color: #666;
+        }
+        .show-explanation-btn {
+            display: none;
+            margin: 20px auto;
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
+        }
+        .show-explanation-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
+        }
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            h1 {
+                font-size: 1.8rem;
+            }
+            .controls {
+                flex-direction: column;
+            }
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h1>标准正态概率</h1>
+                    <p class="subtitle">交互式答题练习 - 理解标准正态分布的概率计算</p>
+                </div>
+                <button class="refresh-btn" id="global-refresh-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
+                    </svg>
+                    刷新参数
+                </button>
+            </div>
+        </header>
+
+        <div id="questions-container">
+            <!-- 动态生成 -->
+        </div>
+
+        <div class="controls">
+            <button id="submit-btn">提交答案</button>
+            <button id="reset-btn">重新作答</button>
+        </div>
+
+        <div class="score-panel" id="score-panel">
+            <h2 class="score-title">答题结果</h2>
+            <div class="score-value" id="score-value">0/3</div>
+            <p class="score-details" id="score-details">您答对了 0 题，答错了 0 题</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // ==================== 参数化数据集 ====================
+            const questionParams = [
+                {
+                    questions: [
+                        { z: -1.38, type: 'less', answer: 0.084, prob: 0.0838 },
+                        { z: -1.25, type: 'greater', answer: 0.894, probLess: 0.1056 },
+                        { z1: 0.47, z2: 1.88, type: 'between', answer: 0.289, probZ1: 0.6808, probZ2: 0.9699 }
+                    ]
+                },
+                {
+                    questions: [
+                        { z: -1.65, type: 'less', answer: 0.050, prob: 0.0495 },
+                        { z: -0.84, type: 'greater', answer: 0.800, probLess: 0.2005 },
+                        { z1: 0.52, z2: 2.05, type: 'between', answer: 0.296, probZ1: 0.6985, probZ2: 0.9798 }
+                    ]
+                },
+                {
+                    questions: [
+                        { z: -2.33, type: 'less', answer: 0.010, prob: 0.0099 },
+                        { z: -1.96, type: 'greater', answer: 0.975, probLess: 0.0250 },
+                        { z1: -0.44, z2: 1.52, type: 'between', answer: 0.613, probZ1: 0.3300, probZ2: 0.9357 }
+                    ]
+                },
+                {
+                    questions: [
+                        { z: -0.52, type: 'less', answer: 0.302, prob: 0.3015 },
+                        { z: -1.28, type: 'greater', answer: 0.900, probLess: 0.1003 },
+                        { z1: -1.00, z2: 1.00, type: 'between', answer: 0.683, probZ1: 0.1587, probZ2: 0.8413 }
+                    ]
+                },
+                {
+                    questions: [
+                        { z: -2.58, type: 'less', answer: 0.005, prob: 0.0049 },
+                        { z: -0.67, type: 'greater', answer: 0.749, probLess: 0.2514 },
+                        { z1: 0.00, z2: 1.96, type: 'between', answer: 0.475, probZ1: 0.5000, probZ2: 0.9750 }
+                    ]
+                }
+            ];
+
+            // 当前参数索引
+            let currentParamIndex = 0;
+            let userAnswers = { 1: null, 2: null, 3: null };
+            let submitted = false;
+
+            // ==================== 渲染函数 ====================
+            function renderQuestions() {
+                const params = questionParams[currentParamIndex];
+                const container = document.getElementById('questions-container');
+
+                let html = '';
+                params.questions.forEach((q, idx) => {
+                    const qNum = idx + 1;
+                    let questionText, explanationText;
+
+                    if (q.type === 'less') {
+                        questionText = `设 <span class="math">Z</span> 为标准正态随机变量。计算 <span class="math">P(Z <= ${q.z})</span>，即标准正态随机变量取值小于或等于 ${q.z} 的概率。`;
+                        explanationText = `<span class="math">P(Z <= ${q.z}) = ${q.prob.toFixed(4)}</span>，四舍五入到三位小数：<strong>${q.answer.toFixed(3)}</strong>`;
+                    } else if (q.type === 'greater') {
+                        questionText = `设 <span class="math">Z</span> 为标准正态随机变量。计算 <span class="math">P(Z > ${q.z})</span>，即标准正态随机变量取值大于 ${q.z} 的概率。`;
+                        explanationText = `根据补集规则：<span class="math">P(Z > ${q.z}) = 1 - P(Z <= ${q.z}) = 1 - ${q.probLess.toFixed(4)} = ${q.answer.toFixed(3)}</span>`;
+                    } else if (q.type === 'between') {
+                        questionText = `设 <span class="math">Z</span> 为标准正态随机变量。计算 <span class="math">P(${q.z1} < Z < ${q.z2})</span>，即标准正态随机变量取值在 ${q.z1} 和 ${q.z2} 之间的概率。`;
+                        explanationText = `<span class="math">P(${q.z1} < Z < ${q.z2}) = P(Z <= ${q.z2}) - P(Z <= ${q.z1}) = ${q.probZ2.toFixed(4)} - ${q.probZ1.toFixed(4)} = ${q.answer.toFixed(3)}</span>`;
+                    }
+
+                    html += `
+                        <div class="question-section" id="question${qNum}">
+                            <h2 class="question-title">${qNum}</h2>
+                            <div class="question-content">
+                                <p>${questionText}</p>
+                                <p>使用计算器计算并将答案四舍五入到至少三位小数。</p>
+                            </div>
+                            <div class="answer-input-container">
+                                <label class="answer-label">请输入概率值：</label>
+                                <input type="text" class="answer-input" id="answer${qNum}">
+                                <div class="tolerance-hint">容差：±0.01</div>
+                                <div class="feedback-inline" id="feedback${qNum}"></div>
+                            </div>
+                            <button class="show-explanation-btn" data-question="${qNum}">查看答案解析</button>
+                            <div class="explanation" id="explanation${qNum}">
+                                <h3 class="explanation-title">解析</h3>
+                                <p>${explanationText}</p>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                container.innerHTML = html;
+
+                // 重新绑定事件
+                bindEvents();
+            }
+
+            function bindEvents() {
+                // 显示答案解析按钮点击事件
+                document.querySelectorAll('.show-explanation-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const questionId = this.getAttribute('data-question');
+                        const explanation = document.getElementById(`explanation${questionId}`);
+                        if (explanation.classList.contains('show')) {
+                            explanation.classList.remove('show');
+                            this.textContent = '查看答案解析';
+                        } else {
+                            explanation.classList.add('show');
+                            this.textContent = '隐藏答案解析';
+                        }
+                    });
+                });
+            }
+
+            function refreshParams() {
+                let newIndex;
+                do {
+                    newIndex = Math.floor(Math.random() * questionParams.length);
+                } while (newIndex === currentParamIndex && questionParams.length > 1);
+
+                currentParamIndex = newIndex;
+                userAnswers = { 1: null, 2: null, 3: null };
+                submitted = false;
+
+                renderQuestions();
+                document.getElementById('score-panel').classList.remove('show');
+            }
+
+            // 全局刷新按钮
+            document.getElementById('global-refresh-btn').addEventListener('click', refreshParams);
+
+            // 提交按钮事件
+            document.getElementById('submit-btn').addEventListener('click', function() {
+                if (submitted) return;
+
+                const params = questionParams[currentParamIndex];
+                let correctCount = 0;
+                let totalQuestions = 3;
+
+                // 检查每个问题的答案
+                for (let i = 1; i <= totalQuestions; i++) {
+                    const answerInput = document.getElementById(`answer${i}`);
+                    const feedbackEl = document.getElementById(`feedback${i}`);
+                    const userAnswer = parseFloat(answerInput.value);
+                    const correctAnswer = params.questions[i - 1].answer;
+
+                    if (!isNaN(userAnswer)) {
+                        const tolerance = 0.01;
+                        if (Math.abs(userAnswer - correctAnswer) <= tolerance) {
+                            correctCount++;
+                            answerInput.classList.add('correct');
+                            feedbackEl.textContent = '正确！';
+                            feedbackEl.className = 'feedback-inline correct';
+                        } else {
+                            answerInput.classList.add('incorrect');
+                            feedbackEl.textContent = `不正确。正确答案是 ${correctAnswer.toFixed(3)}`;
+                            feedbackEl.className = 'feedback-inline incorrect';
+                        }
+                    } else {
+                        answerInput.classList.add('incorrect');
+                        feedbackEl.textContent = '请输入有效数字';
+                        feedbackEl.className = 'feedback-inline incorrect';
+                    }
+
+                    // 禁用输入
+                    answerInput.disabled = true;
+                }
+
+                submitted = true;
+
+                // 显示得分面板
+                const scorePanel = document.getElementById('score-panel');
+                const scoreValue = document.getElementById('score-value');
+                const scoreDetails = document.getElementById('score-details');
+
+                scoreValue.textContent = `${correctCount}/${totalQuestions}`;
+                scoreDetails.textContent = `您答对了 ${correctCount} 题，答错了 ${totalQuestions - correctCount} 题`;
+                scorePanel.classList.add('show');
+
+                // 显示所有解析按钮
+                document.querySelectorAll('.show-explanation-btn').forEach(btn => {
+                    btn.style.display = 'inline-block';
+                });
+
+                // 滚动到得分面板
+                scorePanel.scrollIntoView({ behavior: 'smooth' });
+            });
+
+            // 重置按钮事件
+            document.getElementById('reset-btn').addEventListener('click', function() {
+                // 重置用户答案
+                userAnswers = { 1: null, 2: null, 3: null };
+                submitted = false;
+
+                // 清除所有输入的样式
+                for (let i = 1; i <= 3; i++) {
+                    const input = document.getElementById(`answer${i}`);
+                    input.value = '';
+                    input.classList.remove('correct', 'incorrect');
+                    input.disabled = false;
+
+                    const feedback = document.getElementById(`feedback${i}`);
+                    feedback.className = 'feedback-inline';
+                    feedback.textContent = '';
+                }
+
+                // 隐藏答案解析
+                document.querySelectorAll('.show-explanation-btn').forEach(btn => {
+                    btn.style.display = 'none';
+                    btn.textContent = '查看答案解析';
+                });
+
+                document.querySelectorAll('.explanation').forEach(explanation => {
+                    explanation.classList.remove('show');
+                });
+
+                // 隐藏得分面板
+                document.getElementById('score-panel').classList.remove('show');
+
+                // 滚动到顶部
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+
+            // ==================== 初始化 ====================
+            renderQuestions();
+        });
+    </script>
+</body>
+</html>
