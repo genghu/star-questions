@@ -14,7 +14,8 @@
       "Bash(do if ! grep -q \"刷新参数\\\\|refreshParams\\\\|refreshBtn\\\\|refresh-btn\" \"$file\")",
       "Bash(then echo \"$file\")",
       "Bash(do if ! grep -q \"刷新参数\\\\|refreshParams\\\\|refreshBtn\\\\|refresh-btn\\\\|questionParams\\\\|parameterSets\" \"$file\")",
-      "Bash(do if ! grep -q \"刷新参数\\\\|refreshParams\\\\|refresh-btn\\\\|refresh-btn\" \"$file\")"
+      "Bash(do if ! grep -q \"刷新参数\\\\|refreshParams\\\\|refresh-btn\\\\|refresh-btn\" \"$file\")",
+      "Bash(node -c temp_check.js)"
     ]
   }
 }

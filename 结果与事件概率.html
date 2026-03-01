@@ -109,6 +109,16 @@
         .event-card:hover {
             border-color: #1a5fb4;
         }
+        .event-card.active {
+            border-color: #28a745;
+            background-color: #f0fff4;
+            box-shadow: 0 5px 20px rgba(40, 167, 69, 0.2);
+        }
+        .event-card.active .event-title::after {
+            content: " (当前选择)";
+            font-size: 0.8em;
+            color: #28a745;
+        }
         .event-title {
             color: #1a5fb4;
             margin-top: 0;
@@ -460,6 +470,20 @@
 
         let currentParams = parameterSets[0];
         let userSelections = { event1: [], event2: [], event3: [] };
+        let activeEventId = 'event1'; // 当前活动的事件
+
+        // 设置活动事件
+        function setActiveEvent(eventId) {
+            activeEventId = eventId;
+            // 更新所有事件卡片的活动状态
+            document.querySelectorAll('.event-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            const activeCard = document.getElementById(eventId + '-card');
+            if (activeCard) {
+                activeCard.classList.add('active');
+            }
+        }
         let isSubmitted = false;
 
         const allResults = ['HHH', 'HHT', 'HTH', 'HTT', 'THH', 'THT', 'TTH', 'TTT'];
@@ -488,10 +512,14 @@
             // Initialize event cards
             const eventsContainer = document.getElementById('events-container');
             eventsContainer.innerHTML = '';
-            events.forEach(event => {
+            events.forEach((event, index) => {
                 const eventCard = document.createElement('div');
                 eventCard.className = 'event-card';
                 eventCard.id = event.id + '-card';
+                if (index === 0) {
+                    eventCard.classList.add('active');
+                    activeEventId = event.id;
+                }
 
                 eventCard.innerHTML = `
                     <h3 class="event-title">${event.title}</h3>
@@ -502,6 +530,12 @@
                         概率: <span id="${event.id}-probability">?</span>
                     </div>
                 `;
+
+                // Make event card clickable to set as active
+                eventCard.addEventListener('click', function() {
+                    if (isSubmitted) return;
+                    setActiveEvent(event.id);
+                });
 
                 eventsContainer.appendChild(eventCard);
             });
@@ -514,41 +548,49 @@
             document.getElementById('results-panel').style.display = 'none';
         }
 
-        // Toggle result selection
+        // Toggle result selection - only affects the active event
         function toggleResultSelection(result) {
+            if (!activeEventId) {
+                alert('请先点击一个事件卡片来选择要编辑的事件！');
+                return;
+            }
+
             const resultElement = document.querySelector(`.result-item[data-result="${result}"]`);
-            resultElement.classList.toggle('selected');
+            const selectedContainer = document.getElementById(`${activeEventId}-selected`);
+            const resultChip = selectedContainer.querySelector(`[data-result="${result}"]`);
 
-            currentParams.events.forEach(event => {
-                const selectedContainer = document.getElementById(`${event.id}-selected`);
-                const resultChip = selectedContainer.querySelector(`[data-result="${result}"]`);
+            // Toggle selection for the active event only
+            if (!userSelections[activeEventId].includes(result)) {
+                userSelections[activeEventId].push(result);
 
-                if (resultElement.classList.contains('selected')) {
-                    if (!userSelections[event.id].includes(result)) {
-                        userSelections[event.id].push(result);
-
-                        if (!resultChip) {
-                            const chip = document.createElement('div');
-                            chip.className = 'selected-result-chip';
-                            chip.textContent = result;
-                            chip.dataset.result = result;
-                            chip.addEventListener('click', function(e) {
-                                e.stopPropagation();
-                                if (!isSubmitted) toggleResultSelection(result);
-                            });
-                            selectedContainer.appendChild(chip);
-                        }
-                    }
-                } else {
-                    const index = userSelections[event.id].indexOf(result);
-                    if (index > -1) {
-                        userSelections[event.id].splice(index, 1);
-                        if (resultChip) resultChip.remove();
-                    }
+                if (!resultChip) {
+                    const chip = document.createElement('div');
+                    chip.className = 'selected-result-chip';
+                    chip.textContent = result;
+                    chip.dataset.result = result;
+                    chip.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        if (!isSubmitted) removeResultFromEvent(activeEventId, result);
+                    });
+                    selectedContainer.appendChild(chip);
                 }
+            } else {
+                removeResultFromEvent(activeEventId, result);
+            }
 
-                updateProbabilityDisplay(event.id);
-            });
+            updateProbabilityDisplay(activeEventId);
+        }
+
+        // Remove a result from a specific event
+        function removeResultFromEvent(eventId, result) {
+            const index = userSelections[eventId].indexOf(result);
+            if (index > -1) {
+                userSelections[eventId].splice(index, 1);
+                const selectedContainer = document.getElementById(`${eventId}-selected`);
+                const resultChip = selectedContainer.querySelector(`[data-result="${result}"]`);
+                if (resultChip) resultChip.remove();
+            }
+            updateProbabilityDisplay(eventId);
         }
 
         // Update probability display

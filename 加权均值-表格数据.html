@@ -71,6 +71,7 @@
         }
 
         .refresh-params-btn {
+            max-width: 80px;
             padding: 8px 16px;
             background: linear-gradient(135deg, #27ae60, #2ecc71);
             color: white;
@@ -551,20 +552,6 @@
                             ${tableRows}
                         </tbody>
                     </table>
-
-                    <p>均值的正确计算方法是：</p>
-
-                    <div class="formula">
-                        <p>样本均值 = (${formula1}) / (${params.data.map(d => d.count).join(' + ')})</p>
-                    </div>
-
-                    <p>注意，${params.data.map(d => d.count).join('、')} 是频数，而 ${totalCount} 是样本量，即频数的总和。</p>
-
-                    <p>均值的计算也可以写成：</p>
-
-                    <div class="formula">
-                        <p>(${relativeFreqs}) 分别乘以对应的值</p>
-                    </div>
 
                     <p>四舍五入到一位小数后，平均${params.context}是多少？</p>
                 `;

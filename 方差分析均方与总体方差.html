@@ -181,6 +181,51 @@
             font-size: 1.05rem;
         }
 
+        .input-answer {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .input-answer label {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .input-answer input {
+            padding: 12px 15px;
+            font-size: 1.1rem;
+            border: 2px solid #bbdefb;
+            border-radius: 8px;
+            width: 150px;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .input-answer input:focus {
+            outline: none;
+            border-color: #1e88e5;
+            box-shadow: 0 0 10px rgba(30, 136, 229, 0.2);
+        }
+
+        .input-answer input.correct {
+            border-color: #4caf50;
+            background-color: #e8f5e9;
+        }
+
+        .input-answer input.incorrect {
+            border-color: #f44336;
+            background-color: #ffebee;
+        }
+
+        .input-answer .unit {
+            font-size: 1rem;
+            color: #666;
+        }
+
         .feedback {
             padding: 15px;
             border-radius: 10px;
@@ -394,40 +439,20 @@
                 </table>
                 
                 <p>假设抽取这些样本的五个得分总体近似服从正态分布，且具有相同的均值和相同的方差。</p>
-                <p><strong>通过合并给出的样本方差，给出这个共同总体方差σ²的估计值。</strong></p>
+                <p><strong>通过合并给出的样本方差，计算这个共同总体方差σ²的估计值。</strong></p>
                 <p>将中间计算过程至少保留三位小数，并将最终答案至少保留一位小数。</p>
             </div>
             
-            <div class="options-container">
-                <div class="option" data-question="1" data-option="A">
-                    <div class="option-letter">A</div>
-                    <div class="option-text">σ² ≈ <span class="math">109.1</span> (计算：<span class="math">(74.6 + 115.3 + 133.8 + 106.5 + 115.1) / 5 = 545.3 / 5 = 109.06 ≈ 109.1</span>)</div>
-                </div>
-                <div class="option" data-question="1" data-option="B">
-                    <div class="option-letter">B</div>
-                    <div class="option-text">σ² ≈ <span class="math">108.9</span> (计算：<span class="math">(74.6 + 115.3 + 133.8 + 106.5 + 115.1) / 5 = 545.3 / 5 = 108.9</span>)</div>
-                </div>
-                <div class="option" data-question="1" data-option="C">
-                    <div class="option-letter">C</div>
-                    <div class="option-text">σ² ≈ <span class="math">110.5</span> (计算：<span class="math">(74.6 + 115.3 + 133.8 + 106.5 + 115.1) / 5 = 545.3 / 5 = 110.5</span>)</div>
-                </div>
-                <div class="option" data-question="1" data-option="D">
-                    <div class="option-letter">D</div>
-                    <div class="option-text">σ² ≈ <span class="math">107.8</span> (计算：<span class="math">(74.6 + 115.3 + 133.8 + 106.5 + 115.1) / 5 = 545.3 / 5 = 107.8</span>)</div>
-                </div>
-            </div>
-            
-            <div class="feedback" id="feedback1">
-                <i class="fas fa-check-circle"></i> <strong>回答正确！</strong> 基于样本方差的σ²估计值是109.1。
+            <div class="input-answer">
+                <label for="answer1">σ² = </label>
+                <input type="number" id="answer1" step="0.1" placeholder="输入答案">
+                <span class="unit">(保留一位小数)</span>
             </div>
 
+            <div class="feedback" id="feedback1"></div>
+
             <button class="show-explanation-btn" data-question="1" style="display:none;">查看答案解析</button>
-            <div class="explanation" id="explanation1" style="display:none;">
-                <h4><i class="fas fa-lightbulb"></i> 题目解析</h4>
-                <p>每个样本方差（74.6, 115.3, 133.8, 106.5, 115.1）都是σ²的一个估计值。为了合并这五个样本方差中的信息，我们计算它们的平均值：</p>
-                <p class="math">(74.6 + 115.3 + 133.8 + 106.5 + 115.1) / 5 = 545.3 / 5 = 109.06 ≈ 109.1</p>
-                <p>因此，基于样本方差的σ²估计值是 <strong>109.1</strong>。</p>
-            </div>
+            <div class="explanation" id="explanation1" style="display:none;"></div>
         </div>
 
         <div class="question-card">
@@ -437,45 +462,21 @@
             </div>
             <div class="question-text">
                 <p>使用相同的题目背景和数据表格。</p>
-                <p><strong>根据给出的样本均值的方差，给出这个共同总体方差σ²的估计值。</strong></p>
-                <p>已知五个样本均值（64.1, 64.5, 73.6, 72.9, 64.6）的（样本）方差约为23.593。</p>
+                <p><strong>根据给出的样本均值的方差，计算这个共同总体方差σ²的估计值。</strong></p>
+                <p id="mean-variance-hint">已知五个样本均值（64.1, 64.5, 73.6, 72.9, 64.6）的（样本）方差约为23.593。</p>
                 <p>将中间计算过程至少保留三位小数，并将最终答案至少保留一位小数。</p>
             </div>
             
-            <div class="options-container">
-                <div class="option" data-question="2" data-option="A">
-                    <div class="option-letter">A</div>
-                    <div class="option-text">σ² ≈ <span class="math">495.5</span> (计算：<span class="math">23.593 × 21 = 495.453 ≈ 495.5</span>)</div>
-                </div>
-                <div class="option" data-question="2" data-option="B">
-                    <div class="option-letter">B</div>
-                    <div class="option-text">σ² ≈ <span class="math">490.2</span> (计算：<span class="math">23.593 × 21 = 490.2</span>)</div>
-                </div>
-                <div class="option" data-question="2" data-option="C">
-                    <div class="option-letter">C</div>
-                    <div class="option-text">σ² ≈ <span class="math">500.8</span> (计算：<span class="math">23.593 × 21 = 500.8</span>)</div>
-                </div>
-                <div class="option" data-question="2" data-option="D">
-                    <div class="option-letter">D</div>
-                    <div class="option-text">σ² ≈ <span class="math">485.6</span> (计算：<span class="math">23.593 × 21 = 485.6</span>)</div>
-                </div>
-            </div>
-            
-            <div class="feedback" id="feedback2">
-                <i class="fas fa-check-circle"></i> <strong>回答正确！</strong> 基于样本均值的σ²估计值是495.5。
+            <div class="input-answer">
+                <label for="answer2">σ² = </label>
+                <input type="number" id="answer2" step="0.1" placeholder="输入答案">
+                <span class="unit">(保留一位小数)</span>
             </div>
 
+            <div class="feedback" id="feedback2"></div>
+
             <button class="show-explanation-btn" data-question="2" style="display:none;">查看答案解析</button>
-            <div class="explanation" id="explanation2" style="display:none;">
-                <h4><i class="fas fa-lightbulb"></i> 题目解析</h4>
-                <p>根据中心极限定理，样本均值的分布是正态的，其方差为σ²/n（n为样本容量）。</p>
-                <p>已知五个样本均值的（样本）方差约为23.593，因此我们估计：</p>
-                <p class="math">σ² / 21 ≈ 23.593</p>
-                <p>所以：</p>
-                <p class="math">σ² ≈ 23.593 × 21 = 495.453 ≈ 495.5</p>
-                <p>因此，基于样本均值的σ²估计值是 <strong>495.5</strong>。</p>
-                <p><em>注意：我们用于从样本均值和样本方差估计σ²的计算是基于所有样本容量相等这一事实。如果样本容量不相等，则必须执行稍微更复杂的计算。</em></p>
-            </div>
+            <div class="explanation" id="explanation2" style="display:none;"></div>
         </div>
     </div>
 
@@ -498,7 +499,175 @@
     
 
     <script>
+        // 参数化数据集
+        const parameterSets = [
+            {
+                sampleSize: 21,
+                groups: [
+                    { name: '校园内', mean: 64.1, variance: 74.6 },
+                    { name: '通过邮件', mean: 64.5, variance: 115.3 },
+                    { name: '通过电话', mean: 73.6, variance: 133.8 },
+                    { name: '通过互联网', mean: 72.9, variance: 106.5 },
+                    { name: '在商店内', mean: 64.6, variance: 115.1 }
+                ],
+                meanVariance: 23.593,
+                answer1: 109.1,
+                answer2: 495.5
+            },
+            {
+                sampleSize: 25,
+                groups: [
+                    { name: '校园内', mean: 58.2, variance: 82.4 },
+                    { name: '通过邮件', mean: 62.8, variance: 98.6 },
+                    { name: '通过电话', mean: 71.5, variance: 125.2 },
+                    { name: '通过互联网', mean: 67.3, variance: 110.8 },
+                    { name: '在商店内', mean: 59.1, variance: 95.5 }
+                ],
+                meanVariance: 30.125,
+                answer1: 102.5,
+                answer2: 753.1
+            },
+            {
+                sampleSize: 18,
+                groups: [
+                    { name: '校园内', mean: 70.5, variance: 68.3 },
+                    { name: '通过邮件', mean: 65.2, variance: 88.7 },
+                    { name: '通过电话', mean: 72.8, variance: 105.4 },
+                    { name: '通过互联网', mean: 68.9, variance: 92.1 },
+                    { name: '在商店内', mean: 66.4, variance: 78.5 }
+                ],
+                meanVariance: 18.762,
+                answer1: 86.6,
+                answer2: 337.7
+            },
+            {
+                sampleSize: 30,
+                groups: [
+                    { name: '校园内', mean: 55.8, variance: 95.2 },
+                    { name: '通过邮件', mean: 52.3, variance: 120.6 },
+                    { name: '通过电话', mean: 61.7, variance: 145.3 },
+                    { name: '通过互联网', mean: 58.4, variance: 108.9 },
+                    { name: '在商店内', mean: 54.6, variance: 118.7 }
+                ],
+                meanVariance: 14.825,
+                answer1: 117.7,
+                answer2: 444.8
+            },
+            {
+                sampleSize: 20,
+                groups: [
+                    { name: '校园内', mean: 72.3, variance: 65.8 },
+                    { name: '通过邮件', mean: 68.9, variance: 88.2 },
+                    { name: '通过电话', mean: 75.6, variance: 112.5 },
+                    { name: '通过互联网', mean: 71.2, variance: 78.4 },
+                    { name: '在商店内', mean: 69.5, variance: 95.6 }
+                ],
+                meanVariance: 26.435,
+                answer1: 88.1,
+                answer2: 528.7
+            }
+        ];
+
+        let currentParams = parameterSets[0];
+        let submitted = false;
+
+        // 初始化题目
+        function initializeQuestion() {
+            const params = currentParams;
+
+            // 更新表格
+            const tbody = document.querySelector('.question-text table tbody');
+            tbody.innerHTML = '';
+
+            params.groups.forEach(group => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${group.name}</td>
+                    <td>${params.sampleSize}</td>
+                    <td>${group.mean}</td>
+                    <td>${group.variance}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            // 更新问题2中的均值方差
+            const meanVarianceHint = document.getElementById('mean-variance-hint');
+            if (meanVarianceHint) {
+                meanVarianceHint.innerHTML = `已知五个样本均值（${params.groups.map(g => g.mean).join(', ')}）的（样本）方差约为${params.meanVariance}。`;
+            }
+
+            // 清空输入框
+            document.getElementById('answer1').value = '';
+            document.getElementById('answer2').value = '';
+            document.getElementById('answer1').classList.remove('correct', 'incorrect');
+            document.getElementById('answer2').classList.remove('correct', 'incorrect');
+
+            // 隐藏反馈
+            document.getElementById('feedback1').className = 'feedback';
+            document.getElementById('feedback1').innerHTML = '';
+            document.getElementById('feedback2').className = 'feedback';
+            document.getElementById('feedback2').innerHTML = '';
+
+            // 隐藏解析
+            document.querySelectorAll('.show-explanation-btn').forEach(btn => {
+                btn.style.display = 'none';
+            });
+            document.querySelectorAll('.explanation').forEach(exp => {
+                exp.style.display = 'none';
+            });
+
+            // 隐藏得分面板
+            document.getElementById('scorePanel').classList.remove('show');
+
+            submitted = false;
+        }
+
+        // 更新解析内容
+        function updateExplanations() {
+            const params = currentParams;
+            const variances = params.groups.map(g => g.variance);
+            const sumVariances = variances.reduce((a, b) => a + b, 0);
+
+            // 更新问题1解析
+            const exp1 = document.getElementById('explanation1');
+            exp1.innerHTML = `
+                <h4><i class="fas fa-lightbulb"></i> 题目解析</h4>
+                <p>由于所有样本都来自具有相同方差σ²的总体，每个样本方差都是σ²的一个独立估计值。</p>
+                <p>当所有样本容量相等时，合并这些样本方差的最佳方法是计算它们的算术平均值：</p>
+                <p class="math">σ² ≈ (${variances.join(' + ')}) / 5</p>
+                <p class="math">= ${sumVariances.toFixed(1)} / 5 = ${(sumVariances/5).toFixed(3)} ≈ <strong>${params.answer1}</strong></p>
+            `;
+
+            // 更新问题2解析
+            const exp2 = document.getElementById('explanation2');
+            exp2.innerHTML = `
+                <h4><i class="fas fa-lightbulb"></i> 题目解析</h4>
+                <p>根据抽样分布理论，样本均值的方差与总体方差之间存在如下关系：</p>
+                <p class="math">Var(X̄) = σ² / n</p>
+                <p>其中 n 是每个样本的容量（本题中 n = ${params.sampleSize}）。</p>
+                <p>已知五个样本均值的样本方差约为 ${params.meanVariance}，我们可以估计：</p>
+                <p class="math">σ² / ${params.sampleSize} ≈ ${params.meanVariance}</p>
+                <p class="math">σ² ≈ ${params.meanVariance} × ${params.sampleSize} = ${(params.meanVariance * params.sampleSize).toFixed(3)} ≈ <strong>${params.answer2}</strong></p>
+            `;
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
+
+            // 初始化题目
+            initializeQuestion();
+            updateExplanations();
+
+            // 刷新按钮事件
+            document.getElementById('refresh-btn').addEventListener('click', function() {
+                let newParams;
+                do {
+                    newParams = parameterSets[Math.floor(Math.random() * parameterSets.length)];
+                } while (newParams === currentParams && parameterSets.length > 1);
+
+                currentParams = newParams;
+                initializeQuestion();
+                updateExplanations();
+            });
 
             // 显示答案解析按钮点击事件
             document.querySelectorAll('.show-explanation-btn').forEach(btn => {
@@ -509,176 +678,97 @@
                         explanation = this.nextElementSibling;
                     }
                     if (explanation) {
-                        if (explanation.classList.contains('show')) {
-                            explanation.classList.remove('show');
+                        if (explanation.style.display === 'block') {
+                            explanation.style.display = 'none';
                             this.textContent = '查看答案解析';
                         } else {
-                            explanation.classList.add('show');
+                            explanation.style.display = 'block';
                             this.textContent = '隐藏答案解析';
                         }
                     }
                 });
             });
 
-            // 正确答案映射
-            const correctAnswers = {
-                1: 'A',
-                2: 'A'
-            };
-            
-            // 用户选择的答案
-            let userAnswers = {
-                1: null,
-                2: null
-            };
-            
-            // 是否已提交
-            let submitted = false;
-            
-            // 为每个选项添加点击事件
-            document.querySelectorAll('.option').forEach(option => {
-                option.addEventListener('click', function() {
-                    if (submitted) return; // 如果已提交，不能更改答案
-                    
-                    const questionNum = this.getAttribute('data-question');
-                    const optionLetter = this.getAttribute('data-option');
-                    
-                    // 清除同一问题的其他选项的选中状态
-                    document.querySelectorAll(`.option[data-question="${questionNum}"]`).forEach(opt => {
-                        opt.classList.remove('selected');
-                    });
-                    
-                    // 设置当前选项为选中状态
-                    this.classList.add('selected');
-                    
-                    // 保存用户答案
-                    userAnswers[questionNum] = optionLetter;
-                });
-            });
-            
             // 提交按钮事件
             document.getElementById('submitBtn').addEventListener('click', function() {
                 if (submitted) return;
-                
+
                 let correctCount = 0;
-                let totalQuestions = Object.keys(correctAnswers).length;
-                
-                // 检查每个问题
-                for (let questionNum in correctAnswers) {
-                    const userAnswer = userAnswers[questionNum];
-                    const correctAnswer = correctAnswers[questionNum];
-                    const feedbackEl = document.getElementById(`feedback${questionNum}`);
-                    
-                    // 获取该问题的所有选项
-                    const options = document.querySelectorAll(`.option[data-question="${questionNum}"]`);
-                    
-                    if (userAnswer === null) {
-                        // 未回答
-                        feedbackEl.textContent = "您尚未回答此题。";
-                        feedbackEl.className = "feedback incorrect show";
-                        feedbackEl.innerHTML = '<i class="fas fa-exclamation-circle"></i> <strong>未回答</strong> 您尚未选择答案。';
-                    } else if (userAnswer === correctAnswer) {
-                        // 回答正确
-                        correctCount++;
-                        feedbackEl.className = "feedback correct show";
-                        feedbackEl.innerHTML = '<i class="fas fa-check-circle"></i> <strong>回答正确！</strong>';
-                    } else {
-                        // 回答错误
-                        feedbackEl.className = "feedback incorrect show";
-                        feedbackEl.innerHTML = '<i class="fas fa-times-circle"></i> <strong>回答错误</strong>';
+                const tolerance = 0.5;
 
-                        // 只标记用户选择的错误选项
-                        options.forEach(option => {
-                            const optionLetter = option.getAttribute('data-option');
-                            if (optionLetter === userAnswer) {
-                                option.classList.add('incorrect');
-                            }
-                        });
-                    }
+                // 检查问题1
+                const answer1 = parseFloat(document.getElementById('answer1').value);
+                const feedback1 = document.getElementById('feedback1');
 
-                    // 显示"查看答案解析"按钮
-                    const showBtn = document.querySelector(`.show-explanation-btn[data-question="${questionNum}"]`);
-                    if (showBtn) {
-                        showBtn.style.display = 'inline-block';
-                    }
+                if (isNaN(answer1)) {
+                    feedback1.className = 'feedback incorrect show';
+                    feedback1.innerHTML = '<i class="fas fa-exclamation-circle"></i> <strong>未回答</strong> 请输入答案。';
+                } else if (Math.abs(answer1 - currentParams.answer1) <= tolerance) {
+                    correctCount++;
+                    document.getElementById('answer1').classList.add('correct');
+                    feedback1.className = 'feedback correct show';
+                    feedback1.innerHTML = `<i class="fas fa-check-circle"></i> <strong>回答正确！</strong> 基于样本方差的σ²估计值是${currentParams.answer1}。`;
+                } else {
+                    document.getElementById('answer1').classList.add('incorrect');
+                    feedback1.className = 'feedback incorrect show';
+                    feedback1.innerHTML = `<i class="fas fa-times-circle"></i> <strong>回答错误</strong> 正确答案是${currentParams.answer1}。`;
                 }
-                
+
+                // 检查问题2
+                const answer2 = parseFloat(document.getElementById('answer2').value);
+                const feedback2 = document.getElementById('feedback2');
+
+                if (isNaN(answer2)) {
+                    feedback2.className = 'feedback incorrect show';
+                    feedback2.innerHTML = '<i class="fas fa-exclamation-circle"></i> <strong>未回答</strong> 请输入答案。';
+                } else if (Math.abs(answer2 - currentParams.answer2) <= tolerance) {
+                    correctCount++;
+                    document.getElementById('answer2').classList.add('correct');
+                    feedback2.className = 'feedback correct show';
+                    feedback2.innerHTML = `<i class="fas fa-check-circle"></i> <strong>回答正确！</strong> 基于样本均值的σ²估计值是${currentParams.answer2}。`;
+                } else {
+                    document.getElementById('answer2').classList.add('incorrect');
+                    feedback2.className = 'feedback incorrect show';
+                    feedback2.innerHTML = `<i class="fas fa-times-circle"></i> <strong>回答错误</strong> 正确答案是${currentParams.answer2}。`;
+                }
+
+                // 显示"查看答案解析"按钮
+                document.querySelectorAll('.show-explanation-btn').forEach(btn => {
+                    btn.style.display = 'inline-block';
+                });
+
                 // 显示得分面板
                 const scorePanel = document.getElementById('scorePanel');
                 const scoreValue = document.getElementById('scoreValue');
                 const correctCountEl = document.getElementById('correctCount');
                 const incorrectCountEl = document.getElementById('incorrectCount');
                 const scoreMessage = document.getElementById('scoreMessage');
-                
-                scoreValue.textContent = `${correctCount}/${totalQuestions}`;
+
+                scoreValue.textContent = `${correctCount}/2`;
                 correctCountEl.textContent = correctCount;
-                incorrectCountEl.textContent = totalQuestions - correctCount;
-                
-                // 根据得分显示不同消息
-                if (correctCount === totalQuestions) {
+                incorrectCountEl.textContent = 2 - correctCount;
+
+                if (correctCount === 2) {
                     scoreMessage.textContent = "太棒了！您全部答对了！";
                     scoreMessage.style.color = "#4caf50";
-                } else if (correctCount >= totalQuestions / 2) {
+                } else if (correctCount === 1) {
                     scoreMessage.textContent = "不错！继续努力！";
                     scoreMessage.style.color = "#ff9800";
                 } else {
                     scoreMessage.textContent = "请仔细复习题目解析，再试一次！";
                     scoreMessage.style.color = "#f44336";
                 }
-                
+
                 scorePanel.classList.add('show');
                 submitted = true;
-                
-                // 滚动到得分面板
+
                 scorePanel.scrollIntoView({ behavior: 'smooth' });
             });
-            
+
             // 重置按钮事件
             document.getElementById('resetBtn').addEventListener('click', function() {
-                // 重置所有选项状态
-                document.querySelectorAll('.option').forEach(option => {
-                    option.classList.remove('selected', 'correct', 'incorrect');
-                });
-
-                // 隐藏所有反馈
-                document.querySelectorAll('.feedback').forEach(feedback => {
-                    feedback.classList.remove('show');
-                });
-
-                // 隐藏"查看答案解析"按钮和解析
-                document.querySelectorAll('.show-explanation-btn').forEach(btn => {
-                    btn.style.display = 'none';
-                    btn.textContent = '查看答案解析';
-                });
-                document.querySelectorAll('.explanation').forEach(explanation => {
-                    explanation.style.display = 'none';
-                });
-
-                // 重置用户答案
-                userAnswers = {
-                    1: null,
-                    2: null
-                };
-
-                // 隐藏得分面板
-                document.getElementById('scorePanel').classList.remove('show');
-
-                // 重置提交状态
-                submitted = false;
-
-                // 滚动到顶部
+                initializeQuestion();
                 window.scrollTo({ top: 0, behavior: 'smooth' });
-            });
-            
-            // 初始设置：默认选择第一个选项作为正确答案（仅用于演示）
-            // 在实际使用中，用户需要自己选择
-            document.querySelectorAll('.question-card').forEach((card, index) => {
-                const questionNum = index + 1;
-                const defaultOption = card.querySelector('.option');
-                if (defaultOption) {
-                    // 不自动选择，让用户自己选择
-                    // defaultOption.click();
-                }
             });
         });
     </script>

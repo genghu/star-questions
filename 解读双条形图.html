@@ -130,8 +130,9 @@
             justify-content: space-around;
             align-items: flex-end;
             height: 300px;
-            margin: 20px 0;
+            margin: 20px 0 40px 0;
             position: relative;
+            padding-left: 50px;
         }
 
         .chart-y-axis {
@@ -152,24 +153,41 @@
 
         .chart-y-label {
             position: absolute;
-            left: 15px;
+            left: -15px;
             top: 50%;
             transform: translateY(-50%) rotate(-90deg);
-            transform-origin: left center;
+            transform-origin: center center;
             color: #64748b;
             font-size: 0.9rem;
+            white-space: nowrap;
         }
 
-        .chart-x-axis {
+        .chart-x-line {
             position: absolute;
-            left: 40px;
+            left: 50px;
             right: 0;
             bottom: 0;
-            height: 30px;
+            height: 0;
             border-top: 2px solid #94a3b8;
+            z-index: 1;
+        }
+
+        .x-ticks-container {
+            position: absolute;
+            left: 50px;
+            right: 0;
+            bottom: -30px;
             display: flex;
             justify-content: space-around;
             padding-top: 8px;
+        }
+
+        .x-tick {
+            width: 28%;
+            text-align: center;
+            font-weight: bold;
+            color: #475569;
+            font-size: 0.9rem;
         }
 
         .library-group {
@@ -180,18 +198,12 @@
             height: 100%;
         }
 
-        .library-name {
-            margin-top: 10px;
-            font-weight: bold;
-            color: #475569;
-        }
-
         .bar-container {
             display: flex;
             align-items: flex-end;
             justify-content: center;
             width: 100%;
-            height: calc(100% - 40px);
+            flex: 1;
             position: relative;
         }
 
@@ -760,6 +772,7 @@
                 chartArea.innerHTML = `
                     <div class="chart-y-axis">${yAxisHtml}</div>
                     <div class="chart-y-label">数量</div>
+                    <div class="chart-x-line"></div>
 
                     ${params.libraries.map(lib => {
                         const cat1Height = (lib.cat1 / params.maxValue * 100).toFixed(2);
@@ -776,13 +789,12 @@
                                         <div class="bar-value">${lib.cat2}</div>
                                     </div>
                                 </div>
-                                <div class="library-name">${lib.name}</div>
                             </div>
                         `;
                     }).join('')}
 
-                    <div class="chart-x-axis">
-                        ${params.libraries.map(lib => `<div>${lib.name}</div>`).join('')}
+                    <div class="x-ticks-container">
+                        ${params.libraries.map(lib => `<div class="x-tick">${lib.name}</div>`).join('')}
                     </div>
                 `;
 

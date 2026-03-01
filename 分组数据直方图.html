@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>分组数据直方图 - 交互式答题</title>
+    <title>分组数据直方图 - 交互式绘图工具</title>
     <style>
         * {
             box-sizing: border-box;
@@ -47,10 +47,6 @@
             font-size: 1.1rem;
         }
 
-        .question-section {
-            margin-bottom: 40px;
-        }
-
         .section-title {
             color: #0052cc;
             font-size: 1.5rem;
@@ -67,6 +63,10 @@
             border-left: 5px solid #4d94ff;
         }
 
+        .question-content p {
+            margin-bottom: 10px;
+        }
+
         .data-table {
             width: 100%;
             border-collapse: collapse;
@@ -80,216 +80,227 @@
         .data-table th {
             background-color: #4d94ff;
             color: white;
-            padding: 15px;
+            padding: 12px;
             text-align: center;
         }
 
         .data-table td {
-            padding: 15px;
+            padding: 12px;
             text-align: center;
             border-bottom: 1px solid #e6f0ff;
         }
 
-        .data-table tr:last-child td {
-            border-bottom: none;
-        }
-
-        .data-table tr:nth-child(even) {
-            background-color: #f8fbff;
-        }
-
-        .data-list {
-            background-color: #f8fbff;
-            padding: 20px;
-            border-radius: 10px;
-            margin: 20px 0;
-            font-family: monospace;
-            font-size: 1.1rem;
-        }
-
-        .histogram-container {
+        .canvas-container {
             background-color: white;
             border-radius: 12px;
             padding: 25px;
             margin: 30px 0;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            border: 2px solid #e6f0ff;
+        }
+
+        #histogram-canvas {
+            border: 2px solid #4d94ff;
+            border-radius: 8px;
+            cursor: crosshair;
+            background-color: #fafcff;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .controls-panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .control-group {
+            background-color: #f8fbff;
+            border-radius: 12px;
+            padding: 20px;
             border: 1px solid #e6f0ff;
         }
 
-        .histogram-title {
-            text-align: center;
-            margin-bottom: 20px;
+        .control-group h3 {
             color: #0052cc;
-            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
         }
 
-        .histogram {
+        .control-row {
             display: flex;
-            align-items: flex-end;
-            justify-content: center;
-            height: 300px;
-            padding: 20px;
-            border-bottom: 2px solid #4d94ff;
-            border-left: 2px solid #4d94ff;
-            position: relative;
-            margin-bottom: 40px;
-            background-color: #fcfdff;
-        }
-
-        .bar-container {
-            display: flex;
-            flex-direction: column;
             align-items: center;
-            margin: 0 15px;
-            height: 100%;
+            gap: 10px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
         }
 
-        .bar {
-            width: 50px;
-            background-color: #4d94ff;
-            border-radius: 4px 4px 0 0;
-            transition: all 0.3s ease;
-            position: relative;
-            cursor: pointer;
-        }
-
-        .bar:hover {
-            background-color: #1a75ff;
-            transform: scale(1.05);
-        }
-
-        .bar-label {
-            margin-top: 10px;
-            font-size: 0.9rem;
-            color: #666;
-            text-align: center;
+        .control-row label {
+            min-width: 80px;
             font-weight: 500;
+            color: #555;
         }
 
-        .bar-value {
-            position: absolute;
-            top: -25px;
-            left: 0;
-            width: 100%;
-            text-align: center;
-            font-weight: bold;
-            color: #0052cc;
-        }
-
-        .y-axis-label {
-            position: absolute;
-            left: -40px;
-            top: 50%;
-            transform: translateY(-50%) rotate(-90deg);
-            color: #666;
-            font-weight: 500;
-        }
-
-        .x-axis-label {
-            position: absolute;
-            bottom: -40px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: #666;
-            font-weight: 500;
-        }
-
-        .options-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-            margin: 30px 0;
-        }
-
-        .option-card {
-            background-color: #f8fbff;
+        .control-row input[type="number"],
+        .control-row input[type="text"] {
+            padding: 8px 12px;
             border: 2px solid #c2d9ff;
-            border-radius: 12px;
-            padding: 20px;
+            border-radius: 6px;
+            font-size: 1rem;
+            width: 100px;
+            transition: border-color 0.3s;
+        }
+
+        .control-row input:focus {
+            outline: none;
+            border-color: #4d94ff;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-        }
-
-        .option-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 82, 204, 0.1);
-            border-color: #4d94ff;
-        }
-
-        .option-card.selected {
-            background-color: #e6f0ff;
-            border-color: #4d94ff;
-            box-shadow: 0 5px 15px rgba(0, 82, 204, 0.15);
-        }
-
-        .option-card.correct {
-            background-color: #e6ffe6;
-            border-color: #2eb82e;
-        }
-
-        .option-card.incorrect {
-            background-color: #ffe6e6;
-            border-color: #ff3333;
-        }
-
-        .option-letter {
             display: inline-flex;
             align-items: center;
-            justify-content: center;
-            width: 36px;
-            height: 36px;
-            background-color: #4d94ff;
-            color: white;
-            border-radius: 50%;
-            margin-right: 15px;
-            font-weight: bold;
-            flex-shrink: 0;
+            gap: 8px;
         }
 
-        .option-text {
-            font-size: 1.05rem;
+        .btn-primary {
+            background-color: #4d94ff;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #1a75ff;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.4);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            color: white;
+        }
+
+        .btn-warning:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(243, 156, 18, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.4);
+        }
+
+        .btn-secondary {
+            background-color: #f0f7ff;
+            color: #4d94ff;
+            border: 2px solid #4d94ff;
+        }
+
+        .btn-secondary:hover {
+            background-color: #e6f0ff;
+        }
+
+        .bar-controls {
+            margin-top: 15px;
+        }
+
+        .bar-input-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+
+        .bar-list {
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 15px;
+            border: 1px solid #e6f0ff;
+            border-radius: 8px;
+            padding: 10px;
+        }
+
+        .bar-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background-color: white;
+            border-radius: 6px;
+            margin-bottom: 6px;
+            border: 1px solid #e6f0ff;
+        }
+
+        .bar-item:hover {
+            background-color: #f0f7ff;
+        }
+
+        .bar-item-info {
+            font-size: 0.95rem;
+        }
+
+        .bar-item .delete-btn {
+            background-color: #ffe6e6;
+            color: #e74c3c;
+            border: none;
+            padding: 4px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        .bar-item .delete-btn:hover {
+            background-color: #ffcccc;
+        }
+
+        .instructions {
+            background-color: #e8f4fd;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-left: 4px solid #4d94ff;
+        }
+
+        .instructions h3 {
+            color: #0052cc;
+            margin-bottom: 12px;
+        }
+
+        .instructions ol {
+            margin-left: 20px;
+        }
+
+        .instructions li {
+            margin-bottom: 8px;
         }
 
         .controls {
             display: flex;
             justify-content: center;
             gap: 20px;
-            margin-top: 40px;
+            margin-top: 30px;
             flex-wrap: wrap;
-        }
-
-        button {
-            padding: 14px 32px;
-            border: none;
-            border-radius: 8px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        #submit-btn {
-            background-color: #4d94ff;
-            color: white;
-        }
-
-        #submit-btn:hover {
-            background-color: #1a75ff;
-            transform: translateY(-3px);
-            box-shadow: 0 7px 14px rgba(26, 117, 255, 0.3);
-        }
-
-        #reset-btn {
-            background-color: #f0f7ff;
-            color: #4d94ff;
-            border: 2px solid #4d94ff;
-        }
-
-        #reset-btn:hover {
-            background-color: #e6f0ff;
-            transform: translateY(-3px);
         }
 
         .feedback {
@@ -314,13 +325,7 @@
         .feedback-title {
             font-size: 1.3rem;
             margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-        }
-
-        .feedback-title i {
-            margin-right: 10px;
-            font-size: 1.5rem;
+            font-weight: 600;
         }
 
         .score-container {
@@ -339,27 +344,42 @@
             margin: 10px 0;
         }
 
-        .explanation {
-            margin-top: 20px;
-            padding: 20px;
-            background-color: #f8fbff;
-            border-radius: 10px;
-            border-left: 4px solid #4d94ff;
-        }
-
-        .explanation h3 {
-            color: #0052cc;
-            margin-bottom: 10px;
-        }
-
-        .question-header {
+        .tick-list {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
         }
 
-        .refresh-params-btn {
+        .tick-badge {
+            background-color: #4d94ff;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .tick-badge .remove-tick {
+            cursor: pointer;
+            opacity: 0.8;
+        }
+
+        .tick-badge .remove-tick:hover {
+            opacity: 1;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .refresh-btn {
             padding: 8px 16px;
             background: linear-gradient(135deg, #27ae60, #2ecc71);
             color: white;
@@ -372,20 +392,91 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            box-shadow: 0 2px 8px rgba(39, 174, 96, 0.3);
         }
 
-        .refresh-params-btn:hover {
+        .refresh-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(39, 174, 96, 0.4);
         }
 
-        .param-badge {
-            background: #e8f8ef;
-            color: #27ae60;
-            padding: 4px 10px;
-            border-radius: 15px;
-            font-size: 0.85rem;
+        .frequency-table-section {
+            background-color: white;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 25px 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            border: 2px solid #e6f0ff;
+        }
+
+        .frequency-table-section h3 {
+            color: #0052cc;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .frequency-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            background-color: white;
+        }
+
+        .frequency-table th {
+            background-color: #4d94ff;
+            color: white;
+            padding: 12px 15px;
+            text-align: center;
             font-weight: 600;
+        }
+
+        .frequency-table td {
+            padding: 10px 15px;
+            text-align: center;
+            border: 1px solid #e6f0ff;
+        }
+
+        .frequency-table tbody tr:hover {
+            background-color: #f8fbff;
+        }
+
+        .frequency-table input[type="text"],
+        .frequency-table input[type="number"] {
+            width: 80%;
+            padding: 8px;
+            border: 2px solid #c2d9ff;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+
+        .frequency-table input:focus {
+            outline: none;
+            border-color: #4d94ff;
+            box-shadow: 0 0 0 3px rgba(77, 148, 255, 0.2);
+        }
+
+        .frequency-table input.correct {
+            border-color: #00cc66;
+            background-color: #e6ffe6;
+        }
+
+        .frequency-table input.incorrect {
+            border-color: #ff6666;
+            background-color: #ffe6e6;
+        }
+
+        .table-controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .table-controls .btn {
+            padding: 8px 16px;
+            font-size: 0.9rem;
         }
 
         @media (max-width: 768px) {
@@ -401,448 +492,751 @@
                 font-size: 1.8rem;
             }
 
-            .options-container {
+            .controls-panel {
                 grid-template-columns: 1fr;
-            }
-
-            .histogram {
-                height: 250px;
-            }
-
-            .bar {
-                width: 30px;
-            }
-
-            .bar-container {
-                margin: 0 8px;
             }
 
             .controls {
                 flex-direction: column;
             }
 
-            button {
+            .btn {
                 width: 100%;
+                justify-content: center;
             }
         }
     </style>
-
-    <style>
-    .show-explanation-btn {
-        display: none;
-        margin: 20px auto;
-        padding: 14px 28px;
-        background: linear-gradient(135deg, #9b59b6, #8e44ad);
-        color: white;
-        border: none;
-        border-radius: 10px;
-        cursor: pointer;
-        font-size: 1.1rem;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
-    }
-    .show-explanation-btn:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
-    }
-    .explanation-section {
-        display: none;
-        margin-top: 20px;
-    }
-    </style>
-    </head>
+</head>
 <body>
     <div class="container">
         <header>
-            <h1>分组数据直方图</h1>
-            <div class="subtitle">交互式答题与数据可视化练习</div>
-        </header>
-
-        <div class="question-section">
-            <div class="question-header">
-                <h2 class="section-title">题目内容</h2>
-                <button class="refresh-params-btn" id="refresh-params-btn">
-                    <span>刷新参数</span>
+            <div class="header-content">
+                <h1>分组数据直方图</h1>
+                <button class="refresh-btn" id="refresh-btn">
+                    <span>&#8635;</span> 刷新参数
                 </button>
             </div>
-            <div class="question-content" id="question-content">
-                <!-- 动态生成 -->
+            <div class="subtitle">交互式绘图工具 - 学习如何绘制直方图</div>
+        </header>
+
+        
+
+        <div class="question-content" id="question-content">
+            <p><strong>练习任务：</strong>根据以下数据绘制直方图</p>
+            <p id="data-display">数据：26, 23, 44, 41, 38, 35, 31, 28, 25, 22, 43, 40, 37, 21, 21, 21, 43, 43, 43, 39, 39</p>
+            <p id="instruction-display">绘制这些数据的直方图，使用20.5作为初始组界，组宽为5。请注意，您可以根据需要在图表中添加或删除类别。请在每个类别上标注其组限。</p>
+        </div>
+
+        <div class="frequency-table-section">
+            <h3>频数分布表（填写分组和频数）</h3>
+            <table class="frequency-table" id="frequency-table">
+                <thead>
+                    <tr>
+                        <th style="width: 60px;">序号</th>
+                        <th>分组区间</th>
+                        <th>频数</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body">
+                    <!-- 动态生成 -->
+                </tbody>
+            </table>
+            <div class="table-controls">
+                <button class="btn btn-success" onclick="addTableRow()">添加行</button>
+                <button class="btn btn-warning" onclick="removeLastTableRow()">删除最后一行</button>
+                <button class="btn btn-primary" onclick="applyTableToHistogram()" style="display: none;">应用到直方图</button>
+                <button class="btn btn-secondary" onclick="checkTableAnswer()">检查表格</button>
             </div>
         </div>
 
-        <div class="histogram-container">
-            <h2 class="section-title">直方图可视化</h2>
-            <div class="histogram" id="histogram">
-                <div class="y-axis-label">频数</div>
-                <div class="x-axis-label" id="x-axis-label">数值</div>
-                <!-- 直方图柱状图将通过JavaScript动态生成 -->
+        <div class="instructions">
+            <h3>使用说明</h3>
+            <ol>
+                <li><strong>设置X轴范围：</strong>输入X轴的最小值、最大值和刻度间隔，点击"生成X轴刻度"</li>
+                <li><strong>设置Y轴范围：</strong>输入Y轴的最小值、最大值和刻度间隔，点击"生成Y轴刻度"</li>
+                <li><strong>添加直方条：</strong>选择起始位置和频数，点击"添加直方条"</li>
+                <li><strong>在画布上绘图：</strong>点击画布可以在对应位置添加直方条</li>
+                <li><strong>清除重绘：</strong>点击"清除画布"可以重新开始</li>
+            </ol>
+        </div>
+        <div class="controls-panel">
+            <div class="control-group">
+                <h3>X轴设置</h3>
+                <div class="control-row">
+                    <label>最小值：</label>
+                    <input type="number" id="x-min" value="20" step="0.5">
+                </div>
+                <div class="control-row">
+                    <label>最大值：</label>
+                    <input type="number" id="x-max" value="46" step="0.5">
+                </div>
+                <div class="control-row">
+                    <label>刻度间隔：</label>
+                    <input type="number" id="x-interval" value="5" step="0.5">
+                </div>
+                <div class="control-row">
+                    <button class="btn btn-primary" onclick="generateXTicks()">生成X轴刻度</button>
+                </div>
+                <div class="tick-list" id="x-tick-list"></div>
+            </div>
+
+            <div class="control-group">
+                <h3>Y轴设置</h3>
+                <div class="control-row">
+                    <label>最小值：</label>
+                    <input type="number" id="y-min" value="0" step="1">
+                </div>
+                <div class="control-row">
+                    <label>最大值：</label>
+                    <input type="number" id="y-max" value="8" step="1">
+                </div>
+                <div class="control-row">
+                    <label>刻度间隔：</label>
+                    <input type="number" id="y-interval" value="1" step="1">
+                </div>
+                <div class="control-row">
+                    <button class="btn btn-primary" onclick="generateYTicks()">生成Y轴刻度</button>
+                </div>
+                <div class="tick-list" id="y-tick-list"></div>
+            </div>
+
+            <div class="control-group">
+                <h3>添加直方条</h3>
+                <div class="control-row">
+                    <label>起始位置：</label>
+                    <input type="number" id="bar-start" placeholder="起始位置" step="0.5">
+                </div>
+                <div class="control-row">
+                    <label>宽度：</label>
+                    <input type="number" id="bar-width" placeholder="宽度" step="0.5">
+                </div>
+                <div class="control-row">
+                    <label>频数(高度)：</label>
+                    <input type="number" id="bar-height" placeholder="频数" min="0" step="1">
+                </div>
+                <div class="control-row">
+                    <button class="btn btn-success" onclick="addBar()">添加直方条</button>
+                </div>
+
+                <div class="bar-list" id="bar-list">
+                    <p style="color: #999; text-align: center;">暂无直方条</p>
+                </div>
             </div>
         </div>
 
-        <div class="question-section">
-            <h2 class="section-title">回答问题</h2>
-            <p id="question-prompt">根据以上数据和直方图，回答以下问题：</p>
-
-            <div class="options-container" id="options-container">
-                <!-- 动态生成 -->
-            </div>
-
+        <div class="canvas-container">
+            <h2 class="section-title">直方图画布</h2>
+            <canvas id="histogram-canvas" width="800" height="450"></canvas>
             <div class="controls">
-                <button id="submit-btn">提交答案</button>
-                <button id="reset-btn">重新作答</button>
-            </div>
-
-            <div class="feedback" id="feedback">
-                <div class="feedback-title" id="feedback-title"></div>
-                <p id="feedback-text"></p>
-            </div>
-
-            <div class="score-container">
-                <div>得分</div>
-                <div class="score-value" id="score-value">0/1</div>
-                <div id="score-text">请选择答案并提交</div>
+                <button class="btn btn-warning" onclick="clearBars()">清除直方条</button>
+                <button class="btn btn-danger" onclick="clearCanvas()">清除画布</button>
+                <button class="btn btn-secondary" onclick="checkAnswer()">检查答案</button>
             </div>
         </div>
 
-        <button class="show-explanation-btn" id="show-explanation-btn">查看答案解析</button>
-        <div class="explanation-section explanation" id="explanation">
-            <h3>题目解析</h3>
-            <div id="explanation-content">
-                <!-- 动态生成 -->
-            </div>
+        <div class="feedback" id="feedback">
+            <div class="feedback-title" id="feedback-title"></div>
+            <p id="feedback-text"></p>
+        </div>
+
+        <div class="score-container">
+            <div>绘图评分</div>
+            <div class="score-value" id="score-value">-/5</div>
+            <div id="score-text">完成绘图后点击"检查答案"</div>
         </div>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // ==================== 参数化数据集 ====================
-            const questionParams = [
-                {
-                    data: [26, 23, 44, 41, 38, 35, 31, 28, 25, 22, 43, 40, 37, 21, 21, 21, 43, 43, 43, 39, 39],
-                    sortedData: [21, 21, 21, 22, 23, 25, 26, 28, 31, 35, 37, 38, 39, 39, 40, 41, 43, 43, 43, 43, 44],
-                    initialBoundary: 20.5,
-                    classWidth: 5,
-                    maxX: 44,
-                    groups: [
-                        { range: "20.5-25.5", frequency: 6 },
-                        { range: "25.5-30.5", frequency: 2 },
-                        { range: "30.5-35.5", frequency: 2 },
-                        { range: "35.5-40.5", frequency: 5 },
-                        { range: "40.5-45.5", frequency: 6 }
-                    ],
-                    correctAnswer: "B",
-                    question: "根据直方图，以下哪个描述是正确的？",
-                    options: [
-                        { letter: "A", text: "直方图显示数据呈均匀分布" },
-                        { letter: "B", text: "数据在20.5-25.5和40.5-45.5区间出现频率最高" },
-                        { letter: "C", text: "大多数数据集中在30.5-35.5区间" },
-                        { letter: "D", text: "数据呈正态分布" }
-                    ],
-                    explanation: "从直方图可以看出，数据在两端(20.5-25.5和40.5-45.5)出现频率最高，各为6个数据点，因此正确答案是B。数据分布不是均匀的，也不是正态分布，大多数数据也不集中在30.5-35.5区间。"
-                },
-                {
-                    data: [12, 15, 18, 22, 25, 28, 31, 14, 16, 19, 23, 26, 29, 32, 13, 17, 21, 24, 27, 30],
-                    sortedData: [12, 13, 14, 15, 16, 17, 18, 19, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32],
-                    initialBoundary: 10.5,
-                    classWidth: 5,
-                    maxX: 32,
-                    groups: [
-                        { range: "10.5-15.5", frequency: 4 },
-                        { range: "15.5-20.5", frequency: 4 },
-                        { range: "20.5-25.5", frequency: 4 },
-                        { range: "25.5-30.5", frequency: 5 },
-                        { range: "30.5-35.5", frequency: 3 }
-                    ],
-                    correctAnswer: "A",
-                    question: "根据直方图，以下哪个描述是正确的？",
-                    options: [
-                        { letter: "A", text: "数据分布相对均匀，各组频数相近" },
-                        { letter: "B", text: "数据集中在25.5-30.5区间" },
-                        { letter: "C", text: "数据呈明显的双峰分布" },
-                        { letter: "D", text: "低值区数据明显多于高值区" }
-                    ],
-                    explanation: "从直方图可以看出，各组频数为4,4,4,5,3，分布相对均匀，因此正确答案是A。数据并没有集中在某个特定区间，也没有呈现双峰分布。"
-                },
-                {
-                    data: [45, 48, 52, 55, 58, 62, 65, 68, 72, 75, 46, 50, 53, 56, 60, 64, 67, 71, 74, 78, 80, 82],
-                    sortedData: [45, 46, 48, 50, 52, 53, 55, 56, 58, 60, 62, 64, 65, 67, 68, 71, 72, 74, 75, 78, 80, 82],
-                    initialBoundary: 44.5,
-                    classWidth: 8,
-                    maxX: 82,
-                    groups: [
-                        { range: "44.5-52.5", frequency: 5 },
-                        { range: "52.5-60.5", frequency: 5 },
-                        { range: "60.5-68.5", frequency: 5 },
-                        { range: "68.5-76.5", frequency: 4 },
-                        { range: "76.5-84.5", frequency: 3 }
-                    ],
-                    correctAnswer: "C",
-                    question: "根据直方图，以下哪个描述是正确的？",
-                    options: [
-                        { letter: "A", text: "数据集中在76.5-84.5区间" },
-                        { letter: "B", text: "数据呈明显的右偏分布" },
-                        { letter: "C", text: "数据分布相对均匀，略有递减趋势" },
-                        { letter: "D", text: "数据呈明显的左偏分布" }
-                    ],
-                    explanation: "从直方图可以看出，各组频数为5,5,5,4,3，分布相对均匀但略有从低值到高值递减的趋势，因此正确答案是C。"
-                },
-                {
-                    data: [5, 8, 12, 15, 18, 22, 25, 28, 32, 35, 38, 42, 6, 10, 14, 17, 21, 24, 27, 31],
-                    sortedData: [5, 6, 8, 10, 12, 14, 15, 17, 18, 21, 22, 24, 25, 27, 28, 31, 32, 35, 38, 42],
-                    initialBoundary: 4.5,
-                    classWidth: 8,
-                    maxX: 42,
-                    groups: [
-                        { range: "4.5-12.5", frequency: 5 },
-                        { range: "12.5-20.5", frequency: 4 },
-                        { range: "20.5-28.5", frequency: 6 },
-                        { range: "28.5-36.5", frequency: 3 },
-                        { range: "36.5-44.5", frequency: 2 }
-                    ],
-                    correctAnswer: "D",
-                    question: "根据直方图，以下哪个描述是正确的？",
-                    options: [
-                        { letter: "A", text: "数据呈均匀分布" },
-                        { letter: "B", text: "数据集中在36.5-44.5区间" },
-                        { letter: "C", text: "数据呈正态分布" },
-                        { letter: "D", text: "数据在20.5-28.5区间频数最高" }
-                    ],
-                    explanation: "从直方图可以看出，20.5-28.5区间的频数为6，是所有区间中最高的，因此正确答案是D。数据并非均匀分布或正态分布。"
-                },
-                {
-                    data: [100, 105, 110, 115, 120, 125, 130, 102, 107, 112, 117, 122, 127, 132, 135],
-                    sortedData: [100, 102, 105, 107, 110, 112, 115, 117, 120, 122, 125, 127, 130, 132, 135],
-                    initialBoundary: 99.5,
-                    classWidth: 8,
-                    maxX: 135,
-                    groups: [
-                        { range: "99.5-107.5", frequency: 4 },
-                        { range: "107.5-115.5", frequency: 3 },
-                        { range: "115.5-123.5", frequency: 4 },
-                        { range: "123.5-131.5", frequency: 3 },
-                        { range: "131.5-139.5", frequency: 1 }
-                    ],
-                    correctAnswer: "B",
-                    question: "根据直方图，以下哪个描述是正确的？",
-                    options: [
-                        { letter: "A", text: "数据呈明显的右偏分布" },
-                        { letter: "B", text: "数据在99.5-107.5和115.5-123.5区间频数最高" },
-                        { letter: "C", text: "数据集中在131.5-139.5区间" },
-                        { letter: "D", text: "数据呈完全对称分布" }
-                    ],
-                    explanation: "从直方图可以看出，99.5-107.5和115.5-123.5区间的频数都是4，是所有区间中最高的，因此正确答案是B。"
+        // ==================== 画布初始化 ====================
+        const canvas = document.getElementById('histogram-canvas');
+        const ctx = canvas.getContext('2d');
+
+        // 画布边距
+        const margin = { top: 40, right: 40, bottom: 60, left: 60 };
+        const plotWidth = canvas.width - margin.left - margin.right;
+        const plotHeight = canvas.height - margin.top - margin.bottom;
+
+        // ==================== 参数化数据集 ====================
+        const questionParams = [
+            {
+                data: [26, 23, 44, 41, 38, 35, 31, 28, 25, 22, 43, 40, 37, 21, 21, 21, 43, 43, 43, 39, 39],
+                initialBoundary: 20.5,
+                classWidth: 5,
+                xAxisMin: 20,
+                xAxisMax: 46,
+                yAxisMin: 0,
+                yAxisMax: 8,
+                correctBars: [
+                    { start: 20.5, width: 5, height: 6 },
+                    { start: 25.5, width: 5, height: 2 },
+                    { start: 30.5, width: 5, height: 2 },
+                    { start: 35.5, width: 5, height: 5 },
+                    { start: 40.5, width: 5, height: 6 }
+                ]
+            },
+            {
+                data: [12, 15, 18, 22, 25, 28, 31, 14, 17, 20, 23, 26, 29, 32, 16, 19, 24, 27, 30, 33],
+                initialBoundary: 9.5,
+                classWidth: 5,
+                xAxisMin: 9,
+                xAxisMax: 36,
+                yAxisMin: 0,
+                yAxisMax: 6,
+                correctBars: [
+                    { start: 9.5, width: 5, height: 4 },
+                    { start: 14.5, width: 5, height: 4 },
+                    { start: 19.5, width: 5, height: 4 },
+                    { start: 24.5, width: 5, height: 4 },
+                    { start: 29.5, width: 5, height: 4 }
+                ]
+            },
+            {
+                data: [55, 58, 62, 65, 68, 72, 75, 78, 82, 85, 56, 59, 63, 66, 69, 73, 76, 79, 83, 86, 57, 61, 64, 67, 71],
+                initialBoundary: 54.5,
+                classWidth: 5,
+                xAxisMin: 54,
+                xAxisMax: 90,
+                yAxisMin: 0,
+                yAxisMax: 5,
+                correctBars: [
+                    { start: 54.5, width: 5, height: 4 },
+                    { start: 59.5, width: 5, height: 4 },
+                    { start: 64.5, width: 5, height: 4 },
+                    { start: 69.5, width: 5, height: 3 },
+                    { start: 74.5, width: 5, height: 3 },
+                    { start: 79.5, width: 5, height: 3 },
+                    { start: 84.5, width: 5, height: 4 }
+                ]
+            },
+            {
+                data: [8, 12, 15, 18, 22, 25, 9, 13, 16, 19, 23, 10, 14, 17, 20, 24, 11, 21],
+                initialBoundary: 7.5,
+                classWidth: 4,
+                xAxisMin: 7,
+                xAxisMax: 27,
+                yAxisMin: 0,
+                yAxisMax: 5,
+                correctBars: [
+                    { start: 7.5, width: 4, height: 4 },
+                    { start: 11.5, width: 4, height: 4 },
+                    { start: 15.5, width: 4, height: 4 },
+                    { start: 19.5, width: 4, height: 4 },
+                    { start: 23.5, width: 4, height: 2 }
+                ]
+            },
+            {
+                data: [35, 42, 48, 55, 38, 45, 52, 58, 36, 43, 50, 56, 39, 46, 53, 59, 40, 47, 54, 60],
+                initialBoundary: 34.5,
+                classWidth: 6,
+                xAxisMin: 34,
+                xAxisMax: 64,
+                yAxisMin: 0,
+                yAxisMax: 5,
+                correctBars: [
+                    { start: 34.5, width: 6, height: 5 },
+                    { start: 40.5, width: 6, height: 4 },
+                    { start: 46.5, width: 6, height: 4 },
+                    { start: 52.5, width: 6, height: 4 },
+                    { start: 58.5, width: 6, height: 3 }
+                ]
+            }
+        ];
+
+        let currentParamIndex = 0;
+
+        // 状态变量
+        let xMin = 20, xMax = 46, yMin = 0, yMax = 8;
+        let xTicks = [];
+        let yTicks = [];
+        let bars = [];
+        let correctBars = [];
+
+        // ==================== 坐标转换函数 ====================
+        function xToPixel(x) {
+            return margin.left + ((x - xMin) / (xMax - xMin)) * plotWidth;
+        }
+
+        function yToPixel(y) {
+            return margin.top + plotHeight - ((y - yMin) / (yMax - yMin)) * plotHeight;
+        }
+
+        function pixelToX(px) {
+            return xMin + ((px - margin.left) / plotWidth) * (xMax - xMin);
+        }
+
+        function pixelToY(py) {
+            return yMin + ((margin.top + plotHeight - py) / plotHeight) * (yMax - yMin);
+        }
+
+        // ==================== 绘图函数 ====================
+        function drawGrid() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // 绘制背景
+            ctx.fillStyle = '#fafcff';
+            ctx.fillRect(margin.left, margin.top, plotWidth, plotHeight);
+
+            // 绘制网格线
+            ctx.strokeStyle = '#e6f0ff';
+            ctx.lineWidth = 1;
+
+            // 水平网格线（基于刻度）
+            yTicks.forEach(tick => {
+                const py = yToPixel(tick);
+                ctx.beginPath();
+                ctx.moveTo(margin.left, py);
+                ctx.lineTo(margin.left + plotWidth, py);
+                ctx.stroke();
+            });
+
+            // 垂直网格线（基于刻度）
+            xTicks.forEach(tick => {
+                const px = xToPixel(tick);
+                ctx.beginPath();
+                ctx.moveTo(px, margin.top);
+                ctx.lineTo(px, margin.top + plotHeight);
+                ctx.stroke();
+            });
+        }
+
+        function drawAxes() {
+            ctx.strokeStyle = '#0052cc';
+            ctx.lineWidth = 2;
+
+            // Y轴
+            ctx.beginPath();
+            ctx.moveTo(margin.left, margin.top);
+            ctx.lineTo(margin.left, margin.top + plotHeight);
+            ctx.stroke();
+
+            // X轴
+            ctx.beginPath();
+            ctx.moveTo(margin.left, margin.top + plotHeight);
+            ctx.lineTo(margin.left + plotWidth, margin.top + plotHeight);
+            ctx.stroke();
+
+            // Y轴刻度和标签
+            ctx.fillStyle = '#333';
+            ctx.font = '12px Segoe UI';
+            ctx.textAlign = 'right';
+            ctx.textBaseline = 'middle';
+
+            yTicks.forEach(tick => {
+                const py = yToPixel(tick);
+                ctx.beginPath();
+                ctx.moveTo(margin.left - 5, py);
+                ctx.lineTo(margin.left, py);
+                ctx.stroke();
+                ctx.fillText(tick.toString(), margin.left - 10, py);
+            });
+
+            // Y轴标签
+            ctx.save();
+            ctx.translate(20, margin.top + plotHeight / 2);
+            ctx.rotate(-Math.PI / 2);
+            ctx.textAlign = 'center';
+            ctx.font = 'bold 14px Segoe UI';
+            ctx.fillStyle = '#0052cc';
+            ctx.fillText('频数 (Frequency)', 0, 0);
+            ctx.restore();
+
+            // X轴刻度和标签
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'top';
+            ctx.font = '11px Segoe UI';
+            ctx.fillStyle = '#333';
+
+            xTicks.forEach(tick => {
+                const px = xToPixel(tick);
+                ctx.beginPath();
+                ctx.moveTo(px, margin.top + plotHeight);
+                ctx.lineTo(px, margin.top + plotHeight + 5);
+                ctx.stroke();
+                ctx.fillText(tick.toString(), px, margin.top + plotHeight + 8);
+            });
+
+            // X轴标签
+            ctx.font = 'bold 14px Segoe UI';
+            ctx.fillStyle = '#0052cc';
+            ctx.fillText('数值', margin.left + plotWidth / 2, canvas.height - 15);
+        }
+
+        function drawBars() {
+            bars.forEach((bar, index) => {
+                const x = xToPixel(bar.start);
+                const barWidthPx = (bar.width / (xMax - xMin)) * plotWidth;
+                const y = yToPixel(bar.height);
+                const barHeight = yToPixel(yMin) - y;
+
+                // 绘制直方条
+                const gradient = ctx.createLinearGradient(x, y, x, y + barHeight);
+                gradient.addColorStop(0, '#4d94ff');
+                gradient.addColorStop(1, '#1a75ff');
+
+                ctx.fillStyle = gradient;
+                ctx.fillRect(x, y, barWidthPx, barHeight);
+
+                // 绘制边框
+                ctx.strokeStyle = '#0052cc';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(x, y, barWidthPx, barHeight);
+
+                // 显示频数值
+                if (bar.height > 0) {
+                    ctx.fillStyle = '#0052cc';
+                    ctx.font = 'bold 14px Segoe UI';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'bottom';
+                    ctx.fillText(bar.height.toString(), x + barWidthPx / 2, y - 5);
                 }
-            ];
+            });
+        }
 
-            let currentParamIndex = 0;
-            let selectedOption = null;
-            let submitted = false;
+        function render() {
+            drawGrid();
+            drawAxes();
+            drawBars();
+        }
 
-            // ==================== 渲染函数 ====================
+        // ==================== 控制函数 ====================
+        function generateXTicks() {
+            xMin = parseFloat(document.getElementById('x-min').value);
+            xMax = parseFloat(document.getElementById('x-max').value);
+            const interval = parseFloat(document.getElementById('x-interval').value);
 
-            function renderQuestion() {
-                const params = questionParams[currentParamIndex];
+            xTicks = [];
+            for (let x = xMin; x <= xMax; x += interval) {
+                xTicks.push(Math.round(x * 10) / 10);
+            }
 
-                // 渲染题目内容
-                const questionContent = document.getElementById('question-content');
-                questionContent.innerHTML = `
-                    <p><strong>描述性统计：</strong>分组数据的直方图</p>
-                    <p>给定数据：${params.data.join(', ')}。</p>
-                    <p>使用初始组边界为 ${params.initialBoundary} 和组距为 ${params.classWidth} 绘制这些数据的直方图。</p>
-                    <div class="data-list">
-                        排序后的数据：${params.sortedData.join(', ')}
-                    </div>
-                    <p>最高测量值是 ${params.maxX}。各组如下所示：</p>
-                    <table class="data-table">
-                        <thead>
-                            <tr>
-                                <th>区间</th>
-                                <th>频数</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${params.groups.map(g => `
-                                <tr>
-                                    <td>${g.range}</td>
-                                    <td>${g.frequency}</td>
-                                </tr>
-                            `).join('')}
-                        </tbody>
-                    </table>
-                `;
+            // 更新刻度显示
+            const tickList = document.getElementById('x-tick-list');
+            tickList.innerHTML = xTicks.map(tick =>
+                `<span class="tick-badge">${tick}</span>`
+            ).join('');
 
-                // 渲染选项
-                const optionsContainer = document.getElementById('options-container');
-                optionsContainer.innerHTML = params.options.map(opt => `
-                    <div class="option-card" data-option="${opt.letter}">
-                        <div class="option-letter">${opt.letter}</div>
-                        <div class="option-text">${opt.text}</div>
+            render();
+        }
+
+        function generateYTicks() {
+            yMin = parseFloat(document.getElementById('y-min').value);
+            yMax = parseFloat(document.getElementById('y-max').value);
+            const interval = parseFloat(document.getElementById('y-interval').value);
+
+            yTicks = [];
+            for (let y = yMin; y <= yMax; y += interval) {
+                yTicks.push(Math.round(y * 10) / 10);
+            }
+
+            // 更新刻度显示
+            const tickList = document.getElementById('y-tick-list');
+            tickList.innerHTML = yTicks.map(tick =>
+                `<span class="tick-badge">${tick}</span>`
+            ).join('');
+
+            render();
+        }
+
+        function addBar() {
+            const start = parseFloat(document.getElementById('bar-start').value);
+            const width = parseFloat(document.getElementById('bar-width').value);
+            const height = parseFloat(document.getElementById('bar-height').value);
+
+            if (isNaN(start) || isNaN(width) || isNaN(height)) {
+                alert('请输入有效的数值！');
+                return;
+            }
+
+            if (height < 0 || height > yMax) {
+                alert(`频数必须在 0 到 ${yMax} 之间！`);
+                return;
+            }
+
+            bars.push({ start, width, height });
+            updateBarList();
+            render();
+        }
+
+        function removeBar(index) {
+            bars.splice(index, 1);
+            updateBarList();
+            render();
+        }
+
+        function updateBarList() {
+            const barList = document.getElementById('bar-list');
+            if (bars.length === 0) {
+                barList.innerHTML = '<p style="color: #999; text-align: center;">暂无直方条</p>';
+            } else {
+                barList.innerHTML = bars.map((bar, index) => `
+                    <div class="bar-item">
+                        <span class="bar-item-info">
+                            <strong>${bar.start}</strong> - ${bar.start + bar.width} |
+                            频数: <strong>${bar.height}</strong>
+                        </span>
+                        <button class="delete-btn" onclick="removeBar(${index})">删除</button>
                     </div>
                 `).join('');
+            }
+        }
 
-                // 渲染问题
-                document.getElementById('question-prompt').textContent = params.question;
+        function clearBars() {
+            bars = [];
+            updateBarList();
+            render();
+        }
 
-                // 渲染直方图
-                renderHistogram();
+        function clearCanvas() {
+            bars = [];
+            xTicks = [];
+            yTicks = [];
+            updateBarList();
+            document.getElementById('x-tick-list').innerHTML = '';
+            document.getElementById('y-tick-list').innerHTML = '';
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            render();
+        }
 
-                // 渲染解析
-                document.getElementById('explanation-content').innerHTML = `
-                    <p>1. 根据题目要求，初始组边界为${params.initialBoundary}，组距为${params.classWidth}，最高测量值为${params.maxX}。</p>
-                    <p>2. 统计每个分组内的数据点数量：</p>
-                    <ul>
-                        ${params.groups.map(g => `<li>${g.range}: ${g.frequency}个</li>`).join('')}
-                    </ul>
-                    <p>3. ${params.explanation}</p>
+        // ==================== 频数分布表函数 ====================
+        let tableRowCount = 0;
+
+        function initFrequencyTable() {
+            const params = questionParams[currentParamIndex];
+            tableRowCount = params.correctBars.length;
+            renderFrequencyTable();
+        }
+
+        function renderFrequencyTable() {
+            const tbody = document.getElementById('table-body');
+            let html = '';
+
+            for (let i = 0; i < tableRowCount; i++) {
+                html += `
+                    <tr>
+                        <td>${i + 1}</td>
+                        <td><input type="text" id="interval-${i}" placeholder="例如: 20.5-25.5"></td>
+                        <td><input type="number" id="frequency-${i}" min="0" placeholder="频数"></td>
+                    </tr>
                 `;
-
-                // 重置状态
-                resetState();
             }
 
-            function renderHistogram() {
-                const params = questionParams[currentParamIndex];
-                const histogram = document.getElementById('histogram');
-                histogram.innerHTML = '<div class="y-axis-label">频数</div><div class="x-axis-label">数值</div>';
+            tbody.innerHTML = html;
+        }
 
-                const maxFrequency = Math.max(...params.groups.map(g => g.frequency));
+        function addTableRow() {
+            tableRowCount++;
+            renderFrequencyTable();
+        }
 
-                params.groups.forEach(item => {
-                    const barHeight = (item.frequency / maxFrequency) * 100;
-
-                    const barContainer = document.createElement('div');
-                    barContainer.className = 'bar-container';
-
-                    const bar = document.createElement('div');
-                    bar.className = 'bar';
-                    bar.style.height = `${barHeight}%`;
-
-                    const barValue = document.createElement('div');
-                    barValue.className = 'bar-value';
-                    barValue.textContent = item.frequency;
-
-                    const barLabel = document.createElement('div');
-                    barLabel.className = 'bar-label';
-                    barLabel.textContent = item.range;
-
-                    bar.appendChild(barValue);
-                    barContainer.appendChild(bar);
-                    barContainer.appendChild(barLabel);
-                    histogram.appendChild(barContainer);
-                });
+        function removeLastTableRow() {
+            if (tableRowCount > 1) {
+                tableRowCount--;
+                renderFrequencyTable();
             }
+        }
 
-            function resetState() {
-                selectedOption = null;
-                submitted = false;
+        function applyTableToHistogram() {
+            // 从表格读取数据并应用到直方图
+            bars = [];
 
-                const optionCards = document.querySelectorAll('.option-card');
-                optionCards.forEach(card => {
-                    card.classList.remove('selected', 'correct', 'incorrect');
-                    card.style.cursor = 'pointer';
-                });
+            for (let i = 0; i < tableRowCount; i++) {
+                const intervalInput = document.getElementById(`interval-${i}`);
+                const frequencyInput = document.getElementById(`frequency-${i}`);
 
-                const feedback = document.getElementById('feedback');
-                feedback.className = 'feedback';
-                feedback.style.display = 'none';
+                if (intervalInput && frequencyInput) {
+                    const interval = intervalInput.value.trim();
+                    const frequency = parseInt(frequencyInput.value) || 0;
 
-                document.getElementById('score-value').textContent = '0/1';
-                document.getElementById('score-text').textContent = '请选择答案并提交';
+                    if (interval && frequency > 0) {
+                        // 解析区间，例如 "20.5-25.5"
+                        const parts = interval.split('-');
+                        if (parts.length === 2) {
+                            const start = parseFloat(parts[0]);
+                            const end = parseFloat(parts[1]);
+                            const width = end - start;
 
-                document.getElementById('explanation').style.display = 'none';
-                document.getElementById('show-explanation-btn').style.display = 'none';
-
-                bindOptionEvents();
-            }
-
-            function bindOptionEvents() {
-                const optionCards = document.querySelectorAll('.option-card');
-                optionCards.forEach(card => {
-                    card.addEventListener('click', function() {
-                        if (submitted) return;
-
-                        optionCards.forEach(c => c.classList.remove('selected'));
-                        this.classList.add('selected');
-                        selectedOption = this.getAttribute('data-option');
-                    });
-                });
-            }
-
-            function refreshParams() {
-                let newIndex;
-                do {
-                    newIndex = Math.floor(Math.random() * questionParams.length);
-                } while (newIndex === currentParamIndex && questionParams.length > 1);
-
-                currentParamIndex = newIndex;
-                renderQuestion();
-            }
-
-            // ==================== 事件处理 ====================
-
-            document.getElementById('refresh-params-btn').addEventListener('click', refreshParams);
-
-            document.getElementById('show-explanation-btn').addEventListener('click', function() {
-                const explanation = document.getElementById('explanation');
-                if (explanation.style.display === 'block') {
-                    explanation.style.display = 'none';
-                    this.textContent = '查看答案解析';
-                } else {
-                    explanation.style.display = 'block';
-                    this.textContent = '隐藏答案解析';
-                }
-            });
-
-            document.getElementById('submit-btn').addEventListener('click', function() {
-                if (!selectedOption) {
-                    alert('请先选择一个答案！');
-                    return;
-                }
-
-                submitted = true;
-                const params = questionParams[currentParamIndex];
-                const optionCards = document.querySelectorAll('.option-card');
-
-                optionCards.forEach(card => {
-                    card.style.cursor = 'default';
-                    const option = card.getAttribute('data-option');
-                    if (option === params.correctAnswer) {
-                        card.classList.add('correct');
-                    } else if (option === selectedOption && option !== params.correctAnswer) {
-                        card.classList.add('incorrect');
+                            if (!isNaN(start) && !isNaN(end) && width > 0) {
+                                bars.push({ start, width, height: frequency });
+                            }
+                        }
                     }
-                });
-
-                const feedback = document.getElementById('feedback');
-                const feedbackTitle = document.getElementById('feedback-title');
-                const feedbackText = document.getElementById('feedback-text');
-
-                if (selectedOption === params.correctAnswer) {
-                    feedback.className = 'feedback correct';
-                    feedbackTitle.innerHTML = '回答正确！';
-                    feedbackText.textContent = params.explanation;
-                    document.getElementById('score-value').textContent = '1/1';
-                    document.getElementById('score-text').textContent = '恭喜你答对了！';
-                } else {
-                    feedback.className = 'feedback incorrect';
-                    feedbackTitle.innerHTML = '回答错误！';
-                    feedbackText.textContent = `正确答案是 ${params.correctAnswer}。${params.explanation}`;
-                    document.getElementById('score-value').textContent = '0/1';
-                    document.getElementById('score-text').textContent = '请查看解析了解正确答案。';
                 }
+            }
 
-                feedback.style.display = 'block';
-                document.getElementById('show-explanation-btn').style.display = 'inline-block';
+            updateBarList();
+            render();
+        }
+
+        function checkTableAnswer() {
+            const params = questionParams[currentParamIndex];
+            let correctCount = 0;
+            const tolerance = 0.5;
+
+            for (let i = 0; i < params.correctBars.length; i++) {
+                const correct = params.correctBars[i];
+                const intervalInput = document.getElementById(`interval-${i}`);
+                const frequencyInput = document.getElementById(`frequency-${i}`);
+
+                if (intervalInput && frequencyInput) {
+                    const interval = intervalInput.value.trim();
+                    const frequency = parseInt(frequencyInput.value);
+
+                    // 检查区间
+                    const expectedInterval = `${correct.start}-${correct.start + correct.width}`;
+                    const parts = interval.split('-');
+
+                    let intervalCorrect = false;
+                    if (parts.length === 2) {
+                        const start = parseFloat(parts[0]);
+                        const end = parseFloat(parts[1]);
+                        if (Math.abs(start - correct.start) < tolerance &&
+                            Math.abs(end - (correct.start + correct.width)) < tolerance) {
+                            intervalCorrect = true;
+                        }
+                    }
+
+                    // 检查频数
+                    const frequencyCorrect = frequency === correct.height;
+
+                    // 更新样式
+                    intervalInput.className = intervalCorrect ? 'correct' : (interval ? 'incorrect' : '');
+                    frequencyInput.className = frequencyCorrect ? 'correct' : (frequencyInput.value ? 'incorrect' : '');
+
+                    if (intervalCorrect && frequencyCorrect) {
+                        correctCount++;
+                    }
+                }
+            }
+
+            const total = params.correctBars.length;
+            alert(`表格检查结果：正确 ${correctCount}/${total} 行`);
+        }
+
+        function checkAnswer() {
+            if (bars.length === 0) {
+                alert('请先绘制直方图！');
+                return;
+            }
+
+            let correctCount = 0;
+            const tolerance = 0.5;
+
+            correctBars.forEach(correct => {
+                const matched = bars.find(bar =>
+                    Math.abs(bar.start - correct.start) < tolerance &&
+                    Math.abs(bar.width - correct.width) < tolerance &&
+                    bar.height === correct.height
+                );
+                if (matched) correctCount++;
             });
 
-            document.getElementById('reset-btn').addEventListener('click', function() {
-                resetState();
-            });
+            const score = correctCount;
+            const total = correctBars.length;
 
-            // ==================== 初始化 ====================
+            document.getElementById('score-value').textContent = `${score}/${total}`;
+
+            const feedback = document.getElementById('feedback');
+            const feedbackTitle = document.getElementById('feedback-title');
+            const feedbackText = document.getElementById('feedback-text');
+
+            if (score === total) {
+                feedback.className = 'feedback correct';
+                feedbackTitle.textContent = '完美！';
+                feedbackText.textContent = `你的直方图完全正确！所有 ${total} 个直方条的位置和高度都正确。`;
+                document.getElementById('score-text').textContent = '太棒了！你完全掌握了直方图的绘制方法！';
+            } else if (score >= total * 0.6) {
+                feedback.className = 'feedback correct';
+                feedbackTitle.textContent = '不错！';
+                feedbackText.textContent = `你正确绘制了 ${score}/${total} 个直方条。请检查其他直方条的位置和高度。`;
+                document.getElementById('score-text').textContent = '继续努力！检查一下其他直方条是否正确。';
+            } else {
+                feedback.className = 'feedback incorrect';
+                feedbackTitle.textContent = '需要改进';
+                feedbackText.textContent = `你正确绘制了 ${score}/${total} 个直方条。请参考表格数据，确保每个区间的直方条位置和高度正确。`;
+                document.getElementById('score-text').textContent = '请仔细检查数据和直方条的对应关系。';
+            }
+        }
+
+        // ==================== 画布点击事件 ====================
+        canvas.addEventListener('click', function(e) {
+            const rect = canvas.getBoundingClientRect();
+            const px = e.clientX - rect.left;
+            const py = e.clientY - rect.top;
+
+            // 检查是否在绘图区域内
+            if (px < margin.left || px > margin.left + plotWidth ||
+                py < margin.top || py > margin.top + plotHeight) {
+                return;
+            }
+
+            // 获取X坐标对应的值
+            const xValue = pixelToX(px);
+            const yValue = pixelToY(py);
+
+            // 设置起始位置和频数
+            document.getElementById('bar-start').value = Math.round(xValue * 2) / 2;
+            document.getElementById('bar-height').value = Math.round(yValue);
+        });
+
+        // ==================== 渲染函数 ====================
+        function renderQuestion() {
+            const params = questionParams[currentParamIndex];
+
+            // 更新数据显示
+            document.getElementById('data-display').textContent = `数据：${params.data.join(', ')}`;
+            document.getElementById('instruction-display').textContent =
+                `绘制这些数据的直方图，使用${params.initialBoundary}作为初始组界，组宽为${params.classWidth}。请注意，您可以根据需要在图表中添加或删除类别。请在每个类别上标注其组限。`;
+
+            // 更新正确答案
+            correctBars = params.correctBars;
+
+            // 更新输入框默认值
+            document.getElementById('x-min').value = params.xAxisMin;
+            document.getElementById('x-max').value = params.xAxisMax;
+            document.getElementById('y-min').value = params.yAxisMin;
+            document.getElementById('y-max').value = params.yAxisMax;
+
+            // 更新状态变量
+            xMin = params.xAxisMin;
+            xMax = params.xAxisMax;
+            yMin = params.yAxisMin;
+            yMax = params.yAxisMax;
+
+            // 重置状态
+            bars = [];
+            xTicks = [];
+            yTicks = [];
+            updateBarList();
+            document.getElementById('x-tick-list').innerHTML = '';
+            document.getElementById('y-tick-list').innerHTML = '';
+
+            // 重置评分
+            document.getElementById('score-value').textContent = `-/5`;
+            document.getElementById('score-text').textContent = '完成绘图后点击"检查答案"';
+            document.getElementById('feedback').className = 'feedback';
+
+            // 初始化频数分布表
+            initFrequencyTable();
+
+            // 生成刻度并渲染
+            generateXTicks();
+            generateYTicks();
+            render();
+        }
+
+        // 刷新参数按钮
+        document.getElementById('refresh-btn').addEventListener('click', function() {
+            let newIndex;
+            do {
+                newIndex = Math.floor(Math.random() * questionParams.length);
+            } while (newIndex === currentParamIndex && questionParams.length > 1);
+
+            currentParamIndex = newIndex;
             renderQuestion();
         });
+
+        // ==================== 初始化 ====================
+        renderQuestion();
     </script>
 </body>
 </html>

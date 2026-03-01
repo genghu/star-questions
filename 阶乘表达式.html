@@ -98,62 +98,116 @@
             overflow-x: auto;
         }
 
-        .answer-options {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 15px;
+        .answer-section {
             margin-top: 25px;
         }
 
-        .answer-option {
+        .input-group {
             background-color: #f8fbff;
             border: 2px solid #cce0ff;
             border-radius: 12px;
-            padding: 18px;
-            cursor: pointer;
+            padding: 20px;
+            margin-bottom: 20px;
             transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
         }
 
-        .answer-option:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0, 82, 204, 0.15);
+        .input-group:focus-within {
             border-color: #4d94ff;
+            box-shadow: 0 0 0 3px rgba(77, 148, 255, 0.2);
         }
 
-        .answer-option.selected {
-            border-color: #0052cc;
-            background-color: #e6f0ff;
-        }
-
-        .answer-option.correct {
+        .input-group.correct {
             border-color: #00cc66;
             background-color: #e6ffe6;
         }
 
-        .answer-option.incorrect {
+        .input-group.incorrect {
             border-color: #ff6666;
             background-color: #ffe6e6;
         }
 
-        .option-letter {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 36px;
-            height: 36px;
-            background-color: #4d94ff;
-            color: white;
-            border-radius: 50%;
-            font-weight: bold;
-            margin-right: 15px;
-            flex-shrink: 0;
+        .input-label {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #0052cc;
+            font-size: 1.1rem;
         }
 
-        .option-text {
+        .answer-input {
+            width: 100%;
+            max-width: 250px;
+            padding: 12px 16px;
             font-size: 1.2rem;
-            font-weight: 500;
+            border: 2px solid #cce0ff;
+            border-radius: 8px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .answer-input:focus {
+            border-color: #4d94ff;
+            box-shadow: 0 0 0 3px rgba(77, 148, 255, 0.2);
+        }
+
+        .answer-input.correct {
+            border-color: #00cc66;
+            background-color: #ccffcc;
+        }
+
+        .answer-input.incorrect {
+            border-color: #ff6666;
+            background-color: #ffcccc;
+        }
+
+        .input-hint {
+            margin-top: 8px;
+            font-size: 0.9rem;
+            color: #6699ff;
+        }
+
+        .feedback-text {
+            margin-top: 10px;
+            font-weight: 600;
+            display: none;
+        }
+
+        .feedback-text.correct {
+            color: #00cc66;
+            display: block;
+        }
+
+        .feedback-text.incorrect {
+            color: #ff6666;
+            display: block;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .refresh-btn {
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 2px 8px rgba(39, 174, 96, 0.3);
+        }
+
+        .refresh-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.4);
         }
 
         .controls {
@@ -259,19 +313,19 @@
             .container {
                 padding: 20px;
             }
-            
+
             h1 {
                 font-size: 1.8rem;
             }
-            
-            .answer-options {
-                grid-template-columns: 1fr;
+
+            .answer-input {
+                max-width: 100%;
             }
-            
+
             .controls {
                 flex-direction: column;
             }
-            
+
             button {
                 width: 100%;
             }
@@ -320,60 +374,34 @@
 <body>
     <div class="container">
         <header>
-            <h1>阶乘表达式 <button id="refresh-btn" style="margin-left: 15px; padding: 8px 16px; background: linear-gradient(135deg, #34a853, #2ecc71); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(52, 168, 83, 0.3);">刷新参数</button></h1>
+            <div class="header-content">
+                <h1>阶乘表达式</h1>
+                <button class="refresh-btn" id="refresh-btn">
+                    <span>&#8635;</span> 刷新参数
+                </button>
+            </div>
             <div class="subtitle">交互式数学答题 - 概率与阶乘</div>
         </header>
-        
+
         <div class="question-container">
             <div class="question-header">
                 <div class="question-title">题目：阶乘表达式求值</div>
-                
             </div>
-            
-            <div class="question-content">
+
+            <div class="question-content" id="question-content">
                 <p>求下列表达式的值：</p>
-                <p style="text-align: center; font-size: 1.4rem; margin: 20px 0; font-weight: bold;">
+                <p style="text-align: center; font-size: 1.4rem; margin: 20px 0; font-weight: bold;" id="expression">
                     (12! × 11!) ÷ (13! × 8!)
                 </p>
                 <p>如果你的答案不是整数，请将其写为精确分数。</p>
-                
-                <div class="factorial-def">
-                    <p>对于任意正整数 n，我们用 n! 表示从 1 到 n 的所有整数的乘积。因此，</p>
-                    <p>n! = n · (n-1) · (n-2) · ... · 3 · 2 · 1。</p>
-                    <p>符号 n! 读作 "n 阶乘" 或 "阶乘 n"。</p>
-                </div>
-                
-                <p>为了确定表达式 (12! × 11!) ÷ (13! × 8!) 的值，我们可以将该表达式分解为两部分：12! ÷ 13! 和 11! ÷ 8!。</p>
-                
-                <div class="calculation">
-计算过程：
-(12! × 11!) ÷ (13! × 8!) = (12! ÷ 13!) × (11! ÷ 8!)
-                        = (12! ÷ (13 × 12!)) × ((11 × 10 × 9 × 8!) ÷ 8!)
-                        = (1 ÷ 13) × (11 × 10 × 9)
-                        = (11 × 10 × 9) ÷ 13
-                        = 990 ÷ 13
-                </div>
             </div>
-            
-            <div class="answer-options">
-                <div class="answer-option" data-value="990/13">
-                    <div class="option-letter">A</div>
-                    <div class="option-text">990 ÷ 13 或 990/13</div>
-                </div>
-                
-                <div class="answer-option" data-value="990">
-                    <div class="option-letter">B</div>
-                    <div class="option-text">990</div>
-                </div>
-                
-                <div class="answer-option" data-value="13/990">
-                    <div class="option-letter">C</div>
-                    <div class="option-text">13 ÷ 990 或 13/990</div>
-                </div>
-                
-                <div class="answer-option" data-value="76">
-                    <div class="option-letter">D</div>
-                    <div class="option-text">76 (约等于 990÷13)</div>
+
+            <div class="answer-section">
+                <div class="input-group" id="input-group">
+                    <div class="input-label">请输入你的答案：</div>
+                    <input type="text" class="answer-input" id="answer-input">
+                    <div class="input-hint">请以分数形式输入，如：330/19</div>
+                    <div class="feedback-text" id="feedback-text"></div>
                 </div>
             </div>
             
@@ -387,22 +415,14 @@
                     <span id="result-icon"></span>
                     <span id="result-text"></span>
                 </div>
-                
+
                 <div class="score-display" id="score-display">
                     得分: <span id="score">0</span> / 1
                 </div>
-                
+
                 <button class="show-explanation-btn" id="show-explanation-btn">查看答案解析</button>
-<div class="explanation-section explanation" style="display:none;">
-                    <h3>题目解析</h3>
-                    <p>为了计算 (12! × 11!) ÷ (13! × 8!)，我们可以利用阶乘的性质进行简化：</p>
-                    <ol>
-                        <li>13! = 13 × 12!，所以 12! ÷ 13! = 1 ÷ 13</li>
-                        <li>11! = 11 × 10 × 9 × 8!，所以 11! ÷ 8! = 11 × 10 × 9 = 990</li>
-                        <li>因此原式 = (1 ÷ 13) × 990 = 990 ÷ 13</li>
-                        <li>由于 990 和 13 没有公因数，所以结果就是分数 990/13</li>
-                    </ol>
-                    <p><strong>正确答案：</strong> 990 ÷ 13 或 990/13</p>
+                <div class="explanation-section explanation" style="display:none;">
+                    <!-- 动态生成 -->
                 </div>
             </div>
         </div>
@@ -412,138 +432,231 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-
-            // 显示答案解析按钮点击事件
-            document.querySelectorAll('.show-explanation-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    var questionId = this.getAttribute('data-question') || this.id;
-                    var explanation;
-                    if (questionId) {
-                        explanation = this.nextElementSibling;
-                    }
-                    if (explanation) {
-                        if (explanation.classList.contains('show')) {
-                            explanation.classList.remove('show');
-                            this.textContent = '查看答案解析';
-                        } else {
-                            explanation.classList.add('show');
-                            this.textContent = '隐藏答案解析';
-                        }
-                    }
-                });
-            });
-
-            const answerOptions = document.querySelectorAll('.answer-option');
             const submitBtn = document.getElementById('submit-btn');
             const resetBtn = document.getElementById('reset-btn');
+            const refreshBtn = document.getElementById('refresh-btn');
             const resultContainer = document.getElementById('result-container');
             const resultText = document.getElementById('result-text');
             const resultIcon = document.getElementById('result-icon');
             const scoreDisplay = document.getElementById('score');
-            
-            let selectedAnswer = null;
+            const explanationBtn = document.getElementById('show-explanation-btn');
+            const explanationSection = document.querySelector('.explanation-section');
+
+            // ==================== 参数化数据集 ====================
+            const questionParams = [
+                {
+                    a: 12, b: 11, c: 13, d: 8,
+                    expression: "(12! × 11!) ÷ (13! × 8!)",
+                    numerator: 990,
+                    denominator: 13,
+                    steps: [
+                        "13! = 13 × 12!，所以 12! ÷ 13! = 1 ÷ 13",
+                        "11! = 11 × 10 × 9 × 8!，所以 11! ÷ 8! = 11 × 10 × 9 = 990",
+                        "因此原式 = (1 ÷ 13) × 990 = 990 ÷ 13"
+                    ]
+                },
+                {
+                    a: 10, b: 9, c: 11, d: 6,
+                    expression: "(10! × 9!) ÷ (11! × 6!)",
+                    numerator: 504,
+                    denominator: 11,
+                    steps: [
+                        "11! = 11 × 10!，所以 10! ÷ 11! = 1 ÷ 11",
+                        "9! = 9 × 8 × 7 × 6!，所以 9! ÷ 6! = 9 × 8 × 7 = 504",
+                        "因此原式 = (1 ÷ 11) × 504 = 504 ÷ 11"
+                    ]
+                },
+                {
+                    a: 8, b: 7, c: 9, d: 5,
+                    expression: "(8! × 7!) ÷ (9! × 5!)",
+                    numerator: 336,
+                    denominator: 9,
+                    steps: [
+                        "9! = 9 × 8!，所以 8! ÷ 9! = 1 ÷ 9",
+                        "7! = 7 × 6 × 5!，所以 7! ÷ 5! = 7 × 6 = 42",
+                        "因此原式 = (1 ÷ 9) × 42 = 42 ÷ 9 = 14/3"
+                    ]
+                },
+                {
+                    a: 15, b: 10, c: 16, d: 7,
+                    expression: "(15! × 10!) ÷ (16! × 7!)",
+                    numerator: 720,
+                    denominator: 16,
+                    steps: [
+                        "16! = 16 × 15!，所以 15! ÷ 16! = 1 ÷ 16",
+                        "10! = 10 × 9 × 8 × 7!，所以 10! ÷ 7! = 10 × 9 × 8 = 720",
+                        "因此原式 = (1 ÷ 16) × 720 = 720 ÷ 16 = 45"
+                    ]
+                },
+                {
+                    a: 14, b: 12, c: 15, d: 9,
+                    expression: "(14! × 12!) ÷ (15! × 9!)",
+                    numerator: 1320,
+                    denominator: 15,
+                    steps: [
+                        "15! = 15 × 14!，所以 14! ÷ 15! = 1 ÷ 15",
+                        "12! = 12 × 11 × 10 × 9!，所以 12! ÷ 9! = 12 × 11 × 10 = 1320",
+                        "因此原式 = (1 ÷ 15) × 1320 = 1320 ÷ 15 = 88"
+                    ]
+                }
+            ];
+
+            let currentParamIndex = 0;
+            let currentAnswer = '';
             let isSubmitted = false;
-            const correctAnswer = '990/13';
-            
-            // 为每个答案选项添加点击事件
-            answerOptions.forEach(option => {
-                option.addEventListener('click', function() {
-                    if (isSubmitted) return;
-                    
-                    // 移除之前选中的样式
-                    answerOptions.forEach(opt => {
-                        opt.classList.remove('selected');
-                    });
-                    
-                    // 添加当前选中的样式
-                    this.classList.add('selected');
-                    selectedAnswer = this.getAttribute('data-value');
-                });
+
+            // ==================== 辅助函数 ====================
+            function gcd(a, b) {
+                a = Math.abs(a);
+                b = Math.abs(b);
+                while (b) {
+                    let t = b;
+                    b = a % b;
+                    a = t;
+                }
+                return a;
+            }
+
+            function simplifyFraction(numerator, denominator) {
+                const g = gcd(numerator, denominator);
+                return `${numerator / g}/${denominator / g}`;
+            }
+
+            // 标准化输入格式
+            function normalizeAnswer(input) {
+                return input.trim().replace(/\s+/g, '').toLowerCase();
+            }
+
+            // ==================== 渲染函数 ====================
+            function renderQuestion() {
+                const params = questionParams[currentParamIndex];
+                const g = gcd(params.numerator, params.denominator);
+                const simplifiedNum = params.numerator / g;
+                const simplifiedDen = params.denominator / g;
+
+                currentAnswer = `${simplifiedNum}/${simplifiedDen}`;
+
+                // 更新表达式
+                document.getElementById('expression').textContent = params.expression;
+
+                // 更新解析内容
+                renderExplanation(params, simplifiedNum, simplifiedDen);
+
+                // 重置状态
+                resetState();
+            }
+
+            function renderExplanation(params, num, den) {
+                const stepsHTML = params.steps.map(step => `<li>${step}</li>`).join('');
+                document.querySelector('.explanation-section').innerHTML = `
+                    <h3>题目解析</h3>
+                    <p>为了计算 ${params.expression}，我们可以利用阶乘的性质进行简化：</p>
+                    <ol>${stepsHTML}</ol>
+                    <p><strong>正确答案：</strong> ${num}/${den}</p>
+                `;
+            }
+
+            function resetState() {
+                isSubmitted = false;
+
+                // 重置输入框
+                document.getElementById('answer-input').value = '';
+
+                // 移除所有样式
+                document.getElementById('input-group').classList.remove('correct', 'incorrect');
+                document.getElementById('answer-input').classList.remove('correct', 'incorrect');
+
+                // 清除反馈文本
+                document.getElementById('feedback-text').textContent = '';
+                document.getElementById('feedback-text').className = 'feedback-text';
+
+                // 隐藏结果和解析
+                resultContainer.classList.remove('show');
+                explanationSection.style.display = 'none';
+                explanationBtn.style.display = 'none';
+                explanationBtn.textContent = '查看答案解析';
+            }
+
+            // ==================== 事件处理 ====================
+
+            // 刷新参数按钮
+            refreshBtn.addEventListener('click', function() {
+                let newIndex;
+                do {
+                    newIndex = Math.floor(Math.random() * questionParams.length);
+                } while (newIndex === currentParamIndex && questionParams.length > 1);
+
+                currentParamIndex = newIndex;
+                renderQuestion();
             });
-            
+
+            // 显示答案解析按钮
+            explanationBtn.addEventListener('click', function() {
+                if (explanationSection.style.display === 'none' || explanationSection.style.display === '') {
+                    explanationSection.style.display = 'block';
+                    this.textContent = '隐藏答案解析';
+                } else {
+                    explanationSection.style.display = 'none';
+                    this.textContent = '查看答案解析';
+                }
+            });
+
             // 提交答案
             submitBtn.addEventListener('click', function() {
-                if (!selectedAnswer) {
-                    alert('请先选择一个答案！');
+                if (isSubmitted) return;
+
+                const userAnswer = document.getElementById('answer-input').value;
+
+                if (!userAnswer.trim()) {
+                    alert('请先输入你的答案！');
                     return;
                 }
-                
+
                 isSubmitted = true;
-                
-                // 显示结果容器
-                resultContainer.classList.add('show');
 
-                // Show explanation button after submit
-                var showExpBtn = document.getElementById('show-explanation-btn');
-                if (showExpBtn) {
-                    showExpBtn.style.display = 'inline-block';
-                    showExpBtn.onclick = function() {
-                        var explanation = this.nextElementSibling;
-                        if (explanation) {
-                            if (explanation.style.display === 'none' || explanation.style.display === '') {
-                                explanation.style.display = 'block';
-                                this.textContent = '隐藏答案解析';
-                            } else {
-                                explanation.style.display = 'none';
-                                this.textContent = '查看答案解析';
-                            }
-                        }
-                    };
-                }
+                const inputGroup = document.getElementById('input-group');
+                const inputField = document.getElementById('answer-input');
+                const feedbackText = document.getElementById('feedback-text');
+                const normalizedUserAnswer = normalizeAnswer(userAnswer);
 
-                // 检查答案是否正确
-                const isCorrect = selectedAnswer === correctAnswer;
-                
-                // 更新结果文本和图标
+                const isCorrect = normalizedUserAnswer === currentAnswer;
+
                 if (isCorrect) {
+                    inputGroup.classList.add('correct');
+                    inputField.classList.add('correct');
+                    feedbackText.textContent = `正确！答案是 ${currentAnswer}`;
+                    feedbackText.className = 'feedback-text correct';
                     resultText.textContent = '回答正确！';
                     resultText.className = 'result-correct';
                     resultIcon.innerHTML = '✓';
                     resultIcon.style.color = '#00cc66';
                     scoreDisplay.textContent = '1';
                 } else {
+                    inputGroup.classList.add('incorrect');
+                    inputField.classList.add('incorrect');
+                    feedbackText.textContent = `错误。正确答案是 ${currentAnswer}`;
+                    feedbackText.className = 'feedback-text incorrect';
                     resultText.textContent = '回答不正确。';
                     resultText.className = 'result-incorrect';
                     resultIcon.innerHTML = '✗';
                     resultIcon.style.color = '#ff6666';
                     scoreDisplay.textContent = '0';
                 }
-                
-                // 标记正确和错误的答案
-                answerOptions.forEach(option => {
-                    const optionValue = option.getAttribute('data-value');
-                    
-                    // Only mark incorrect, don't reveal correct answer
-                    if (optionValue === selectedAnswer && !isCorrect) {
-                        option.classList.add('incorrect');
-                    }
-                    
-                    // 移除悬停效果
-                    option.style.pointerEvents = 'none';
-                });
-                
-                // 滚动到结果区域
+
+                // 显示结果容器和解析按钮
+                resultContainer.classList.add('show');
+                explanationBtn.style.display = 'inline-block';
+
                 resultContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             });
-            
+
             // 重新作答
             resetBtn.addEventListener('click', function() {
-                // 重置所有状态
-                selectedAnswer = null;
-                isSubmitted = false;
-                
-                // 移除所有选项的样式
-                answerOptions.forEach(option => {
-                    option.classList.remove('selected', 'correct', 'incorrect');
-                    option.style.pointerEvents = 'auto';
-                });
-                
-                // 隐藏结果容器
-                resultContainer.classList.remove('show');
-                
-                // 重置得分显示
-                scoreDisplay.textContent = '0';
+                resetState();
             });
+
+            // ==================== 初始化 ====================
+            renderQuestion();
         });
     </script>
 </body>
