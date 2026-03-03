@@ -466,31 +466,31 @@
                 <div class="pie-chart">
                     <div class="pie-chart-center"></div>
                 </div>
-                
+
                 <div class="chart-legend">
                     <div class="legend-item">
                         <div class="color-box color-blue"></div>
-                        <span>蓝色 (约30%)</span>
+                        <span>蓝色</span>
                     </div>
                     <div class="legend-item">
                         <div class="color-box color-white"></div>
-                        <span>白色 (约20%)</span>
+                        <span>白色</span>
                     </div>
                     <div class="legend-item">
                         <div class="color-box color-black"></div>
-                        <span>黑色 (约20%)</span>
+                        <span>黑色</span>
                     </div>
                     <div class="legend-item">
                         <div class="color-box color-gray"></div>
-                        <span>灰色 (约10%)</span>
+                        <span>灰色</span>
                     </div>
                     <div class="legend-item">
                         <div class="color-box color-pink"></div>
-                        <span>粉色 (约10%)</span>
+                        <span>粉色</span>
                     </div>
                     <div class="legend-item">
                         <div class="color-box color-other"></div>
-                        <span>其他 (约10%)</span>
+                        <span>其他</span>
                     </div>
                 </div>
             </div>
@@ -535,7 +535,7 @@
         <div class="question-card" id="question2">
             <div class="question-header">
                 <div class="question-number">2</div>
-                <div class="question-text">选择白色或蓝色的顾客大约占百分之多少？<br><span class="note">请将你的答案写为10%的倍数——即10%, 20%, 30%, ...</span></div>
+                <div class="question-text">选择白色或蓝色的顾客大约占百分之多少？</div>
             </div>
             
             <div class="options-container">
@@ -639,15 +639,18 @@
                 context: "为设计新的商务装系列做准备，一家服装制造商询问了大量百货商店顾客：'您最喜欢的衬衫颜色是什么？'",
                 colors: ["蓝色", "白色", "黑色", "灰色", "粉色", "其他"],
                 percentages: [30, 20, 20, 10, 10, 10],
-                q1Answer: "c", // 黑色 (约20% = 1/5)
+                q1Fraction: "五分之一",
+                q1Percent: 20,
+                q1ItemName: "颜色",
+                q1Answer: "a", // 白色 (约20% = 1/5)
                 q2Answer: "c", // 50% (30+20)
-                q3Answer: "a", // 5% (10%/2)
+                q3Answer: "b", // 10% (其他=10%)
                 q1Options: ["白色", "蓝色", "黑色", "灰色"],
                 q2Options: ["30%", "40%", "50%", "60%"],
                 q3Options: ["5%", "10%", "15%", "20%"],
-                q1Explanation: "要知道'五分之一'的扇形是什么样子，我们取一个圆并将其切成五个大小相等的扇形。每个扇形是整个饼图的五分之一。在饼图中，'黑色'类别占据了大约20%的面积，约等于五分之一。",
+                q1Explanation: "要知道'五分之一'的扇形是什么样子，我们取一个圆并将其切成五个大小相等的扇形。每个扇形是整个饼图的五分之一。在饼图中，'白色'类别占据了大约20%的面积，约等于五分之一。",
                 q2Explanation: "'白色'和'蓝色'类别合起来占据了饼图的一半。因为 1/2 = 50%，所以选择'白色'和'蓝色'的顾客必定占50%。",
-                q3Explanation: "观察饼图，'其他'扇形的大小大约是'粉色'扇形的一半。如果粉色扇形代表10%的顾客，那么'其他'扇形必定代表大约 1/2 × 10% = 5% 的顾客。"
+                q3Explanation: "观察饼图，'其他'扇形的大小与'粉色'扇形大约相同。如果粉色扇形代表10%的顾客，那么'其他'扇形也代表大约10%的顾客。"
             },
             {
                 // 参数集2: 饮料偏好
@@ -656,6 +659,9 @@
                 context: "一家饮料公司调查了大量消费者：'您最喜欢的饮料类型是什么？'",
                 colors: ["碳酸饮料", "果汁", "茶饮", "咖啡", "矿泉水", "其他"],
                 percentages: [25, 20, 15, 20, 15, 5],
+                q1Fraction: "四分之一",
+                q1Percent: 25,
+                q1ItemName: "饮料类型",
                 q1Answer: "a",
                 q2Answer: "c",
                 q3Answer: "a",
@@ -673,9 +679,12 @@
                 context: "一项城市交通调查询问了大量市民：'您日常通勤的主要交通方式是什么？'",
                 colors: ["地铁", "公交", "自驾", "骑行", "步行", "其他"],
                 percentages: [35, 25, 20, 10, 8, 2],
+                q1Fraction: "四分之一",
+                q1Percent: 25,
+                q1ItemName: "交通方式",
                 q1Answer: "b",
                 q2Answer: "c",
-                q3Answer: "a",
+                q3Answer: "b", // 2% (其他=2%)
                 q1Options: ["地铁", "公交", "自驾", "骑行"],
                 q2Options: ["45%", "55%", "60%", "65%"],
                 q3Options: ["1%", "2%", "3%", "4%"],
@@ -690,9 +699,12 @@
                 context: "一家市场调研公司调查了大量消费者：'您目前使用的手机品牌是？'",
                 colors: ["苹果", "三星", "华为", "小米", "OPPO", "其他"],
                 percentages: [30, 20, 25, 10, 10, 5],
+                q1Fraction: "四分之一",
+                q1Percent: 25,
+                q1ItemName: "手机品牌",
                 q1Answer: "c", // 华为 (约25% = 1/4)
                 q2Answer: "c", // 50% (30+20)
-                q3Answer: "a", // 2.5% (5%/2)
+                q3Answer: "b", // 5% (其他=5%)
                 q1Options: ["苹果", "三星", "华为", "小米"],
                 q2Options: ["40%", "45%", "50%", "55%"],
                 q3Options: ["2.5%", "5%", "7.5%", "10%"],
@@ -707,6 +719,9 @@
                 context: "一项娱乐调查询问了大量观众：'您最喜欢的电影类型是什么？'",
                 colors: ["动作片", "喜剧片", "科幻片", "爱情片", "恐怖片", "其他"],
                 percentages: [25, 20, 15, 15, 15, 10],
+                q1Fraction: "四分之一",
+                q1Percent: 25,
+                q1ItemName: "电影类型",
                 q1Answer: "a",
                 q2Answer: "d",
                 q3Answer: "b",
@@ -724,9 +739,12 @@
                 context: "一项外卖市场调查询问了大量用户：'您最常用的外卖平台是？'",
                 colors: ["美团", "饿了么", "京东外卖", "滴滴外卖", "闪购", "其他"],
                 percentages: [40, 30, 15, 8, 5, 2],
-                q1Answer: "b",
-                q2Answer: "c",
-                q3Answer: "a",
+                q1Fraction: "三分之一",
+                q1Percent: 30,
+                q1ItemName: "外卖平台",
+                q1Answer: "b", // 饿了么 (约30% ≈ 1/3)
+                q2Answer: "c", // 70% (30+40)
+                q3Answer: "b", // 2% (其他=2%)
                 q1Options: ["美团", "饿了么", "京东外卖", "滴滴外卖"],
                 q2Options: ["60%", "65%", "70%", "75%"],
                 q3Options: ["1%", "2%", "3%", "4%"],
@@ -779,13 +797,13 @@
 
         // 更新问题文本
         function updateQuestionTexts(params) {
-            // 问题1 - 动态生成关于1/5或1/4的问题
+            // 问题1 - 使用参数化的分数和类型名称
             const q1Text = document.querySelector('#question1 .question-text');
-            q1Text.innerHTML = `大约五分之一的顾客选择了哪种颜色？`;
+            q1Text.innerHTML = `大约${params.q1Fraction}的顾客选择了哪种${params.q1ItemName}？`;
 
             // 问题2 - 根据前两个选项生成
             const q2Text = document.querySelector('#question2 .question-text');
-            q2Text.innerHTML = `选择${params.colors[1]}或${params.colors[0]}的顾客大约占百分之多少？<br><span class="note">请将你的答案写为10%的倍数——即10%, 20%, 30%, ...</span>`;
+            q2Text.innerHTML = `选择${params.colors[1]}或${params.colors[0]}的顾客大约占百分之多少？`;
 
             // 问题3 - 根据参数生成
             const q3Text = document.querySelector('#question3 .question-text');
@@ -820,7 +838,7 @@
                 if (params.colors[i] && params.percentages[i] !== undefined) {
                     const colorBox = item.querySelector('.color-box');
                     colorBox.className = `color-box ${colors[i]}`;
-                    item.querySelector('span').textContent = `${params.colors[i]} (约${params.percentages[i]}%)`;
+                    item.querySelector('span').textContent = params.colors[i];
                 }
             });
         }
@@ -858,8 +876,8 @@
             const exp1 = document.getElementById('explanation1');
             exp1.innerHTML = `
                 <h4><i class="fas fa-lightbulb"></i> 解析</h4>
-                <p>要知道"五分之一"的扇形是什么样子，我们取一个圆并将其切成五个大小相等的扇形。每个扇形是整个饼图的五分之一（即20%）。</p>
-                <p>在饼图中，我们需要找到一个类别，其百分比接近20%。观察图表，"${params.q1Options[params.q1Answer.charCodeAt(0) - 97]}"类别占据了大约20%的面积。</p>
+                <p>要知道"${params.q1Fraction}"的扇形是什么样子，我们取一个圆并将其切成大小相等的扇形。每个扇形是整个饼图的${params.q1Fraction}（即${params.q1Percent}%）。</p>
+                <p>在饼图中，我们需要找到一个类别，其百分比接近${params.q1Percent}%。观察图表，"${params.q1Options[params.q1Answer.charCodeAt(0) - 97]}"类别占据了大约${params.q1Percent}%的面积。</p>
                 <p><strong>正确答案：${params.q1Options[params.q1Answer.charCodeAt(0) - 97]}</strong></p>
             `;
 
@@ -965,15 +983,15 @@
                 option.addEventListener('click', function() {
                     const questionNum = this.getAttribute('data-question');
                     const optionLetter = this.getAttribute('data-option');
-                    
+
                     // 清除该问题其他选项的选中状态
                     document.querySelectorAll(`.option[data-question="${questionNum}"]`).forEach(opt => {
                         opt.classList.remove('selected');
                     });
-                    
+
                     // 设置当前选项为选中状态
                     this.classList.add('selected');
-                    
+
                     // 保存用户答案
                     userAnswers[questionNum] = optionLetter;
                 });
@@ -983,7 +1001,7 @@
             document.getElementById('submitBtn').addEventListener('click', function() {
                 let correctCount = 0;
                 let totalQuestions = Object.keys(correctAnswers).length;
-                
+
                 // 检查是否所有问题都已作答
                 let allAnswered = true;
                 for (let i = 1; i <= totalQuestions; i++) {
@@ -993,36 +1011,32 @@
                         break;
                     }
                 }
-                
+
                 if (!allAnswered) return;
-                
+
                 // 检查答案并显示结果
                 for (let i = 1; i <= totalQuestions; i++) {
                     const questionElement = document.getElementById(`question${i}`);
                     const userAnswer = userAnswers[i];
                     const correctAnswer = correctAnswers[i];
-                    
+
                     // 获取所有选项
                     const options = questionElement.querySelectorAll('.option');
-                    
+
                     // 标记正确和错误的答案
                     options.forEach(option => {
                         const optionLetter = option.getAttribute('data-option');
-                        
+
                         if (optionLetter === correctAnswer) {
                             option.classList.add('correct');
                         } else if (optionLetter === userAnswer && userAnswer !== correctAnswer) {
                             option.classList.add('incorrect');
                         }
-                        
+
                         // 移除点击事件，防止再次选择
                         option.style.pointerEvents = 'none';
                     });
-                    
-                    // 显示解析
-                    const explanation = document.getElementById(`explanation${i}`);
-                    // Explanation will be shown via button click
-                    
+
                     // 统计正确数量
                     if (userAnswer === correctAnswer) {
                         correctCount++;

@@ -354,20 +354,12 @@
         <p id="question-description">在某实验的每次试验中，参与者会听到一个持续的轻柔噪音，该噪音会在某个不可预测的时间被一个稍响的声音打断。记录参与者对较响声音做出反应所需的时间。以下列表包含了该实验 8 次试验的反应时间（以毫秒计）：</p>
 
         <div class="data-set" id="data-set">505, 302, 505, 793, 505, 637, 340, 411</div>
-
-        <p>通常，通过指出数据集或分布的"中心"来概括数据集或分布是很有用的。由于何为合适的中心可能因解释而异，统计学家发展了几种集中趋势的度量（或中心度量）。三种常见的集中趋势度量是均值、中位数和众数。</p>
     </div>
 
     <div class="question-container">
         <div class="question-title">(a) 计算均值</div>
-        <p>一个包含 n 个测量值的数据集的均值，是测量值的总和除以 n。</p>
-        <div class="formula" id="mean-formula">
-            均值 = (505 + 302 + 505 + 793 + 505 + 637 + 340 + 411) / 8 = 3998 / 8 = 499.75
-        </div>
-        <p>四舍五入到一位小数：</p>
-
         <div class="input-section">
-            <label class="input-label">此数据集的均值是多少？</label>
+            <label class="input-label">此数据集的均值是多少？（四舍五入到一位小数）</label>
             <input type="number" id="mean-input" class="number-input" step="0.1">
             <span>毫秒</span>
         </div>
@@ -375,14 +367,6 @@
 
     <div class="question-container">
         <div class="question-title">(b) 计算中位数</div>
-        <p>数据集的"中位数"是当构成数据集的测量值被排序（整理）后的"中间值"。</p>
-        <p>首先将数据排序：</p>
-        <div class="data-set" id="sorted-data">302, 340, 411, 505, 505, 505, 637, 793</div>
-        <p id="median-explanation">对于此数据集，n = 8 是偶数，因此中位数是第 (n/2) 个位置和紧邻其下位置的测量值的均值。即第4位(505)和第5位(505)测量值的均值：</p>
-        <div class="formula" id="median-formula">
-            中位数 = (505 + 505) / 2 = 505
-        </div>
-
         <div class="input-section">
             <label class="input-label">此数据集的中位数是多少？</label>
             <input type="number" id="median-input" class="number-input" step="0.1">
@@ -392,17 +376,6 @@
 
     <div class="question-container">
         <div class="question-title">(c) 确定众数</div>
-        <p>数据集的众数是数据集中具有最大频率的值，也就是说，它是数据集中出现次数最多的测量值。</p>
-        <p id="mode-frequency-text">从有序列表 [302, 340, 411, 505, 505, 505, 637, 793] 中我们看到：</p>
-        <ul id="frequency-list">
-            <li>302 出现 1 次</li>
-            <li>340 出现 1 次</li>
-            <li>411 出现 1 次</li>
-            <li><strong>505 出现 3 次</strong></li>
-            <li>637 出现 1 次</li>
-            <li>793 出现 1 次</li>
-        </ul>
-
         <div class="mode-selection">
             <div class="input-label">该数据集有多少个众数？它们的值是多少？</div>
 
@@ -554,57 +527,26 @@
 
                 // 更新数据显示
                 document.getElementById('data-set').textContent = data.join(', ');
-                document.getElementById('sorted-data').textContent = sortedData.join(', ');
 
-                // 计算统计量
+                // 计算统计量（用于解析）
                 const sum = data.reduce((a, b) => a + b, 0);
                 const n = data.length;
                 const meanRaw = sum / n;
 
-                // 更新均值公式
-                document.getElementById('mean-formula').innerHTML =
-                    `均值 = (${data.join(' + ')}) / ${n} = ${sum} / ${n} = ${meanRaw.toFixed(2)}`;
-
-                // 更新中位数说明
+                // 更新解析内容
                 let medianExplanation = '';
-                let medianFormula = '';
                 if (n % 2 === 0) {
                     const idx1 = n / 2 - 1;
                     const idx2 = n / 2;
-                    medianExplanation = `对于此数据集，n = ${n} 是偶数，因此中位数是第 ${idx1 + 1} 个位置和第 ${idx2 + 1} 个位置测量值的均值。即第${idx1 + 1}位(${sortedData[idx1]})和第${idx2 + 1}位(${sortedData[idx2]})测量值的均值：`;
-                    medianFormula = `中位数 = (${sortedData[idx1]} + ${sortedData[idx2]}) / 2 = ${params.median}`;
+                    medianExplanation = `n = ${n} 是偶数，因此中位数是第 ${idx1 + 1} 个位置和第 ${idx2 + 1} 个位置测量值的均值。即第${idx1 + 1}位(${sortedData[idx1]})和第${idx2 + 1}位(${sortedData[idx2]})测量值的均值`;
                 } else {
                     const idx = Math.floor(n / 2);
-                    medianExplanation = `对于此数据集，n = ${n} 是奇数，因此中位数是第 ${idx + 1} 个位置的测量值：`;
-                    medianFormula = `中位数 = ${sortedData[idx]}`;
+                    medianExplanation = `n = ${n} 是奇数，因此中位数是第 ${idx + 1} 个位置的测量值`;
                 }
-                document.getElementById('median-explanation').textContent = medianExplanation;
-                document.getElementById('median-formula').innerHTML = medianFormula;
 
-                // 更新众数频率列表
-                const frequencyMap = {};
-                data.forEach(val => {
-                    frequencyMap[val] = (frequencyMap[val] || 0) + 1;
-                });
-                const maxFreq = Math.max(...Object.values(frequencyMap));
-
-                let freqListHtml = '';
-                Object.entries(frequencyMap)
-                    .sort((a, b) => b[1] - a[1])
-                    .forEach(([val, freq]) => {
-                        if (freq === maxFreq) {
-                            freqListHtml += `<li><strong>${val} 出现 ${freq} 次</strong></li>`;
-                        } else {
-                            freqListHtml += `<li>${val} 出现 ${freq} 次</li>`;
-                        }
-                    });
-                document.getElementById('frequency-list').innerHTML = freqListHtml;
-                document.getElementById('mode-frequency-text').textContent = `从有序列表 [${sortedData.join(', ')}] 中我们看到：`;
-
-                // 更新解析内容
                 document.getElementById('explanation-content').innerHTML = `
                     <p><strong>(a) 均值计算：</strong> 均值是所有测量值的总和除以测量值的数量。总和为 ${data.join(' + ')} = ${sum}。除以${n}得到 ${meanRaw.toFixed(2)}，四舍五入到一位小数为 <strong>${params.mean}</strong>。</p>
-                    <p><strong>(b) 中位数计算：</strong> 首先将数据排序：${sortedData.join(', ')}。${medianExplanation.replace('对于此数据集，', '')}结果为 <strong>${params.median}</strong>。</p>
+                    <p><strong>(b) 中位数计算：</strong> 首先将数据排序：${sortedData.join(', ')}。${medianExplanation}，结果为 <strong>${params.median}</strong>。</p>
                     <p><strong>(c) 众数确定：</strong> 众数是出现频率最高的值。${params.modeCount === 0 ? '该数据集中所有值出现的次数相同，因此没有众数。' :
                     params.modeCount === 1 ? `值${params.modeValues[0]}出现的次数最多，因此该数据集有 <strong>一个众数</strong>，其值为 <strong>${params.modeValues[0]}</strong>。` :
                     `值${params.modeValues.join('和')}出现的次数相同且最多，因此该数据集有 <strong>两个众数</strong>，其值为 <strong>${params.modeValues.join(' 和 ')}</strong>。`}</p>

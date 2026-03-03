@@ -50,6 +50,91 @@
             overflow-x: auto;
         }
 
+        .histogram-container {
+            background-color: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .histogram-title {
+            font-weight: bold;
+            color: #1e40af;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .histogram {
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            gap: 4px;
+            height: 200px;
+            padding: 10px 20px;
+            background-color: #f8fafc;
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .histogram-bar {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex: 1;
+            max-width: 60px;
+        }
+
+        .histogram-bar-fill {
+            width: 100%;
+            background: linear-gradient(180deg, #3b82f6, #1e40af);
+            border-radius: 4px 4px 0 0;
+            transition: height 0.3s ease;
+            position: relative;
+        }
+
+        .histogram-bar-fill:hover {
+            background: linear-gradient(180deg, #60a5fa, #3b82f6);
+        }
+
+        .histogram-bar-label {
+            font-size: 0.75rem;
+            color: #64748b;
+            margin-top: 8px;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .histogram-bar-count {
+            font-size: 0.7rem;
+            color: #1e40af;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .histogram-y-axis {
+            position: absolute;
+            left: 0;
+            top: 10px;
+            bottom: 30px;
+            width: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            font-size: 0.7rem;
+            color: #94a3b8;
+            text-align: right;
+            padding-right: 5px;
+        }
+
+        .histogram-x-axis-label {
+            text-align: center;
+            margin-top: 10px;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
         .question-container {
             background-color: white;
             border-radius: 12px;
@@ -358,6 +443,14 @@
         <div class="data-display" id="data-display">
             数据集: -9, -3, -1, 2, 4, 8, 8, 9, 11, 11, 13, 14, 15, 15, 15, 18, 22, 24, 24, 26, 27, 32, 34, 35
         </div>
+
+        <div class="histogram-container">
+            <div class="histogram-title">数据分布直方图</div>
+            <div class="histogram" id="histogram">
+                <!-- 动态生成 -->
+            </div>
+            <div class="histogram-x-axis-label">数据值</div>
+        </div>
     </header>
 
     <main>
@@ -445,6 +538,10 @@
                     <div class="option-label">3</div>
                     <div class="option-text">大致对称</div>
                 </div>
+                <div class="option" data-question="d" data-option="4">
+                    <div class="option-label">4</div>
+                    <div class="option-text">均匀分布</div>
+                </div>
             </div>
             <div class="feedback" id="feedback-d"></div>
         </div>
@@ -493,8 +590,8 @@
             {
                 data: [-8, -4, 0, 2, 5, 8, 8, 8, 12, 12, 15, 15, 15, 18, 20, 24, 28, 32, 36, 40, 44, 48, 52, 60],
                 minValue: -8, newMinValue: -38,
-                answers: { a: ['4'], b: ['1'], c: ['1', '2'], d: ['2'] },
-                description: '单众数，正偏态',
+                answers: { a: ['3'], b: ['1'], c: ['1', '2'], d: ['2'] },
+                description: '多众数，正偏态',
                 mean: 19.3, median: 15
             },
             {
@@ -507,14 +604,85 @@
             {
                 data: [-6, -2, 2, 6, 10, 10, 14, 14, 18, 22, 26, 26, 30, 30, 34, 38, 42, 46, 50, 54, 58, 62, 66, 70],
                 minValue: -6, newMinValue: -36,
-                answers: { a: ['3'], b: ['1'], c: ['1', '2'], d: ['2'] },
-                description: '多众数，正偏态',
-                mean: 28, median: 26
-            }
+                answers: { a: ['3'], b: ['1'], c: ['1', '2'], d: ['3'] },
+                description: '多众数，大致对称',
+                mean: 28, median: 28
+            },
         ];
 
         let currentParams = parameterSets[0];
         let correctAnswers = currentParams.answers;
+
+        function generateHistogram(data) {
+            const histogramEl = document.getElementById('histogram');
+            if (!histogramEl) return;
+
+            // Calculate histogram bins
+            const minVal = Math.min(...data);
+            const maxVal = Math.max(...data);
+            const range = maxVal - minVal;
+            const binCount = Math.min(10, Math.ceil(range / 10) + 1);
+            const binWidth = range / binCount;
+
+            // Create bins
+            const bins = [];
+            for (let i = 0; i < binCount; i++) {
+                const binStart = minVal + i * binWidth;
+                const binEnd = minVal + (i + 1) * binWidth;
+                bins.push({
+                    start: binStart,
+                    end: binEnd,
+                    count: 0
+                });
+            }
+
+            // Count values in each bin
+            data.forEach(value => {
+                for (let i = 0; i < bins.length; i++) {
+                    if (i === bins.length - 1) {
+                        // Last bin includes the max value
+                        if (value >= bins[i].start && value <= bins[i].end) {
+                            bins[i].count++;
+                            break;
+                        }
+                    } else {
+                        if (value >= bins[i].start && value < bins[i].end) {
+                            bins[i].count++;
+                            break;
+                        }
+                    }
+                }
+            });
+
+            const maxCount = Math.max(...bins.map(b => b.count));
+            const maxHeight = 160; // max bar height in pixels
+
+            // Generate Y-axis
+            const yAxisHtml = `
+                <div class="histogram-y-axis">
+                    <span>${maxCount}</span>
+                    <span>${Math.round(maxCount / 2)}</span>
+                    <span>0</span>
+                </div>
+            `;
+
+            // Generate bars
+            const barsHtml = bins.map((bin, index) => {
+                const height = maxCount > 0 ? (bin.count / maxCount) * maxHeight : 0;
+                const label = index === bins.length - 1
+                    ? `${Math.round(bin.start)}-${Math.round(bin.end)}`
+                    : `${Math.round(bin.start)}-${Math.round(bin.end)}`;
+                return `
+                    <div class="histogram-bar">
+                        <div class="histogram-bar-count">${bin.count > 0 ? bin.count : ''}</div>
+                        <div class="histogram-bar-fill" style="height: ${height}px;"></div>
+                        <div class="histogram-bar-label">${label}</div>
+                    </div>
+                `;
+            }).join('');
+
+            histogramEl.innerHTML = yAxisHtml + barsHtml;
+        }
 
         function initializeQuestion() {
             const params = currentParams;
@@ -522,6 +690,9 @@
 
             // Update data display
             document.getElementById('data-display').textContent = `数据集: ${params.data.join(', ')}`;
+
+            // Generate histogram
+            generateHistogram(params.data);
 
             // Update question (b) text with new min value
             const questionB = document.querySelector('#question-b .question-title');

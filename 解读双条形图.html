@@ -240,12 +240,7 @@
         }
 
         .bar-value {
-            position: absolute;
-            top: -45px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-weight: bold;
-            font-size: 0.9rem;
+            display: none;
         }
 
         .bar-fictional .bar-value {
@@ -650,6 +645,8 @@
                 {
                     // 原题
                     title: '三家图书馆的书籍数量分布',
+                    intro: '纽伯里高地有三家图书馆。每家图书馆都有小说类和非小说类书籍。下面的双条形图显示了每家图书馆中每种书籍的数量。请使用此图回答问题。',
+                    entityType: '图书馆',
                     category1: '小说类',
                     category2: '非小说类',
                     libraries: [
@@ -660,12 +657,14 @@
                     estimateLibrary: 'Hillside',
                     estimateCategory: 'cat1',
                     estimateRange: [1050, 1150],
-                    nonFictionMoreAnswer: ['Downtown'],
+                    nonFictionMoreAnswer: ['Downtown', 'Hillside', 'Coast'],
                     totalMinAnswer: 'Coast',
                     maxValue: 1800
                 },
                 {
                     title: '三所学校的课外活动参与人数',
+                    intro: '某地区有三所学校。每所学校都有学生参加体育活动和艺术活动。下面的双条形图显示了每所学校中每种活动的参与人数。请使用此图回答问题。',
+                    entityType: '学校',
                     category1: '体育活动',
                     category2: '艺术活动',
                     libraries: [
@@ -682,6 +681,8 @@
                 },
                 {
                     title: '三家餐厅的顾客类型分布',
+                    intro: '某城市有三家餐厅。每家餐厅都有堂食顾客和外卖顾客。下面的双条形图显示了每家餐厅中每种顾客类型的数量。请使用此图回答问题。',
+                    entityType: '餐厅',
                     category1: '堂食顾客',
                     category2: '外卖顾客',
                     libraries: [
@@ -698,6 +699,8 @@
                 },
                 {
                     title: '三个小区的家庭类型分布',
+                    intro: '某地区有三个小区。每个小区都有有车家庭和无车家庭。下面的双条形图显示了每个小区中每种家庭类型的数量。请使用此图回答问题。',
+                    entityType: '小区',
                     category1: '有车家庭',
                     category2: '无车家庭',
                     libraries: [
@@ -714,6 +717,8 @@
                 },
                 {
                     title: '三家书店的销售数据',
+                    intro: '某城市有三家书店。每家书店都有线上销售和线下销售。下面的双条形图显示了每家书店中每种销售方式的数量。请使用此图回答问题。',
+                    entityType: '书店',
                     category1: '线上销售',
                     category2: '线下销售',
                     libraries: [
@@ -730,6 +735,8 @@
                 },
                 {
                     title: '三个班级的成绩分布',
+                    intro: '某学校有三个班级。每个班级都有优秀和良好的学生。下面的双条形图显示了每个班级中每种成绩等级的人数。请使用此图回答问题。',
+                    entityType: '班级',
                     category1: '优秀人数',
                     category2: '良好人数',
                     libraries: [
@@ -756,8 +763,9 @@
                 const params = questionParams[currentParamIndex];
                 const chartArea = document.getElementById('chart-area');
 
-                // 更新标题
+                // 更新标题和描述
                 document.getElementById('chart-title').textContent = params.title;
+                document.getElementById('question-intro').innerHTML = `<p>${params.intro}</p>`;
                 document.getElementById('question-a-title').textContent = `估计${params.estimateLibrary}的${params.category1}数量`;
 
                 // 生成Y轴刻度
@@ -816,7 +824,7 @@
                 document.getElementById('unit-text').textContent = `本${params.category1}`;
 
                 // 更新问题b的标题
-                document.getElementById('question-b-title').textContent = `哪些${params.title.includes('图书馆') ? '图书馆' : '单位'}的${params.category2}数量多于${params.category1}？`;
+                document.getElementById('question-b-title').textContent = `哪些${params.entityType}的${params.category2}数量多于${params.category1}？`;
 
                 // 生成选项b
                 document.getElementById('options-b').innerHTML = params.libraries.map(lib => `
@@ -827,7 +835,7 @@
                 `).join('');
 
                 // 更新问题c的标题
-                document.getElementById('question-c-title').textContent = `哪家${params.title.includes('图书馆') ? '图书馆' : '单位'}的总数最少？`;
+                document.getElementById('question-c-title').textContent = `哪家${params.entityType}的总数最少？`;
 
                 // 生成选项c
                 document.getElementById('options-c').innerHTML = params.libraries.map(lib => `
@@ -902,8 +910,11 @@
                 const estimateInput = document.getElementById('estimate-input');
                 const estimateValue = parseInt(estimateInput.value);
                 const feedbackA = document.getElementById('feedback-a');
+                const correctEstimate = params.estimateCategory === 'cat1'
+                    ? params.libraries.find(l => l.name === params.estimateLibrary).cat1
+                    : params.libraries.find(l => l.name === params.estimateLibrary).cat2;
 
-                if (estimateValue >= params.estimateRange[0] && estimateValue <= params.estimateRange[1]) {
+                if (!isNaN(estimateValue) && estimateValue >= params.estimateRange[0] && estimateValue <= params.estimateRange[1]) {
                     feedbackA.classList.remove('incorrect');
                     feedbackA.classList.add('correct', 'show');
                     feedbackA.querySelector('.feedback-title').textContent = '回答正确！';
@@ -913,7 +924,11 @@
                     feedbackA.classList.remove('correct');
                     feedbackA.classList.add('incorrect', 'show');
                     feedbackA.querySelector('.feedback-title').textContent = '回答需要调整';
-                    document.getElementById('feedback-a-text').textContent = `您的估计值${estimateValue}不在合理范围(${params.estimateRange[0]}-${params.estimateRange[1]})内。请观察图表中${params.estimateLibrary}的条形图高度。`;
+                    if (isNaN(estimateValue)) {
+                        document.getElementById('feedback-a-text').textContent = `请输入一个数值。${params.estimateLibrary}的${params.category1}数量约为${correctEstimate}（接受范围：${params.estimateRange[0]}-${params.estimateRange[1]}）。`;
+                    } else {
+                        document.getElementById('feedback-a-text').textContent = `您的估计值${estimateValue}不在合理范围内。${params.estimateLibrary}的${params.category1}数量约为${correctEstimate}（接受范围：${params.estimateRange[0]}-${params.estimateRange[1]}）。`;
+                    }
                 }
 
                 // 检查第二题（多选题）
@@ -949,12 +964,14 @@
                 if (isCorrectB) {
                     feedbackB.classList.remove('incorrect');
                     feedbackB.classList.add('correct', 'show');
+                    feedbackB.querySelector('.feedback-title').textContent = '回答正确！';
                     score += 1;
                 } else {
                     feedbackB.classList.remove('correct');
                     feedbackB.classList.add('incorrect', 'show');
+                    feedbackB.querySelector('.feedback-title').textContent = '回答需要调整';
                 }
-                document.getElementById('feedback-b-text').textContent = `${params.nonFictionMoreAnswer.join('、')}的${params.category2}多于${params.category1}。`;
+                document.getElementById('feedback-b-text').textContent = `正确答案是：${params.nonFictionMoreAnswer.join('、')}的${params.category2}多于${params.category1}。`;
 
                 // 检查第三题（单选题）
                 const selectedOptionC = document.querySelector('#options-c .option.selected');
@@ -981,15 +998,17 @@
                 if (isCorrectC) {
                     feedbackC.classList.remove('incorrect');
                     feedbackC.classList.add('correct', 'show');
+                    feedbackC.querySelector('.feedback-title').textContent = '回答正确！';
                     score += 1;
                 } else {
                     feedbackC.classList.remove('correct');
                     feedbackC.classList.add('incorrect', 'show');
+                    feedbackC.querySelector('.feedback-title').textContent = '回答需要调整';
                 }
 
                 // 计算总数说明
                 const totals = params.libraries.map(l => ({ name: l.name, total: l.cat1 + l.cat2 }));
-                document.getElementById('feedback-c-text').textContent = `${params.totalMinAnswer}的总数最少。各${params.title.includes('图书馆') ? '图书馆' : '单位'}总数：${totals.map(t => `${t.name}(${t.total})`).join('、')}。`;
+                document.getElementById('feedback-c-text').textContent = `${params.totalMinAnswer}的总数最少。各${params.entityType}总数：${totals.map(t => `${t.name}(${t.total})`).join('、')}。`;
 
                 // 显示得分
                 const scoreContainer = document.getElementById('score-container');
