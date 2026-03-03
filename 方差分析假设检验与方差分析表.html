@@ -202,7 +202,36 @@
             padding: 20px;
             margin-top: 30px;
             border-radius: 0 10px 10px 0;
-            display: none;
+        }
+        #explanation-section {
+            background-color: #fff;
+            border: 1px solid #e0e0e0;
+            border-left: 5px solid #17a2b8;
+            padding: 25px;
+            margin-top: 20px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+        }
+        #explanation-section h3 {
+            color: #17a2b8;
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+        }
+        #explanation-section p {
+            margin: 10px 0;
+            line-height: 1.8;
+        }
+        #explanation-section ul {
+            margin: 10px 0;
+            padding-left: 30px;
+        }
+        #explanation-section li {
+            margin: 8px 0;
+            line-height: 1.6;
+        }
+        #explanation-section hr {
+            margin: 20px 0;
         }
         #show-explanation-btn {
             background-color: #17a2b8;
@@ -213,10 +242,6 @@
             background-color: #138496;
             transform: translateY(-3px);
             box-shadow: 0 5px 15px rgba(23, 162, 184, 0.3);
-        }
-        .explanation h3 {
-            color: #495057;
-            margin-top: 0;
         }
         .controls {
             display: flex;
@@ -407,7 +432,7 @@
             </div>
             
             <div class="question" style="margin-top: 40px;">
-                <p>在0.01的显著性水平下，你是否得出结论认为，对于该纯音，三个听者群体的平均宋值存在差异？</p>
+                <p id="conclusion-question">在0.01的显著性水平下，你是否得出结论认为三个组的均值存在差异？</p>
                 <div class="options-container">
                     <div class="option" data-value="yes">
                         <div class="option-letter">A</div>
@@ -422,37 +447,13 @@
             </div>
         </section>
 
-        <button class="show-explanation-btn" id="show-explanation-btn" style="display:none;">查看答案解析</button>
-        <div class="explanation-section explanation" style="display:none;">
-            <h3>题目解析与计算步骤</h3>
-            <p><strong>1. 确定自由度：</strong></p>
-            <p>样本测量值总数 N = 30，组数 k = 3。</p>
-            <ul>
-                <li>总自由度 = N - 1 = 30 - 1 = 29</li>
-                <li>组间自由度 = k - 1 = 3 - 1 = 2</li>
-                <li>组内自由度 = N - k = 30 - 3 = 27</li>
-            </ul>
-            
-            <p><strong>2. 计算均方：</strong></p>
-            <ul>
-                <li>组间均方 (MS<sub>between</sub>) = 组间平方和 / 组间自由度 = 1.28 / 2 = 0.64</li>
-                <li>组内均方 (MS<sub>error</sub>) = 组内平方和 / 组内自由度 = 9 / 27 ≈ 0.33</li>
-            </ul>
-            
-            <p><strong>3. 计算F统计量：</strong></p>
-            <p>F = MS<sub>between</sub> / MS<sub>error</sub> = 0.64 / 0.33 ≈ 1.94</p>
-            
-            <p><strong>4. 确定临界值：</strong></p>
-            <p>在0.01的显著性水平下，分子自由度为2，分母自由度为27的F分布临界值约为5.49。</p>
-            
-            <p><strong>5. 得出结论：</strong></p>
-            <p>由于F统计量值1.94小于临界值5.49，因此在0.01的显著性水平下，不能拒绝原假设，即不能得出结论认为三个听者群体的平均宋值存在差异。</p>
-        </div>
-
         <div class="controls">
             <button id="submit-btn">提交答案</button>
-            <button id="show-explanation-btn">查看解析</button>
+            <button id="show-explanation-btn" style="display:none;">查看解析</button>
             <button id="reset-btn">重新作答</button>
+        </div>
+
+        <div class="explanation" id="explanation-section" style="display:none;">
         </div>
 
         <div class="score-container" id="score-container">
@@ -463,7 +464,321 @@
     </div>
 
     <script>
+        // 三组参数配置
+        const paramSets = [
+            {
+                name: '听者群体响度判断比较',
+                description: '基于30位听者的数据（10人听力正常，10人使用助听器，10人有听力损失但未使用助听器）',
+                groups: [
+                    { name: '正常听力', n: 10, mean: 2.79, variance: 0.42 },
+                    { name: '使用助听器', n: 10, mean: 2.61, variance: 0.43 },
+                    { name: '有听力损失', n: 10, mean: 2.29, variance: 0.15 }
+                ],
+                anova: {
+                    ssBetween: 1.28,
+                    ssError: 9,
+                    ssTotal: 10.28
+                },
+                answers: {
+                    dfBetween: 2,
+                    dfError: 27,
+                    dfTotal: 29,
+                    msBetween: 0.64,
+                    msError: 0.33,
+                    fStat: 1.94,
+                    criticalValue: 5.49,
+                    conclusion: 'no' // F < 临界值，不能拒绝原假设
+                },
+                conclusionQuestion: '在0.01的显著性水平下，你是否得出结论认为，对于该纯音，三个听者群体的平均宋值存在差异？'
+            },
+            {
+                name: '三种教学方法效果比较',
+                description: '基于24名学生的数据（每组8人，分别使用传统教学、多媒体教学、互动式教学）',
+                groups: [
+                    { name: '传统教学', n: 8, mean: 72.5, variance: 45.2 },
+                    { name: '多媒体教学', n: 8, mean: 78.3, variance: 52.1 },
+                    { name: '互动式教学', n: 8, mean: 85.6, variance: 48.7 }
+                ],
+                anova: {
+                    ssBetween: 688.72,
+                    ssError: 1022,
+                    ssTotal: 1710.72
+                },
+                answers: {
+                    dfBetween: 2,
+                    dfError: 21,
+                    dfTotal: 23,
+                    msBetween: 344.36,
+                    msError: 48.67,
+                    fStat: 7.08,
+                    criticalValue: 5.78,
+                    conclusion: 'yes' // F > 临界值，拒绝原假设
+                },
+                conclusionQuestion: '在0.01的显著性水平下，你是否得出结论认为三种教学方法的学生成绩存在显著差异？'
+            },
+            {
+                name: '三种肥料对作物产量影响',
+                description: '基于27块试验田的数据（每种肥料9块田）',
+                groups: [
+                    { name: '肥料A', n: 9, mean: 45.2, variance: 12.5 },
+                    { name: '肥料B', n: 9, mean: 47.8, variance: 15.3 },
+                    { name: '肥料C', n: 9, mean: 46.5, variance: 11.8 }
+                ],
+                anova: {
+                    ssBetween: 31.56,
+                    ssError: 312,
+                    ssTotal: 343.56
+                },
+                answers: {
+                    dfBetween: 2,
+                    dfError: 24,
+                    dfTotal: 26,
+                    msBetween: 15.78,
+                    msError: 13,
+                    fStat: 1.21,
+                    criticalValue: 5.61,
+                    conclusion: 'no' // F < 临界值，不能拒绝原假设
+                },
+                conclusionQuestion: '在0.01的显著性水平下，你是否得出结论认为三种肥料对作物产量的影响存在显著差异？'
+            }
+        ];
+
+        let currentParamIndex = 0;
+
+        function updatePageContent(params) {
+            // 更新标题和描述
+            document.querySelector('.subtitle').textContent = '单因素独立样本方差分析检验 - ' + params.name;
+            document.querySelector('.question-section p').textContent =
+                params.description + '，进行单因素独立样本方差分析检验，比较三个组的均值。请完成方差分析表中的缺失值。';
+
+            // 更新数据表
+            const tbody = document.querySelector('.data-table tbody');
+            tbody.innerHTML = '';
+            params.groups.forEach(group => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${group.name}</td>
+                    <td>${group.n}</td>
+                    <td>${group.mean}</td>
+                    <td>${group.variance}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            // 更新方差分析表中的固定值
+            const anovaTable = document.querySelector('.anova-table tbody');
+            anovaTable.innerHTML = `
+                <tr>
+                    <td>组间</td>
+                    <td><input type="text" id="df-between"></td>
+                    <td>${params.anova.ssBetween}</td>
+                    <td><input type="text" id="ms-between"></td>
+                    <td><input type="text" id="f-stat"></td>
+                </tr>
+                <tr>
+                    <td>误差（组内）</td>
+                    <td><input type="text" id="df-error"></td>
+                    <td>${params.anova.ssError}</td>
+                    <td><input type="text" id="ms-error"></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>总计</td>
+                    <td><input type="text" id="df-total"></td>
+                    <td>${params.anova.ssTotal}</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            `;
+
+            // 更新解析内容
+            updateExplanation(params);
+
+            // 更新结论问题文字
+            document.getElementById('conclusion-question').textContent = params.conclusionQuestion;
+
+            // 重新绑定输入框键盘事件
+            bindAnovaInputEvents();
+        }
+
+        function updateExplanation(params) {
+            const explanationDiv = document.getElementById('explanation-section');
+            const conclusionText = params.answers.conclusion === 'yes'
+                ? `由于F统计量值 <strong>${params.answers.fStat}</strong> 大于临界值 <strong>${params.answers.criticalValue}</strong>，因此在0.01的显著性水平下，<strong>拒绝原假设</strong>，即可以得出结论认为三个组的均值存在显著差异。`
+                : `由于F统计量值 <strong>${params.answers.fStat}</strong> 小于临界值 <strong>${params.answers.criticalValue}</strong>，因此在0.01的显著性水平下，<strong>不能拒绝原假设</strong>，即不能得出结论认为三个组的均值存在显著差异。`;
+
+            const conclusionAnswer = params.answers.conclusion === 'yes' ? '是' : '否';
+
+            const totalN = params.groups.reduce((sum, g) => sum + g.n, 0);
+
+            // 生成数据汇总
+            const groupsInfo = params.groups.map(g =>
+                `${g.name}：样本量=${g.n}，均值=${g.mean}，方差=${g.variance}`
+            ).join('<br>                ');
+
+            explanationDiv.innerHTML = `
+                <h3>📝 详细解析与计算步骤</h3>
+
+                <p><strong>【数据汇总】</strong></p>
+                <p style="margin-left: 20px;">
+                ${groupsInfo}
+                </p>
+
+                <hr style="border: none; border-top: 1px dashed #ccc; margin: 15px 0;">
+
+                <p><strong>【问题1】方差分析表填写</strong></p>
+
+                <p><strong>步骤1：确定自由度</strong></p>
+                <ul>
+                    <li>样本测量值总数 N = ${params.groups.map(g => g.n).join(' + ')} = ${totalN}</li>
+                    <li>组数 k = 3</li>
+                    <li><strong>总自由度</strong> = N - 1 = ${totalN} - 1 = <strong>${params.answers.dfTotal}</strong></li>
+                    <li><strong>组间自由度</strong> = k - 1 = 3 - 1 = <strong>${params.answers.dfBetween}</strong></li>
+                    <li><strong>组内自由度（误差自由度）</strong> = N - k = ${totalN} - 3 = <strong>${params.answers.dfError}</strong></li>
+                </ul>
+
+                <p><strong>步骤2：计算均方</strong></p>
+                <ul>
+                    <li><strong>组间均方 (MS<sub>between</sub>)</strong> = 组间平方和 / 组间自由度 = ${params.anova.ssBetween} / ${params.answers.dfBetween} = <strong>${params.answers.msBetween}</strong></li>
+                    <li><strong>组内均方 (MS<sub>error</sub>)</strong> = 组内平方和 / 组内自由度 = ${params.anova.ssError} / ${params.answers.dfError} ≈ <strong>${params.answers.msError}</strong></li>
+                </ul>
+
+                <p><strong>步骤3：计算F统计量</strong></p>
+                <ul>
+                    <li><strong>F</strong> = MS<sub>between</sub> / MS<sub>error</sub> = ${params.answers.msBetween} / ${params.answers.msError} ≈ <strong>${params.answers.fStat}</strong></li>
+                </ul>
+
+                <hr style="border: none; border-top: 1px dashed #ccc; margin: 15px 0;">
+
+                <p><strong>【问题2】临界值查询</strong></p>
+                <p>在0.01的显著性水平（α = 0.01）下：</p>
+                <ul>
+                    <li>分子自由度（组间自由度）= ${params.answers.dfBetween}</li>
+                    <li>分母自由度（组内自由度）= ${params.answers.dfError}</li>
+                    <li>查F分布表，得到<strong>临界值 ≈ ${params.answers.criticalValue}</strong></li>
+                </ul>
+
+                <hr style="border: none; border-top: 1px dashed #ccc; margin: 15px 0;">
+
+                <p><strong>【问题3】假设检验结论</strong></p>
+                <p><strong>比较F统计量与临界值：</strong></p>
+                <ul>
+                    <li>F统计量 = ${params.answers.fStat}</li>
+                    <li>临界值 = ${params.answers.criticalValue}</li>
+                </ul>
+                <p><strong>结论：</strong></p>
+                <p style="margin-left: 20px; padding: 10px; background-color: #f8f9fa; border-radius: 5px;">
+                ${conclusionText}
+                </p>
+                <p>因此，答案选择：<strong>${conclusionAnswer}</strong></p>
+            `;
+        }
+
+        function bindAnovaInputEvents() {
+            const anovaInputs = document.querySelectorAll('.anova-table input');
+            anovaInputs.forEach((input, index) => {
+                input.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        if (index < anovaInputs.length - 1) {
+                            anovaInputs[index + 1].focus();
+                        }
+                    }
+                });
+            });
+        }
+
+        function getCurrentAnswers() {
+            return paramSets[currentParamIndex].answers;
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
+            // 初始化页面
+            updatePageContent(paramSets[currentParamIndex]);
+
+            // 刷新参数按钮
+            document.getElementById('refresh-btn').addEventListener('click', function() {
+                currentParamIndex = (currentParamIndex + 1) % paramSets.length;
+
+                // 重置所有输入和状态
+                resetAllInputs();
+
+                // 更新页面内容
+                updatePageContent(paramSets[currentParamIndex]);
+
+                // 显示提示
+                showRefreshNotification(currentParamIndex + 1, paramSets.length);
+            });
+
+            function showRefreshNotification(current, total) {
+                const notification = document.createElement('div');
+                notification.textContent = `已切换到第 ${current}/${total} 组参数`;
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: linear-gradient(135deg, #34a853, #2ecc71);
+                    color: white;
+                    padding: 15px 25px;
+                    border-radius: 8px;
+                    box-shadow: 0 4px 15px rgba(52, 168, 83, 0.4);
+                    z-index: 1000;
+                    font-weight: 600;
+                    animation: slideIn 0.3s ease;
+                `;
+                document.body.appendChild(notification);
+
+                setTimeout(() => {
+                    notification.style.animation = 'slideOut 0.3s ease';
+                    setTimeout(() => notification.remove(), 300);
+                }, 2000);
+            }
+
+            function resetAllInputs() {
+                // 重置方差分析表输入
+                document.querySelectorAll('.anova-table input').forEach(input => {
+                    input.value = '';
+                    input.classList.remove('correct', 'incorrect');
+                });
+
+                // 重置临界值输入
+                const criticalInput = document.getElementById('critical-value');
+                if (criticalInput) {
+                    criticalInput.value = '';
+                    criticalInput.classList.remove('correct', 'incorrect');
+                }
+
+                // 重置选项选择
+                document.querySelectorAll('.option').forEach(option => {
+                    option.classList.remove('selected', 'correct', 'incorrect');
+                });
+
+                // 重置反馈
+                document.querySelectorAll('.feedback').forEach(feedback => {
+                    feedback.style.display = 'none';
+                });
+
+                // 隐藏得分
+                document.getElementById('score-container').style.display = 'none';
+
+                // 隐藏解析按钮和区域
+                document.getElementById('show-explanation-btn').style.display = 'none';
+                document.getElementById('explanation-section').style.display = 'none';
+            }
+
+            // 添加动画样式
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes slideIn {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+                @keyframes slideOut {
+                    from { transform: translateX(0); opacity: 1; }
+                    to { transform: translateX(100%); opacity: 0; }
+                }
+            `;
+            document.head.appendChild(style);
 
             // 显示答案解析按钮点击事件
             document.querySelectorAll('.show-explanation-btn').forEach(btn => {
@@ -500,7 +815,7 @@
             document.getElementById('submit-btn').addEventListener('click', function() {
                 let score = 0;
                 const totalQuestions = 3;
-                
+
                 // 检查方差分析表填写
                 const dfBetween = document.getElementById('df-between');
                 const msBetween = document.getElementById('ms-between');
@@ -508,28 +823,21 @@
                 const dfError = document.getElementById('df-error');
                 const msError = document.getElementById('ms-error');
                 const dfTotal = document.getElementById('df-total');
-                
+
                 const anovaFeedback = document.getElementById('anova-feedback');
-                
-                // 正确答案
-                const correctAnswers = {
-                    dfBetween: '2',
-                    msBetween: '0.64',
-                    fStat: '1.94',
-                    dfError: '27',
-                    msError: '0.33',
-                    dfTotal: '29'
-                };
-                
+
+                // 获取当前参数组的正确答案
+                const correctAnswers = getCurrentAnswers();
+
                 // 检查每个输入 - 使用容差验证
                 let anovaCorrect = true;
                 const inputs = [
-                    {element: dfBetween, correct: 2, tolerance: 0.01, name: '组间自由度'},
-                    {element: msBetween, correct: 0.64, tolerance: 0.01, name: '组间均方'},
-                    {element: fStat, correct: 1.94, tolerance: 0.01, name: 'F统计量'},
-                    {element: dfError, correct: 27, tolerance: 0.01, name: '误差自由度'},
-                    {element: msError, correct: 0.33, tolerance: 0.01, name: '误差均方'},
-                    {element: dfTotal, correct: 29, tolerance: 0.01, name: '总自由度'}
+                    {element: dfBetween, correct: correctAnswers.dfBetween, tolerance: 0.01, name: '组间自由度'},
+                    {element: msBetween, correct: correctAnswers.msBetween, tolerance: 0.01, name: '组间均方'},
+                    {element: fStat, correct: correctAnswers.fStat, tolerance: 0.01, name: 'F统计量'},
+                    {element: dfError, correct: correctAnswers.dfError, tolerance: 0.01, name: '误差自由度'},
+                    {element: msError, correct: correctAnswers.msError, tolerance: 0.01, name: '误差均方'},
+                    {element: dfTotal, correct: correctAnswers.dfTotal, tolerance: 0.01, name: '总自由度'}
                 ];
 
                 inputs.forEach(input => {
@@ -564,7 +872,7 @@
                     anovaFeedback.className = 'feedback correct';
                     anovaFeedback.style.display = 'block';
                 } else {
-                    anovaFeedback.innerHTML = `部分错误。你填对了 ${anovaScore}/6 个空。正确答案：组间自由度=2，组间均方=0.64，F统计量=1.94，误差自由度=27，误差均方=0.33，总自由度=29。`;
+                    anovaFeedback.innerHTML = `部分错误。你填对了 ${anovaScore}/6 个空。正确答案：组间自由度=${correctAnswers.dfBetween}，组间均方=${correctAnswers.msBetween}，F统计量=${correctAnswers.fStat}，误差自由度=${correctAnswers.dfError}，误差均方=${correctAnswers.msError}，总自由度=${correctAnswers.dfTotal}。`;
                     anovaFeedback.className = 'feedback incorrect';
                     anovaFeedback.style.display = 'block';
                 }
@@ -573,18 +881,18 @@
                 const criticalValueInput = document.getElementById('critical-value');
                 const criticalFeedback = document.getElementById('critical-feedback');
                 const userCriticalValue = parseFloat(criticalValueInput.value.trim());
-                const correctCriticalValue = 5.49;
+                const correctCriticalValue = correctAnswers.criticalValue;
                 const criticalTolerance = 0.01;
 
                 if (!isNaN(userCriticalValue) && Math.abs(userCriticalValue - correctCriticalValue) <= criticalTolerance) {
-                    criticalFeedback.textContent = '正确！在0.01的显著性水平下，F统计量的临界值是5.49。';
+                    criticalFeedback.textContent = `正确！在0.01的显著性水平下，F统计量的临界值是${correctCriticalValue}。`;
                     criticalFeedback.className = 'feedback correct';
                     criticalFeedback.style.display = 'block';
                     score += 1;
                     criticalValueInput.classList.add('correct');
                     criticalValueInput.classList.remove('incorrect');
                 } else {
-                    criticalFeedback.textContent = '错误。在分子自由度2、分母自由度27的F分布中，截断右侧面积为0.01的值约为5.49。';
+                    criticalFeedback.textContent = `错误。在分子自由度${correctAnswers.dfBetween}、分母自由度${correctAnswers.dfError}的F分布中，截断右侧面积为0.01的值约为${correctCriticalValue}。`;
                     criticalFeedback.className = 'feedback incorrect';
                     criticalFeedback.style.display = 'block';
                     criticalValueInput.classList.add('incorrect');
@@ -594,17 +902,25 @@
                 // 检查结论选择
                 const selectedOption = document.querySelector('.option.selected');
                 const conclusionFeedback = document.getElementById('conclusion-feedback');
-                
+
                 if (selectedOption) {
                     const userAnswer = selectedOption.getAttribute('data-value');
-                    
-                    if (userAnswer === 'no') {
-                        conclusionFeedback.textContent = '正确！在0.01的显著性水平下，F统计量值1.94小于临界值5.49，因此不能拒绝原假设，不能得出结论认为三个听者群体的平均宋值存在差异。';
+
+                    if (userAnswer === correctAnswers.conclusion) {
+                        if (correctAnswers.conclusion === 'no') {
+                            conclusionFeedback.textContent = `正确！在0.01的显著性水平下，F统计量值${correctAnswers.fStat}小于临界值${correctAnswers.criticalValue}，因此不能拒绝原假设，不能得出结论认为三个组的均值存在显著差异。`;
+                        } else {
+                            conclusionFeedback.textContent = `正确！在0.01的显著性水平下，F统计量值${correctAnswers.fStat}大于临界值${correctAnswers.criticalValue}，因此拒绝原假设，可以得出结论认为三个组的均值存在显著差异。`;
+                        }
                         conclusionFeedback.className = 'feedback correct';
                         conclusionFeedback.style.display = 'block';
                         score += 1;
                     } else {
-                        conclusionFeedback.textContent = '错误。因为F统计量值1.94小于临界值5.49，所以在0.01的显著性水平下，不能拒绝原假设，即不能得出结论认为三个听者群体的平均宋值存在差异。';
+                        if (correctAnswers.conclusion === 'no') {
+                            conclusionFeedback.textContent = `错误。因为F统计量值${correctAnswers.fStat}小于临界值${correctAnswers.criticalValue}，所以在0.01的显著性水平下，不能拒绝原假设，即不能得出结论认为三个组的均值存在显著差异。`;
+                        } else {
+                            conclusionFeedback.textContent = `错误。因为F统计量值${correctAnswers.fStat}大于临界值${correctAnswers.criticalValue}，所以在0.01的显著性水平下，拒绝原假设，即可以得出结论认为三个组的均值存在显著差异。`;
+                        }
                         conclusionFeedback.className = 'feedback incorrect';
                         conclusionFeedback.style.display = 'block';
                     }
@@ -636,15 +952,18 @@
                 // 滚动到得分区域
                 scoreContainer.scrollIntoView({ behavior: 'smooth' });
 
-                // Show explanation buttons after submit
-                document.querySelectorAll('.show-explanation-btn').forEach(btn => {
-                    btn.style.display = 'inline-block';
-                });
+                // 只在答错时显示解析按钮
+                if (score < totalQuestions) {
+                    document.getElementById('show-explanation-btn').style.display = 'inline-block';
+                } else {
+                    document.getElementById('show-explanation-btn').style.display = 'none';
+                    document.getElementById('explanation-section').style.display = 'none';
+                }
             });
 
             // 查看解析按钮功能
             document.getElementById('show-explanation-btn').addEventListener('click', function() {
-                const explanation = document.querySelector('.explanation');
+                const explanation = document.getElementById('explanation-section');
                 if (explanation.style.display === 'block') {
                     explanation.style.display = 'none';
                     this.textContent = '查看解析';
@@ -665,7 +984,9 @@
                 });
 
                 // 重置临界值输入
-                document.getElementById('critical-value').value = '';
+                const criticalValueInput = document.getElementById('critical-value');
+                criticalValueInput.value = '';
+                criticalValueInput.classList.remove('correct', 'incorrect');
                 document.getElementById('critical-feedback').style.display = 'none';
 
                 // 重置选项选择
@@ -681,31 +1002,13 @@
                 // 隐藏得分
                 document.getElementById('score-container').style.display = 'none';
 
-                // Hide explanation buttons and sections
-                document.querySelectorAll('.show-explanation-btn').forEach(btn => {
-                    btn.style.display = 'none';
-                });
-                document.querySelectorAll('.explanation-section').forEach(section => {
-                    section.style.display = 'none';
-                });
-                document.querySelector('.explanation').style.display = 'none';
+                // 隐藏解析按钮和区域
+                document.getElementById('show-explanation-btn').style.display = 'none';
+                document.getElementById('explanation-section').style.display = 'none';
                 document.getElementById('show-explanation-btn').textContent = '查看解析';
 
                 // 滚动到顶部
                 window.scrollTo({ top: 0, behavior: 'smooth' });
-            });
-            
-            // 为方差分析表输入框添加键盘事件，允许按Enter键跳转到下一个输入框
-            const anovaInputs = document.querySelectorAll('.anova-table input');
-            anovaInputs.forEach((input, index) => {
-                input.addEventListener('keydown', function(e) {
-                    if (e.key === 'Enter') {
-                        e.preventDefault();
-                        if (index < anovaInputs.length - 1) {
-                            anovaInputs[index + 1].focus();
-                        }
-                    }
-                });
             });
         });
     </script>

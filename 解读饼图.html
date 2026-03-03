@@ -449,7 +449,7 @@
     </head>
 <body>
     <div class="header">
-        <h1><i class="fas fa-chart-pie"></i> 解读饼图 <button onclick="refreshParams()" style="margin-left: 15px; padding: 8px 16px; background: linear-gradient(135deg, #e74c3c, #c0392b); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-weight: 600; transition: all 0.3s ease;">刷新参数</button></h1>
+        <h1><i class="fas fa-chart-pie"></i> 解读饼图 <button id="refreshBtn" style="margin-left: 15px; padding: 8px 16px; background: linear-gradient(135deg, #e74c3c, #c0392b); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-weight: 600; transition: all 0.3s ease;">刷新参数</button></h1>
         <p>为设计新的商务装系列做准备，一家服装制造商询问了大量百货商店顾客："您最喜欢的衬衫颜色是什么？"</p>
         <p>请根据饼图回答以下问题</p>
     </div>
@@ -957,6 +957,9 @@
 
         // 初始化
         document.addEventListener('DOMContentLoaded', function() {
+
+            // 刷新参数按钮点击事件
+            document.getElementById('refreshBtn').addEventListener('click', refreshParams);
 
             // 显示答案解析按钮点击事件
             document.querySelectorAll('.show-explanation-btn').forEach(btn => {
