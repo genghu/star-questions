@@ -82,16 +82,6 @@
             font-weight: 600;
         }
 
-        .stem-leaf-legend {
-            background-color: #e6f2ff;
-            padding: 10px 15px;
-            border-radius: 8px;
-            display: inline-block;
-            margin-bottom: 20px;
-            font-weight: bold;
-            color: #2d3748;
-        }
-
         .stem-leaf-display {
             font-family: 'Courier New', monospace;
             font-size: 1.8rem;
@@ -104,6 +94,27 @@
             margin: 15px auto;
             max-width: 300px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .stem-leaf-row {
+            display: flex;
+            align-items: center;
+        }
+
+        .stem-value {
+            min-width: 2.5rem;
+            text-align: right;
+            padding-right: 0.3rem;
+        }
+
+        .stem-divider {
+            padding: 0 0.3rem;
+            color: #4a90e2;
+        }
+
+        .leaf-values {
+            text-align: left;
+            letter-spacing: 0.3rem;
         }
 
         .question-container {
@@ -356,6 +367,9 @@
         display: none;
         margin-top: 20px;
     }
+    .explanation-section.show {
+        display: block;
+    }
     </style>
     </head>
 <body>
@@ -367,14 +381,12 @@
         
         <div class="stem-leaf-container">
             <div class="stem-leaf-title">上周工作小时数</div>
-            <div class="stem-leaf-legend">图例： 2|6 表示 26 小时。</div>
             <div class="stem-leaf-display">
-                2 67<br>
-                3 225778<br>
-                4 1256<br>
-                5 177
+                <div class="stem-leaf-row"><span class="stem-value">2</span><span class="stem-divider">|</span><span class="leaf-values">67</span></div>
+                <div class="stem-leaf-row"><span class="stem-value">3</span><span class="stem-divider">|</span><span class="leaf-values">225778</span></div>
+                <div class="stem-leaf-row"><span class="stem-value">4</span><span class="stem-divider">|</span><span class="leaf-values">1256</span></div>
+                <div class="stem-leaf-row"><span class="stem-value">5</span><span class="stem-divider">|</span><span class="leaf-values">177</span></div>
             </div>
-            <p style="margin-top: 15px; color: #4a5568;">茎叶图显示了按位值排列的数据集。茎代表十位数，叶代表个位数。</p>
         </div>
         
         <div class="question-container" id="question1">
@@ -432,19 +444,19 @@
             <div class="options-container">
                 <div class="option" data-question="3" data-value="2">
                     <div class="option-letter">A</div>
-                    <div class="option-text">2 个回答</div>
+                    <div class="option-text">2 个</div>
                 </div>
                 <div class="option" data-question="3" data-value="3">
                     <div class="option-letter">B</div>
-                    <div class="option-text">3 个回答</div>
+                    <div class="option-text">3 个</div>
                 </div>
                 <div class="option" data-question="3" data-value="6">
                     <div class="option-letter">C</div>
-                    <div class="option-text">6 个回答</div>
+                    <div class="option-text">6 个</div>
                 </div>
                 <div class="option" data-question="3" data-value="7">
                     <div class="option-letter">D</div>
-                    <div class="option-text">7 个回答</div>
+                    <div class="option-text">7 个</div>
                 </div>
             </div>
             <div class="feedback" id="feedback3">
@@ -480,287 +492,279 @@
     </div>
 
     <script>
-        // 参数化配置 - 预先计算好的参数集合
-        const questionParams = [
+        // 背景配置 - 每个背景包含6组数据
+        const backgrounds = [
             {
-                // 参数集1: 原始题目 - 工作小时数
+                // 背景1: 工作小时数
                 title: "上周工作小时数",
-                legend: "图例： 2|6 表示 26 小时。",
-                description: "茎叶图显示了按位值排列的数据集。茎代表十位数，叶代表个位数。",
-                stemLeafData: {
-                    2: [6, 7],
-                    3: [2, 2, 5, 7, 7, 8],
-                    4: [1, 2, 5, 6],
-                    5: [1, 7, 7]
-                },
-                maxValue: 57,
-                minIn30s: 32,
-                countIn20s: 2,
-                q1Options: [
-                    { value: '57', text: '57 小时' },
-                    { value: '51', text: '51 小时' },
-                    { value: '77', text: '77 小时' },
-                    { value: '67', text: '67 小时' }
-                ],
-                q2Options: [
-                    { value: '32', text: '32 小时' },
-                    { value: '30', text: '30 小时' },
-                    { value: '37', text: '37 小时' },
-                    { value: '22', text: '22 小时' }
-                ],
-                q3Options: [
-                    { value: '2', text: '2 个回答' },
-                    { value: '3', text: '3 个回答' },
-                    { value: '6', text: '6 个回答' },
-                    { value: '7', text: '7 个回答' }
-                ],
-                feedback1: "茎叶图的最底行显示最高工作小时数。茎为5，叶为1、7、7，所以最大值为57小时。",
-                feedback2: "茎叶图的第二行（茎为3）显示30多小时组：32, 32, 35, 37, 37, 38。其中最小值为32小时。",
-                feedback3: "茎叶图的第一行（茎为2）显示20多小时组：26, 27。共有2个数据点。"
+                unit: "小时",
+                question1Text: "(a) 总体最高工作小时数是多少？",
+                question2Text: "(b) 在 30 多小时的组中，最小的工作小时数是多少？",
+                question3Text: "(c) 茎为 {stem3} 的行中有多少个数据点？",
+                groupLabel2: "30 多小时",
+                groupLabel3: "20 系列",
+                dataSets: [
+                    { stemLeafData: { 2: [6, 7], 3: [2, 2, 5, 7, 7, 8], 4: [1, 2, 5, 6], 5: [1, 7, 7] }, maxValue: 57, answer2: 32, answer3: 2, stem2: 3, stem3: 2, leaves2: "32, 32, 35, 37, 37, 38", leaves3: "26, 27" },
+                    { stemLeafData: { 1: [5, 8], 2: [3, 4, 6, 7, 9], 3: [1, 2, 5, 8], 4: [2, 4] }, maxValue: 44, answer2: 31, answer3: 2, stem2: 3, stem3: 1, leaves2: "31, 32, 35, 38", leaves3: "15, 18" },
+                    { stemLeafData: { 2: [1, 4, 5, 8], 3: [2, 3, 6, 7, 9], 4: [1, 3, 5], 5: [2, 6] }, maxValue: 56, answer2: 32, answer3: 4, stem2: 3, stem3: 2, leaves2: "32, 33, 36, 37, 39", leaves3: "21, 24, 25, 28" },
+                    { stemLeafData: { 2: [2, 3, 7], 3: [1, 4, 5, 6, 8, 9], 4: [2, 5, 7], 5: [3] }, maxValue: 53, answer2: 31, answer3: 3, stem2: 3, stem3: 2, leaves2: "31, 34, 35, 36, 38, 39", leaves3: "22, 23, 27" },
+                    { stemLeafData: { 1: [8, 9], 2: [1, 3, 5, 6, 7, 8], 3: [2, 4, 5, 9], 4: [1, 6] }, maxValue: 46, answer2: 32, answer3: 2, stem2: 3, stem3: 1, leaves2: "32, 34, 35, 39", leaves3: "18, 19" },
+                    { stemLeafData: { 2: [5, 6, 9], 3: [1, 3, 4, 7, 8], 4: [2, 5, 6, 8], 5: [1, 4] }, maxValue: 54, answer2: 31, answer3: 3, stem2: 3, stem3: 2, leaves2: "31, 33, 34, 37, 38", leaves3: "25, 26, 29" }
+                ]
             },
             {
-                // 参数集2: 考试成绩
+                // 背景2: 考试成绩
                 title: "数学考试成绩",
-                legend: "图例： 6|5 表示 65 分。",
-                description: "茎叶图显示了按位值排列的数据集。茎代表十位数，叶代表个位数。",
-                stemLeafData: {
-                    5: [2, 5, 8],
-                    6: [1, 3, 5, 7, 8, 9],
-                    7: [2, 4, 5, 6, 8, 9],
-                    8: [1, 3, 5, 7],
-                    9: [2, 5]
-                },
-                maxValue: 95,
-                minIn70s: 72,
-                countIn80s: 4,
-                q1Options: [
-                    { value: '95', text: '95 分' },
-                    { value: '92', text: '92 分' },
-                    { value: '85', text: '85 分' },
-                    { value: '98', text: '98 分' }
-                ],
-                q2Options: [
-                    { value: '72', text: '72 分' },
-                    { value: '70', text: '70 分' },
-                    { value: '75', text: '75 分' },
-                    { value: '68', text: '68 分' }
-                ],
-                q3Options: [
-                    { value: '4', text: '4 个回答' },
-                    { value: '5', text: '5 个回答' },
-                    { value: '6', text: '6 个回答' },
-                    { value: '3', text: '3 个回答' }
-                ],
-                feedback1: "茎叶图的最底行显示最高成绩。茎为9，叶为2、5，所以最大值为95分。",
-                feedback2: "茎叶图的第三行（茎为7）显示70多分组：72, 74, 75, 76, 78, 79。其中最小值为72分。",
-                feedback3: "茎叶图的第四行（茎为8）显示80多分组：81, 83, 85, 87。共有4个数据点。"
+                unit: "分",
+                question1Text: "(a) 总体最高成绩是多少？",
+                question2Text: "(b) 在 70 多分的组中，最小的成绩是多少？",
+                question3Text: "(c) 茎为 {stem3} 的行中有多少个数据点？",
+                groupLabel2: "70 多分",
+                groupLabel3: "80 系列",
+                dataSets: [
+                    { stemLeafData: { 5: [2, 5, 8], 6: [1, 3, 5, 7, 8, 9], 7: [2, 4, 5, 6, 8, 9], 8: [1, 3, 5, 7], 9: [2, 5] }, maxValue: 95, answer2: 72, answer3: 4, stem2: 7, stem3: 8, leaves2: "72, 74, 75, 76, 78, 79", leaves3: "81, 83, 85, 87" },
+                    { stemLeafData: { 5: [1, 4, 7], 6: [2, 3, 5, 6, 8], 7: [1, 3, 4, 7, 9], 8: [2, 5, 8], 9: [1, 4] }, maxValue: 94, answer2: 71, answer3: 3, stem2: 7, stem3: 8, leaves2: "71, 73, 74, 77, 79", leaves3: "82, 85, 88" },
+                    { stemLeafData: { 6: [2, 5, 8, 9], 7: [1, 2, 4, 6, 7, 8], 8: [3, 4, 5, 9], 9: [2, 6, 7] }, maxValue: 97, answer2: 71, answer3: 4, stem2: 7, stem3: 8, leaves2: "71, 72, 74, 76, 77, 78", leaves3: "83, 84, 85, 89" },
+                    { stemLeafData: { 5: [3, 6], 6: [1, 2, 4, 7, 9], 7: [2, 3, 5, 8, 9], 8: [1, 4, 6], 9: [3, 5, 8] }, maxValue: 98, answer2: 72, answer3: 3, stem2: 7, stem3: 8, leaves2: "72, 73, 75, 78, 79", leaves3: "81, 84, 86" },
+                    { stemLeafData: { 6: [3, 5, 7], 7: [1, 4, 6, 8, 9], 8: [2, 3, 5, 7, 8], 9: [1, 4, 9] }, maxValue: 99, answer2: 71, answer3: 5, stem2: 7, stem3: 8, leaves2: "71, 74, 76, 78, 79", leaves3: "82, 83, 85, 87, 88" },
+                    { stemLeafData: { 5: [2, 8], 6: [1, 3, 5, 6, 8], 7: [2, 4, 5, 7, 9], 8: [1, 3, 6, 8], 9: [2] }, maxValue: 92, answer2: 72, answer3: 4, stem2: 7, stem3: 8, leaves2: "72, 74, 75, 77, 79", leaves3: "81, 83, 86, 88" }
+                ]
             },
             {
-                // 参数集3: 身高数据
+                // 背景3: 身高数据
                 title: "学生身高（厘米）",
-                legend: "图例： 15|2 表示 152 厘米。",
-                description: "茎叶图显示了按位值排列的数据集。茎代表百位和十位数，叶代表个位数。",
-                stemLeafData: {
-                    14: [8, 9],
-                    15: [2, 3, 5, 6, 7, 8],
-                    16: [1, 2, 3, 4, 5, 6, 7],
-                    17: [2, 5, 8]
-                },
-                maxValue: 178,
-                minIn160s: 161,
-                countIn150s: 6,
-                q1Options: [
-                    { value: '178', text: '178 厘米' },
-                    { value: '175', text: '175 厘米' },
-                    { value: '167', text: '167 厘米' },
-                    { value: '172', text: '172 厘米' }
-                ],
-                q2Options: [
-                    { value: '161', text: '161 厘米' },
-                    { value: '160', text: '160 厘米' },
-                    { value: '162', text: '162 厘米' },
-                    { value: '152', text: '152 厘米' }
-                ],
-                q3Options: [
-                    { value: '6', text: '6 个回答' },
-                    { value: '5', text: '5 个回答' },
-                    { value: '7', text: '7 个回答' },
-                    { value: '2', text: '2 个回答' }
-                ],
-                feedback1: "茎叶图的最底行显示最高身高。茎为17，叶为2、5、8，所以最大值为178厘米。",
-                feedback2: "茎叶图的第三行（茎为16）显示160多厘米组：161, 162, 163, 164, 165, 166, 167。其中最小值为161厘米。",
-                feedback3: "茎叶图的第二行（茎为15）显示150多厘米组：152, 153, 155, 156, 157, 158。共有6个数据点。"
+                unit: "厘米",
+                question1Text: "(a) 总体最高身高是多少？",
+                question2Text: "(b) 在 160 多厘米的组中，最小的身高是多少？",
+                question3Text: "(c) 茎为 {stem3} 的行中有多少个数据点？",
+                groupLabel2: "160 多厘米",
+                groupLabel3: "{stem3}00 系列",
+                dataSets: [
+                    { stemLeafData: { 14: [8, 9], 15: [2, 3, 5, 6, 7, 8], 16: [1, 2, 3, 4, 5, 6, 7], 17: [2, 5, 8] }, maxValue: 178, answer2: 161, answer3: 6, stem2: 16, stem3: 15, leaves2: "161, 162, 163, 164, 165, 166, 167", leaves3: "152, 153, 155, 156, 157, 158" },
+                    { stemLeafData: { 14: [5, 7], 15: [1, 3, 4, 6, 8, 9], 16: [2, 3, 5, 7, 8], 17: [1, 4, 6] }, maxValue: 176, answer2: 162, answer3: 2, stem2: 16, stem3: 14, leaves2: "162, 163, 165, 167, 168", leaves3: "145, 147" },
+                    { stemLeafData: { 15: [2, 4, 5, 7, 8], 16: [1, 3, 4, 6, 8, 9], 17: [2, 3, 5, 7], 18: [1] }, maxValue: 181, answer2: 161, answer3: 5, stem2: 16, stem3: 15, leaves2: "161, 163, 164, 166, 168, 169", leaves3: "152, 154, 155, 157, 158" },
+                    { stemLeafData: { 14: [6, 8], 15: [1, 2, 5, 7, 9], 16: [2, 4, 5, 6, 8], 17: [1, 3, 5] }, maxValue: 175, answer2: 162, answer3: 2, stem2: 16, stem3: 14, leaves2: "162, 164, 165, 166, 168", leaves3: "146, 148" },
+                    { stemLeafData: { 15: [3, 5, 6, 8], 16: [1, 2, 4, 7, 9], 17: [2, 4, 6, 8], 18: [2] }, maxValue: 182, answer2: 161, answer3: 4, stem2: 16, stem3: 15, leaves2: "161, 162, 164, 167, 169", leaves3: "153, 155, 156, 158" },
+                    { stemLeafData: { 14: [7, 9], 15: [2, 4, 6, 7, 8], 16: [1, 3, 5, 6, 8], 17: [2, 4, 7] }, maxValue: 177, answer2: 161, answer3: 2, stem2: 16, stem3: 14, leaves2: "161, 163, 165, 166, 168", leaves3: "147, 149" }
+                ]
             },
             {
-                // 参数集4: 体重数据
+                // 背景4: 体重数据
                 title: "成年人体重（公斤）",
-                legend: "图例： 5|8 表示 58 公斤。",
-                description: "茎叶图显示了按位值排列的数据集。茎代表十位数，叶代表个位数。",
-                stemLeafData: {
-                    5: [2, 5, 8, 9],
-                    6: [1, 2, 4, 5, 7, 8],
-                    7: [2, 3, 5, 6, 8],
-                    8: [1, 4]
-                },
-                maxValue: 84,
-                minIn70s: 72,
-                countIn60s: 6,
-                q1Options: [
-                    { value: '84', text: '84 公斤' },
-                    { value: '81', text: '81 公斤' },
-                    { value: '78', text: '78 公斤' },
-                    { value: '89', text: '89 公斤' }
-                ],
-                q2Options: [
-                    { value: '72', text: '72 公斤' },
-                    { value: '70', text: '70 公斤' },
-                    { value: '73', text: '73 公斤' },
-                    { value: '68', text: '68 公斤' }
-                ],
-                q3Options: [
-                    { value: '6', text: '6 个回答' },
-                    { value: '5', text: '5 个回答' },
-                    { value: '4', text: '4 个回答' },
-                    { value: '7', text: '7 个回答' }
-                ],
-                feedback1: "茎叶图的最底行显示最高体重。茎为8，叶为1、4，所以最大值为84公斤。",
-                feedback2: "茎叶图的第三行（茎为7）显示70多公斤组：72, 73, 75, 76, 78。其中最小值为72公斤。",
-                feedback3: "茎叶图的第二行（茎为6）显示60多公斤组：61, 62, 64, 65, 67, 68。共有6个数据点。"
+                unit: "公斤",
+                question1Text: "(a) 总体最高体重是多少？",
+                question2Text: "(b) 在 70 多公斤的组中，最小的体重是多少？",
+                question3Text: "(c) 茎为 {stem3} 的行中有多少个数据点？",
+                groupLabel2: "70 多公斤",
+                groupLabel3: "60 多公斤",
+                dataSets: [
+                    { stemLeafData: { 5: [2, 5, 8, 9], 6: [1, 2, 4, 5, 7, 8], 7: [2, 3, 5, 6, 8], 8: [1, 4] }, maxValue: 84, answer2: 72, answer3: 6, stem2: 7, stem3: 6, leaves2: "72, 73, 75, 76, 78", leaves3: "61, 62, 64, 65, 67, 68" },
+                    { stemLeafData: { 5: [1, 3, 6, 7], 6: [2, 4, 5, 8, 9], 7: [1, 3, 4, 6, 7], 8: [2, 5] }, maxValue: 85, answer2: 71, answer3: 5, stem2: 7, stem3: 6, leaves2: "71, 73, 74, 76, 77", leaves3: "62, 64, 65, 68, 69" },
+                    { stemLeafData: { 5: [4, 6, 8], 6: [1, 3, 5, 7], 7: [2, 4, 5, 8, 9], 8: [1, 3, 6] }, maxValue: 86, answer2: 72, answer3: 4, stem2: 7, stem3: 6, leaves2: "72, 74, 75, 78, 79", leaves3: "61, 63, 65, 67" },
+                    { stemLeafData: { 5: [2, 5, 7, 9], 6: [1, 2, 4, 6, 8], 7: [1, 3, 5, 7], 8: [2, 4, 8] }, maxValue: 88, answer2: 71, answer3: 5, stem2: 7, stem3: 6, leaves2: "71, 73, 75, 77", leaves3: "61, 62, 64, 66, 68" },
+                    { stemLeafData: { 5: [3, 6, 8], 6: [2, 4, 5, 7, 9], 7: [1, 2, 4, 6, 8], 8: [3, 5] }, maxValue: 85, answer2: 71, answer3: 5, stem2: 7, stem3: 6, leaves2: "71, 72, 74, 76, 78", leaves3: "62, 64, 65, 67, 69" },
+                    { stemLeafData: { 5: [1, 4, 7], 6: [2, 3, 5, 6, 8], 7: [2, 4, 5, 7, 9], 8: [1, 2] }, maxValue: 82, answer2: 72, answer3: 5, stem2: 7, stem3: 6, leaves2: "72, 74, 75, 77, 79", leaves3: "62, 63, 65, 66, 68" }
+                ]
             },
             {
-                // 参数集5: 年龄数据
+                // 背景5: 年龄数据
                 title: "员工年龄（岁）",
-                legend: "图例： 2|5 表示 25 岁。",
-                description: "茎叶图显示了按位值排列的数据集。茎代表十位数，叶代表个位数。",
-                stemLeafData: {
-                    2: [2, 3, 5, 6, 7, 8, 9],
-                    3: [1, 2, 4, 5, 6, 8, 9],
-                    4: [2, 3, 5, 7],
-                    5: [1, 4]
-                },
-                maxValue: 54,
-                minIn30s: 31,
-                countIn20s: 7,
-                q1Options: [
-                    { value: '54', text: '54 岁' },
-                    { value: '51', text: '51 岁' },
-                    { value: '47', text: '47 岁' },
-                    { value: '49', text: '49 岁' }
-                ],
-                q2Options: [
-                    { value: '31', text: '31 岁' },
-                    { value: '30', text: '30 岁' },
-                    { value: '32', text: '32 岁' },
-                    { value: '29', text: '29 岁' }
-                ],
-                q3Options: [
-                    { value: '7', text: '7 个回答' },
-                    { value: '6', text: '6 个回答' },
-                    { value: '5', text: '5 个回答' },
-                    { value: '8', text: '8 个回答' }
-                ],
-                feedback1: "茎叶图的最底行显示最高年龄。茎为5，叶为1、4，所以最大值为54岁。",
-                feedback2: "茎叶图的第二行（茎为3）显示30多岁组：31, 32, 34, 35, 36, 38, 39。其中最小值为31岁。",
-                feedback3: "茎叶图的第一行（茎为2）显示20多岁组：22, 23, 25, 26, 27, 28, 29。共有7个数据点。"
+                unit: "岁",
+                question1Text: "(a) 总体最高年龄是多少？",
+                question2Text: "(b) 在 30 多岁的组中，最小的年龄是多少？",
+                question3Text: "(c) 茎为 {stem3} 的行中有多少个数据点？",
+                groupLabel2: "30 多岁",
+                groupLabel3: "20 多岁",
+                dataSets: [
+                    { stemLeafData: { 2: [2, 3, 5, 6, 7, 8, 9], 3: [1, 2, 4, 5, 6, 8, 9], 4: [2, 3, 5, 7], 5: [1, 4] }, maxValue: 54, answer2: 31, answer3: 7, stem2: 3, stem3: 2, leaves2: "31, 32, 34, 35, 36, 38, 39", leaves3: "22, 23, 25, 26, 27, 28, 29" },
+                    { stemLeafData: { 2: [1, 4, 5, 7, 8], 3: [2, 3, 5, 6, 9], 4: [1, 2, 4, 6, 8], 5: [3] }, maxValue: 53, answer2: 32, answer3: 5, stem2: 3, stem3: 2, leaves2: "32, 33, 35, 36, 39", leaves3: "21, 24, 25, 27, 28" },
+                    { stemLeafData: { 2: [3, 4, 6, 8, 9], 3: [1, 2, 4, 7, 8], 4: [1, 3, 5, 7], 5: [2, 5] }, maxValue: 55, answer2: 31, answer3: 5, stem2: 3, stem3: 2, leaves2: "31, 32, 34, 37, 38", leaves3: "23, 24, 26, 28, 29" },
+                    { stemLeafData: { 2: [2, 5, 6, 7, 9], 3: [1, 3, 4, 5, 8], 4: [2, 4, 6], 5: [1, 3] }, maxValue: 53, answer2: 31, answer3: 5, stem2: 3, stem3: 2, leaves2: "31, 33, 34, 35, 38", leaves3: "22, 25, 26, 27, 29" },
+                    { stemLeafData: { 2: [1, 3, 4, 6, 8], 3: [2, 5, 7, 8, 9], 4: [1, 3, 5, 7], 5: [2, 4] }, maxValue: 54, answer2: 32, answer3: 5, stem2: 3, stem3: 2, leaves2: "32, 35, 37, 38, 39", leaves3: "21, 23, 24, 26, 28" },
+                    { stemLeafData: { 2: [2, 4, 5, 7, 8, 9], 3: [1, 3, 6, 7], 4: [2, 4, 5, 8], 5: [1] }, maxValue: 51, answer2: 31, answer3: 6, stem2: 3, stem3: 2, leaves2: "31, 33, 36, 37", leaves3: "22, 24, 25, 27, 28, 29" }
+                ]
             },
             {
-                // 参数集6: 每日步数
-                title: "每日步数（千步）",
-                legend: "图例： 4|5 表示 4500 步。",
-                description: "茎叶图显示了按位值排列的数据集。茎代表千位数，叶代表百位数。",
-                stemLeafData: {
-                    3: [2, 5, 8],
-                    4: [1, 2, 5, 6, 9],
-                    5: [2, 3, 5, 7, 8],
-                    6: [1, 4, 5],
-                    7: [2]
-                },
-                maxValue: 72,
-                minIn50s: 52,
-                countIn40s: 5,
-                q1Options: [
-                    { value: '72', text: '7200 步' },
-                    { value: '65', text: '6500 步' },
-                    { value: '58', text: '5800 步' },
-                    { value: '61', text: '6100 步' }
-                ],
-                q2Options: [
-                    { value: '52', text: '5200 步' },
-                    { value: '50', text: '5000 步' },
-                    { value: '53', text: '5300 步' },
-                    { value: '49', text: '4900 步' }
-                ],
-                q3Options: [
-                    { value: '5', text: '5 个回答' },
-                    { value: '4', text: '4 个回答' },
-                    { value: '6', text: '6 个回答' },
-                    { value: '3', text: '3 个回答' }
-                ],
-                feedback1: "茎叶图的最底行显示最高步数。茎为7，叶为2，所以最大值为7200步。",
-                feedback2: "茎叶图的第三行（茎为5）显示5000多步组：52, 53, 55, 57, 58（即5200, 5300, 5500, 5700, 5800步）。其中最小值为5200步。",
-                feedback3: "茎叶图的第二行（茎为4）显示4000多步组：41, 42, 45, 46, 49。共有5个数据点。"
+                // 背景6: 每日步数
+                title: "每日步数（百步）",
+                unit: "步",
+                isSteps: true,  // 标记为步数，需要乘以100显示
+                question1Text: "(a) 总体最高步数是多少？",
+                question2Text: "(b) 在 5000 系列的组中，最小的步数是多少？",
+                question3Text: "(c) 茎为 {stem3} 的行中有多少个数据点？",
+                groupLabel2: "5000 系列",
+                groupLabel3: "4000 系列",
+                dataSets: [
+                    { stemLeafData: { 3: [2, 5, 8], 4: [1, 2, 5, 6, 9], 5: [2, 3, 5, 7, 8], 6: [1, 4, 5], 7: [2] }, maxValue: 72, answer2: 52, answer3: 5, stem2: 5, stem3: 4, leaves2: "5200, 5300, 5500, 5700, 5800", leaves3: "4100, 4200, 4500, 4600, 4900" },
+                    { stemLeafData: { 3: [1, 4, 6], 4: [2, 3, 5, 7, 8], 5: [1, 4, 6, 8], 6: [2, 3, 5], 7: [1, 4] }, maxValue: 74, answer2: 51, answer3: 5, stem2: 5, stem3: 4, leaves2: "5100, 5400, 5600, 5800", leaves3: "4200, 4300, 4500, 4700, 4800" },
+                    { stemLeafData: { 3: [3, 5, 7], 4: [1, 4, 6, 8, 9], 5: [2, 3, 5, 7], 6: [1, 4, 6], 7: [3] }, maxValue: 73, answer2: 52, answer3: 5, stem2: 5, stem3: 4, leaves2: "5200, 5300, 5500, 5700", leaves3: "4100, 4400, 4600, 4800, 4900" },
+                    { stemLeafData: { 3: [2, 4, 8], 4: [1, 3, 5, 7], 5: [2, 4, 6, 8, 9], 6: [1, 3], 7: [2, 5] }, maxValue: 75, answer2: 52, answer3: 4, stem2: 5, stem3: 4, leaves2: "5200, 5400, 5600, 5800, 5900", leaves3: "4100, 4300, 4500, 4700" },
+                    { stemLeafData: { 3: [1, 6, 9], 4: [2, 4, 5, 8], 5: [1, 3, 5, 7], 6: [2, 4, 6], 7: [1] }, maxValue: 71, answer2: 51, answer3: 4, stem2: 5, stem3: 4, leaves2: "5100, 5300, 5500, 5700", leaves3: "4200, 4400, 4500, 4800" },
+                    { stemLeafData: { 3: [2, 5, 7], 4: [1, 3, 6, 7, 9], 5: [2, 4, 5, 8], 6: [1, 3, 5], 7: [2, 4] }, maxValue: 74, answer2: 52, answer3: 5, stem2: 5, stem3: 4, leaves2: "5200, 5400, 5500, 5800", leaves3: "4100, 4300, 4600, 4700, 4900" }
+                ]
             }
         ];
 
-        let currentParamIndex = Math.floor(Math.random() * questionParams.length);
+        // 当前选中的背景和数据集索引
+        let currentBackgroundIndex = Math.floor(Math.random() * backgrounds.length);
+        let currentDataSetIndex = Math.floor(Math.random() * backgrounds[currentBackgroundIndex].dataSets.length);
+
+        // 正确答案和用户答案（全局变量）
+        let correctAnswers = {
+            1: '57',
+            2: '32',
+            3: '2'
+        };
+
+        let userAnswers = {
+            1: null,
+            2: null,
+            3: null
+        };
+
+        // 获取当前参数（合并背景和数据）
+        function getCurrentParams() {
+            const bg = backgrounds[currentBackgroundIndex];
+            const ds = bg.dataSets[currentDataSetIndex];
+            return { ...bg, ...ds };
+        }
 
         // 渲染问题的函数
         function renderQuestion() {
-            const params = questionParams[currentParamIndex];
+            const params = getCurrentParams();
+            const isSteps = params.isSteps || false;
+            const multiplier = isSteps ? 100 : 1;
 
-            // 更新标题和图例
+            // 更新标题
             document.querySelector('.stem-leaf-title').textContent = params.title;
-            document.querySelector('.stem-leaf-legend').textContent = params.legend;
-            document.querySelector('.stem-leaf-container p').textContent = params.description;
 
             // 更新茎叶图显示
             let stemLeafHTML = '';
             const stems = Object.keys(params.stemLeafData).sort((a, b) => a - b);
             stems.forEach(stem => {
                 const leaves = params.stemLeafData[stem].join('');
-                stemLeafHTML += `${stem} ${leaves}<br>`;
+                stemLeafHTML += `<div class="stem-leaf-row"><span class="stem-value">${stem}</span><span class="stem-divider">|</span><span class="leaf-values">${leaves}</span></div>`;
             });
             document.querySelector('.stem-leaf-display').innerHTML = stemLeafHTML;
 
-            // 更新问题1选项
-            const q1Options = document.querySelectorAll('#question1 .option');
-            params.q1Options.forEach((opt, i) => {
-                q1Options[i].setAttribute('data-value', opt.value);
-                q1Options[i].querySelector('.option-text').textContent = opt.text;
-            });
+            // 生成问题1选项（最高值）
+            const q1Correct = params.maxValue;
+            const q1Options = generateOptions(q1Correct, 'max', params);
+            updateOptions('#question1 .option', q1Options, params.unit, multiplier);
 
-            // 更新问题2选项
-            const q2Options = document.querySelectorAll('#question2 .option');
-            params.q2Options.forEach((opt, i) => {
-                q2Options[i].setAttribute('data-value', opt.value);
-                q2Options[i].querySelector('.option-text').textContent = opt.text;
-            });
+            // 生成问题2选项（某组最小值）
+            const q2Correct = params.answer2;
+            const q2Options = generateOptions(q2Correct, 'min', params);
+            updateOptions('#question2 .option', q2Options, params.unit, multiplier);
 
-            // 更新问题3选项
-            const q3Options = document.querySelectorAll('#question3 .option');
-            params.q3Options.forEach((opt, i) => {
-                q3Options[i].setAttribute('data-value', opt.value);
-                q3Options[i].querySelector('.option-text').textContent = opt.text;
-            });
+            // 生成问题3选项（某组数量）
+            const q3Correct = params.answer3;
+            const q3Options = generateCountOptions(q3Correct);
+            updateOptions('#question3 .option', q3Options, '个', 1);
+
+            // 更新问题文本
+            document.querySelector('#question1 .question-text').textContent = params.question1Text;
+            document.querySelector('#question2 .question-text').textContent = params.question2Text;
+            // 动态生成问题3文本，替换{stem3}占位符
+            const q3Text = params.question3Text.replace('{stem3}', params.stem3);
+            document.querySelector('#question3 .question-text').textContent = q3Text;
 
             // 更新正确答案
-            correctAnswers[1] = params.maxValue.toString();
-            correctAnswers[2] = params.minIn30s.toString();
-            correctAnswers[3] = params.countIn20s.toString();
+            correctAnswers[1] = q1Correct.toString();
+            correctAnswers[2] = q2Correct.toString();
+            correctAnswers[3] = q3Correct.toString();
 
-            // 更新反馈
-            document.getElementById('feedback1').textContent = params.feedback1;
-            document.getElementById('feedback2').textContent = params.feedback2;
-            document.getElementById('feedback3').textContent = params.feedback3;
+            // 生成反馈
+            const displayValue1 = q1Correct * multiplier;
+            const displayValue2 = q2Correct * multiplier;
+            const groupLabel3Text = params.groupLabel3.replace('{stem3}', params.stem3);
+            document.getElementById('feedback1').textContent = `茎叶图的最底行显示最高${isSteps ? '步数' : '值'}。茎为${Math.floor(q1Correct / 10)}，叶为${q1Correct % 10}，所以最大值为${displayValue1}${params.unit}。`;
+            document.getElementById('feedback2').textContent = `茎叶图的${params.stem2}行显示${params.groupLabel2}组：${params.leaves2}。其中最小值为${displayValue2}${params.unit}。`;
+            document.getElementById('feedback3').textContent = `茎叶图的${params.stem3}行显示${groupLabel3Text}组：${params.leaves3}。共有${q3Correct}个数据点。`;
+        }
+
+        // 生成数值选项（用于问题1和2）
+        function generateOptions(correctValue, type, params) {
+            const options = [{ value: correctValue, isCorrect: true }];
+            const usedValues = new Set([correctValue]);
+
+            // 可能的偏移量
+            const offsets = type === 'max'
+                ? [-5, -3, 5, 3, 10, -10, 7, -7, 2, -2, 15, -15]
+                : [-3, 3, 5, -5, 7, -7, 10, -10, 2, -2, 15, -15];
+
+            // 根据类型生成干扰项
+            for (let i = 0; i < offsets.length && options.length < 4; i++) {
+                let newValue = correctValue + offsets[i];
+                if (newValue > 0 && !usedValues.has(newValue)) {
+                    usedValues.add(newValue);
+                    options.push({ value: newValue, isCorrect: false });
+                }
+            }
+
+            // 如果还不够4个选项，用绝对值较小的随机数填充
+            while (options.length < 4) {
+                let newValue = correctValue + Math.floor(Math.random() * 20) - 10;
+                if (newValue > 0 && !usedValues.has(newValue)) {
+                    usedValues.add(newValue);
+                    options.push({ value: newValue, isCorrect: false });
+                }
+            }
+
+            // 随机打乱顺序
+            return shuffleArray(options);
+        }
+
+        // 生成计数选项（用于问题3）
+        function generateCountOptions(correctValue) {
+            const options = [{ value: correctValue, isCorrect: true }];
+            const usedValues = new Set([correctValue]);
+
+            const offsets = [-2, 2, -1, 1, 3, -3, 4, -4, 5, -5];
+
+            for (let i = 0; i < offsets.length && options.length < 4; i++) {
+                let newValue = correctValue + offsets[i];
+                if (newValue > 0 && newValue <= 10 && !usedValues.has(newValue)) {
+                    usedValues.add(newValue);
+                    options.push({ value: newValue, isCorrect: false });
+                }
+            }
+
+            // 如果还不够4个选项，用随机数填充
+            while (options.length < 4) {
+                let newValue = Math.floor(Math.random() * 10) + 1;
+                if (!usedValues.has(newValue)) {
+                    usedValues.add(newValue);
+                    options.push({ value: newValue, isCorrect: false });
+                }
+            }
+
+            return shuffleArray(options);
+        }
+
+        // 数组随机打乱
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // 更新选项显示
+        function updateOptions(selector, options, unit, multiplier = 1) {
+            const optionElements = document.querySelectorAll(selector);
+            options.forEach((opt, i) => {
+                optionElements[i].setAttribute('data-value', opt.value);
+                optionElements[i].querySelector('.option-text').textContent = `${opt.value * multiplier} ${unit}`;
+            });
         }
 
         // 刷新参数函数
         function refreshParams() {
-            let newIndex;
-            do {
-                newIndex = Math.floor(Math.random() * questionParams.length);
-            } while (newIndex === currentParamIndex && questionParams.length > 1);
-            currentParamIndex = newIndex;
+            // 随机选择新的背景和数据集
+            currentBackgroundIndex = Math.floor(Math.random() * backgrounds.length);
+            currentDataSetIndex = Math.floor(Math.random() * backgrounds[currentBackgroundIndex].dataSets.length);
 
             // 重置用户答案
             userAnswers = { 1: null, 2: null, 3: null };
@@ -810,20 +814,6 @@
                 });
             });
 
-            // 正确答案
-            const correctAnswers = {
-                1: '57',
-                2: '32',
-                3: '2'
-            };
-
-            // 用户选择的答案
-            let userAnswers = {
-                1: null,
-                2: null,
-                3: null
-            };
-            
             // 为每个选项添加点击事件
             document.querySelectorAll('.option').forEach(option => {
                 option.addEventListener('click', function() {
@@ -918,82 +908,12 @@
                 
                 resultsContainer.classList.add('show');
 
-    // Show explanation button after submit
-    var showBtn = document.getElementById('show-explanation-btn');
-    if (showBtn) {
-        showBtn.style.display = 'inline-block';
-        showBtn.addEventListener('click', function() {
-            var explanation = this.nextElementSibling;
-            if (explanation) {
-                if (explanation.style.display === 'none' || explanation.style.display === '') {
-                    explanation.style.display = 'block';
-                    this.textContent = '📖 隐藏答案解析';
-                } else {
-                    explanation.style.display = 'none';
-                    this.textContent = '📖 查看答案解析';
+                // 显示答案解析按钮
+                var showBtn = document.getElementById('show-explanation-btn');
+                if (showBtn) {
+                    showBtn.style.display = 'inline-block';
                 }
-            }
-        });
-    }
-    
 
-    // Show explanation button after submit
-    var showBtn = document.getElementById('show-explanation-btn');
-    if (showBtn) {
-        showBtn.style.display = 'inline-block';
-        showBtn.addEventListener('click', function() {
-            var explanation = this.nextElementSibling;
-            if (explanation) {
-                if (explanation.style.display === 'none' || explanation.style.display === '') {
-                    explanation.style.display = 'block';
-                    this.textContent = '📖 隐藏答案解析';
-                } else {
-                    explanation.style.display = 'none';
-                    this.textContent = '📖 查看答案解析';
-                }
-            }
-        });
-    }
-    
-
-    // Show explanation button after submit
-    var showBtn = document.getElementById('show-explanation-btn');
-    if (showBtn) {
-        showBtn.style.display = 'inline-block';
-        showBtn.addEventListener('click', function() {
-            var explanation = this.nextElementSibling;
-            if (explanation) {
-                if (explanation.style.display === 'none' || explanation.style.display === '') {
-                    explanation.style.display = 'block';
-                    this.textContent = '📖 隐藏答案解析';
-                } else {
-                    explanation.style.display = 'none';
-                    this.textContent = '📖 查看答案解析';
-                }
-            }
-        });
-    }
-    
-
-    // Show explanation button after submit
-    var showBtn = document.getElementById('show-explanation-btn');
-    if (showBtn) {
-        showBtn.style.display = 'inline-block';
-        showBtn.addEventListener('click', function() {
-            var explanation = this.nextElementSibling;
-            if (explanation) {
-                if (explanation.style.display === 'none' || explanation.style.display === '') {
-                    explanation.style.display = 'block';
-                    this.textContent = '📖 隐藏答案解析';
-                } else {
-                    explanation.style.display = 'none';
-                    this.textContent = '📖 查看答案解析';
-                }
-            }
-        });
-    }
-    
-                
                 // 滚动到结果区域
                 resultsContainer.scrollIntoView({ behavior: 'smooth' });
             });
@@ -1029,11 +949,16 @@ document.getElementById('results').classList.remove('show');
             
             // 获取题目解析
             function getExplanation(questionNum) {
-                const params = questionParams[currentParamIndex];
+                const params = getCurrentParams();
+                const isSteps = params.isSteps || false;
+                const multiplier = isSteps ? 100 : 1;
+                const displayMax = params.maxValue * multiplier;
+                const displayAnswer2 = params.answer2 * multiplier;
+                const groupLabel3Text = params.groupLabel3.replace('{stem3}', params.stem3);
                 const explanations = {
-                    1: params.feedback1,
-                    2: params.feedback2,
-                    3: params.feedback3
+                    1: `茎叶图的最底行显示最高${isSteps ? '步数' : '值'}。茎为${Math.floor(params.maxValue / 10)}，叶为${params.maxValue % 10}，所以最大值为${displayMax}${params.unit}。`,
+                    2: `茎叶图的${params.stem2}行显示${params.groupLabel2}组：${params.leaves2}。其中最小值为${displayAnswer2}${params.unit}。`,
+                    3: `茎叶图的${params.stem3}行显示${groupLabel3Text}组：${params.leaves3}。共有${params.answer3}个数据点。`
                 };
                 return explanations[questionNum];
             }

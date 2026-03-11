@@ -328,22 +328,6 @@
             font-weight: 600;
         }
 
-        .score-container {
-            text-align: center;
-            margin-top: 30px;
-            padding: 20px;
-            background-color: #f0f7ff;
-            border-radius: 12px;
-            font-size: 1.2rem;
-        }
-
-        .score-value {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: #0052cc;
-            margin: 10px 0;
-        }
-
         .tick-list {
             display: flex;
             flex-wrap: wrap;
@@ -545,7 +529,6 @@
                 <button class="btn btn-success" onclick="addTableRow()">添加行</button>
                 <button class="btn btn-warning" onclick="removeLastTableRow()">删除最后一行</button>
                 <button class="btn btn-primary" onclick="applyTableToHistogram()" style="display: none;">应用到直方图</button>
-                <button class="btn btn-secondary" onclick="checkTableAnswer()">检查表格</button>
             </div>
         </div>
 
@@ -630,19 +613,29 @@
             <div class="controls">
                 <button class="btn btn-warning" onclick="clearBars()">清除直方条</button>
                 <button class="btn btn-danger" onclick="clearCanvas()">清除画布</button>
-                <button class="btn btn-secondary" onclick="checkAnswer()">检查答案</button>
+            </div>
+            <div style="text-align: center; margin-top: 20px;">
+                <button class="btn btn-primary" onclick="submitAnswer()" style="padding: 12px 40px; font-size: 1.1rem;">提交答案</button>
             </div>
         </div>
 
-        <div class="feedback" id="feedback">
+        <div class="feedback" id="feedback" style="display: none;">
             <div class="feedback-title" id="feedback-title"></div>
             <p id="feedback-text"></p>
         </div>
 
-        <div class="score-container">
-            <div>绘图评分</div>
-            <div class="score-value" id="score-value">-/5</div>
-            <div id="score-text">完成绘图后点击"检查答案"</div>
+        <div style="text-align: center; margin-top: 15px;">
+            <button id="show-explanation-btn" class="btn btn-secondary" onclick="showExplanation()" style="display: none; padding: 12px 30px;">
+                <i class="fas fa-lightbulb"></i> 查看答案解析
+            </button>
+        </div>
+
+        <div id="answer-explanation" style="display: none; margin-top: 20px; padding: 20px; background-color: #e8f4fc; border-radius: 10px; border-left: 4px solid #0052cc;">
+            <div style="font-weight: 600; color: #0052cc; margin-bottom: 15px; font-size: 1.1rem;">
+                <i class="fas fa-lightbulb"></i> 答案解析
+            </div>
+            <div id="explanation-content" style="color: #333; line-height: 1.8;">
+            </div>
         </div>
     </div>
 
@@ -1067,58 +1060,13 @@
             render();
         }
 
-        function checkTableAnswer() {
-            const params = questionParams[currentParamIndex];
-            let correctCount = 0;
-            const tolerance = 0.5;
-
-            for (let i = 0; i < params.correctBars.length; i++) {
-                const correct = params.correctBars[i];
-                const intervalInput = document.getElementById(`interval-${i}`);
-                const frequencyInput = document.getElementById(`frequency-${i}`);
-
-                if (intervalInput && frequencyInput) {
-                    const interval = intervalInput.value.trim();
-                    const frequency = parseInt(frequencyInput.value);
-
-                    // 检查区间
-                    const expectedInterval = `${correct.start}-${correct.start + correct.width}`;
-                    const parts = interval.split('-');
-
-                    let intervalCorrect = false;
-                    if (parts.length === 2) {
-                        const start = parseFloat(parts[0]);
-                        const end = parseFloat(parts[1]);
-                        if (Math.abs(start - correct.start) < tolerance &&
-                            Math.abs(end - (correct.start + correct.width)) < tolerance) {
-                            intervalCorrect = true;
-                        }
-                    }
-
-                    // 检查频数
-                    const frequencyCorrect = frequency === correct.height;
-
-                    // 更新样式
-                    intervalInput.className = intervalCorrect ? 'correct' : (interval ? 'incorrect' : '');
-                    frequencyInput.className = frequencyCorrect ? 'correct' : (frequencyInput.value ? 'incorrect' : '');
-
-                    if (intervalCorrect && frequencyCorrect) {
-                        correctCount++;
-                    }
-                }
-            }
-
-            const total = params.correctBars.length;
-            alert(`表格检查结果：正确 ${correctCount}/${total} 行`);
-        }
-
-        function checkAnswer() {
+        function submitAnswer() {
             if (bars.length === 0) {
                 alert('请先绘制直方图！');
                 return;
             }
 
-            let correctCount = 0;
+            let allCorrect = true;
             const tolerance = 0.5;
 
             correctBars.forEach(correct => {
@@ -1127,34 +1075,79 @@
                     Math.abs(bar.width - correct.width) < tolerance &&
                     bar.height === correct.height
                 );
-                if (matched) correctCount++;
+                if (!matched) allCorrect = false;
             });
 
-            const score = correctCount;
-            const total = correctBars.length;
-
-            document.getElementById('score-value').textContent = `${score}/${total}`;
+            // 检查直方条数量是否正确
+            if (bars.length !== correctBars.length) {
+                allCorrect = false;
+            }
 
             const feedback = document.getElementById('feedback');
             const feedbackTitle = document.getElementById('feedback-title');
             const feedbackText = document.getElementById('feedback-text');
+            feedback.style.display = 'block';
 
-            if (score === total) {
+            if (allCorrect) {
                 feedback.className = 'feedback correct';
-                feedbackTitle.textContent = '完美！';
-                feedbackText.textContent = `你的直方图完全正确！所有 ${total} 个直方条的位置和高度都正确。`;
-                document.getElementById('score-text').textContent = '太棒了！你完全掌握了直方图的绘制方法！';
-            } else if (score >= total * 0.6) {
-                feedback.className = 'feedback correct';
-                feedbackTitle.textContent = '不错！';
-                feedbackText.textContent = `你正确绘制了 ${score}/${total} 个直方条。请检查其他直方条的位置和高度。`;
-                document.getElementById('score-text').textContent = '继续努力！检查一下其他直方条是否正确。';
+                feedbackTitle.textContent = '正确！';
+                feedbackText.textContent = '你的直方图完全正确！';
             } else {
                 feedback.className = 'feedback incorrect';
-                feedbackTitle.textContent = '需要改进';
-                feedbackText.textContent = `你正确绘制了 ${score}/${total} 个直方条。请参考表格数据，确保每个区间的直方条位置和高度正确。`;
-                document.getElementById('score-text').textContent = '请仔细检查数据和直方条的对应关系。';
+                feedbackTitle.textContent = '错误';
+                feedbackText.textContent = '你的直方图不正确，请查看答案解析。';
             }
+
+            // 显示"查看答案解析"按钮
+            document.getElementById('show-explanation-btn').style.display = 'inline-block';
+        }
+
+        function showExplanation() {
+            const params = questionParams[currentParamIndex];
+            const explanationDiv = document.getElementById('answer-explanation');
+            const explanationContent = document.getElementById('explanation-content');
+
+            // 生成正确的分组频数表
+            let tableRows = '';
+            for (let i = 0; i < params.correctBars.length; i++) {
+                const bar = params.correctBars[i];
+                tableRows += `
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">${bar.start} - ${bar.start + bar.width}</td>
+                        <td style="padding: 10px; border: 1px solid #ddd; text-align: center;">${bar.height}</td>
+                    </tr>
+                `;
+            }
+
+            explanationContent.innerHTML = `
+                <p><strong>1. 分组频数表：</strong></p>
+                <table style="width: 100%; border-collapse: collapse; margin: 15px 0;">
+                    <tr style="background-color: #4d94ff; color: white;">
+                        <th style="padding: 10px; border: 1px solid #ddd;">组界</th>
+                        <th style="padding: 10px; border: 1px solid #ddd;">频数</th>
+                    </tr>
+                    ${tableRows}
+                </table>
+
+                <p><strong>2. 直方图绘制说明：</strong></p>
+                <ul style="padding-left: 20px; margin: 10px 0;">
+                    <li>初始组界：${params.initialBoundary}</li>
+                    <li>组宽：${params.classWidth}</li>
+                    <li>每个直方条的宽度应等于组宽，高度等于该组的频数</li>
+                    <li>直方条之间不应该有间隙</li>
+                </ul>
+
+                <p><strong>3. 原始数据：</strong></p>
+                <p style="margin: 10px 0; padding: 10px; background-color: #f5f5f5; border-radius: 5px;">
+                    ${params.data.join(', ')}
+                </p>
+            `;
+
+            explanationDiv.style.display = 'block';
+            explanationDiv.scrollIntoView({ behavior: 'smooth' });
+
+            // 隐藏"查看答案解析"按钮
+            document.getElementById('show-explanation-btn').style.display = 'none';
         }
 
         // ==================== 画布点击事件 ====================
@@ -1210,10 +1203,11 @@
             document.getElementById('x-tick-list').innerHTML = '';
             document.getElementById('y-tick-list').innerHTML = '';
 
-            // 重置评分
-            document.getElementById('score-value').textContent = `-/5`;
-            document.getElementById('score-text').textContent = '完成绘图后点击"检查答案"';
+            // 重置反馈和答案解析
+            document.getElementById('feedback').style.display = 'none';
             document.getElementById('feedback').className = 'feedback';
+            document.getElementById('answer-explanation').style.display = 'none';
+            document.getElementById('show-explanation-btn').style.display = 'none';
 
             // 初始化频数分布表
             initFrequencyTable();

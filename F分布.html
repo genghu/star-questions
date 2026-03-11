@@ -401,24 +401,24 @@
         // Parameter datasets for questions
         const questionParams = {
             1: [
-                { dfn1: 47, dfd1: 13, fval: 0.82, rightProb: 0.704, result: 0.296 },
-                { dfn1: 35, dfd1: 15, fval: 0.75, rightProb: 0.718, result: 0.282 },
-                { dfn1: 50, dfd1: 10, fval: 0.90, rightProb: 0.562, result: 0.438 },
-                { dfn1: 40, dfd1: 20, fval: 0.65, rightProb: 0.823, result: 0.177 },
-                { dfn1: 25, dfd1: 12, fval: 0.88, rightProb: 0.591, result: 0.409 }
+                { dfn1: 5, dfd1: 30, fval: 0.85, rightProb: 0.525556, result: 0.474 },
+                { dfn1: 8, dfd1: 40, fval: 0.78, rightProb: 0.622622, result: 0.377 },
+                { dfn1: 3, dfd1: 25, fval: 0.92, rightProb: 0.445512, result: 0.554 },
+                { dfn1: 6, dfd1: 50, fval: 0.70, rightProb: 0.650839, result: 0.349 },
+                { dfn1: 4, dfd1: 35, fval: 0.88, rightProb: 0.485865, result: 0.514 }
             ],
             2: [
-                { dfn1: 30, dfd1: 9, alpha: 0.1, fval: 2.25 },
-                { dfn1: 20, dfd1: 15, alpha: 0.05, fval: 2.33 },
-                { dfn1: 15, dfd1: 10, alpha: 0.025, fval: 3.52 },
-                { dfn1: 25, dfd1: 12, alpha: 0.01, fval: 3.90 },
-                { dfn1: 10, dfd1: 20, alpha: 0.1, fval: 1.94 }
+                { dfn1: 3, dfd1: 20, alpha: 0.1, fval: 2.38 },
+                { dfn1: 5, dfd1: 30, alpha: 0.05, fval: 2.53 },
+                { dfn1: 4, dfd1: 25, alpha: 0.025, fval: 3.35 },
+                { dfn1: 6, dfd1: 40, alpha: 0.01, fval: 3.29 },
+                { dfn1: 2, dfd1: 50, alpha: 0.1, fval: 2.41 }
             ]
         };
 
         // Current parameter index for each question
         let currentParamIndex = { 1: 0, 2: 0 };
-        let correctAnswers = { 1: 0.296, 2: 2.25 };
+        let correctAnswers = { 1: 0.474, 2: 2.38 };
         let tolerance = { 1: 0.01, 2: 0.05 };
         const userAnswers = { 1: null, 2: null };
 

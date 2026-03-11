@@ -262,16 +262,16 @@
             .option {
                 flex: 1 1 100%;
             }
-            
+
             .controls {
                 flex-direction: column;
                 gap: 10px;
             }
-            
+
             button {
                 width: 100%;
             }
-            
+
             h1 {
                 font-size: 1.8rem;
             }
@@ -327,7 +327,6 @@
 
     <div class="instructions">
         <p><strong>说明：</strong>以下变量中，哪些最好被视为连续的，哪些是离散的？请点击每个问题的相应答案来表明您的选择。提交后可以查看详细解析。</p>
-        <p><strong>关键概念：</strong>离散变量的可能值可以被计数（通常是整数），连续变量的可能值构成一个实数区间（可以取区间内的任何值）。</p>
     </div>
 
     <div id="questions-container">
@@ -348,8 +347,16 @@
 
     <button class="show-explanation-btn" id="show-explanation-btn" style="display:none;">查看答案解析</button>
     <div class="explanation-section" id="explanation-section" style="display:none;">
-        <h3>答案解析</h3>
-        <p>点击每道题目下方的区域可查看详细解析。</p>
+
+        <div class="question-container" style="margin-top: 0;">
+            <h3 class="question-title" style="color: var(--dark-blue); font-size: 1.4rem; margin-bottom: 15px; border-bottom: 1px dashed var(--neutral-gray); padding-bottom: 10px;">关键概念</h3>
+            <div class="question-text">
+                <p><strong>离散变量：</strong>其可能值可以被计数（通常是整数）。</p>
+                <p style="margin-top: 10px;"><strong>连续变量：</strong>其可能值构成一个实数区间（可以取区间内的任何值）。</p>
+                <p style="margin-top: 15px; padding: 10px; background-color: var(--light-blue); border-radius: var(--border-radius);"><strong>记忆技巧：</strong>离散变量通常在数量被<strong>计数</strong>时出现（"……的数量"），连续变量通常在数量被<strong>测量</strong>时出现。</p>
+            </div>
+        </div>
+
     </div>
 
 
@@ -357,98 +364,232 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
 
-            // 显示答案解析按钮点击事件
-            document.querySelectorAll('.show-explanation-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    var explanation = this.nextElementSibling;
-                    if (explanation) {
-                        if (explanation.style.display === 'none' || explanation.style.display === '') {
-                            explanation.style.display = 'block';
-                            this.textContent = '隐藏答案解析';
-                        } else {
-                            explanation.style.display = 'none';
-                            this.textContent = '查看答案解析';
-                        }
-                    }
-                });
-            });
-
-            // 题目数据
-            const questions = [
+            // 所有题目数据池
+            const allQuestions = [
+                // 原有题目
                 {
-                    id: 1,
-                    title: "(a) 明尼阿波利斯市今年的总降雪量。",
-                    text: "总降雪量可以是（非负）实数区间内的任何数字。例如，它可以是50.62英寸，或63.47英寸，或介于其间的任何数字。",
-                    options: [
-                        { text: "离散", correct: false },
-                        { text: "连续", correct: true }
-                    ],
-                    explanation: `
-                        <h4>解析：</h4>
-                        <p>总降雪量可以是（非负）实数区间内的任何数字。例如，它可以是50.62英寸，或63.47英寸，或介于其间的任何数字。（如果降雪量以英寸以外的单位测量，类似的评论也适用。）因此，该变量是<strong>连续的</strong>。</p>
-                        <div class="math-example">
-                            <span class="math-number">50.62</span>
-                            <span class="math-number">63.47</span>
-                        </div>
-                        <p>连续变量是指其可能值构成一个实数区间的变量。对于任何连续变量，其可能值包括一个没有任何间隔的数字范围。</p>
-                    `
+                    title: "某市今年的总降雪量。",
+                    text: "总降雪量可以是（非负）实数区间内的任何数字。例如，它可以是128.6厘米，或161.2厘米，或介于其间的任何数字。",
+                    isDiscrete: false,
+                    explanation: `<p>总降雪量可以是（非负）实数区间内的任何数字。例如，它可以是128.6厘米，或161.2厘米，或介于其间的任何数字。因此，该变量是<strong>连续的</strong>。</p><p>连续变量是指其可能值构成一个实数区间的变量。</p>`
                 },
                 {
-                    id: 2,
-                    title: "(b) 在一个有35名学生的班级中，从第一次期中考试到第二次期中考试分数提高的学生人数。",
+                    title: "在一个有35名学生的班级中，从第一次期中考试到第二次期中考试分数提高的学生人数。",
                     text: "分数提高的学生人数必须是整数。具体来说，它必须是数字0, 1, 2, ..., 35中的一个。",
-                    options: [
-                        { text: "离散", correct: true },
-                        { text: "连续", correct: false }
-                    ],
-                    explanation: `
-                        <h4>解析：</h4>
-                        <p>分数提高的学生人数必须是整数。具体来说，它必须是数字0, 1, 2, ..., 35中的一个。（它不能是两个整数之间的数字，比如14.68。）这意味着该变量是<strong>离散的</strong>。</p>
-                        <div class="math-example">
-                            <span class="math-number">0, 1, 2, ..., 35</span>
-                        </div>
-                        <p>离散变量是指其可能值可以被计数的变量，这意味着其可能值对应于整数集的某个子集。因此，如果变量只能取整数值，那么它就是离散的。</p>
-                    `
+                    isDiscrete: true,
+                    explanation: `<p>分数提高的学生人数必须是整数。具体来说，它必须是数字0, 1, 2, ..., 35中的一个。（它不能是两个整数之间的数字，比如14.68。）这意味着该变量是<strong>离散的</strong>。</p><p>离散变量是指其可能值可以被计数的变量。</p>`
                 },
                 {
-                    id: 3,
-                    title: "(c) 一辆美国制造汽车的燃油效率（以每加仑英里数计）。",
-                    text: "燃油效率可以是任何正值。例如，它可以是14.8英里每加仑，或59.16英里每加仑，或介于其间的任何值。",
-                    options: [
-                        { text: "离散", correct: false },
-                        { text: "连续", correct: true }
-                    ],
-                    explanation: `
-                        <h4>解析：</h4>
-                        <p>燃油效率可以是任何正值。例如，它可以是14.8英里每加仑，或59.16英里每加仑，或介于其间的任何值。因为该变量可以在某个区间内取任何值，且没有值被排除，所以该变量是<strong>连续的</strong>。</p>
-                        <div class="math-example">
-                            <span class="math-number">14.8</span>
-                            <span class="math-number">59.16</span>
-                        </div>
-                        <p>连续变量通常在数量被测量时出现，而离散变量通常在数量被计数时出现。</p>
-                    `
+                    title: "一辆国产汽车的燃油效率（升/百公里油耗）。",
+                    text: "燃油效率可以是任何正值。例如，它可以是6.2升/百公里，8.5升/百公里，或介于其间的任何值。",
+                    isDiscrete: false,
+                    explanation: `<p>燃油效率可以是任何正值。例如，它可以是6.2升/百公里，8.5升/百公里，或介于其间的任何值。因为该变量可以在某个区间内取任何值，所以该变量是<strong>连续的</strong>。</p><p>连续变量通常在数量被测量时出现。</p>`
                 },
                 {
-                    id: 4,
-                    title: "(d) 辐照后培养皿上受损染色体的数量。",
+                    title: "辐照后培养皿上受损染色体的数量。",
                     text: "受损染色体的数量必然是一个整数。（它可以是0, 1, 2, 3，或直到培养皿上染色体总数的任何整数。）",
-                    options: [
-                        { text: "离散", correct: true },
-                        { text: "连续", correct: false }
-                    ],
-                    explanation: `
-                        <h4>解析：</h4>
-                        <p>受损染色体的数量必然是一个整数。（它可以是0, 1, 2, 3，或直到培养皿上染色体总数的任何整数。）整数之间的值是被排除的。因此，该变量是<strong>离散的</strong>。</p>
-                        <div class="math-example">
-                            <span class="math-number">0</span>
-                            <span class="math-number">1</span>
-                            <span class="math-number">2</span>
-                            <span class="math-number">3</span>
-                        </div>
-                        <p>离散变量通常在数量被计数时出现（"……的数量"），而连续变量通常在数量被测量时出现。</p>
-                    `
+                    isDiscrete: true,
+                    explanation: `<p>受损染色体的数量必然是一个整数。整数之间的值是被排除的。因此，该变量是<strong>离散的</strong>。</p><p>离散变量通常在数量被计数时出现（"……的数量"）。</p>`
+                },
+                // 新增题目 - 离散变量
+                {
+                    title: "抛掷硬币10次，正面朝上的次数。",
+                    text: "正面朝上的次数必须是整数0, 1, 2, ..., 10中的一个。",
+                    isDiscrete: true,
+                    explanation: `<p>正面朝上的次数必须是整数0, 1, 2, ..., 10中的一个。不可能出现3.5次正面朝上。因此，该变量是<strong>离散的</strong>。</p><p>计数结果通常是离散变量。</p>`
+                },
+                {
+                    title: "一天内进入某商店的顾客人数。",
+                    text: "顾客人数必须是整数。可以是0人、1人、2人等。",
+                    isDiscrete: true,
+                    explanation: `<p>顾客人数必须是整数。不可能有半个人进入商店。因此，该变量是<strong>离散的</strong>。</p><p>人数统计是典型的离散变量。</p>`
+                },
+                {
+                    title: "一本书的页数。",
+                    text: "页数必须是整数。一本书可以有100页、250页等。",
+                    isDiscrete: true,
+                    explanation: `<p>页数必须是整数。不可能有一本书有123.5页。因此，该变量是<strong>离散的</strong>。</p><p>计数类变量都是离散的。</p>`
+                },
+                {
+                    title: "一个家庭中孩子的数量。",
+                    text: "孩子数量必须是整数。可以是0个、1个、2个、3个等。",
+                    isDiscrete: true,
+                    explanation: `<p>孩子数量必须是整数。不可能有2.3个孩子。因此，该变量是<strong>离散的</strong>。</p><p>人数统计是离散变量的典型例子。</p>`
+                },
+                {
+                    title: "掷一枚骰子得到的点数。",
+                    text: "骰子点数只能是1, 2, 3, 4, 5, 6中的一个整数。",
+                    isDiscrete: true,
+                    explanation: `<p>骰子点数只能是1, 2, 3, 4, 5, 6这六个整数之一。不可能掷出3.7点。因此，该变量是<strong>离散的</strong>。</p><p>有限个可能值的变量是离散的。</p>`
+                },
+                {
+                    title: "一个班级的学生人数。",
+                    text: "学生人数必须是整数。可以是20人、35人、42人等。",
+                    isDiscrete: true,
+                    explanation: `<p>学生人数必须是整数。不可能有32.5个学生。因此，该变量是<strong>离散的</strong>。</p><p>计数人数得到的是离散变量。</p>`
+                },
+                {
+                    title: "一个月内的下雨天数。",
+                    text: "下雨天数必须是整数。可以是0天、5天、12天等。",
+                    isDiscrete: true,
+                    explanation: `<p>下雨天数必须是整数。不可能有7.3个下雨天。因此，该变量是<strong>离散的</strong>。</p><p>天数计数是离散变量。</p>`
+                },
+                {
+                    title: "停车场内汽车的数量。",
+                    text: "汽车数量必须是整数。可以是0辆、50辆、120辆等。",
+                    isDiscrete: true,
+                    explanation: `<p>汽车数量必须是整数。不可能有45.5辆车。因此，该变量是<strong>离散的</strong>。</p><p>物品计数都是离散变量。</p>`
+                },
+                {
+                    title: "一场足球比赛的进球数。",
+                    text: "进球数必须是整数。可以是0个、1个、2个、3个等。",
+                    isDiscrete: true,
+                    explanation: `<p>进球数必须是整数。不可能进2.5个球。因此，该变量是<strong>离散的</strong>。</p><p>得分计数是离散变量。</p>`
+                },
+                {
+                    title: "医院当天出生的婴儿数量。",
+                    text: "婴儿数量必须是整数。可以是0个、5个、12个等。",
+                    isDiscrete: true,
+                    explanation: `<p>婴儿数量必须是整数。不可能出生3.7个婴儿。因此，该变量是<strong>离散的</strong>。</p><p>人数统计是离散变量的典型例子。</p>`
+                },
+                {
+                    title: "一枚硬币抛掷后正面或反面的结果。",
+                    text: "结果只能是正面或反面两种可能。",
+                    isDiscrete: true,
+                    explanation: `<p>结果只能是有限的几种可能（正面或反面）。因此，该变量是<strong>离散的</strong>。</p><p>分类变量也是离散变量的一种。</p>`
+                },
+                {
+                    title: "一个小时内收到的电子邮件数量。",
+                    text: "邮件数量必须是整数。可以是0封、5封、23封等。",
+                    isDiscrete: true,
+                    explanation: `<p>邮件数量必须是整数。不可能收到12.3封邮件。因此，该变量是<strong>离散的</strong>。</p><p>计数类变量都是离散的。</p>`
+                },
+                // 新增题目 - 连续变量
+                {
+                    title: "一个人的体重（公斤）。",
+                    text: "体重可以是任何正值。例如65.3公斤、72.85公斤等。",
+                    isDiscrete: false,
+                    explanation: `<p>体重可以是任何正值，可以精确到小数点后任意位数。例如65.3公斤或72.85公斤。因此，该变量是<strong>连续的</strong>。</p><p>测量类变量通常是连续的。</p>`
+                },
+                {
+                    title: "房间的温度（摄氏度）。",
+                    text: "温度可以是任何实数值。例如23.5°C、18.72°C等。",
+                    isDiscrete: false,
+                    explanation: `<p>温度可以是任何实数值。可以是23.5°C、18.72°C或介于其间的任何值。因此，该变量是<strong>连续的</strong>。</p><p>温度是典型的连续测量变量。</p>`
+                },
+                {
+                    title: "运动员完成100米赛跑的时间（秒）。",
+                    text: "时间可以是任何正值。例如9.58秒、10.23秒、11.456秒等。",
+                    isDiscrete: false,
+                    explanation: `<p>时间可以是任何正值，可以精确到毫秒甚至更高精度。因此，该变量是<strong>连续的</strong>。</p><p>时间测量是连续变量。</p>`
+                },
+                {
+                    title: "一株植物的高度（厘米）。",
+                    text: "高度可以是任何非负实数。例如15.3厘米、42.7厘米等。",
+                    isDiscrete: false,
+                    explanation: `<p>高度可以是任何非负实数。可以是15.3厘米、42.7厘米或介于其间的任何值。因此，该变量是<strong>连续的</strong>。</p><p>长度测量是连续变量。</p>`
+                },
+                {
+                    title: "杯子中水的体积（毫升）。",
+                    text: "体积可以是任何非负实数。例如250.5毫升、333.33毫升等。",
+                    isDiscrete: false,
+                    explanation: `<p>体积可以是任何非负实数。可以是250.5毫升、333.33毫升或介于其间的任何值。因此，该变量是<strong>连续的</strong>。</p><p>体积测量是连续变量。</p>`
+                },
+                {
+                    title: "手机电池剩余电量百分比。",
+                    text: "电量百分比可以是0到100之间的任何实数。例如67.8%、42.35%等。",
+                    isDiscrete: false,
+                    explanation: `<p>电量百分比可以是0到100之间的任何实数。可以是67.8%、42.35%等。因此，该变量是<strong>连续的</strong>。</p><p>百分比测量是连续变量。</p>`
+                },
+                {
+                    title: "环境中声音的强度（分贝）。",
+                    text: "声音强度可以是任何非负实数。例如45.3分贝、78.92分贝等。",
+                    isDiscrete: false,
+                    explanation: `<p>声音强度可以是任何非负实数。可以是45.3分贝、78.92分贝或介于其间的任何值。因此，该变量是<strong>连续的</strong>。</p><p>物理量测量通常是连续的。</p>`
+                },
+                {
+                    title: "房间内的光照强度（勒克斯）。",
+                    text: "光照强度可以是任何非负实数。例如320.5勒克斯、550勒克斯等。",
+                    isDiscrete: false,
+                    explanation: `<p>光照强度可以是任何非负实数。可以是320.5勒克斯、550勒克斯或介于其间的任何值。因此，该变量是<strong>连续的</strong>。</p><p>物理测量量是连续变量。</p>`
+                },
+                {
+                    title: "患者的血压值（毫米汞柱）。",
+                    text: "血压可以是任何正值。例如120/80毫米汞柱，可以是118.5/79.3等。",
+                    isDiscrete: false,
+                    explanation: `<p>血压可以是任何正值。可以是118.5毫米汞柱、125.7毫米汞柱等。因此，该变量是<strong>连续的</strong>。</p><p>医学测量通常是连续变量。</p>`
+                },
+                {
+                    title: "电路中的电流强度（安培）。",
+                    text: "电流可以是任何实数值。例如2.5安培、0.753安培等。",
+                    isDiscrete: false,
+                    explanation: `<p>电流可以是任何实数值。可以是2.5安培、0.753安培或介于其间的任何值。因此，该变量是<strong>连续的</strong>。</p><p>电学测量是连续变量。</p>`
+                },
+                {
+                    title: "一块金属的重量（克）。",
+                    text: "重量可以是任何非负实数。例如125.6克、2345.78克等。",
+                    isDiscrete: false,
+                    explanation: `<p>重量可以是任何非负实数。可以是125.6克、2345.78克或介于其间的任何值。因此，该变量是<strong>连续的</strong>。</p><p>重量测量是连续变量。</p>`
+                },
+                {
+                    title: "汽车行驶的距离（公里）。",
+                    text: "距离可以是任何非负实数。例如12.5公里、156.78公里等。",
+                    isDiscrete: false,
+                    explanation: `<p>距离可以是任何非负实数。可以是12.5公里、156.78公里或介于其间的任何值。因此，该变量是<strong>连续的</strong>。</p><p>距离测量是连续变量。</p>`
+                },
+                {
+                    title: "一名学生的考试分数（百分制）。",
+                    text: "分数理论上可以是1到100之间的任何实数。例如85.5分、92.35分等。",
+                    isDiscrete: false,
+                    explanation: `<p>分数理论上可以是1到100之间的任何实数。可以是85.5分、92.35分等。因此，该变量是<strong>连续的</strong>。</p><p>虽然实际中常取整数，但分数本质上是连续的测量。</p>`
                 }
             ];
+
+            let currentQuestions = [];
+            let questions = [];
+            let usedQuestionIndices = new Set(); // 记录已使用过的题目索引
+
+            let refreshCount = 0; // 记录刷新次数
+
+            // 随机选择n道题目（排除已使用过的）
+            function selectRandomQuestions(n) {
+                // 获取未被使用的题目索引
+                const availableIndices = [];
+                for (let i = 0; i < allQuestions.length; i++) {
+                    if (!usedQuestionIndices.has(i)) {
+                        availableIndices.push(i);
+                    }
+                }
+
+                // 如果可用题目不足，重置已使用记录
+                if (availableIndices.length < n) {
+                    usedQuestionIndices.clear();
+                    for (let i = 0; i < allQuestions.length; i++) {
+                        availableIndices.push(i);
+                    }
+                }
+
+                // 随机打乱可用索引
+                const shuffledIndices = availableIndices.sort(() => Math.random() - 0.5);
+                const selectedIndices = shuffledIndices.slice(0, n);
+
+                // 记录本次使用的题目索引
+                selectedIndices.forEach(idx => usedQuestionIndices.add(idx));
+
+                return selectedIndices.map((qIndex, index) => {
+                    const q = allQuestions[qIndex];
+                    return {
+                        id: index + 1,
+                        title: `(${String.fromCharCode(97 + index)}) ${q.title}`,
+                        text: q.text,
+                        options: [
+                            { text: "离散", correct: q.isDiscrete },
+                            { text: "连续", correct: !q.isDiscrete }
+                        ],
+                        explanation: `<h4>解析：</h4>${q.explanation}`
+                    };
+                });
+            }
 
             const questionsContainer = document.getElementById('questions-container');
             const submitBtn = document.getElementById('submit-btn');
@@ -462,12 +603,12 @@
             // 初始化题目
             function renderQuestions() {
                 questionsContainer.innerHTML = '';
-                
+
                 questions.forEach((question, index) => {
                     const questionElement = document.createElement('div');
                     questionElement.className = 'question-container';
                     questionElement.dataset.questionId = question.id;
-                    
+
                     let optionsHTML = '';
                     question.options.forEach((option, optionIndex) => {
                         optionsHTML += `
@@ -476,7 +617,7 @@
                             </div>
                         `;
                     });
-                    
+
                     questionElement.innerHTML = `
                         <div class="question-header">
                             <div class="question-title">${question.title}</div>
@@ -490,30 +631,30 @@
                             ${question.explanation}
                         </div>
                     `;
-                    
+
                     questionsContainer.appendChild(questionElement);
                 });
-                
+
                 // 添加选项点击事件
                 document.querySelectorAll('.option').forEach(option => {
                     option.addEventListener('click', function() {
                         const questionContainer = this.closest('.question-container');
                         const questionId = parseInt(questionContainer.dataset.questionId);
                         const optionIndex = parseInt(this.dataset.optionIndex);
-                        
+
                         // 清除同一问题中其他选项的选中状态
                         questionContainer.querySelectorAll('.option').forEach(opt => {
                             opt.classList.remove('selected');
                         });
-                        
+
                         // 选中当前选项
                         this.classList.add('selected');
-                        
+
                         // 存储用户选择
                         questions[questionId - 1].userAnswer = optionIndex;
                     });
                 });
-                
+
                 // 初始化结果
                 updateResults();
             }
@@ -545,9 +686,6 @@
                             }
                         }
                     });
-
-                    // 不自动显示解析
-                    // explanationElement.classList.add('show');
 
                     // 计算正确数量
                     if (question.options[question.userAnswer].correct) {
@@ -603,10 +741,21 @@
                 questions.forEach(question => {
                     question.userAnswer = undefined;
                 });
-                
+
                 renderQuestions();
                 resultsContainer.classList.remove('show');
-                
+
+                // 重置答案解析按钮和区域
+                var showBtn = document.getElementById('show-explanation-btn');
+                var explanationSection = document.getElementById('explanation-section');
+                if (showBtn) {
+                    showBtn.style.display = 'none';
+                    showBtn.textContent = '查看答案解析';
+                }
+                if (explanationSection) {
+                    explanationSection.style.display = 'none';
+                }
+
                 // 滚动到顶部
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             });
@@ -615,28 +764,40 @@
             function updateResults(correctCount = 0) {
                 const totalQuestions = questions.length;
                 const percentage = totalQuestions > 0 ? Math.round((correctCount / totalQuestions) * 100) : 0;
-                
+
                 scoreElement.textContent = `${correctCount}/${totalQuestions}`;
                 correctCountElement.textContent = correctCount;
                 totalQuestionsElement.textContent = totalQuestions;
-                
-                // 根据得分显示不同消息
-                let message = '';
-                if (correctCount === totalQuestions) {
-                    message = '太棒了！您完全理解了离散变量与连续变量的区别！';
-                } else if (correctCount >= totalQuestions * 0.7) {
-                    message = '做得不错！您对离散变量和连续变量有较好的理解。';
-                } else if (correctCount >= totalQuestions * 0.5) {
-                    message = '还可以，但需要进一步理解离散变量和连续变量的区别。';
-                } else {
-                    message = '需要更多练习来区分离散变量和连续变量。请查看解析以加深理解。';
-                }
-                
-                resultMessageElement.textContent = message;
+
             }
 
             // 初始渲染
+            questions = selectRandomQuestions(4);
             renderQuestions();
+
+            // 刷新参数按钮 - 选择新的随机题目
+            document.getElementById('refresh-btn').addEventListener('click', function() {
+                // 选择新的随机题目
+                questions = selectRandomQuestions(4);
+
+                // 重置所有状态
+                renderQuestions();
+                resultsContainer.classList.remove('show');
+
+                // 重置答案解析按钮和区域
+                var showBtn = document.getElementById('show-explanation-btn');
+                var explanationSection = document.getElementById('explanation-section');
+                if (showBtn) {
+                    showBtn.style.display = 'none';
+                    showBtn.textContent = '查看答案解析';
+                }
+                if (explanationSection) {
+                    explanationSection.style.display = 'none';
+                }
+
+                // 滚动到顶部
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
         });
     </script>
 </body>

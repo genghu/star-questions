@@ -207,6 +207,24 @@
             line-height: 1.7;
         }
 
+        .question-description {
+            background-color: #fff;
+            border-radius: 12px;
+            padding: 20px 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(66, 133, 244, 0.1);
+            border-left: 5px solid #4299e1;
+        }
+
+        .description-content {
+            line-height: 1.8;
+            color: #2c3e50;
+        }
+
+        .description-content p {
+            margin: 0;
+        }
+
         .controls {
             display: flex;
             justify-content: center;
@@ -362,18 +380,13 @@
             <p class="subtitle">请为以下每个变量选择其类型和测量尺度</p>
         </header>
         
-        
-        <div class="info-bar">
-            <div class="info-item">
-                <i class="fas fa-calendar-alt"></i>
-                <span>日期：04/25/2019</span>
-            </div>
-            <div class="info-item">
-                <i class="fas fa-book"></i>
-                <span>主题：随机变量与分布</span>
+
+        <div class="question-description">
+            <div class="description-content">
+                <p>对于以下描述的每个变量，请指出它是<strong>定量变量</strong>还是<strong>分类（定性）变量</strong>。同时，指出该变量的<strong>测量水平</strong>：定类、定序、定距或定比。请确保你的回答尽可能具体。通过点击适当的答案来表示你对每个变量的选择。</p>
             </div>
         </div>
-        
+
         <div id="question-1" class="question-container">
             <div class="question-title">
                 <i class="fas fa-question-circle"></i>
@@ -579,42 +592,217 @@
     
 
     <script>
-        // 正确答案
-        const correctAnswers = {
-            1: { variable: 'categorical', scale: 'nominal' },
-            2: { variable: 'categorical', scale: 'ordinal' },
-            3: { variable: 'quantitative', scale: 'ratio' }
-        };
-        
-        // 用户选择的答案
+        // 题目参数集 - 6组不同的背景
+        const questionSets = [
+            {
+                // 第1组：股票交易
+                questions: [
+                    {
+                        text: '股票交易的交易所（纽约证券交易所、美国证券交易所，或其他）',
+                        variable: 'categorical',
+                        scale: 'nominal',
+                        explanation: '此变量的可能值为"NYSE"（纽约证券交易所）、"AMEX"（美国证券交易所）和"其他"。这些值是类别，因此该变量是分类变量。这些类别没有自然的排序，因此测量尺度是定类尺度。'
+                    },
+                    {
+                        text: '客户满意度评级（非常满意、比较满意、不太满意、非常不满意）',
+                        variable: 'categorical',
+                        scale: 'ordinal',
+                        explanation: '此变量的可能值——"非常满意"、"比较满意"、"不太满意"和"非常不满意"——是类别，因此该变量是分类变量。这些类别根据客户满意度程度自然排序："非常满意"高于"比较满意"，"比较满意"高于"不太满意"，"不太满意"高于"非常不满意"。因为值有自然排序，所以测量尺度是定序尺度。'
+                    },
+                    {
+                        text: '股票的收盘价（美元）',
+                        variable: 'quantitative',
+                        scale: 'ratio',
+                        explanation: '价格变量是定量变量，因为它的值是表示测量数量的数字。此变量有一个有意义的0值：价格为0美元对应于该股票没有货币价值。此外，该变量数值的比率是有意义的，因为，例如，说收盘价为$30.00的股票份额的货币价值是收盘价为$6.00的股票份额的五倍是有意义的。因此，该变量具有定比测量尺度。'
+                    }
+                ]
+            },
+            {
+                // 第2组：教育背景
+                questions: [
+                    {
+                        text: '学生的血型（A型、B型、AB型、O型）',
+                        variable: 'categorical',
+                        scale: 'nominal',
+                        explanation: '血型变量的可能值为"A型"、"B型"、"AB型"和"O型"。这些值是类别，不是数值，因此该变量是分类变量。这些类别之间没有自然的排序或等级关系，因此测量尺度是定类尺度。'
+                    },
+                    {
+                        text: '学生的成绩等级（优秀、良好、中等、及格、不及格）',
+                        variable: 'categorical',
+                        scale: 'ordinal',
+                        explanation: '成绩等级的可能值——"优秀"、"良好"、"中等"、"及格"和"不及格"——是类别，因此该变量是分类变量。这些类别有自然的排序："优秀"高于"良好"，"良好"高于"中等"，以此类推。因为值有自然排序，所以测量尺度是定序尺度。'
+                    },
+                    {
+                        text: '学生的身高（厘米）',
+                        variable: 'quantitative',
+                        scale: 'ratio',
+                        explanation: '身高变量是定量变量，因为它的值是表示测量数量的数字。此变量有一个有意义的绝对零点：身高为0厘米表示没有高度。此外，身高的比率是有意义的，例如身高180厘米的人是身高90厘米的人的两倍高。因此，该变量具有定比测量尺度。'
+                    }
+                ]
+            },
+            {
+                // 第3组：购物消费
+                questions: [
+                    {
+                        text: '支付方式（现金、信用卡、借记卡、移动支付）',
+                        variable: 'categorical',
+                        scale: 'nominal',
+                        explanation: '支付方式变量的可能值为"现金"、"信用卡"、"借记卡"和"移动支付"。这些值是不同的类别，因此该变量是分类变量。这些支付方式之间没有自然的排序关系，因此测量尺度是定类尺度。'
+                    },
+                    {
+                        text: '商品评价等级（五星、四星、三星、二星、一星）',
+                        variable: 'categorical',
+                        scale: 'ordinal',
+                        explanation: '评价等级的可能值——"五星"到"一星"——是类别，因此该变量是分类变量。这些类别有明确的自然排序：五星最高，一星最低。因为值有自然排序，所以测量尺度是定序尺度。'
+                    },
+                    {
+                        text: '商品价格（元）',
+                        variable: 'quantitative',
+                        scale: 'ratio',
+                        explanation: '价格变量是定量变量，因为它的值是表示货币数量的数字。此变量有一个有意义的零点：价格为0元表示免费。此外，价格的比率是有意义的，例如100元的商品价格是50元商品的两倍。因此，该变量具有定比测量尺度。'
+                    }
+                ]
+            },
+            {
+                // 第4组：医疗健康
+                questions: [
+                    {
+                        text: '患者的疾病诊断结果（确诊、疑似、排除）',
+                        variable: 'categorical',
+                        scale: 'nominal',
+                        explanation: '诊断结果变量的可能值为"确诊"、"疑似"和"排除"。这些值是不同的诊断类别，因此该变量是分类变量。虽然这些结果在临床意义上有区别，但它们之间没有数学上的自然排序，因此测量尺度是定类尺度。'
+                    },
+                    {
+                        text: '疼痛程度（无痛、轻微、中度、重度、剧烈）',
+                        variable: 'categorical',
+                        scale: 'ordinal',
+                        explanation: '疼痛程度的可能值——"无痛"、"轻微"、"中度"、"重度"和"剧烈"——是类别，因此该变量是分类变量。这些类别根据疼痛强度有明确的自然排序。因为值有自然排序，所以测量尺度是定序尺度。'
+                    },
+                    {
+                        text: '患者体温（摄氏度）',
+                        variable: 'quantitative',
+                        scale: 'interval',
+                        explanation: '体温变量是定量变量，因为它的值是表示温度测量的数字。摄氏温度没有绝对的零点（0℃不表示没有温度），因此不能说20℃是10℃的两倍热。但温度差是有意义的。因此，该变量具有定距测量尺度。'
+                    }
+                ]
+            },
+            {
+                // 第5组：员工管理
+                questions: [
+                    {
+                        text: '员工所属部门（人力资源部、财务部、市场部、技术部）',
+                        variable: 'categorical',
+                        scale: 'nominal',
+                        explanation: '部门变量的可能值为"人力资源部"、"财务部"、"市场部"和"技术部"等。这些值是不同的部门类别，因此该变量是分类变量。各部门之间没有自然的排序关系，因此测量尺度是定类尺度。'
+                    },
+                    {
+                        text: '员工的职位级别（实习生、初级、中级、高级、主管）',
+                        variable: 'categorical',
+                        scale: 'ordinal',
+                        explanation: '职位级别的可能值——"实习生"、"初级"、"中级"、"高级"和"主管"——是类别，因此该变量是分类变量。这些类别根据职级有明确的自然排序。因为值有自然排序，所以测量尺度是定序尺度。'
+                    },
+                    {
+                        text: '员工的月薪（元）',
+                        variable: 'quantitative',
+                        scale: 'ratio',
+                        explanation: '月薪变量是定量变量，因为它的值是表示金额的数字。此变量有一个有意义的零点：月薪为0元表示没有工资。此外，工资的比率是有意义的，例如月薪10000元是月薪5000元的两倍。因此，该变量具有定比测量尺度。'
+                    }
+                ]
+            },
+            {
+                // 第6组：交通出行
+                questions: [
+                    {
+                        text: '交通工具类型（公交车、地铁、出租车、私家车、自行车）',
+                        variable: 'categorical',
+                        scale: 'nominal',
+                        explanation: '交通工具类型变量的可能值为"公交车"、"地铁"、"出租车"、"私家车"和"自行车"。这些值是不同的交通方式类别，因此该变量是分类变量。各种交通方式之间没有自然的排序关系，因此测量尺度是定类尺度。'
+                    },
+                    {
+                        text: '出行满意度评价（非常满意、满意、一般、不满意、非常不满意）',
+                        variable: 'categorical',
+                        scale: 'ordinal',
+                        explanation: '满意度评价的可能值——从"非常满意"到"非常不满意"——是类别，因此该变量是分类变量。这些类别根据满意程度有明确的自然排序。因为值有自然排序，所以测量尺度是定序尺度。'
+                    },
+                    {
+                        text: '行驶距离（公里）',
+                        variable: 'quantitative',
+                        scale: 'ratio',
+                        explanation: '行驶距离变量是定量变量，因为它的值是表示距离的数字。此变量有一个有意义的绝对零点：距离为0公里表示没有移动。此外，距离的比率是有意义的，例如行驶100公里是行驶50公里的两倍。因此，该变量具有定比测量尺度。'
+                    }
+                ]
+            }
+        ];
+
+        let currentSetIndex = 0;
+        let correctAnswers = {};
         let userAnswers = {
             1: { variable: null, scale: null },
             2: { variable: null, scale: null },
             3: { variable: null, scale: null }
         };
-        
+
+        // 更新页面内容
+        function updateQuestionSet(setIndex) {
+            const set = questionSets[setIndex];
+
+            // 更新每个问题
+            set.questions.forEach((q, i) => {
+                const questionNum = i + 1;
+                const letter = String.fromCharCode(97 + i); // a, b, c
+
+                // 更新问题文本
+                document.querySelector(`#question-${questionNum} .question-text`).textContent = q.text;
+
+                // 更新正确答案
+                correctAnswers[questionNum] = {
+                    variable: q.variable,
+                    scale: q.scale
+                };
+
+                // 更新解析
+                document.querySelector(`#explanation-${questionNum} .explanation-text`).textContent = q.explanation;
+
+                // 更新结果区域
+                const variableText = q.variable === 'categorical' ? '分类' : '定量';
+                const scaleText = {
+                    'nominal': '定类尺度',
+                    'ordinal': '定序尺度',
+                    'interval': '定距尺度',
+                    'ratio': '定比尺度'
+                }[q.scale];
+                document.querySelector(`.correct-answers .answer-item:nth-child(${questionNum + 1})`).innerHTML =
+                    `<strong>问题 (${letter}):</strong> 变量类型：${variableText}，测量尺度：${scaleText}`;
+            });
+        }
+
+        // 重置状态
+        function resetState() {
+            userAnswers = {
+                1: { variable: null, scale: null },
+                2: { variable: null, scale: null },
+                3: { variable: null, scale: null }
+            };
+
+            // 清除所有选择
+            document.querySelectorAll('.option-card').forEach(card => {
+                card.classList.remove('selected', 'correct', 'incorrect');
+            });
+
+            // 隐藏解析
+            document.querySelectorAll('.explanation').forEach(exp => {
+                exp.style.display = 'none';
+            });
+
+            // 隐藏结果
+            document.getElementById('results').style.display = 'none';
+        }
+
         // 初始化
         document.addEventListener('DOMContentLoaded', function() {
-
-            // 显示答案解析按钮点击事件
-            document.querySelectorAll('.show-explanation-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    var questionId = this.getAttribute('data-question') || this.id;
-                    var explanation;
-                    if (questionId) {
-                        explanation = this.nextElementSibling;
-                    }
-                    if (explanation) {
-                        if (explanation.classList.contains('show')) {
-                            explanation.classList.remove('show');
-                            this.textContent = '查看答案解析';
-                        } else {
-                            explanation.classList.add('show');
-                            this.textContent = '隐藏答案解析';
-                        }
-                    }
-                });
-            });
+            // 随机选择一组题目
+            currentSetIndex = Math.floor(Math.random() * questionSets.length);
+            updateQuestionSet(currentSetIndex);
 
             // 为所有选项卡片添加点击事件
             document.querySelectorAll('.option-card').forEach(card => {
@@ -622,36 +810,36 @@
                     const question = this.getAttribute('data-question');
                     const type = this.getAttribute('data-type');
                     const value = this.getAttribute('data-value');
-                    
+
                     // 清除同一问题同一类型的所有选择
                     document.querySelectorAll(`.option-card[data-question="${question}"][data-type="${type}"]`).forEach(c => {
                         c.classList.remove('selected');
                     });
-                    
+
                     // 标记当前选择
                     this.classList.add('selected');
-                    
+
                     // 保存用户选择
                     userAnswers[question][type] = value;
                 });
             });
-            
+
             // 提交按钮事件
             document.getElementById('submit-btn').addEventListener('click', function() {
                 let correctCount = 0;
-                let totalQuestions = 0;
-                
+                let totalQuestions = 6;
+
                 // 检查每个问题的答案
                 for (let questionId in userAnswers) {
                     const userAnswer = userAnswers[questionId];
                     const correctAnswer = correctAnswers[questionId];
-                    
+
                     // 检查变量类型
                     const variableCards = document.querySelectorAll(`.option-card[data-question="${questionId}"][data-type="variable"]`);
                     variableCards.forEach(card => {
                         const value = card.getAttribute('data-value');
                         card.classList.remove('correct', 'incorrect');
-                        
+
                         if (userAnswer.variable === value) {
                             if (userAnswer.variable === correctAnswer.variable) {
                                 card.classList.add('correct');
@@ -663,13 +851,13 @@
                             card.classList.add('correct');
                         }
                     });
-                    
+
                     // 检查测量尺度
                     const scaleCards = document.querySelectorAll(`.option-card[data-question="${questionId}"][data-type="scale"]`);
                     scaleCards.forEach(card => {
                         const value = card.getAttribute('data-value');
                         card.classList.remove('correct', 'incorrect');
-                        
+
                         if (userAnswer.scale === value) {
                             if (userAnswer.scale === correctAnswer.scale) {
                                 card.classList.add('correct');
@@ -681,21 +869,19 @@
                             card.classList.add('correct');
                         }
                     });
-                    
+
                     // 显示解析
                     document.getElementById(`explanation-${questionId}`).style.display = 'block';
-                    
-                    totalQuestions += 2; // 每个问题有2个部分（变量类型和测量尺度）
                 }
-                
+
                 // 显示结果
                 const resultsDiv = document.getElementById('results');
                 const scoreDisplay = document.getElementById('score-display');
                 const correctCountSpan = document.getElementById('correct-count');
-                
+
                 scoreDisplay.textContent = `${correctCount}/${totalQuestions}`;
                 correctCountSpan.textContent = correctCount;
-                
+
                 // 根据得分设置颜色
                 if (correctCount === totalQuestions) {
                     scoreDisplay.style.color = '#2ecc71';
@@ -707,71 +893,28 @@
                     scoreDisplay.style.color = '#e74c3c';
                     document.getElementById('score-text').innerHTML = `继续努力！您答对了 <span style="color:#e74c3c; font-weight:bold">${correctCount}</span> 个问题中的 ${totalQuestions} 个`;
                 }
-                
+
                 resultsDiv.style.display = 'block';
                 resultsDiv.scrollIntoView({ behavior: 'smooth' });
             });
-            
+
             // 重置按钮事件
             document.getElementById('reset-btn').addEventListener('click', function() {
-                // 重置用户答案
-                userAnswers = {
-                    1: { variable: null, scale: null },
-                    2: { variable: null, scale: null },
-                    3: { variable: null, scale: null }
-                };
-                
-                // 清除所有选择
-                document.querySelectorAll('.option-card').forEach(card => {
-                    card.classList.remove('selected', 'correct', 'incorrect');
-                });
-                
-                // 隐藏解析
-                document.querySelectorAll('.explanation').forEach(exp => {
-                    exp.style.display = 'none';
-                });
-                
-                
-                // 隐藏答案解析按钮
-                document.querySelectorAll('.show-explanation-btn').forEach(btn => {
-                    btn.style.display = 'none';
-                    btn.textContent = '查看答案解析';
-                });
-
-document.getElementById('results').style.display = 'none';
-
-                // 滚动到顶部
+                resetState();
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             });
 
-            // 刷新按钮事件
+            // 刷新按钮事件 - 切换到另一组题目
             document.getElementById('refresh-btn').addEventListener('click', function() {
-                // 重置用户答案
-                userAnswers = {
-                    1: { variable: null, scale: null },
-                    2: { variable: null, scale: null },
-                    3: { variable: null, scale: null }
-                };
+                // 选择新的一组题目（避免选择同一组）
+                let newIndex;
+                do {
+                    newIndex = Math.floor(Math.random() * questionSets.length);
+                } while (newIndex === currentSetIndex && questionSets.length > 1);
 
-                // 清除所有选择
-                document.querySelectorAll('.option-card').forEach(card => {
-                    card.classList.remove('selected', 'correct', 'incorrect');
-                });
-
-                // 隐藏解析
-                document.querySelectorAll('.explanation').forEach(exp => {
-                    exp.style.display = 'none';
-                });
-
-                // 隐藏答案解析按钮
-                document.querySelectorAll('.show-explanation-btn').forEach(btn => {
-                    btn.style.display = 'none';
-                    btn.textContent = '查看答案解析';
-                });
-
-                document.getElementById('results').style.display = 'none';
-
-                // 滚动到顶部
+                currentSetIndex = newIndex;
+                updateQuestionSet(currentSetIndex);
+                resetState();
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             });
         });

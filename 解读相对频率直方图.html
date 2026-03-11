@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>解读相对频率直方图 - 交互式答题</title>
+    <title>解读相对频数直方图 - 交互式答题</title>
     <style>
         * {
             box-sizing: border-box;
@@ -109,78 +109,17 @@
             color: #0052cc;
         }
 
-        .histogram {
-            display: flex;
-            align-items: flex-end;
-            justify-content: center;
-            height: 300px;
-            margin: 20px 0 40px;
-            position: relative;
-            padding-bottom: 40px;
-            border-bottom: 2px solid #d0e3ff;
+        .histogram-canvas-wrapper {
+            background-color: #f5f9ff;
+            border: 2px solid #333;
+            border-radius: 4px;
+            padding: 10px;
+            margin: 20px auto;
+            width: fit-content;
         }
 
-        .histogram-bar {
-            width: 70px;
-            margin: 0 15px;
-            background: linear-gradient(to top, #4dabf7, #339af0);
-            border-radius: 8px 8px 0 0;
-            position: relative;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            box-shadow: 0 4px 8px rgba(77, 171, 247, 0.2);
-        }
-
-        .histogram-bar:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(77, 171, 247, 0.3);
-        }
-
-        .histogram-label {
-            position: absolute;
-            bottom: -30px;
-            left: 0;
-            width: 100%;
-            text-align: center;
-            font-size: 0.9rem;
-            color: #495057;
-        }
-
-        .histogram-value {
-            position: absolute;
-            top: -30px;
-            left: 0;
-            width: 100%;
-            text-align: center;
-            font-weight: bold;
-            color: #0052cc;
-        }
-
-        .histogram-axis {
-            position: absolute;
-            left: 0;
-            bottom: 0;
-            width: 100%;
-            height: 2px;
-            background-color: #495057;
-        }
-
-        .histogram-y-label {
-            position: absolute;
-            left: -60px;
-            top: 50%;
-            transform: translateY(-50%) rotate(-90deg);
-            color: #495057;
-            font-weight: bold;
-        }
-
-        .histogram-x-label {
-            position: absolute;
-            bottom: -60px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: #495057;
-            font-weight: bold;
+        .histogram-canvas {
+            display: block;
         }
 
         .data-table {
@@ -321,31 +260,6 @@
             border-left: 5px solid #4dabf7;
         }
 
-        .stats-container {
-            display: flex;
-            justify-content: space-around;
-            margin-top: 30px;
-            padding: 20px;
-            background-color: #f8fbff;
-            border-radius: 12px;
-            border: 1px solid #d0e3ff;
-        }
-
-        .stat-box {
-            text-align: center;
-        }
-
-        .stat-value {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: #0052cc;
-        }
-
-        .stat-label {
-            color: #66788a;
-            margin-top: 5px;
-        }
-
         .show-explanation-btn {
             display: none;
             margin: 20px auto;
@@ -369,6 +283,10 @@
             margin-top: 20px;
         }
 
+        .explanation-section.show {
+            display: block;
+        }
+
         .highlight {
             background-color: #fffacd;
             padding: 2px 5px;
@@ -388,13 +306,12 @@
                 font-size: 1.8rem;
             }
 
-            .histogram-bar {
-                width: 40px;
-                margin: 0 8px;
+            .histogram-canvas-wrapper {
+                overflow-x: auto;
             }
 
-            .histogram {
-                height: 250px;
+            .histogram-canvas {
+                min-width: 450px;
             }
 
             .button-container {
@@ -431,7 +348,7 @@
 <body>
     <div class="container">
         <header>
-            <h1>解读相对频率直方图</h1>
+            <h1>解读相对频数直方图</h1>
             <div class="subtitle">描述性统计 - 交互式答题练习</div>
         </header>
 
@@ -443,33 +360,19 @@
                 </button>
             </div>
 
-            <div class="question-text" id="question-text">
+            <div class="background-story" id="background-story" style="background-color: #f0f7ff; padding: 20px; border-radius: 10px; margin-bottom: 20px; border-left: 4px solid #4dabf7;">
                 <!-- 动态生成 -->
             </div>
 
             <div class="histogram-container">
-                <div class="histogram-title" id="histogram-title">完成时间相对频率直方图</div>
-                <div class="histogram" id="histogram">
-                    <!-- 直方图将通过JavaScript动态生成 -->
+                <div class="histogram-title" id="histogram-title">完成时间相对频数直方图</div>
+                <div class="histogram-canvas-wrapper">
+                    <canvas id="histogram-canvas" class="histogram-canvas" width="500" height="320"></canvas>
                 </div>
-
-                <table class="data-table" id="data-table">
-                    <thead>
-                        <tr>
-                            <th>完成时间（秒）</th>
-                            <th>频率</th>
-                            <th>相对频率</th>
-                        </tr>
-                    </thead>
-                    <tbody id="table-body">
-                        <!-- 动态生成 -->
-                    </tbody>
-                </table>
             </div>
 
-            <div class="answer-input-container">
-                <label class="answer-input-label" for="answer-input">请输入你的答案（小数形式）：</label>
-                <input type="number" id="answer-input" class="answer-input" step="0.01" min="0" max="1">
+            <div class="question-text" id="question-text">
+                <!-- 动态生成 -->
             </div>
 
             <div class="button-container">
@@ -493,20 +396,6 @@
                 </div>
             </div>
 
-            <div class="stats-container" id="stats-container" style="display: none;">
-                <div class="stat-box">
-                    <div class="stat-value" id="score-value">0</div>
-                    <div class="stat-label">得分</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-value" id="attempts-value">0</div>
-                    <div class="stat-label">尝试次数</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-value" id="accuracy-value">0%</div>
-                    <div class="stat-label">正确率</div>
-                </div>
-            </div>
         </div>
     </div>
 
@@ -525,13 +414,14 @@
                         { min: 1100, max: 1300, frequency: 2 },
                         { min: 1300, max: 1500, frequency: 3 }
                     ],
+                    questionType: "lessThan",  // 小于某值
+                    threshold: 1100,
                     answer: 0.80,
                     answerCalculation: "5 + 9 + 6 = 20, 20/25 = 0.80"
                 },
                 {
                     totalStudents: 30,
                     context: "阅读理解测试",
-                    threshold: 850,
                     ranges: [
                         { min: 400, max: 550, frequency: 6 },
                         { min: 550, max: 700, frequency: 8 },
@@ -539,13 +429,14 @@
                         { min: 850, max: 1000, frequency: 5 },
                         { min: 1000, max: 1150, frequency: 4 }
                     ],
-                    answer: 0.70,
-                    answerCalculation: "6 + 8 + 7 = 21, 21/30 = 0.70"
+                    questionType: "greaterThan",  // 大于某值
+                    threshold: 700,
+                    answer: 0.53,
+                    answerCalculation: "7 + 5 + 4 = 16, 16/30 ≈ 0.53"
                 },
                 {
                     totalStudents: 40,
                     context: "数学能力测试",
-                    threshold: 720,
                     ranges: [
                         { min: 300, max: 450, frequency: 8 },
                         { min: 450, max: 600, frequency: 12 },
@@ -553,13 +444,15 @@
                         { min: 720, max: 840, frequency: 9 },
                         { min: 840, max: 960, frequency: 5 }
                     ],
-                    answer: 0.65,
-                    answerCalculation: "8 + 12 + 6 = 26, 26/40 = 0.65"
+                    questionType: "between",  // 在某个区间内
+                    threshold: 450,
+                    threshold2: 840,
+                    answer: 0.68,
+                    answerCalculation: "12 + 6 + 9 = 27, 27/40 = 0.675 ≈ 0.68"
                 },
                 {
                     totalStudents: 50,
                     context: "逻辑推理测验",
-                    threshold: 950,
                     ranges: [
                         { min: 500, max: 650, frequency: 10 },
                         { min: 650, max: 800, frequency: 15 },
@@ -567,13 +460,14 @@
                         { min: 950, max: 1100, frequency: 8 },
                         { min: 1100, max: 1250, frequency: 5 }
                     ],
+                    questionType: "lessThan",
+                    threshold: 950,
                     answer: 0.74,
                     answerCalculation: "10 + 15 + 12 = 37, 37/50 = 0.74"
                 },
                 {
                     totalStudents: 35,
                     context: "记忆力测试",
-                    threshold: 680,
                     ranges: [
                         { min: 200, max: 350, frequency: 7 },
                         { min: 350, max: 500, frequency: 10 },
@@ -581,13 +475,14 @@
                         { min: 680, max: 860, frequency: 6 },
                         { min: 860, max: 1000, frequency: 4 }
                     ],
-                    answer: 0.71,
-                    answerCalculation: "7 + 10 + 8 = 25, 25/35 = 0.71"
+                    questionType: "greaterThan",
+                    threshold: 500,
+                    answer: 0.51,
+                    answerCalculation: "8 + 6 + 4 = 18, 18/35 ≈ 0.51"
                 },
                 {
                     totalStudents: 20,
                     context: "注意力测试",
-                    threshold: 540,
                     ranges: [
                         { min: 150, max: 300, frequency: 3 },
                         { min: 300, max: 420, frequency: 5 },
@@ -595,31 +490,181 @@
                         { min: 540, max: 660, frequency: 5 },
                         { min: 660, max: 780, frequency: 3 }
                     ],
-                    answer: 0.60,
-                    answerCalculation: "3 + 5 + 4 = 12, 12/20 = 0.60"
+                    questionType: "between",
+                    threshold: 300,
+                    threshold2: 660,
+                    answer: 0.70,
+                    answerCalculation: "5 + 4 + 5 = 14, 14/20 = 0.70"
+                },
+                {
+                    totalStudents: 28,
+                    context: "空间推理测试",
+                    ranges: [
+                        { min: 250, max: 400, frequency: 6 },
+                        { min: 400, max: 550, frequency: 8 },
+                        { min: 550, max: 700, frequency: 7 },
+                        { min: 700, max: 850, frequency: 4 },
+                        { min: 850, max: 1000, frequency: 3 }
+                    ],
+                    questionType: "lessThan",
+                    threshold: 700,
+                    answer: 0.75,
+                    answerCalculation: "6 + 8 + 7 = 21, 21/28 = 0.75"
+                },
+                {
+                    totalStudents: 45,
+                    context: "语言理解测试",
+                    ranges: [
+                        { min: 350, max: 500, frequency: 9 },
+                        { min: 500, max: 650, frequency: 14 },
+                        { min: 650, max: 800, frequency: 11 },
+                        { min: 800, max: 950, frequency: 7 },
+                        { min: 950, max: 1100, frequency: 4 }
+                    ],
+                    questionType: "greaterThan",
+                    threshold: 650,
+                    answer: 0.49,
+                    answerCalculation: "11 + 7 + 4 = 22, 22/45 ≈ 0.49"
+                },
+                {
+                    totalStudents: 32,
+                    context: "数字推理测试",
+                    ranges: [
+                        { min: 180, max: 320, frequency: 5 },
+                        { min: 320, max: 460, frequency: 9 },
+                        { min: 460, max: 600, frequency: 8 },
+                        { min: 600, max: 740, frequency: 6 },
+                        { min: 740, max: 880, frequency: 4 }
+                    ],
+                    questionType: "between",
+                    threshold: 320,
+                    threshold2: 740,
+                    answer: 0.72,
+                    answerCalculation: "9 + 8 + 6 = 23, 23/32 ≈ 0.72"
                 }
             ];
 
             let currentParamIndex = 0;
+
+            // ==================== 辅助函数：根据问题类型生成问题和解析 ====================
+            function getQuestionText(params) {
+                switch(params.questionType) {
+                    case "lessThan":
+                        return `找出样本中完成时间<strong>小于${params.threshold}秒</strong>的比例。`;
+                    case "greaterThan":
+                        return `找出样本中完成时间<strong>大于${params.threshold}秒</strong>的比例。`;
+                    case "between":
+                        return `找出样本中完成时间<strong>在${params.threshold}秒到${params.threshold2}秒之间</strong>的比例。`;
+                    default:
+                        return `找出样本中完成时间小于${params.threshold}秒的比例。`;
+                }
+            }
+
+            function getIncludedRangesAndFreqs(params) {
+                let includedRanges, includedFreqs, sumFreqs;
+
+                switch(params.questionType) {
+                    case "lessThan":
+                        includedRanges = params.ranges.filter(r => r.max <= params.threshold);
+                        break;
+                    case "greaterThan":
+                        includedRanges = params.ranges.filter(r => r.min >= params.threshold);
+                        break;
+                    case "between":
+                        includedRanges = params.ranges.filter(r => r.min >= params.threshold && r.max <= params.threshold2);
+                        break;
+                    default:
+                        includedRanges = params.ranges.filter(r => r.max <= params.threshold);
+                }
+
+                includedFreqs = includedRanges.map(r => r.frequency);
+                sumFreqs = includedFreqs.reduce((a, b) => a + b, 0);
+
+                return { includedRanges, includedFreqs, sumFreqs };
+            }
+
+            function getExplanationText(params, includedRanges, includedFreqs, sumFreqs) {
+                const { questionType, threshold, threshold2, totalStudents, answer } = params;
+
+                let conditionText, conditionDesc;
+                switch(questionType) {
+                    case "lessThan":
+                        conditionText = `小于${threshold}秒`;
+                        conditionDesc = `包含小于${threshold}秒的测量值`;
+                        break;
+                    case "greaterThan":
+                        conditionText = `大于${threshold}秒`;
+                        conditionDesc = `包含大于${threshold}秒的测量值`;
+                        break;
+                    case "between":
+                        conditionText = `在${threshold}秒到${threshold2}秒之间`;
+                        conditionDesc = `完全包含在${threshold}秒到${threshold2}秒区间内`;
+                        break;
+                    default:
+                        conditionText = `小于${threshold}秒`;
+                        conditionDesc = `包含小于${threshold}秒的测量值`;
+                }
+
+                let explanationRangesHTML = includedRanges.map(r =>
+                    `<li>${r.min} 至 ${r.max} 类别 (相对频率: ${(r.frequency / totalStudents).toFixed(2)})</li>`
+                ).join('');
+
+                let explanation = `
+                    <p>我们需要找出样本中完成时间${conditionText}的比例。这个比例是${conditionDesc}的所有类别的相对频率之和。</p>
+                    <p>有${includedRanges.length}个类别${conditionDesc}：</p>
+                    <ul>${explanationRangesHTML}</ul>
+                    <p>这些类别的相对频率之和为：${includedFreqs.map(f => (f / totalStudents).toFixed(2)).join(' + ')} = <strong>${answer.toFixed(2)}</strong></p>
+                    <p>因此，样本中${(answer * 100).toFixed(0)}% (${answer.toFixed(2)}) 的完成时间${conditionText}。</p>
+                    <p><strong>备注：</strong>${conditionText}的完成时间次数是：${includedFreqs.join(' + ')} = ${sumFreqs}。因此比例为 ${sumFreqs}/${totalStudents} = ${answer.toFixed(2)}。</p>
+                `;
+
+                return explanation;
+            }
 
             // ==================== 渲染函数 ====================
             function renderQuestion() {
                 const params = questionParams[currentParamIndex];
                 const maxFreq = Math.max(...params.ranges.map(r => r.frequency));
 
-                // 渲染问题文本
-                document.getElementById('question-text').innerHTML = `
-                    <p>某项${params.context}使用大学生作为参与者进行实验。</p>
-                    <p>下面的直方图总结了 <strong>${params.totalStudents}名</strong> 学生的完成时间信息。</p>
-                    <p><strong>根据直方图，找出样本中完成时间小于${params.threshold}秒的比例。</strong></p>
-                    <p>请以小数形式写出你的答案，不要四舍五入。</p>
+                // 渲染背景故事
+                document.getElementById('background-story').innerHTML = `
+                    <p style="line-height: 1.8; color: #2c3e50;">
+                        字谜拼图涉及一组被打乱的字母，必须重新排列这些字母才能组成单词。标准的智力测试使用这些拼图作为评估语言能力的辅助手段。几年前，一名本科生注意到，某些版本的智力测试使用小写字母的字谜拼图，而另一些版本使用大写字母的字谜拼图。她以大学生为参与者进行了实验，以检查两个版本完成时间的差异。下面的直方图总结了她在小写版本测试的 <strong>${params.totalStudents}名</strong> 学生完成时间的信息。
+                    </p>
                 `;
 
-                // 渲染表格
-                let tableBody = '';
+                // 渲染问题文本（包含答案输入框）
+                const questionText = getQuestionText(params);
+                document.getElementById('question-text').innerHTML = `
+                    <p><strong>根据直方图，${questionText}</strong></p>
+                    <p>请以小数形式写出你的答案，不要四舍五入。</p>
+                    <div class="answer-input-container" style="margin-top: 20px; text-align: center;">
+                        <label class="answer-input-label" for="answer-input">请输入你的答案（小数形式）：</label>
+                        <input type="number" id="answer-input" class="answer-input" step="0.01" min="0" max="1">
+                    </div>
+                `;
+
+                // 渲染直方图
+                renderHistogram(params, maxFreq);
+
+                // 获取符合条件的范围和频数
+                const { includedRanges, includedFreqs, sumFreqs } = getIncludedRangesAndFreqs(params);
+
+                // 生成表格HTML
+                let tableHTML = `
+                    <table class="data-table" style="margin-top: 20px;">
+                        <thead>
+                            <tr>
+                                <th>完成时间（秒）</th>
+                                <th>频数</th>
+                                <th>相对频率</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
                 params.ranges.forEach(range => {
                     const relativeFreq = range.frequency / params.totalStudents;
-                    tableBody += `
+                    tableHTML += `
                         <tr>
                             <td>${range.min} 至 ${range.max}</td>
                             <td>${range.frequency}</td>
@@ -627,28 +672,11 @@
                         </tr>
                     `;
                 });
-                document.getElementById('table-body').innerHTML = tableBody;
+                tableHTML += `</tbody></table>`;
 
-                // 渲染直方图
-                renderHistogram(params, maxFreq);
-
-                // 渲染解析
-                const includedRanges = params.ranges.filter(r => r.max <= params.threshold);
-                const includedFreqs = includedRanges.map(r => r.frequency);
-                const sumFreqs = includedFreqs.reduce((a, b) => a + b, 0);
-
-                let explanationRangesHTML = includedRanges.map(r =>
-                    `<li>${r.min} 至 ${r.max} 类别 (相对频率: ${(r.frequency / params.totalStudents).toFixed(2)})</li>`
-                ).join('');
-
-                document.getElementById('explanation-content').innerHTML = `
-                    <p>我们需要找出样本中完成时间小于${params.threshold}秒的比例。这个比例是包含小于${params.threshold}秒的测量值的所有类别的相对频率之和。</p>
-                    <p>有${includedRanges.length}个类别包含小于${params.threshold}秒的测量值：</p>
-                    <ul>${explanationRangesHTML}</ul>
-                    <p>这些类别的相对频率之和为：${includedFreqs.map(f => (f / params.totalStudents).toFixed(2)).join(' + ')} = <strong>${params.answer.toFixed(2)}</strong></p>
-                    <p>因此，样本中${(params.answer * 100).toFixed(0)}% (${params.answer.toFixed(2)}) 的完成时间小于${params.threshold}秒。</p>
-                    <p><strong>备注：</strong>小于${params.threshold}秒的完成时间次数是：${includedFreqs.join(' + ')} = ${sumFreqs}。因此比例为 ${sumFreqs}/${params.totalStudents} = ${params.answer.toFixed(2)}。</p>
-                `;
+                // 生成解析内容
+                const explanationText = getExplanationText(params, includedRanges, includedFreqs, sumFreqs);
+                document.getElementById('explanation-content').innerHTML = explanationText + tableHTML;
 
                 // 清除输入和反馈
                 document.getElementById('answer-input').value = '';
@@ -663,65 +691,132 @@
             }
 
             function renderHistogram(params, maxFreq) {
-                const histogramEl = document.getElementById('histogram');
-                histogramEl.innerHTML = '';
+                const canvas = document.getElementById('histogram-canvas');
+                const ctx = canvas.getContext('2d');
 
-                // 添加Y轴标签
-                const yLabel = document.createElement('div');
-                yLabel.className = 'histogram-y-label';
-                yLabel.textContent = '频率';
-                histogramEl.appendChild(yLabel);
+                // 清除画布
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-                // 添加X轴标签
-                const xLabel = document.createElement('div');
-                xLabel.className = 'histogram-x-label';
-                xLabel.textContent = '完成时间（秒）';
-                histogramEl.appendChild(xLabel);
+                // 图表边距
+                const marginLeft = 60;
+                const marginRight = 30;
+                const marginTop = 30;
+                const marginBottom = 50;
 
-                // 添加坐标轴
-                const axis = document.createElement('div');
-                axis.className = 'histogram-axis';
-                histogramEl.appendChild(axis);
+                const chartWidth = canvas.width - marginLeft - marginRight;
+                const chartHeight = canvas.height - marginTop - marginBottom;
 
-                // 添加直方图条
-                params.ranges.forEach(item => {
-                    const barContainer = document.createElement('div');
-                    barContainer.className = 'histogram-bar-container';
-                    barContainer.style.height = '100%';
-                    barContainer.style.display = 'flex';
-                    barContainer.style.flexDirection = 'column';
-                    barContainer.style.justifyContent = 'flex-end';
-                    barContainer.style.alignItems = 'center';
+                // 计算最大频数
+                const maxFrequency = Math.max(...params.ranges.map(r => r.frequency));
+                // Y轴最大值（向上取整到偶数）
+                const yMax = Math.ceil(maxFrequency / 2) * 2 + 2;
 
-                    const bar = document.createElement('div');
-                    bar.className = 'histogram-bar';
-                    const heightPercent = (item.frequency / maxFreq) * 80;
-                    bar.style.height = `${heightPercent}%`;
-                    const relativeFreq = item.frequency / params.totalStudents;
-                    bar.title = `范围: ${item.min}-${item.max}秒, 频率: ${item.frequency}, 相对频率: ${relativeFreq.toFixed(2)}`;
+                // 绘制背景
+                ctx.fillStyle = '#f5f9ff';
+                ctx.fillRect(marginLeft, marginTop, chartWidth, chartHeight);
 
-                    // 添加悬停效果
-                    bar.addEventListener('mouseenter', function() {
-                        this.style.background = 'linear-gradient(to top, #228be6, #1c7ed6)';
-                    });
+                // 绘制网格线和Y轴刻度
+                ctx.strokeStyle = '#ddd';
+                ctx.lineWidth = 1;
+                ctx.fillStyle = '#333';
+                ctx.font = '12px Arial';
+                ctx.textAlign = 'right';
 
-                    bar.addEventListener('mouseleave', function() {
-                        this.style.background = 'linear-gradient(to top, #4dabf7, #339af0)';
-                    });
+                const ySteps = yMax / 2;
 
-                    const value = document.createElement('div');
-                    value.className = 'histogram-value';
-                    value.textContent = item.frequency;
+                for (let i = 0; i <= ySteps; i++) {
+                    const y = marginTop + chartHeight - (i / ySteps) * chartHeight;
+                    const value = i * 2;
 
-                    const label = document.createElement('div');
-                    label.className = 'histogram-label';
-                    label.textContent = `${item.min}-${item.max}`;
+                    // 网格线
+                    ctx.beginPath();
+                    ctx.moveTo(marginLeft, y);
+                    ctx.lineTo(marginLeft + chartWidth, y);
+                    ctx.stroke();
 
-                    bar.appendChild(value);
-                    barContainer.appendChild(bar);
-                    barContainer.appendChild(label);
-                    histogramEl.appendChild(barContainer);
+                    // Y轴刻度值
+                    ctx.fillText(value.toString(), marginLeft - 10, y + 4);
+                }
+
+                // 绘制坐标轴
+                ctx.strokeStyle = '#333';
+                ctx.lineWidth = 2;
+
+                // Y轴
+                ctx.beginPath();
+                ctx.moveTo(marginLeft, marginTop);
+                ctx.lineTo(marginLeft, marginTop + chartHeight);
+                ctx.stroke();
+
+                // X轴
+                ctx.beginPath();
+                ctx.moveTo(marginLeft, marginTop + chartHeight);
+                ctx.lineTo(marginLeft + chartWidth, marginTop + chartHeight);
+                ctx.stroke();
+
+                // 绘制直方图条
+                const barCount = params.ranges.length;
+                const barGap = 8; // 条之间的间隙
+                const totalGapWidth = barGap * (barCount - 1);
+                const barWidth = (chartWidth - totalGapWidth) / barCount;
+
+                params.ranges.forEach((item, index) => {
+                    const barHeight = (item.frequency / yMax) * chartHeight;
+
+                    const x = marginLeft + index * (barWidth + barGap);
+                    const y = marginTop + chartHeight - barHeight;
+
+                    // 绘制条形（带圆角）
+                    const radius = 4;
+                    ctx.fillStyle = '#4dabf7';
+                    ctx.strokeStyle = '#228be6';
+                    ctx.lineWidth = 1;
+
+                    ctx.beginPath();
+                    ctx.moveTo(x + radius, y);
+                    ctx.lineTo(x + barWidth - radius, y);
+                    ctx.quadraticCurveTo(x + barWidth, y, x + barWidth, y + radius);
+                    ctx.lineTo(x + barWidth, marginTop + chartHeight);
+                    ctx.lineTo(x, marginTop + chartHeight);
+                    ctx.lineTo(x, y + radius);
+                    ctx.quadraticCurveTo(x, y, x + radius, y);
+                    ctx.closePath();
+                    ctx.fill();
+                    ctx.stroke();
+
+                    // 绘制频数标签（条上方）
+                    ctx.fillStyle = '#0052cc';
+                    ctx.font = 'bold 12px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(item.frequency.toString(), x + barWidth / 2, y - 8);
+
+                    // 绘制X轴刻度标签
+                    ctx.fillStyle = '#333';
+                    ctx.font = '11px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(item.min.toString(), x, marginTop + chartHeight + 15);
+
+                    // 最后一个条显示右边界
+                    if (index === barCount - 1) {
+                        ctx.fillText(item.max.toString(), x + barWidth, marginTop + chartHeight + 15);
+                    }
                 });
+
+                // 绘制Y轴标签
+                ctx.save();
+                ctx.translate(15, marginTop + chartHeight / 2);
+                ctx.rotate(-Math.PI / 2);
+                ctx.fillStyle = '#333';
+                ctx.font = 'bold 13px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('频数', 0, 0);
+                ctx.restore();
+
+                // 绘制X轴标签
+                ctx.fillStyle = '#333';
+                ctx.font = 'bold 13px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('完成时间（秒）', marginLeft + chartWidth / 2, canvas.height - 5);
             }
 
             function refreshParams() {
@@ -735,21 +830,12 @@
             }
 
             // ==================== 事件处理 ====================
-            const answerInput = document.getElementById('answer-input');
             const submitBtn = document.getElementById('submit-btn');
             const resetBtn = document.getElementById('reset-btn');
             const feedbackContainer = document.getElementById('feedback-container');
             const feedbackIcon = document.getElementById('feedback-icon');
             const feedbackTitle = document.getElementById('feedback-title');
             const feedbackText = document.getElementById('feedback-text');
-            const statsContainer = document.getElementById('stats-container');
-            const scoreValue = document.getElementById('score-value');
-            const attemptsValue = document.getElementById('attempts-value');
-            const accuracyValue = document.getElementById('accuracy-value');
-
-            let userScore = 0;
-            let totalAttempts = 0;
-            let correctAttempts = 0;
 
             // 刷新参数按钮
             document.getElementById('refresh-params-btn').addEventListener('click', refreshParams);
@@ -768,6 +854,7 @@
 
             // 检查答案
             function checkAnswer() {
+                const answerInput = document.getElementById('answer-input');
                 const params = questionParams[currentParamIndex];
                 const userAnswer = parseFloat(answerInput.value);
 
@@ -776,15 +863,10 @@
                     return;
                 }
 
-                totalAttempts++;
-
                 // 检查答案是否正确（允许微小误差）
                 const isCorrect = Math.abs(userAnswer - params.answer) <= 0.01;
 
                 if (isCorrect) {
-                    correctAttempts++;
-                    userScore += 10;
-
                     feedbackContainer.className = 'feedback-container feedback-correct';
                     feedbackIcon.textContent = '✓';
                     feedbackTitle.textContent = '回答正确！';
@@ -800,9 +882,6 @@
                 feedbackContainer.style.display = 'block';
                 document.getElementById('show-explanation-btn').style.display = 'inline-block';
 
-                // 更新统计数据
-                updateStats();
-
                 // 禁用提交按钮
                 submitBtn.disabled = true;
                 submitBtn.style.opacity = '0.6';
@@ -811,7 +890,8 @@
 
             // 重置答题
             function resetAnswer() {
-                answerInput.value = '';
+                const answerInput = document.getElementById('answer-input');
+                if (answerInput) answerInput.value = '';
                 feedbackContainer.style.display = 'none';
                 document.getElementById('show-explanation-btn').style.display = 'none';
                 document.getElementById('explanation').classList.remove('show');
@@ -822,31 +902,19 @@
                 submitBtn.style.cursor = 'pointer';
             }
 
-            // 更新统计数据
-            function updateStats() {
-                scoreValue.textContent = userScore;
-                attemptsValue.textContent = totalAttempts;
-
-                const accuracy = totalAttempts > 0 ? Math.round((correctAttempts / totalAttempts) * 100) : 0;
-                accuracyValue.textContent = `${accuracy}%`;
-
-                statsContainer.style.display = 'flex';
-            }
-
             // 事件监听
             submitBtn.addEventListener('click', checkAnswer);
             resetBtn.addEventListener('click', resetAnswer);
 
-            // 按Enter键提交答案
-            answerInput.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
+            // 按Enter键提交答案（使用事件委托）
+            document.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && e.target.id === 'answer-input') {
                     checkAnswer();
                 }
             });
 
             // ==================== 初始化 ====================
             renderQuestion();
-            updateStats();
         });
     </script>
 </body>

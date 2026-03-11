@@ -64,8 +64,6 @@
             gap: 40px;
         }
 
-        /* Single column layout */
-
         .section-title {
             color: #3498db;
             font-size: 1.8rem;
@@ -133,76 +131,74 @@
             display: flex;
             align-items: flex-end;
             justify-content: center;
-            height: 180px;
-            gap: 8px;
-            padding: 10px;
-            border-bottom: 2px solid #7f8c8d;
-            border-left: 2px solid #7f8c8d;
+            height: 200px;
+            gap: 2px;
+            padding: 10px 5px;
+            padding-bottom: 25px;
+            border-bottom: 2px solid #333;
+            border-left: 2px solid #333;
+            position: relative;
+            background-color: #e8f5e9;
+        }
+
+        .bar-column {
+            display: flex;
+            flex-direction: column-reverse;
+            align-items: center;
+            width: 22px;
             position: relative;
         }
 
-        .bar {
-            width: 25px;
-            background-color: #3498db;
-            border-radius: 4px 4px 0 0;
-            position: relative;
-            transition: background-color 0.3s;
-        }
-
-        .bar:hover {
-            background-color: #2980b9;
-        }
-
-        .bar-value {
-            position: absolute;
-            bottom: -25px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 0.9rem;
-            font-weight: bold;
-            color: #2c3e50;
+        .square {
+            width: 20px;
+            height: 20px;
+            background-color: #b39ddb;
+            border: 1px solid #7e57c2;
+            margin-top: 2px;
         }
 
         .bar-label {
             position: absolute;
-            top: -25px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 0.8rem;
-            color: #7f8c8d;
+            bottom: -20px;
+            font-size: 0.7rem;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .bar-column:hover .square {
+            background-color: #9575cd;
         }
 
         .options-container {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            margin: 30px 0;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin: 15px 0;
         }
 
         .option {
             background-color: white;
             border: 2px solid #e0e0e0;
-            border-radius: 12px;
-            padding: 20px;
+            border-radius: 10px;
+            padding: 12px 15px;
             cursor: pointer;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
-            gap: 15px;
-            font-size: 1.2rem;
+            gap: 10px;
+            font-size: 1rem;
             font-weight: 500;
         }
 
         .option:hover {
             border-color: #3498db;
             background-color: #f0f8ff;
-            transform: translateX(5px);
         }
 
         .option.selected {
             border-color: #3498db;
             background-color: #e3f2fd;
-            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.2);
+            box-shadow: 0 3px 10px rgba(52, 152, 219, 0.2);
         }
 
         .option.correct {
@@ -215,17 +211,22 @@
             background-color: #fadbd8;
         }
 
+        .option.disabled {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
         .option-letter {
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 40px;
-            height: 40px;
+            width: 30px;
+            height: 30px;
             background-color: #3498db;
             color: white;
             border-radius: 50%;
             font-weight: bold;
-            font-size: 1.2rem;
+            font-size: 0.9rem;
             flex-shrink: 0;
         }
 
@@ -237,18 +238,22 @@
             background-color: #e74c3c;
         }
 
+        .option-text {
+            font-size: 0.95rem;
+        }
+
         .buttons-container {
             display: flex;
             gap: 15px;
-            margin-top: 30px;
+            margin-top: 20px;
             flex-wrap: wrap;
         }
 
         .btn {
-            padding: 15px 30px;
+            padding: 12px 25px;
             border: none;
             border-radius: 10px;
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -257,7 +262,7 @@
             justify-content: center;
             gap: 10px;
             flex: 1;
-            min-width: 200px;
+            min-width: 150px;
         }
 
         .btn-primary {
@@ -267,8 +272,8 @@
 
         .btn-primary:hover {
             background-color: #2980b9;
-            transform: translateY(-3px);
-            box-shadow: 0 7px 14px rgba(52, 152, 219, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 12px rgba(52, 152, 219, 0.3);
         }
 
         .btn-secondary {
@@ -278,8 +283,8 @@
 
         .btn-secondary:hover {
             background-color: #7f8c8d;
-            transform: translateY(-3px);
-            box-shadow: 0 7px 14px rgba(149, 165, 166, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 12px rgba(149, 165, 166, 0.3);
         }
 
         .btn-success {
@@ -289,13 +294,13 @@
 
         .btn-success:hover {
             background-color: #219653;
-            transform: translateY(-3px);
-            box-shadow: 0 7px 14px rgba(39, 174, 96, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 12px rgba(39, 174, 96, 0.3);
         }
 
         .feedback-container {
-            margin-top: 30px;
-            padding: 25px;
+            margin-top: 20px;
+            padding: 20px;
             border-radius: 15px;
             background-color: #f8f9fa;
             display: none;
@@ -312,7 +317,7 @@
         }
 
         .feedback-title {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             margin-bottom: 15px;
             color: #2c3e50;
             display: flex;
@@ -330,46 +335,24 @@
 
         .explanation {
             background-color: white;
-            padding: 20px;
+            padding: 15px;
             border-radius: 10px;
-            margin-top: 20px;
+            margin-top: 15px;
             border-left: 4px solid #3498db;
         }
 
-        .stats-container {
-            display: flex;
-            justify-content: space-around;
-            margin-top: 30px;
-            padding: 20px;
-            background-color: #f8f9fa;
-            border-radius: 15px;
-            text-align: center;
-        }
-
-        .stat {
-            flex: 1;
-        }
-
-        .stat-value {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: #3498db;
-        }
-
-        .stat-label {
-            font-size: 1rem;
-            color: #7f8c8d;
-            margin-top: 5px;
+        .explanation p {
+            margin-bottom: 8px;
         }
 
         .answer-display {
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             font-weight: bold;
             text-align: center;
-            padding: 20px;
+            padding: 15px;
             background-color: #e3f2fd;
             border-radius: 10px;
-            margin: 20px 0;
+            margin: 15px 0;
             color: #2c3e50;
         }
 
@@ -393,395 +376,432 @@
             margin: 20px 0;
             border-left: 4px solid #3498db;
         }
-    </style>
 
-    <style>
-    .show-explanation-btn {
-        display: none;
-        margin: 20px auto;
-        padding: 14px 28px;
-        background: linear-gradient(135deg, #9b59b6, #8e44ad);
-        color: white;
-        border: none;
-        border-radius: 10px;
-        cursor: pointer;
-        font-size: 1.1rem;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
-    }
-    .show-explanation-btn:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
-    }
-    .explanation-section {
-        display: none;
-        margin-top: 20px;
-    }
+        #refresh-btn {
+            margin-left: 15px;
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #34a853, #2ecc71);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(52, 168, 83, 0.3);
+        }
+
+        #refresh-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(52, 168, 83, 0.4);
+        }
     </style>
-    </head>
+</head>
 <body>
     <div class="container">
         <header>
-            <h1><i class="fas fa-chart-bar"></i> 无需计算的均值比较 <button id="refresh-btn" style="margin-left: 15px; padding: 8px 16px; background: linear-gradient(135deg, #34a853, #2ecc71); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(52, 168, 83, 0.3);">刷新参数</button></h1>
+            <h1><i class="fas fa-chart-bar"></i> 无需计算的均值比较 <button id="refresh-btn">刷新题目</button></h1>
             <p class="subtitle">通过观察直方图分布比较均值大小 - 交互式学习体验</p>
         </header>
 
         <div class="content-wrapper">
             <div class="question-section">
                 <h2 class="section-title"><i class="fas fa-question-circle"></i> 题目内容</h2>
-                
+
                 <div class="question-text">
                     <div class="note">
-                        <p><strong>题目描述：</strong>四个分布，分别标记为 (a)、(b)、(c) 和 (d)，由下方的直方图表示。每个分布均由若干次测量值组成。在不进行任何计算的情况下，请对它们各自的均值 μ<sub>a</sub>、μ<sub>b</sub>、μ<sub>c</sub> 和 μ<sub>d</sub> 进行排序。</p>
+                        <p><strong>题目描述：</strong>四个分布，分别标记为 (a)、(b)、(c) 和 (d)，由下方的直方图表示。在不进行任何计算的情况下，请对它们各自的均值 μ<sub>a</sub>、μ<sub>b</sub>、μ<sub>c</sub> 和 μ<sub>d</sub> 进行排序。</p>
                     </div>
-
                     <p>本题中的直方图使用方块来表示数据集中的值及其频数。位于某个值上的方块代表一次具有该值的测量。</p>
-                    <p>将方块向右移动意味着增加某个特定的测量值，这会增加数据集的均值。</p>
                 </div>
 
                 <h2 class="section-title"><i class="fas fa-chart-bar"></i> 直方图分布</h2>
-                
-                <div class="histogram-container">
-                    <div class="histogram">
-                        <div class="histogram-title">分布 (a)</div>
-                        <div class="histogram-bars">
-                            <!-- 直方图(a)的柱状图 -->
-                            <div class="bar" style="height: 30px;"><div class="bar-label">1</div><div class="bar-value">1</div></div>
-                            <div class="bar" style="height: 50px;"><div class="bar-label">2</div><div class="bar-value">2</div></div>
-                            <div class="bar" style="height: 70px;"><div class="bar-label">3</div><div class="bar-value">3</div></div>
-                            <div class="bar" style="height: 90px;"><div class="bar-label">4</div><div class="bar-value">4</div></div>
-                            <div class="bar" style="height: 120px; background-color: #e74c3c;"><div class="bar-label">5→7</div><div class="bar-value">7</div></div>
-                            <div class="bar" style="height: 90px;"><div class="bar-label">6</div><div class="bar-value">6</div></div>
-                            <div class="bar" style="height: 70px;"><div class="bar-label">7</div><div class="bar-value">7</div></div>
-                            <div class="bar" style="height: 50px;"><div class="bar-label">8</div><div class="bar-value">8</div></div>
-                            <div class="bar" style="height: 30px;"><div class="bar-label">9</div><div class="bar-value">9</div></div>
-                            <div class="bar" style="height: 40px;"><div class="bar-label">10</div><div class="bar-value">10</div></div>
-                        </div>
-                    </div>
-                    
-                    <div class="histogram">
-                        <div class="histogram-title">分布 (b)</div>
-                        <div class="histogram-bars">
-                            <!-- 直方图(b)的柱状图 -->
-                            <div class="bar" style="height: 30px;"><div class="bar-label">1</div><div class="bar-value">1</div></div>
-                            <div class="bar" style="height: 50px;"><div class="bar-label">2</div><div class="bar-value">2</div></div>
-                            <div class="bar" style="height: 70px;"><div class="bar-label">3</div><div class="bar-value">3</div></div>
-                            <div class="bar" style="height: 90px;"><div class="bar-label">4</div><div class="bar-value">4</div></div>
-                            <div class="bar" style="height: 100px;"><div class="bar-label">5</div><div class="bar-value">5</div></div>
-                            <div class="bar" style="height: 90px;"><div class="bar-label">6</div><div class="bar-value">6</div></div>
-                            <div class="bar" style="height: 70px;"><div class="bar-label">7</div><div class="bar-value">7</div></div>
-                            <div class="bar" style="height: 50px;"><div class="bar-label">8</div><div class="bar-value">8</div></div>
-                            <div class="bar" style="height: 30px;"><div class="bar-label">9</div><div class="bar-value">9</div></div>
-                            <div class="bar" style="height: 40px;"><div class="bar-label">10</div><div class="bar-value">10</div></div>
-                        </div>
-                    </div>
-                    
-                    <div class="histogram">
-                        <div class="histogram-title">分布 (c)</div>
-                        <div class="histogram-bars">
-                            <!-- 直方图(c)的柱状图 -->
-                            <div class="bar" style="height: 30px;"><div class="bar-label">1</div><div class="bar-value">1</div></div>
-                            <div class="bar" style="height: 50px;"><div class="bar-label">2</div><div class="bar-value">2</div></div>
-                            <div class="bar" style="height: 70px;"><div class="bar-label">3</div><div class="bar-value">3</div></div>
-                            <div class="bar" style="height: 90px;"><div class="bar-label">4</div><div class="bar-value">4</div></div>
-                            <div class="bar" style="height: 120px; background-color: #e74c3c;"><div class="bar-label">5→7</div><div class="bar-value">7</div></div>
-                            <div class="bar" style="height: 90px;"><div class="bar-label">6</div><div class="bar-value">6</div></div>
-                            <div class="bar" style="height: 70px;"><div class="bar-label">7</div><div class="bar-value">7</div></div>
-                            <div class="bar" style="height: 50px;"><div class="bar-label">8</div><div class="bar-value">8</div></div>
-                            <div class="bar" style="height: 30px;"><div class="bar-label">9</div><div class="bar-value">9</div></div>
-                            <div class="bar" style="height: 60px; background-color: #f39c12;"><div class="bar-label">10→12</div><div class="bar-value">12</div></div>
-                        </div>
-                    </div>
-                    
-                    <div class="histogram">
-                        <div class="histogram-title">分布 (d)</div>
-                        <div class="histogram-bars">
-                            <!-- 直方图(d)的柱状图 -->
-                            <div class="bar" style="height: 30px;"><div class="bar-label">1</div><div class="bar-value">1</div></div>
-                            <div class="bar" style="height: 50px;"><div class="bar-label">2</div><div class="bar-value">2</div></div>
-                            <div class="bar" style="height: 50px; background-color: #27ae60;"><div class="bar-label">3→2</div><div class="bar-value">2</div></div>
-                            <div class="bar" style="height: 90px;"><div class="bar-label">4</div><div class="bar-value">4</div></div>
-                            <div class="bar" style="height: 100px;"><div class="bar-label">5</div><div class="bar-value">5</div></div>
-                            <div class="bar" style="height: 90px;"><div class="bar-label">6</div><div class="bar-value">6</div></div>
-                            <div class="bar" style="height: 70px;"><div class="bar-label">7</div><div class="bar-value">7</div></div>
-                            <div class="bar" style="height: 50px;"><div class="bar-label">8</div><div class="bar-value">8</div></div>
-                            <div class="bar" style="height: 30px;"><div class="bar-label">9</div><div class="bar-value">9</div></div>
-                            <div class="bar" style="height: 40px;"><div class="bar-label">10</div><div class="bar-value">10</div></div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="note">
-                    <p><strong>提示：</strong>请注意，除了少数几个被向左或向右移动的方块（测量值）外，题目中的直方图几乎完全相同。</p>
-                    <p>例如，直方图 (b) 是通过将直方图 (d) 中的测量值 3 增加到 (b) 中的 4 而得到的。因此，(b) 的均值大于 (d) 的均值。</p>
-                    <p>类似地，(a) 是通过将 (b) 中的测量值 5 增加两个单位而得到的。因此，(a) 的均值大于 (b) 的均值。</p>
-                    <p>最后，我们看到 (c) 可以通过将 (a) 中的一个测量值 10 增加两个单位而得到。这意味着 μ<sub>a</sub> < μ<sub>c</sub>。</p>
+
+                <div class="histogram-container" id="histogramContainer">
+                    <!-- 直方图将由JavaScript动态生成 -->
                 </div>
             </div>
 
             <div class="interaction-section">
-                <h2 class="section-title"><i class="fas fa-tasks"></i> 答题区域</h2>
-                
-                <div class="answer-display">
+                <div class="answer-display" id="answerDisplay">
                     请选择正确的均值排序：
                 </div>
-                
-                <div class="options-container">
-                    <div class="option" data-option="A">
-                        <div class="option-letter">A</div>
-                        <div class="option-text">μ<sub>d</sub> < μ<sub>b</sub> < μ<sub>a</sub> < μ<sub>c</sub></div>
-                    </div>
-                    
-                    <div class="option" data-option="B">
-                        <div class="option-letter">B</div>
-                        <div class="option-text">μ<sub>a</sub> < μ<sub>b</sub> < μ<sub>c</sub> < μ<sub>d</sub></div>
-                    </div>
-                    
-                    <div class="option" data-option="C">
-                        <div class="option-letter">C</div>
-                        <div class="option-text">μ<sub>c</sub> < μ<sub>a</sub> < μ<sub>b</sub> < μ<sub>d</sub></div>
-                    </div>
-                    
-                    <div class="option" data-option="D">
-                        <div class="option-letter">D</div>
-                        <div class="option-text">μ<sub>b</sub> < μ<sub>d</sub> < μ<sub>a</sub> < μ<sub>c</sub></div>
-                    </div>
+
+                <div class="options-container" id="optionsContainer">
+                    <!-- 选项将由JavaScript动态生成 -->
                 </div>
-                
+
                 <div class="buttons-container">
-                    <button class="btn btn-primary" id="submitBtn">
+                    <button class="btn btn-primary" id="submitBtn" type="button">
                         <i class="fas fa-paper-plane"></i> 提交答案
                     </button>
-                    
-                    <button class="btn btn-secondary" id="resetBtn">
-                        <i class="fas fa-redo"></i> 重新作答
-                    </button>
-                    
-                    <button class="btn btn-success" id="showAnswerBtn">
-                        <i class="fas fa-lightbulb"></i> 显示答案
-                    </button>
                 </div>
-                
+
                 <div class="feedback-container" id="feedbackContainer">
-                    <div class="feedback-title" id="feedbackTitle">
-                        <i class="fas fa-check-circle"></i> 回答正确！
-                    </div>
-                    <div id="feedbackText">
-                        <p>您的答案是正确的！</p>
-                        <div class="explanation">
-                            <p><strong>解析：</strong></p>
-                            <p>1. 比较 (d) 和 (b)：直方图 (b) 是通过将直方图 (d) 中的测量值 3 增加到 (b) 中的 4 而得到的。因此，<span class="math">μ<sub>d</sub> < μ<sub>b</sub></span>。</p>
-                            <p>2. 比较 (b) 和 (a)：直方图 (a) 是通过将 (b) 中的测量值 5 增加两个单位而得到的。因此，<span class="math">μ<sub>b</sub> < μ<sub>a</sub></span>。</p>
-                            <p>3. 结合以上两点：<span class="math">μ<sub>d</sub> < μ<sub>b</sub> < μ<sub>a</sub></span>。</p>
-                            <p>4. 比较 (a) 和 (c)：直方图 (c) 可以通过将 (a) 中的一个测量值 10 增加两个单位而得到。因此，<span class="math">μ<sub>a</sub> < μ<sub>c</sub></span>。</p>
-                            <p>5. 最终排序：<span class="math highlight">μ<sub>d</sub> < μ<sub>b</sub> < μ<sub>a</sub> < μ<sub>c</sub></span>。</p>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="stats-container">
-                    <div class="stat">
-                        <div class="stat-value" id="scoreValue">0</div>
-                        <div class="stat-label">得分</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-value" id="attemptsValue">0</div>
-                        <div class="stat-label">尝试次数</div>
-                    </div>
-                    <div class="stat">
-                        <div class="stat-value" id="accuracyValue">0%</div>
-                        <div class="stat-label">正确率</div>
-                    </div>
+                    <div class="feedback-title" id="feedbackTitle"></div>
+                    <div id="feedbackText"></div>
                 </div>
             </div>
         </div>
-        
-        
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // 20组数据集，每组包含4个分布(a,b,c,d)
+            const dataSets = [
+                {
+                    a: [4, 4, 7, 7, 7, 7, 9, 10, 10, 10, 10],
+                    b: [4, 4, 5, 7, 7, 7, 9, 10, 10, 10, 10],
+                    c: [4, 4, 7, 7, 7, 7, 9, 10, 10, 10, 12],
+                    d: [3, 4, 4, 5, 7, 7, 7, 9, 10, 10, 10, 10],
+                    hints: ["(d)中有一个3变成了(b)中的4", "(b)中有一个5变成了(a)中的7", "(a)中有一个10变成了(c)中的12"]
+                },
+                {
+                    a: [2, 2, 3, 3, 4, 4, 5],
+                    b: [2, 2, 3, 3, 3, 4, 5],
+                    c: [2, 2, 3, 3, 4, 4, 6],
+                    d: [1, 2, 2, 3, 3, 3, 4, 5],
+                    hints: ["(d)中有一个1变成了(b)中的2", "(b)中有一个3变成了(a)中的4", "(a)中有一个5变成了(c)中的6"]
+                },
+                {
+                    a: [8, 8, 9, 9, 10, 10, 11],
+                    b: [8, 8, 9, 9, 9, 10, 11],
+                    c: [8, 8, 9, 9, 10, 10, 12],
+                    d: [7, 8, 8, 9, 9, 9, 10, 11],
+                    hints: ["(d)中有一个7变成了(b)中的8", "(b)中有一个9变成了(a)中的10", "(a)中有一个11变成了(c)中的12"]
+                },
+                {
+                    a: [5, 5, 6, 6, 7, 7, 8, 8, 9],
+                    b: [5, 5, 6, 6, 6, 7, 8, 8, 9],
+                    c: [5, 5, 6, 6, 7, 7, 8, 8, 10],
+                    d: [4, 5, 5, 6, 6, 6, 7, 8, 8, 9],
+                    hints: ["(d)中有一个4变成了(b)中的5", "(b)中有一个6变成了(a)中的7", "(a)中有一个9变成了(c)中的10"]
+                },
+                {
+                    a: [3, 3, 3, 7, 7, 7, 7, 11, 11],
+                    b: [3, 3, 3, 6, 7, 7, 7, 11, 11],
+                    c: [3, 3, 3, 7, 7, 7, 7, 11, 12],
+                    d: [2, 3, 3, 3, 6, 7, 7, 7, 11, 11],
+                    hints: ["(d)中有一个2变成了(b)中的3", "(b)中有一个6变成了(a)中的7", "(a)中有一个11变成了(c)中的12"]
+                },
+                {
+                    a: [4, 5, 6, 7, 8, 9, 10, 11, 12],
+                    b: [4, 5, 6, 7, 7, 9, 10, 11, 12],
+                    c: [4, 5, 6, 7, 8, 9, 10, 11, 13],
+                    d: [3, 4, 5, 6, 7, 7, 9, 10, 11, 12],
+                    hints: ["(d)中有一个3变成了(b)中的4", "(b)中有一个7变成了(a)中的8", "(a)中有一个12变成了(c)中的13"]
+                },
+                {
+                    a: [2, 2, 3, 3, 3, 4, 4, 5, 5],
+                    b: [2, 2, 3, 3, 3, 3, 4, 5, 5],
+                    c: [2, 2, 3, 3, 3, 4, 4, 5, 6],
+                    d: [1, 2, 2, 3, 3, 3, 3, 4, 5, 5],
+                    hints: ["(d)中有一个1变成了(b)中的2", "(b)中有一个3变成了(a)中的4", "(a)中有一个5变成了(c)中的6"]
+                },
+                {
+                    a: [7, 8, 9, 9, 10, 10, 11, 12, 13],
+                    b: [7, 8, 9, 9, 9, 10, 11, 12, 13],
+                    c: [7, 8, 9, 9, 10, 10, 11, 12, 14],
+                    d: [6, 7, 8, 9, 9, 9, 10, 11, 12, 13],
+                    hints: ["(d)中有一个6变成了(b)中的7", "(b)中有一个9变成了(a)中的10", "(a)中有一个13变成了(c)中的14"]
+                },
+                {
+                    a: [5, 5, 6, 6, 6, 7, 7],
+                    b: [5, 5, 5, 6, 6, 7, 7],
+                    c: [5, 5, 6, 6, 6, 7, 8],
+                    d: [4, 5, 5, 5, 6, 6, 7, 7],
+                    hints: ["(d)中有一个4变成了(b)中的5", "(b)中有一个5变成了(a)中的6", "(a)中有一个7变成了(c)中的8"]
+                },
+                {
+                    a: [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                    b: [5, 6, 7, 8, 8, 10, 11, 12, 13, 14, 15],
+                    c: [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16],
+                    d: [4, 5, 6, 7, 8, 8, 10, 11, 12, 13, 14, 15],
+                    hints: ["(d)中有一个4变成了(b)中的5", "(b)中有一个8变成了(a)中的9", "(a)中有一个15变成了(c)中的16"]
+                },
+                {
+                    a: [6, 6, 7, 7, 7, 8, 8, 9, 9],
+                    b: [6, 6, 7, 7, 7, 7, 8, 9, 9],
+                    c: [6, 6, 7, 7, 7, 8, 8, 9, 10],
+                    d: [5, 6, 6, 7, 7, 7, 7, 8, 9, 9],
+                    hints: ["(d)中有一个5变成了(b)中的6", "(b)中有一个7变成了(a)中的8", "(a)中有一个9变成了(c)中的10"]
+                },
+                {
+                    a: [2, 4, 6, 8, 10, 12, 14],
+                    b: [2, 4, 6, 8, 8, 12, 14],
+                    c: [2, 4, 6, 8, 10, 12, 15],
+                    d: [1, 2, 4, 6, 8, 8, 12, 14],
+                    hints: ["(d)中有一个1变成了(b)中的2", "(b)中有一个8变成了(a)中的10", "(a)中有一个14变成了(c)中的15"]
+                },
+                {
+                    a: [4, 5, 6, 6, 6, 6, 7, 8, 9],
+                    b: [4, 5, 6, 6, 6, 6, 6, 8, 9],
+                    c: [4, 5, 6, 6, 6, 6, 7, 8, 10],
+                    d: [3, 4, 5, 6, 6, 6, 6, 6, 8, 9],
+                    hints: ["(d)中有一个3变成了(b)中的4", "(b)中有一个6变成了(a)中的7", "(a)中有一个9变成了(c)中的10"]
+                },
+                {
+                    a: [3, 4, 5, 6, 7, 8, 9, 10, 11],
+                    b: [3, 4, 5, 6, 6, 8, 9, 10, 11],
+                    c: [3, 4, 5, 6, 7, 8, 9, 10, 12],
+                    d: [2, 3, 4, 5, 6, 6, 8, 9, 10, 11],
+                    hints: ["(d)中有一个2变成了(b)中的3", "(b)中有一个6变成了(a)中的7", "(a)中有一个11变成了(c)中的12"]
+                },
+                {
+                    a: [4, 5, 6, 7, 8, 8, 9, 10, 11],
+                    b: [4, 5, 6, 7, 7, 8, 9, 10, 11],
+                    c: [4, 5, 6, 7, 8, 8, 9, 10, 12],
+                    d: [3, 4, 5, 6, 7, 7, 8, 9, 10, 11],
+                    hints: ["(d)中有一个3变成了(b)中的4", "(b)中有一个7变成了(a)中的8", "(a)中有一个11变成了(c)中的12"]
+                },
+                {
+                    a: [2, 2, 5, 5, 8, 8, 11, 11],
+                    b: [2, 2, 5, 5, 7, 8, 11, 11],
+                    c: [2, 2, 5, 5, 8, 8, 11, 12],
+                    d: [1, 2, 2, 5, 5, 7, 8, 11, 11],
+                    hints: ["(d)中有一个1变成了(b)中的2", "(b)中有一个7变成了(a)中的8", "(a)中有一个11变成了(c)中的12"]
+                },
+                {
+                    a: [7, 7, 8, 8, 8, 9, 9, 10, 10],
+                    b: [7, 7, 8, 8, 8, 8, 9, 10, 10],
+                    c: [7, 7, 8, 8, 8, 9, 9, 10, 11],
+                    d: [6, 7, 7, 8, 8, 8, 8, 9, 10, 10],
+                    hints: ["(d)中有一个6变成了(b)中的7", "(b)中有一个8变成了(a)中的9", "(a)中有一个10变成了(c)中的11"]
+                },
+                {
+                    a: [1, 3, 5, 7, 9, 11, 13, 15],
+                    b: [1, 3, 5, 7, 7, 11, 13, 15],
+                    c: [1, 3, 5, 7, 9, 11, 13, 16],
+                    d: [0, 1, 3, 5, 7, 7, 11, 13, 15],
+                    hints: ["(d)中有一个0变成了(b)中的1", "(b)中有一个7变成了(a)中的9", "(a)中有一个15变成了(c)中的16"]
+                },
+                {
+                    a: [5, 5, 5, 6, 6, 6, 7, 7, 7],
+                    b: [5, 5, 5, 6, 6, 6, 6, 7, 7],
+                    c: [5, 5, 5, 6, 6, 6, 7, 7, 8],
+                    d: [4, 5, 5, 5, 6, 6, 6, 6, 7, 7],
+                    hints: ["(d)中有一个4变成了(b)中的5", "(b)中有一个6变成了(a)中的7", "(a)中有一个7变成了(c)中的8"]
+                },
+                {
+                    a: [2, 5, 8, 11, 14, 17, 20],
+                    b: [2, 5, 8, 11, 11, 17, 20],
+                    c: [2, 5, 8, 11, 14, 17, 21],
+                    d: [1, 2, 5, 8, 11, 11, 17, 20],
+                    hints: ["(d)中有一个1变成了(b)中的2", "(b)中有一个11变成了(a)中的14", "(a)中有一个20变成了(c)中的21"]
+                }
+            ];
 
-            // 显示答案解析按钮点击事件
-            document.querySelectorAll('.show-explanation-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    var questionId = this.getAttribute('data-question') || this.id;
-                    var explanation;
-                    if (questionId) {
-                        explanation = this.nextElementSibling;
-                    }
-                    if (explanation) {
-                        if (explanation.classList.contains('show')) {
-                            explanation.classList.remove('show');
-                            this.textContent = '查看答案解析';
-                        } else {
-                            explanation.classList.add('show');
-                            this.textContent = '隐藏答案解析';
-                        }
-                    }
-                });
-            });
-
-            // 初始化变量
+            let currentDataSetIndex = -1;
+            let currentData = null;
+            let correctAnswer = '';
             let selectedOption = null;
-            let score = 0;
-            let attempts = 0;
-            let correctAttempts = 0;
-            
-            // 获取DOM元素
-            const options = document.querySelectorAll('.option');
+            let isAnswered = false;
+
+            const histogramContainer = document.getElementById('histogramContainer');
+            const optionsContainer = document.getElementById('optionsContainer');
+            const answerDisplay = document.getElementById('answerDisplay');
             const submitBtn = document.getElementById('submitBtn');
-            const resetBtn = document.getElementById('resetBtn');
-            const showAnswerBtn = document.getElementById('showAnswerBtn');
             const feedbackContainer = document.getElementById('feedbackContainer');
             const feedbackTitle = document.getElementById('feedbackTitle');
             const feedbackText = document.getElementById('feedbackText');
-            const scoreValue = document.getElementById('scoreValue');
-            const attemptsValue = document.getElementById('attemptsValue');
-            const accuracyValue = document.getElementById('accuracyValue');
-            const answerDisplay = document.querySelector('.answer-display');
-            
-            // 正确答案
-            const correctAnswer = 'A';
-            
-            // 更新统计信息
-            function updateStats() {
-                scoreValue.textContent = score;
-                attemptsValue.textContent = attempts;
-                const accuracy = attempts > 0 ? Math.round((correctAttempts / attempts) * 100) : 0;
-                accuracyValue.textContent = `${accuracy}%`;
+            const refreshBtn = document.getElementById('refresh-btn');
+
+            function calculateMean(arr) {
+                return arr.reduce((a, b) => a + b, 0) / arr.length;
             }
-            
-            // 选项点击事件
-            options.forEach(option => {
-                option.addEventListener('click', function() {
-                    // 移除之前的选择
-                    options.forEach(opt => {
-                        opt.classList.remove('selected');
-                    });
-                    
-                    // 设置当前选择
-                    this.classList.add('selected');
-                    selectedOption = this.getAttribute('data-option');
-                    
-                    // 更新答案显示
-                    answerDisplay.innerHTML = `当前选择: <span class="highlight">选项 ${selectedOption}</span> - ${this.querySelector('.option-text').innerHTML}`;
+
+            function getXRange(data) {
+                const allValues = [...data.a, ...data.b, ...data.c, ...data.d];
+                return {
+                    min: Math.min(...allValues),
+                    max: Math.max(...allValues)
+                };
+            }
+
+            function generateHistogramHTML(values, title) {
+                const frequency = {};
+                values.forEach(v => {
+                    frequency[v] = (frequency[v] || 0) + 1;
                 });
-            });
-            
-            // 提交答案
+
+                const range = getXRange(currentData);
+                let html = `<div class="histogram">
+                    <div class="histogram-title">${title}</div>
+                    <div class="histogram-bars">`;
+
+                for (let i = range.min; i <= range.max; i++) {
+                    const count = frequency[i] || 0;
+                    html += `<div class="bar-column">`;
+                    for (let j = 0; j < count; j++) {
+                        html += `<div class="square"></div>`;
+                    }
+                    html += `<div class="bar-label">${i}</div></div>`;
+                }
+
+                html += `</div></div>`;
+                return html;
+            }
+
+            function generateOptionsHTML(order) {
+                // 正确的排序
+                const correctText = `μ<sub>${order[0]}</sub> < μ<sub>${order[1]}</sub> < μ<sub>${order[2]}</sub> < μ<sub>${order[3]}</sub>`;
+
+                // 生成3个错误的排序（打乱顺序）
+                const wrongOrderings = [
+                    `μ<sub>${order[3]}</sub> < μ<sub>${order[2]}</sub> < μ<sub>${order[1]}</sub> < μ<sub>${order[0]}</sub>`,
+                    `μ<sub>${order[1]}</sub> < μ<sub>${order[0]}</sub> < μ<sub>${order[3]}</sub> < μ<sub>${order[2]}</sub>`,
+                    `μ<sub>${order[2]}</sub> < μ<sub>${order[3]}</sub> < μ<sub>${order[0]}</sub> < μ<sub>${order[1]}</sub>`,
+                    `μ<sub>${order[0]}</sub> < μ<sub>${order[2]}</sub> < μ<sub>${order[1]}</sub> < μ<sub>${order[3]}</sub>`,
+                    `μ<sub>${order[1]}</sub> < μ<sub>${order[2]}</sub> < μ<sub>${order[0]}</sub> < μ<sub>${order[3]}</sub>`
+                ];
+
+                // 随机选择3个错误的排序
+                const shuffledWrong = wrongOrderings.sort(() => Math.random() - 0.5).slice(0, 3);
+
+                // 将正确答案和错误答案放在一起
+                const allOptions = [correctText, ...shuffledWrong];
+
+                // Fisher-Yates 洗牌算法打乱所有选项
+                for (let i = allOptions.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [allOptions[i], allOptions[j]] = [allOptions[j], allOptions[i]];
+                }
+
+                // 找到正确答案的位置（A, B, C, D）
+                const labels = ['A', 'B', 'C', 'D'];
+                correctAnswer = labels[allOptions.indexOf(correctText)];
+
+                let html = '';
+                allOptions.forEach((text, index) => {
+                    html += `<div class="option" data-option="${labels[index]}">
+                        <div class="option-letter">${labels[index]}</div>
+                        <div class="option-text">${text}</div>
+                    </div>`;
+                });
+
+                return html;
+            }
+
+            function generateExplanation() {
+                const means = {
+                    a: calculateMean(currentData.a).toFixed(2),
+                    b: calculateMean(currentData.b).toFixed(2),
+                    c: calculateMean(currentData.c).toFixed(2),
+                    d: calculateMean(currentData.d).toFixed(2)
+                };
+
+                const sorted = Object.entries(means).sort((a, b) => parseFloat(a[1]) - parseFloat(b[1]));
+                const order = sorted.map(s => s[0]);
+
+                let explanation = `<div class="explanation">
+                    <p><strong>各分布均值：</strong></p>
+                    <p>μ<sub>a</sub> = ${means.a}, μ<sub>b</sub> = ${means.b}, μ<sub>c</sub> = ${means.c}, μ<sub>d</sub> = ${means.d}</p>
+                    <p><strong>比较分析：</strong></p>`;
+
+                currentData.hints.forEach((hint, i) => {
+                    explanation += `<p>${i + 1}. ${hint}</p>`;
+                });
+
+                explanation += `<p><strong>最终排序：</strong><span class="math highlight">μ<sub>${order[0]}</sub> < μ<sub>${order[1]}</sub> < μ<sub>${order[2]}</sub> < μ<sub>${order[3]}</sub></span></p>
+                </div>`;
+
+                return explanation;
+            }
+
+            function initNewQuestion() {
+                let newIndex;
+                do {
+                    newIndex = Math.floor(Math.random() * dataSets.length);
+                } while (newIndex === currentDataSetIndex && dataSets.length > 1);
+                currentDataSetIndex = newIndex;
+                currentData = dataSets[currentDataSetIndex];
+
+                const means = {
+                    a: calculateMean(currentData.a),
+                    b: calculateMean(currentData.b),
+                    c: calculateMean(currentData.c),
+                    d: calculateMean(currentData.d)
+                };
+                const sorted = Object.entries(means).sort((a, b) => a[1] - b[1]);
+                const order = sorted.map(s => s[0]);
+
+                histogramContainer.innerHTML = `
+                    ${generateHistogramHTML(currentData.d, '(d)')}
+                    ${generateHistogramHTML(currentData.b, '(b)')}
+                    ${generateHistogramHTML(currentData.a, '(a)')}
+                    ${generateHistogramHTML(currentData.c, '(c)')}
+                `;
+
+                optionsContainer.innerHTML = generateOptionsHTML(order);
+
+                selectedOption = null;
+                isAnswered = false;
+                feedbackContainer.classList.remove('show');
+                answerDisplay.innerHTML = '请选择正确的均值排序：';
+                submitBtn.disabled = false;
+
+                bindOptionEvents();
+            }
+
+            function bindOptionEvents() {
+                const options = document.querySelectorAll('.option');
+                options.forEach(option => {
+                    option.addEventListener('click', function() {
+                        if (isAnswered) return;
+
+                        options.forEach(opt => opt.classList.remove('selected'));
+                        this.classList.add('selected');
+                        selectedOption = this.getAttribute('data-option');
+
+                        const optionText = this.querySelector('.option-text').innerHTML;
+                        answerDisplay.innerHTML = `当前选择: <span class="highlight">选项 ${selectedOption}</span> - ${optionText}`;
+                    });
+                });
+            }
+
             submitBtn.addEventListener('click', function() {
                 if (!selectedOption) {
                     alert('请先选择一个答案！');
                     return;
                 }
-                
-                attempts++;
-                
-                // 检查答案
+                if (isAnswered) return;
+
+                isAnswered = true;
+
                 const isCorrect = selectedOption === correctAnswer;
-                
-                // 更新分数
-                if (isCorrect) {
-                    score += 10;
-                    correctAttempts++;
-                }
-                
-                // 显示反馈
+
                 feedbackContainer.classList.add('show');
-                
+
                 if (isCorrect) {
                     feedbackTitle.innerHTML = '<i class="fas fa-check-circle"></i> 回答正确！';
                     feedbackTitle.className = 'feedback-title correct';
-                    
-                    feedbackText.innerHTML = `
-                        <p>您的答案是正确的！</p>
-                        <div class="explanation">
-                            <p><strong>解析：</strong></p>
-                            <p>1. 比较 (d) 和 (b)：直方图 (b) 是通过将直方图 (d) 中的测量值 3 增加到 (b) 中的 4 而得到的。因此，<span class="math">μ<sub>d</sub> < μ<sub>b</sub></span>。</p>
-                            <p>2. 比较 (b) 和 (a)：直方图 (a) 是通过将 (b) 中的测量值 5 增加两个单位而得到的。因此，<span class="math">μ<sub>b</sub> < μ<sub>a</sub></span>。</p>
-                            <p>3. 结合以上两点：<span class="math">μ<sub>d</sub> < μ<sub>b</sub> < μ<sub>a</sub></span>。</p>
-                            <p>4. 比较 (a) 和 (c)：直方图 (c) 可以通过将 (a) 中的一个测量值 10 增加两个单位而得到。因此，<span class="math">μ<sub>a</sub> < μ<sub>c</sub></span>。</p>
-                            <p>5. 最终排序：<span class="math highlight">μ<sub>d</sub> < μ<sub>b</sub> < μ<sub>a</sub> < μ<sub>c</sub></span>。</p>
-                        </div>
-                    `;
+                    feedbackText.innerHTML = `<p>您的答案是正确的！</p>${generateExplanation()}`;
                 } else {
                     feedbackTitle.innerHTML = '<i class="fas fa-times-circle"></i> 回答错误！';
                     feedbackTitle.className = 'feedback-title incorrect';
-                    
-                    feedbackText.innerHTML = `
-                        <p>您选择的选项 ${selectedOption} 不正确。</p>
-                        <div class="explanation">
-                            <p><strong><sub>d</sub> < μ<sub>b</sub> < μ<sub>a</sub> < μ<sub>c</sub></strong></p>
-                            <p><strong>解析：</strong></p>
-                            <p>1. 比较 (d) 和 (b)：直方图 (b) 是通过将直方图 (d) 中的测量值 3 增加到 (b) 中的 4 而得到的。因此，<span class="math">μ<sub>d</sub> < μ<sub>b</sub></span>。</p>
-                            <p>2. 比较 (b) 和 (a)：直方图 (a) 是通过将 (b) 中的测量值 5 增加两个单位而得到的。因此，<span class="math">μ<sub>b</sub> < μ<sub>a</sub></span>。</p>
-                            <p>3. 结合以上两点：<span class="math">μ<sub>d</sub> < μ<sub>b</sub> < μ<sub>a</sub></span>。</p>
-                            <p>4. 比较 (a) 和 (c)：直方图 (c) 可以通过将 (a) 中的一个测量值 10 增加两个单位而得到。因此，<span class="math">μ<sub>a</sub> < μ<sub>c</sub></span>。</p>
-                            <p>5. 最终排序：<span class="math highlight">μ<sub>d</sub> < μ<sub>b</sub> < μ<sub>a</sub> < μ<sub>c</sub></span>。</p>
-                        </div>
-                    `;
+                    feedbackText.innerHTML = `<p>您选择的选项 ${selectedOption} 不正确。正确答案是选项 ${correctAnswer}。</p>${generateExplanation()}`;
                 }
-                
-                // 高亮显示正确和错误答案
+
+                const options = document.querySelectorAll('.option');
                 options.forEach(option => {
+                    option.classList.add('disabled');
                     const optionLetter = option.getAttribute('data-option');
                     if (optionLetter === correctAnswer) {
                         option.classList.add('correct');
-                    } else if (optionLetter === selectedOption && optionLetter !== correctAnswer) {
+                    } else if (optionLetter === selectedOption) {
                         option.classList.add('incorrect');
                     }
                 });
-                
-                // 更新统计信息
-                updateStats();
-                
-                // 禁用提交按钮
-                submitBtn.disabled = true;
             });
-            
-            // 重新作答
-            resetBtn.addEventListener('click', function() {
-                // 重置选择
-                selectedOption = null;
-                options.forEach(option => {
-                    option.classList.remove('selected', 'correct', 'incorrect');
+
+            if (refreshBtn) {
+                refreshBtn.addEventListener('click', function() {
+                    initNewQuestion();
                 });
-                
-                // 隐藏反馈
-                feedbackContainer.classList.remove('show');
-                
-                // 重置答案显示
-                answerDisplay.textContent = '请选择正确的均值排序：';
-                
-                // 启用提交按钮
-                submitBtn.disabled = false;
-            });
-            
-            // 显示答案
-            showAnswerBtn.addEventListener('click', function() {
-                // 自动选择正确答案
-                options.forEach(option => {
-                    option.classList.remove('selected', 'correct', 'incorrect');
-                    const optionLetter = option.getAttribute('data-option');
-                    if (optionLetter === correctAnswer) {
-                        option.classList.add('selected', 'correct');
-                        selectedOption = correctAnswer;
-                    }
-                });
-                
-                // 更新答案显示
-                const correctOptionText = document.querySelector(`.option[data-option="${correctAnswer}"] .option-text`).innerHTML;
-                answerDisplay.innerHTML = `正确答案: <span class="highlight">选项 ${correctAnswer}</span> - ${correctOptionText}`;
-                
-                // 显示反馈
-                feedbackContainer.classList.add('show');
-                feedbackTitle.innerHTML = '<i class="fas fa-lightbulb"></i> 正确答案';
-                feedbackTitle.className = 'feedback-title correct';
-                
-                feedbackText.innerHTML = `
-                    <p><sub>d</sub> < μ<sub>b</sub> < μ<sub>a</sub> < μ<sub>c</sub></p>
-                    <div class="explanation">
-                        <p><strong>解析：</strong></p>
-                        <p>1. 比较 (d) 和 (b)：直方图 (b) 是通过将直方图 (d) 中的测量值 3 增加到 (b) 中的 4 而
+            }
+
+            initNewQuestion();
+        });
+    </script>
+</body>
+</html>

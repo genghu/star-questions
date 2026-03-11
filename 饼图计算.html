@@ -6,447 +6,65 @@
     <title>饼图计算 - 交互式答题</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
-        }
-
-        body {
-            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
-            color: #333;
-            line-height: 1.6;
-            padding: 20px;
-            min-height: 100vh;
-        }
-
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            background-color: white;
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(50, 100, 150, 0.1);
-            overflow: hidden;
-            padding: 30px;
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 2px solid #eaeff5;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-
-        .header-text {
-            flex: 1;
-            min-width: 300px;
-        }
-
-        h1 {
-            color: #2c3e50;
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            background: linear-gradient(to right, #3498db, #2c3e50);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            display: inline-block;
-        }
-
-        .subtitle {
-            color: #7f8c8d;
-            font-size: 1.1rem;
-        }
-
-        .refresh-params-btn {
-            padding: 10px 20px;
-            background: linear-gradient(135deg, #27ae60, #2ecc71);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.95rem;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .refresh-params-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.4);
-        }
-
-        .question-container {
-            background-color: #f8fafc;
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 30px;
-            border-left: 6px solid #3498db;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
-        }
-
-        .question-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .question-title {
-            font-size: 1.5rem;
-            color: #2c3e50;
-            font-weight: 600;
-        }
-
-        .question-content {
-            font-size: 1.1rem;
-            margin-bottom: 25px;
-            color: #34495e;
-        }
-
-        .pie-chart-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 30px;
-            margin: 25px 0;
-            align-items: center;
-        }
-
-        .pie-chart {
-            flex: 1;
-            min-width: 300px;
-            max-width: 400px;
-            height: 300px;
-            position: relative;
-            margin: 0 auto;
-        }
-
-        .pie-chart-svg {
-            width: 100%;
-            height: 100%;
-        }
-
-        .pie-segment {
-            stroke: #fff;
-            stroke-width: 1;
-            cursor: pointer;
-        }
-
-        .pie-legend {
-            flex: 1;
-            min-width: 250px;
-            background-color: #f8fafc;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.03);
-        }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            margin-bottom: 12px;
-            padding: 8px;
-            border-radius: 6px;
-            transition: background-color 0.2s;
-        }
-
-        .legend-item:hover {
-            background-color: #eef5fc;
-        }
-
-        .legend-color {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            margin-right: 15px;
-        }
-
-        .legend-label {
-            font-weight: 500;
-            color: #2c3e50;
-        }
-
-        .legend-percentage {
-            margin-left: auto;
-            font-weight: 600;
-            color: #3498db;
-        }
-
-        .options-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 15px;
-            margin: 25px 0;
-        }
-
-        .option {
-            background-color: white;
-            border: 2px solid #eaeff5;
-            border-radius: 12px;
-            padding: 20px;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            font-size: 1.1rem;
-            font-weight: 500;
-        }
-
-        .option:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(52, 152, 219, 0.15);
-            border-color: #3498db;
-        }
-
-        .option.selected {
-            border-color: #3498db;
-            background-color: #eef7ff;
-            box-shadow: 0 5px 15px rgba(52, 152, 219, 0.2);
-        }
-
-        .option.correct {
-            border-color: #2ecc71;
-            background-color: #e9f9ef;
-        }
-
-        .option.incorrect {
-            border-color: #e74c3c;
-            background-color: #fdedec;
-        }
-
-        .option-letter {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            background-color: #3498db;
-            color: white;
-            border-radius: 50%;
-            margin-right: 15px;
-            font-weight: bold;
-            font-size: 1.2rem;
-            flex-shrink: 0;
-        }
-
-        .option.correct .option-letter {
-            background-color: #2ecc71;
-        }
-
-        .option.incorrect .option-letter {
-            background-color: #e74c3c;
-        }
-
-        .controls {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 30px;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            padding: 15px 30px;
-            border: none;
-            border-radius: 10px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        .btn-primary {
-            background-color: #3498db;
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background-color: #2980b9;
-            transform: translateY(-3px);
-            box-shadow: 0 7px 15px rgba(52, 152, 219, 0.3);
-        }
-
-        .btn-secondary {
-            background-color: #95a5a6;
-            color: white;
-        }
-
-        .btn-secondary:hover {
-            background-color: #7f8c8d;
-            transform: translateY(-3px);
-            box-shadow: 0 7px 15px rgba(149, 165, 166, 0.3);
-        }
-
-        .feedback-container {
-            margin-top: 30px;
-            padding: 25px;
-            border-radius: 15px;
-            background-color: #f8fafc;
-            display: none;
-        }
-
-        .feedback-container.show {
-            display: block;
-            animation: fadeIn 0.5s;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .feedback-title {
-            font-size: 1.4rem;
-            color: #2c3e50;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .feedback-content {
-            font-size: 1.1rem;
-            color: #34495e;
-            line-height: 1.8;
-        }
-
-        .score-container {
-            text-align: center;
-            margin-top: 30px;
-            padding: 20px;
-            background: linear-gradient(to right, #3498db, #2c3e50);
-            color: white;
-            border-radius: 15px;
-            display: none;
-        }
-
-        .score-container.show {
-            display: block;
-            animation: fadeIn 0.5s;
-        }
-
-        .score-value {
-            font-size: 3.5rem;
-            font-weight: 700;
-            margin: 10px 0;
-        }
-
-        .score-text {
-            font-size: 1.3rem;
-            margin-bottom: 10px;
-        }
-
-        .calculation-steps {
-            background-color: #eef7ff;
-            border-radius: 10px;
-            padding: 20px;
-            margin-top: 20px;
-            border-left: 4px solid #3498db;
-        }
-
-        .step {
-            margin-bottom: 15px;
-            display: flex;
-            align-items: flex-start;
-        }
-
-        .step-number {
-            background-color: #3498db;
-            color: white;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 15px;
-            flex-shrink: 0;
-            font-weight: bold;
-        }
-
-        .math {
-            font-family: 'Cambria Math', 'Times New Roman', serif;
-            font-size: 1.2rem;
-            color: #2c3e50;
-        }
-
-        .highlight {
-            background-color: #fffacd;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-weight: 600;
-        }
-
-        .show-explanation-btn {
-            display: none;
-            margin: 20px auto;
-            padding: 14px 28px;
-            background: linear-gradient(135deg, #9b59b6, #8e44ad);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 1.1rem;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
-        }
-        .show-explanation-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
-        }
-        .explanation-section {
-            display: none;
-            margin-top: 20px;
-        }
-
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif; }
+        body { background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%); color: #333; line-height: 1.6; padding: 20px; min-height: 100vh; }
+        .container { max-width: 1000px; margin: 0 auto; background-color: white; border-radius: 20px; box-shadow: 0 15px 35px rgba(50, 100, 150, 0.1); overflow: hidden; padding: 30px; }
+        header { text-align: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 2px solid #eaeff5; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
+        .header-text { flex: 1; min-width: 300px; }
+        h1 { color: #2c3e50; font-size: 2.5rem; margin-bottom: 10px; background: linear-gradient(to right, #3498db, #2c3e50); -webkit-background-clip: text; background-clip: text; color: transparent; display: inline-block; }
+        .subtitle { color: #7f8c8d; font-size: 1.1rem; }
+        .refresh-params-btn { padding: 10px 20px; background: linear-gradient(135deg, #27ae60, #2ecc71); color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 0.95rem; font-weight: 600; transition: all 0.3s ease; display: flex; align-items: center; gap: 8px; }
+        .refresh-params-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(39, 174, 96, 0.4); }
+        .question-container { background-color: #f8fafc; border-radius: 15px; padding: 25px; margin-bottom: 30px; border-left: 6px solid #3498db; box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03); }
+        .question-title { font-size: 1.5rem; color: #2c3e50; font-weight: 600; margin-bottom: 20px; }
+        .question-content { font-size: 1.1rem; margin-bottom: 25px; color: #34495e; }
+        .pie-chart-container { display: flex; flex-wrap: wrap; gap: 30px; margin: 25px 0; align-items: center; }
+        .pie-chart { flex: 1; min-width: 300px; max-width: 400px; height: 300px; position: relative; margin: 0 auto; }
+        .pie-chart-svg { width: 100%; height: 100%; }
+        .pie-segment { stroke: #fff; stroke-width: 1; cursor: pointer; }
+        .pie-legend { flex: 1; min-width: 250px; background-color: #f8fafc; padding: 20px; border-radius: 10px; box-shadow: 0 5px 10px rgba(0, 0, 0, 0.03); }
+        .legend-item { display: flex; align-items: center; margin-bottom: 12px; padding: 8px; border-radius: 6px; transition: background-color 0.2s; }
+        .legend-item:hover { background-color: #eef5fc; }
+        .legend-color { width: 20px; height: 20px; border-radius: 50%; margin-right: 15px; }
+        .legend-label { font-weight: 500; color: #2c3e50; }
+        .legend-percentage { margin-left: auto; font-weight: 600; color: #3498db; }
+        .options-container { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 15px; margin: 25px 0; }
+        .option { background-color: white; border: 2px solid #eaeff5; border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; font-size: 1.1rem; font-weight: 500; }
+        .option:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(52, 152, 219, 0.15); border-color: #3498db; }
+        .option.selected { border-color: #3498db; background-color: #eef7ff; box-shadow: 0 5px 15px rgba(52, 152, 219, 0.2); }
+        .option.correct { border-color: #2ecc71; background-color: #e9f9ef; }
+        .option.incorrect { border-color: #e74c3c; background-color: #fdedec; }
+        .option-letter { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; background-color: #3498db; color: white; border-radius: 50%; margin-right: 15px; font-weight: bold; font-size: 1.2rem; flex-shrink: 0; }
+        .option.correct .option-letter { background-color: #2ecc71; }
+        .option.incorrect .option-letter { background-color: #e74c3c; }
+        .controls { display: flex; justify-content: center; gap: 20px; margin-top: 30px; flex-wrap: wrap; }
+        .btn { padding: 15px 30px; border: none; border-radius: 10px; font-size: 1.1rem; font-weight: 600; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .btn-primary { background-color: #3498db; color: white; }
+        .btn-primary:hover { background-color: #2980b9; transform: translateY(-3px); box-shadow: 0 7px 15px rgba(52, 152, 219, 0.3); }
+        .btn-secondary { background-color: #95a5a6; color: white; }
+        .btn-secondary:hover { background-color: #7f8c8d; transform: translateY(-3px); box-shadow: 0 7px 15px rgba(149, 165, 166, 0.3); }
+        .feedback-container { margin-top: 30px; padding: 25px; border-radius: 15px; background-color: #f8fafc; display: none; }
+        .feedback-container.show { display: block; animation: fadeIn 0.5s; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .feedback-title { font-size: 1.4rem; color: #2c3e50; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+        .feedback-content { font-size: 1.1rem; color: #34495e; line-height: 1.8; }
+        .score-container { text-align: center; margin-top: 30px; padding: 20px; background: linear-gradient(to right, #3498db, #2c3e50); color: white; border-radius: 15px; display: none; }
+        .score-container.show { display: block; animation: fadeIn 0.5s; }
+        .score-value { font-size: 3.5rem; font-weight: 700; margin: 10px 0; }
+        .score-text { font-size: 1.3rem; margin-bottom: 10px; }
+        .highlight { background-color: #fffacd; padding: 2px 6px; border-radius: 4px; font-weight: 600; }
+        .show-explanation-btn { display: none; margin: 20px auto; padding: 14px 28px; background: linear-gradient(135deg, #9b59b6, #8e44ad); color: white; border: none; border-radius: 10px; cursor: pointer; font-size: 1.1rem; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3); }
+        .show-explanation-btn:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4); }
+        .explanation-section { display: none; margin-top: 20px; }
         @media (max-width: 768px) {
-            .container {
-                padding: 20px;
-            }
-
-            h1 {
-                font-size: 2rem;
-            }
-
-            header {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .pie-chart-container {
-                flex-direction: column;
-            }
-
-            .pie-chart {
-                min-width: 250px;
-                height: 250px;
-            }
-
-            .options-container {
-                grid-template-columns: 1fr;
-            }
-
-            .controls {
-                flex-direction: column;
-            }
-
-            .btn {
-                width: 100%;
-            }
+            .container { padding: 20px; }
+            h1 { font-size: 2rem; }
+            header { flex-direction: column; text-align: center; }
+            .pie-chart-container { flex-direction: column; }
+            .pie-chart { min-width: 250px; height: 250px; }
+            .options-container { grid-template-columns: 1fr; }
+            .controls { flex-direction: column; }
+            .btn { width: 100%; }
         }
     </style>
 </head>
@@ -457,437 +75,274 @@
                 <h1><i class="fas fa-chart-pie"></i> 饼图计算</h1>
                 <p class="subtitle">交互式答题 - 根据饼图进行百分比计算</p>
             </div>
-            <button class="refresh-params-btn" id="refreshParamsBtn">
-                <span>↻</span> 刷新参数
-            </button>
+            <button class="refresh-params-btn" id="refreshParamsBtn"><span>↻</span> 刷新参数</button>
         </header>
-
         <div class="question-container">
-            <div class="question-header">
-                <div class="question-title">根据饼图进行计算</div>
-            </div>
-
-            <div class="question-content" id="questionContent">
-                <!-- 动态生成 -->
-            </div>
-
+            <div class="question-title">根据饼图进行计算</div>
+            <div class="question-content" id="questionContent"></div>
             <div class="pie-chart-container">
-                <div class="pie-chart" id="pieChart">
-                    <svg class="pie-chart-svg" viewBox="0 0 100 100">
-                        <!-- 饼图通过JavaScript动态生成 -->
-                    </svg>
-                </div>
-
-                <div class="pie-legend" id="pieLegend">
-                    <!-- 动态生成 -->
-                </div>
+                <div class="pie-chart" id="pieChart"><svg class="pie-chart-svg" viewBox="0 0 100 100"></svg></div>
+                <div class="pie-legend" id="pieLegend"></div>
             </div>
-
-            <div class="calculation-steps" id="calculationSteps">
-                <!-- 动态生成 -->
-            </div>
-
             <p style="margin-top: 20px; font-weight: 600; color: #2c3e50;">请从以下选项中选择正确答案：</p>
-
-            <div class="options-container" id="optionsContainer">
-                <!-- 动态生成 -->
-            </div>
-
+            <div class="options-container" id="optionsContainer"></div>
             <div class="controls">
-                <button class="btn btn-primary" id="submitBtn">
-                    <i class="fas fa-paper-plane"></i> 提交答案
-                </button>
-                <button class="btn btn-secondary" id="resetBtn">
-                    <i class="fas fa-redo"></i> 重新作答
-                </button>
+                <button class="btn btn-primary" id="submitBtn"><i class="fas fa-paper-plane"></i> 提交答案</button>
+                <button class="btn btn-secondary" id="resetBtn"><i class="fas fa-redo"></i> 重新作答</button>
             </div>
         </div>
-
         <div class="score-container" id="scoreContainer">
             <div class="score-text">您的得分</div>
             <div class="score-value" id="scoreValue">0/1</div>
             <div id="scoreMessage"></div>
         </div>
-
         <button class="show-explanation-btn" id="show-explanation-btn">查看答案解析</button>
         <div class="explanation-section" id="explanationSection" style="display:none;">
             <div class="feedback-container" id="feedbackContainer" style="display:block;">
-                <div class="feedback-title">
-                    <i class="fas fa-chalkboard-teacher"></i> 题目解析
-                </div>
-                <div class="feedback-content" id="feedbackContent">
-                    <!-- 动态生成 -->
-                </div>
+                <div class="feedback-title"><i class="fas fa-chalkboard-teacher"></i> 题目解析</div>
+                <div class="feedback-content" id="feedbackContent"></div>
             </div>
         </div>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // ==================== 参数化数据集 ====================
-            const questionParams = [
-                {
-                    totalIncome: 95000,
-                    category1: { name: "保险", percentage: 10 },
-                    category2: { name: "食品", percentage: 19 },
-                    pieData: [
-                        { label: "住房", percentage: 21, color: "#3498db" },
-                        { label: "食品", percentage: 19, color: "#2ecc71" },
-                        { label: "服装", percentage: 18, color: "#e74c3c" },
-                        { label: "汽车", percentage: 12, color: "#f39c12" },
-                        { label: "娱乐", percentage: 14, color: "#9b59b6" },
-                        { label: "保险", percentage: 10, color: "#1abc9c" },
-                        { label: "储蓄", percentage: 6, color: "#34495e" }
-                    ],
-                    answer: 27550,
-                    options: [
-                        { letter: "A", text: "$24,700", value: 24700, isCorrect: false },
-                        { letter: "B", text: "$27,550", value: 27550, isCorrect: true },
-                        { letter: "C", text: "$19,950", value: 19950, isCorrect: false },
-                        { letter: "D", text: "$30,400", value: 30400, isCorrect: false }
-                    ]
-                },
-                {
-                    totalIncome: 120000,
-                    category1: { name: "住房", percentage: 25 },
-                    category2: { name: "娱乐", percentage: 15 },
-                    pieData: [
-                        { label: "住房", percentage: 25, color: "#3498db" },
-                        { label: "食品", percentage: 20, color: "#2ecc71" },
-                        { label: "服装", percentage: 12, color: "#e74c3c" },
-                        { label: "汽车", percentage: 10, color: "#f39c12" },
-                        { label: "娱乐", percentage: 15, color: "#9b59b6" },
-                        { label: "保险", percentage: 8, color: "#1abc9c" },
-                        { label: "储蓄", percentage: 10, color: "#34495e" }
-                    ],
-                    answer: 48000,
-                    options: [
-                        { letter: "A", text: "$36,000", value: 36000, isCorrect: false },
-                        { letter: "B", text: "$42,000", value: 42000, isCorrect: false },
-                        { letter: "C", text: "$48,000", value: 48000, isCorrect: true },
-                        { letter: "D", text: "$54,000", value: 54000, isCorrect: false }
-                    ]
-                },
-                {
-                    totalIncome: 80000,
-                    category1: { name: "汽车", percentage: 18 },
-                    category2: { name: "储蓄", percentage: 12 },
-                    pieData: [
-                        { label: "住房", percentage: 22, color: "#3498db" },
-                        { label: "食品", percentage: 18, color: "#2ecc71" },
-                        { label: "服装", percentage: 15, color: "#e74c3c" },
-                        { label: "汽车", percentage: 18, color: "#f39c12" },
-                        { label: "娱乐", percentage: 10, color: "#9b59b6" },
-                        { label: "保险", percentage: 5, color: "#1abc9c" },
-                        { label: "储蓄", percentage: 12, color: "#34495e" }
-                    ],
-                    answer: 24000,
-                    options: [
-                        { letter: "A", text: "$20,000", value: 20000, isCorrect: false },
-                        { letter: "B", text: "$22,400", value: 22400, isCorrect: false },
-                        { letter: "C", text: "$24,000", value: 24000, isCorrect: true },
-                        { letter: "D", text: "$28,800", value: 28800, isCorrect: false }
-                    ]
-                },
-                {
-                    totalIncome: 150000,
-                    category1: { name: "食品", percentage: 22 },
-                    category2: { name: "服装", percentage: 13 },
-                    pieData: [
-                        { label: "住房", percentage: 20, color: "#3498db" },
-                        { label: "食品", percentage: 22, color: "#2ecc71" },
-                        { label: "服装", percentage: 13, color: "#e74c3c" },
-                        { label: "汽车", percentage: 15, color: "#f39c12" },
-                        { label: "娱乐", percentage: 12, color: "#9b59b6" },
-                        { label: "保险", percentage: 8, color: "#1abc9c" },
-                        { label: "储蓄", percentage: 10, color: "#34495e" }
-                    ],
-                    answer: 52500,
-                    options: [
-                        { letter: "A", text: "$45,000", value: 45000, isCorrect: false },
-                        { letter: "B", text: "$52,500", value: 52500, isCorrect: true },
-                        { letter: "C", text: "$48,750", value: 48750, isCorrect: false },
-                        { letter: "D", text: "$60,000", value: 60000, isCorrect: false }
-                    ]
-                },
-                {
-                    totalIncome: 72000,
-                    category1: { name: "娱乐", percentage: 16 },
-                    category2: { name: "保险", percentage: 9 },
-                    pieData: [
-                        { label: "住房", percentage: 24, color: "#3498db" },
-                        { label: "食品", percentage: 20, color: "#2ecc71" },
-                        { label: "服装", percentage: 14, color: "#e74c3c" },
-                        { label: "汽车", percentage: 11, color: "#f39c12" },
-                        { label: "娱乐", percentage: 16, color: "#9b59b6" },
-                        { label: "保险", percentage: 9, color: "#1abc9c" },
-                        { label: "储蓄", percentage: 6, color: "#34495e" }
-                    ],
-                    answer: 18000,
-                    options: [
-                        { letter: "A", text: "$15,120", value: 15120, isCorrect: false },
-                        { letter: "B", text: "$16,560", value: 16560, isCorrect: false },
-                        { letter: "C", text: "$18,000", value: 18000, isCorrect: true },
-                        { letter: "D", text: "$20,160", value: 20160, isCorrect: false }
-                    ]
-                }
-            ];
+    document.addEventListener('DOMContentLoaded', function() {
+        // 背景配置
+        const backgrounds = {
+            family: { name: "家庭支出", unit: "元", intro: "某个家庭的年度总收入是如何花费的" },
+            company: { name: "公司预算", unit: "万元", intro: "某公司的年度预算是如何分配的" },
+            student: { name: "学生时间", unit: "小时", intro: "某大学生一周的时间是如何分配的" }
+        };
+        const bgKeys = Object.keys(backgrounds);
+        const questionTypes = ['sum', 'difference', 'single', 'ratio', 'totalFromCategory', 'findMax'];
 
-            let currentParamIndex = 0;
-            let selectedOption = null;
-            let isSubmitted = false;
+        // 数据集
+        const datasets = {
+            family: [
+                { total: 95000, cat1: { name: "保险", percentage: 10 }, cat2: { name: "食品", percentage: 19 }, pieData: [{ label: "住房", percentage: 21, color: "#3498db" }, { label: "食品", percentage: 19, color: "#2ecc71" }, { label: "服装", percentage: 18, color: "#e74c3c" }, { label: "汽车", percentage: 12, color: "#f39c12" }, { label: "娱乐", percentage: 14, color: "#9b59b6" }, { label: "保险", percentage: 10, color: "#1abc9c" }, { label: "储蓄", percentage: 6, color: "#34495e" }] },
+                { total: 120000, cat1: { name: "住房", percentage: 25 }, cat2: { name: "娱乐", percentage: 15 }, pieData: [{ label: "住房", percentage: 25, color: "#3498db" }, { label: "食品", percentage: 20, color: "#2ecc71" }, { label: "服装", percentage: 12, color: "#e74c3c" }, { label: "汽车", percentage: 10, color: "#f39c12" }, { label: "娱乐", percentage: 15, color: "#9b59b6" }, { label: "保险", percentage: 8, color: "#1abc9c" }, { label: "储蓄", percentage: 10, color: "#34495e" }] },
+                { total: 80000, cat1: { name: "汽车", percentage: 18 }, cat2: { name: "储蓄", percentage: 12 }, pieData: [{ label: "住房", percentage: 22, color: "#3498db" }, { label: "食品", percentage: 18, color: "#2ecc71" }, { label: "服装", percentage: 15, color: "#e74c3c" }, { label: "汽车", percentage: 18, color: "#f39c12" }, { label: "娱乐", percentage: 10, color: "#9b59b6" }, { label: "保险", percentage: 5, color: "#1abc9c" }, { label: "储蓄", percentage: 12, color: "#34495e" }] },
+                { total: 150000, cat1: { name: "食品", percentage: 22 }, cat2: { name: "服装", percentage: 13 }, pieData: [{ label: "住房", percentage: 20, color: "#3498db" }, { label: "食品", percentage: 22, color: "#2ecc71" }, { label: "服装", percentage: 13, color: "#e74c3c" }, { label: "汽车", percentage: 15, color: "#f39c12" }, { label: "娱乐", percentage: 12, color: "#9b59b6" }, { label: "保险", percentage: 8, color: "#1abc9c" }, { label: "储蓄", percentage: 10, color: "#34495e" }] },
+                { total: 72000, cat1: { name: "娱乐", percentage: 16 }, cat2: { name: "保险", percentage: 9 }, pieData: [{ label: "住房", percentage: 24, color: "#3498db" }, { label: "食品", percentage: 20, color: "#2ecc71" }, { label: "服装", percentage: 14, color: "#e74c3c" }, { label: "汽车", percentage: 11, color: "#f39c12" }, { label: "娱乐", percentage: 16, color: "#9b59b6" }, { label: "保险", percentage: 9, color: "#1abc9c" }, { label: "储蓄", percentage: 6, color: "#34495e" }] },
+                { total: 100000, cat1: { name: "住房", percentage: 28 }, cat2: { name: "食品", percentage: 22 }, pieData: [{ label: "住房", percentage: 28, color: "#3498db" }, { label: "食品", percentage: 22, color: "#2ecc71" }, { label: "服装", percentage: 10, color: "#e74c3c" }, { label: "汽车", percentage: 15, color: "#f39c12" }, { label: "娱乐", percentage: 12, color: "#9b59b6" }, { label: "保险", percentage: 7, color: "#1abc9c" }, { label: "储蓄", percentage: 6, color: "#34495e" }] },
+                { total: 85000, cat1: { name: "服装", percentage: 14 }, cat2: { name: "娱乐", percentage: 11 }, pieData: [{ label: "住房", percentage: 23, color: "#3498db" }, { label: "食品", percentage: 20, color: "#2ecc71" }, { label: "服装", percentage: 14, color: "#e74c3c" }, { label: "汽车", percentage: 16, color: "#f39c12" }, { label: "娱乐", percentage: 11, color: "#9b59b6" }, { label: "保险", percentage: 8, color: "#1abc9c" }, { label: "储蓄", percentage: 8, color: "#34495e" }] },
+                { total: 130000, cat1: { name: "储蓄", percentage: 15 }, cat2: { name: "保险", percentage: 6 }, pieData: [{ label: "住房", percentage: 22, color: "#3498db" }, { label: "食品", percentage: 18, color: "#2ecc71" }, { label: "服装", percentage: 12, color: "#e74c3c" }, { label: "汽车", percentage: 14, color: "#f39c12" }, { label: "娱乐", percentage: 13, color: "#9b59b6" }, { label: "保险", percentage: 6, color: "#1abc9c" }, { label: "储蓄", percentage: 15, color: "#34495e" }] },
+                { total: 90000, cat1: { name: "汽车", percentage: 13 }, cat2: { name: "娱乐", percentage: 17 }, pieData: [{ label: "住房", percentage: 21, color: "#3498db" }, { label: "食品", percentage: 19, color: "#2ecc71" }, { label: "服装", percentage: 15, color: "#e74c3c" }, { label: "汽车", percentage: 13, color: "#f39c12" }, { label: "娱乐", percentage: 17, color: "#9b59b6" }, { label: "保险", percentage: 9, color: "#1abc9c" }, { label: "储蓄", percentage: 6, color: "#34495e" }] },
+                { total: 110000, cat1: { name: "保险", percentage: 11 }, cat2: { name: "储蓄", percentage: 9 }, pieData: [{ label: "住房", percentage: 24, color: "#3498db" }, { label: "食品", percentage: 21, color: "#2ecc71" }, { label: "服装", percentage: 12, color: "#e74c3c" }, { label: "汽车", percentage: 13, color: "#f39c12" }, { label: "娱乐", percentage: 10, color: "#9b59b6" }, { label: "保险", percentage: 11, color: "#1abc9c" }, { label: "储蓄", percentage: 9, color: "#34495e" }] }
+            ],
+            company: [
+                { total: 5000, cat1: { name: "研发", percentage: 30 }, cat2: { name: "市场", percentage: 20 }, pieData: [{ label: "研发", percentage: 30, color: "#3498db" }, { label: "市场", percentage: 20, color: "#2ecc71" }, { label: "销售", percentage: 18, color: "#e74c3c" }, { label: "运营", percentage: 15, color: "#f39c12" }, { label: "人事", percentage: 10, color: "#9b59b6" }, { label: "财务", percentage: 7, color: "#1abc9c" }] },
+                { total: 8000, cat1: { name: "销售", percentage: 22 }, cat2: { name: "研发", percentage: 28 }, pieData: [{ label: "研发", percentage: 28, color: "#3498db" }, { label: "市场", percentage: 15, color: "#2ecc71" }, { label: "销售", percentage: 22, color: "#e74c3c" }, { label: "运营", percentage: 12, color: "#f39c12" }, { label: "人事", percentage: 8, color: "#9b59b6" }, { label: "财务", percentage: 15, color: "#1abc9c" }] },
+                { total: 3500, cat1: { name: "运营", percentage: 18 }, cat2: { name: "市场", percentage: 25 }, pieData: [{ label: "研发", percentage: 22, color: "#3498db" }, { label: "市场", percentage: 25, color: "#2ecc71" }, { label: "销售", percentage: 16, color: "#e74c3c" }, { label: "运营", percentage: 18, color: "#f39c12" }, { label: "人事", percentage: 12, color: "#9b59b6" }, { label: "财务", percentage: 7, color: "#1abc9c" }] },
+                { total: 6200, cat1: { name: "人事", percentage: 12 }, cat2: { name: "财务", percentage: 8 }, pieData: [{ label: "研发", percentage: 32, color: "#3498db" }, { label: "市场", percentage: 18, color: "#2ecc71" }, { label: "销售", percentage: 20, color: "#e74c3c" }, { label: "运营", percentage: 10, color: "#f39c12" }, { label: "人事", percentage: 12, color: "#9b59b6" }, { label: "财务", percentage: 8, color: "#1abc9c" }] },
+                { total: 4500, cat1: { name: "研发", percentage: 35 }, cat2: { name: "销售", percentage: 15 }, pieData: [{ label: "研发", percentage: 35, color: "#3498db" }, { label: "市场", percentage: 16, color: "#2ecc71" }, { label: "销售", percentage: 15, color: "#e74c3c" }, { label: "运营", percentage: 18, color: "#f39c12" }, { label: "人事", percentage: 9, color: "#9b59b6" }, { label: "财务", percentage: 7, color: "#1abc9c" }] },
+                { total: 7200, cat1: { name: "市场", percentage: 24 }, cat2: { name: "运营", percentage: 14 }, pieData: [{ label: "研发", percentage: 26, color: "#3498db" }, { label: "市场", percentage: 24, color: "#2ecc71" }, { label: "销售", percentage: 19, color: "#e74c3c" }, { label: "运营", percentage: 14, color: "#f39c12" }, { label: "人事", percentage: 10, color: "#9b59b6" }, { label: "财务", percentage: 7, color: "#1abc9c" }] },
+                { total: 5800, cat1: { name: "财务", percentage: 10 }, cat2: { name: "人事", percentage: 13 }, pieData: [{ label: "研发", percentage: 29, color: "#3498db" }, { label: "市场", percentage: 17, color: "#2ecc71" }, { label: "销售", percentage: 21, color: "#e74c3c" }, { label: "运营", percentage: 10, color: "#f39c12" }, { label: "人事", percentage: 13, color: "#9b59b6" }, { label: "财务", percentage: 10, color: "#1abc9c" }] },
+                { total: 9000, cat1: { name: "研发", percentage: 32 }, cat2: { name: "市场", percentage: 18 }, pieData: [{ label: "研发", percentage: 32, color: "#3498db" }, { label: "市场", percentage: 18, color: "#2ecc71" }, { label: "销售", percentage: 20, color: "#e74c3c" }, { label: "运营", percentage: 14, color: "#f39c12" }, { label: "人事", percentage: 9, color: "#9b59b6" }, { label: "财务", percentage: 7, color: "#1abc9c" }] },
+                { total: 4200, cat1: { name: "销售", percentage: 25 }, cat2: { name: "运营", percentage: 16 }, pieData: [{ label: "研发", percentage: 24, color: "#3498db" }, { label: "市场", percentage: 19, color: "#2ecc71" }, { label: "销售", percentage: 25, color: "#e74c3c" }, { label: "运营", percentage: 16, color: "#f39c12" }, { label: "人事", percentage: 9, color: "#9b59b6" }, { label: "财务", percentage: 7, color: "#1abc9c" }] },
+                { total: 6800, cat1: { name: "研发", percentage: 28 }, cat2: { name: "销售", percentage: 17 }, pieData: [{ label: "研发", percentage: 28, color: "#3498db" }, { label: "市场", percentage: 20, color: "#2ecc71" }, { label: "销售", percentage: 17, color: "#e74c3c" }, { label: "运营", percentage: 15, color: "#f39c12" }, { label: "人事", percentage: 12, color: "#9b59b6" }, { label: "财务", percentage: 8, color: "#1abc9c" }] }
+            ],
+            student: [
+                { total: 168, cat1: { name: "学习", percentage: 25 }, cat2: { name: "睡眠", percentage: 33 }, pieData: [{ label: "学习", percentage: 25, color: "#3498db" }, { label: "睡眠", percentage: 33, color: "#2ecc71" }, { label: "娱乐", percentage: 15, color: "#e74c3c" }, { label: "运动", percentage: 8, color: "#f39c12" }, { label: "社交", percentage: 10, color: "#9b59b6" }, { label: "其他", percentage: 9, color: "#1abc9c" }] },
+                { total: 168, cat1: { name: "娱乐", percentage: 18 }, cat2: { name: "运动", percentage: 10 }, pieData: [{ label: "学习", percentage: 22, color: "#3498db" }, { label: "睡眠", percentage: 35, color: "#2ecc71" }, { label: "娱乐", percentage: 18, color: "#e74c3c" }, { label: "运动", percentage: 10, color: "#f39c12" }, { label: "社交", percentage: 9, color: "#9b59b6" }, { label: "其他", percentage: 6, color: "#1abc9c" }] },
+                { total: 168, cat1: { name: "社交", percentage: 12 }, cat2: { name: "学习", percentage: 30 }, pieData: [{ label: "学习", percentage: 30, color: "#3498db" }, { label: "睡眠", percentage: 32, color: "#2ecc71" }, { label: "娱乐", percentage: 12, color: "#e74c3c" }, { label: "运动", percentage: 9, color: "#f39c12" }, { label: "社交", percentage: 12, color: "#9b59b6" }, { label: "其他", percentage: 5, color: "#1abc9c" }] },
+                { total: 168, cat1: { name: "睡眠", percentage: 35 }, cat2: { name: "娱乐", percentage: 14 }, pieData: [{ label: "学习", percentage: 20, color: "#3498db" }, { label: "睡眠", percentage: 35, color: "#2ecc71" }, { label: "娱乐", percentage: 14, color: "#e74c3c" }, { label: "运动", percentage: 11, color: "#f39c12" }, { label: "社交", percentage: 13, color: "#9b59b6" }, { label: "其他", percentage: 7, color: "#1abc9c" }] },
+                { total: 168, cat1: { name: "运动", percentage: 12 }, cat2: { name: "其他", percentage: 8 }, pieData: [{ label: "学习", percentage: 24, color: "#3498db" }, { label: "睡眠", percentage: 34, color: "#2ecc71" }, { label: "娱乐", percentage: 16, color: "#e74c3c" }, { label: "运动", percentage: 12, color: "#f39c12" }, { label: "社交", percentage: 6, color: "#9b59b6" }, { label: "其他", percentage: 8, color: "#1abc9c" }] },
+                { total: 168, cat1: { name: "学习", percentage: 28 }, cat2: { name: "社交", percentage: 11 }, pieData: [{ label: "学习", percentage: 28, color: "#3498db" }, { label: "睡眠", percentage: 31, color: "#2ecc71" }, { label: "娱乐", percentage: 13, color: "#e74c3c" }, { label: "运动", percentage: 10, color: "#f39c12" }, { label: "社交", percentage: 11, color: "#9b59b6" }, { label: "其他", percentage: 7, color: "#1abc9c" }] },
+                { total: 168, cat1: { name: "娱乐", percentage: 20 }, cat2: { name: "睡眠", percentage: 30 }, pieData: [{ label: "学习", percentage: 21, color: "#3498db" }, { label: "睡眠", percentage: 30, color: "#2ecc71" }, { label: "娱乐", percentage: 20, color: "#e74c3c" }, { label: "运动", percentage: 9, color: "#f39c12" }, { label: "社交", percentage: 12, color: "#9b59b6" }, { label: "其他", percentage: 8, color: "#1abc9c" }] },
+                { total: 168, cat1: { name: "学习", percentage: 26 }, cat2: { name: "运动", percentage: 11 }, pieData: [{ label: "学习", percentage: 26, color: "#3498db" }, { label: "睡眠", percentage: 33, color: "#2ecc71" }, { label: "娱乐", percentage: 14, color: "#e74c3c" }, { label: "运动", percentage: 11, color: "#f39c12" }, { label: "社交", percentage: 10, color: "#9b59b6" }, { label: "其他", percentage: 6, color: "#1abc9c" }] },
+                { total: 168, cat1: { name: "社交", percentage: 14 }, cat2: { name: "娱乐", percentage: 16 }, pieData: [{ label: "学习", percentage: 23, color: "#3498db" }, { label: "睡眠", percentage: 32, color: "#2ecc71" }, { label: "娱乐", percentage: 16, color: "#e74c3c" }, { label: "运动", percentage: 8, color: "#f39c12" }, { label: "社交", percentage: 14, color: "#9b59b6" }, { label: "其他", percentage: 7, color: "#1abc9c" }] },
+                { total: 168, cat1: { name: "睡眠", percentage: 36 }, cat2: { name: "学习", percentage: 22 }, pieData: [{ label: "学习", percentage: 22, color: "#3498db" }, { label: "睡眠", percentage: 36, color: "#2ecc71" }, { label: "娱乐", percentage: 15, color: "#e74c3c" }, { label: "运动", percentage: 9, color: "#f39c12" }, { label: "社交", percentage: 11, color: "#9b59b6" }, { label: "其他", percentage: 7, color: "#1abc9c" }] }
+            ]
+        };
 
-            // ==================== 渲染函数 ====================
+        let currentBg = 'family', currentType = 'sum', currentParams = null;
+        let selectedOption = null, isSubmitted = false;
+        let usedCombinations = new Set();
 
-            function renderQuestion() {
-                const params = questionParams[currentParamIndex];
-                const totalPercentage = params.category1.percentage + params.category2.percentage;
+        function generateQuestion() {
+            const bg = backgrounds[currentBg];
+            const p = currentParams;
+            const totalPct = p.cat1.percentage + p.cat2.percentage;
+            const amt1 = Math.round(p.total * p.cat1.percentage / 100 * 100) / 100;
+            const amt2 = Math.round(p.total * p.cat2.percentage / 100 * 100) / 100;
+            const diff = Math.round(Math.abs(amt1 - amt2) * 100) / 100;
+            const ratio = (p.cat1.percentage / p.cat2.percentage).toFixed(2);
+            const sorted = [...p.pieData].sort((a, b) => b.percentage - a.percentage);
+            const max = sorted[0];
+            const maxAmt = Math.round(p.total * max.percentage / 100 * 100) / 100;
 
-                // 渲染问题内容
-                document.getElementById('questionContent').innerHTML = `
-                    <p>下面的饼图显示了某个家庭的年度总收入是如何花费的。如果年度总收入是 <span class="highlight">$${params.totalIncome.toLocaleString()}</span>，那么预算用于${params.category1.name}和${params.category2.name}的总金额是多少？</p>
-                `;
-
-                // 渲染饼图图例
-                let legendHtml = '';
-                params.pieData.forEach(item => {
-                    legendHtml += `
-                        <div class="legend-item">
-                            <div class="legend-color" style="background-color: ${item.color};"></div>
-                            <div class="legend-label">${item.label}</div>
-                            <div class="legend-percentage">${item.percentage}%</div>
-                        </div>
-                    `;
-                });
-                document.getElementById('pieLegend').innerHTML = legendHtml;
-
-                // 渲染计算步骤
-                document.getElementById('calculationSteps').innerHTML = `
-                    <div class="step">
-                        <div class="step-number">1</div>
-                        <div>从饼图中我们可以看到，年度收入的 <span class="highlight">${params.category1.percentage}%</span> 预算用于${params.category1.name}，<span class="highlight">${params.category2.percentage}%</span> 预算用于${params.category2.name}。</div>
-                    </div>
-                    <div class="step">
-                        <div class="step-number">2</div>
-                        <div>因此，预算用于这两个类别的年度收入比例合计为 <span class="math">${params.category1.percentage}% + ${params.category2.percentage}% = ${totalPercentage}%</span>。</div>
-                    </div>
-                    <div class="step">
-                        <div class="step-number">3</div>
-                        <div>如果年度总收入是 <span class="highlight">$${params.totalIncome.toLocaleString()}</span>，那么分配给${params.category1.name}和${params.category2.name}的合计金额是 <span class="highlight">$${params.totalIncome.toLocaleString()}</span> 的 <span class="highlight">${totalPercentage}%</span>。</div>
-                    </div>
-                    <div class="step">
-                        <div class="step-number">4</div>
-                        <div class="math">${(totalPercentage / 100).toFixed(2)} × $${params.totalIncome.toLocaleString()} = $${params.answer.toLocaleString()}</div>
-                    </div>
-                `;
-
-                // 渲染选项
-                let optionsHtml = '';
-                params.options.forEach(option => {
-                    optionsHtml += `
-                        <div class="option" data-value="${option.value}" data-correct="${option.isCorrect}">
-                            <div class="option-letter">${option.letter}</div>
-                            <div class="option-text">${option.text}</div>
-                        </div>
-                    `;
-                });
-                document.getElementById('optionsContainer').innerHTML = optionsHtml;
-
-                // 渲染解析
-                document.getElementById('feedbackContent').innerHTML = `
-                    <p><strong>问题：</strong>如果年度总收入是 $${params.totalIncome.toLocaleString()}，那么预算用于${params.category1.name}和${params.category2.name}的总金额是多少？</p>
-                    <p><strong>解题步骤：</strong></p>
-                    <ol style="padding-left: 20px; margin-top: 10px;">
-                        <li style="margin-bottom: 8px;">从饼图中确定${params.category1.name}和${params.category2.name}的百分比：${params.category1.name} = ${params.category1.percentage}%，${params.category2.name} = ${params.category2.percentage}%</li>
-                        <li style="margin-bottom: 8px;">计算两者百分比之和：${params.category1.percentage}% + ${params.category2.percentage}% = ${totalPercentage}%</li>
-                        <li style="margin-bottom: 8px;">计算 $${params.totalIncome.toLocaleString()} 的 ${totalPercentage}%：${(totalPercentage / 100).toFixed(2)} × $${params.totalIncome.toLocaleString()} = $${params.answer.toLocaleString()}</li>
-                    </ol>
-                    <p><strong>答案：</strong> <span class="highlight" style="font-size: 1.3rem;">$${params.answer.toLocaleString()}</span></p>
-                    <p style="margin-top: 15px; font-style: italic; color: #7f8c8d;">
-                        <i class="fas fa-lightbulb"></i> 提示：饼图是表示各部分占总体的百分比的圆形统计图。要计算多个部分的总和，只需将它们的百分比相加，然后乘以总数。
-                    </p>
-                `;
-
-                // 初始化饼图
-                initPieChart();
-
-                // 重新绑定选项点击事件
-                bindOptionEvents();
+            let qText, answer, expl;
+            switch(currentType) {
+                case 'sum':
+                    answer = Math.round(p.total * totalPct / 100 * 100) / 100;
+                    qText = `下面的饼图显示了${bg.intro}。如果总数是 <span class="highlight">${p.total.toLocaleString()}${bg.unit}</span>，那么${p.cat1.name}和${p.cat2.name}的总和是多少？`;
+                    expl = `<p><strong>解题步骤：</strong></p><ol style="padding-left: 20px; margin-top: 10px;"><li>${p.cat1.name} = ${p.cat1.percentage}%，${p.cat2.name} = ${p.cat2.percentage}%</li><li>百分比之和：${p.cat1.percentage}% + ${p.cat2.percentage}% = ${totalPct}%</li><li>${p.total.toLocaleString()}${bg.unit} × ${(totalPct/100).toFixed(2)} = ${answer.toLocaleString()}${bg.unit}</li></ol><p><strong>答案：</strong> <span class="highlight" style="font-size: 1.3rem;">${answer.toLocaleString()}${bg.unit}</span></p>`;
+                    break;
+                case 'difference':
+                    answer = diff;
+                    qText = `下面的饼图显示了${bg.intro}。如果总数是 <span class="highlight">${p.total.toLocaleString()}${bg.unit}</span>，那么${p.cat1.name}比${p.cat2.name}多（或少）多少？`;
+                    expl = `<p><strong>解题步骤：</strong></p><ol style="padding-left: 20px; margin-top: 10px;"><li>${p.cat1.name}：${p.total.toLocaleString()}${bg.unit} × ${p.cat1.percentage}% = ${amt1.toLocaleString()}${bg.unit}</li><li>${p.cat2.name}：${p.total.toLocaleString()}${bg.unit} × ${p.cat2.percentage}% = ${amt2.toLocaleString()}${bg.unit}</li><li>差额：|${amt1.toLocaleString()} - ${amt2.toLocaleString()}| = ${diff.toLocaleString()}${bg.unit}</li></ol><p><strong>答案：</strong> <span class="highlight" style="font-size: 1.3rem;">${diff.toLocaleString()}${bg.unit}</span></p>`;
+                    break;
+                case 'single':
+                    answer = amt1;
+                    qText = `下面的饼图显示了${bg.intro}。如果总数是 <span class="highlight">${p.total.toLocaleString()}${bg.unit}</span>，那么${p.cat1.name}是多少？`;
+                    expl = `<p><strong>解题步骤：</strong></p><ol style="padding-left: 20px; margin-top: 10px;"><li>${p.cat1.name}的百分比：${p.cat1.percentage}%</li><li>${p.total.toLocaleString()}${bg.unit} × ${(p.cat1.percentage/100).toFixed(2)} = ${amt1.toLocaleString()}${bg.unit}</li></ol><p><strong>答案：</strong> <span class="highlight" style="font-size: 1.3rem;">${amt1.toLocaleString()}${bg.unit}</span></p>`;
+                    break;
+                case 'ratio':
+                    answer = parseFloat(ratio);
+                    qText = `下面的饼图显示了${bg.intro}。${p.cat1.name}是${p.cat2.name}的多少倍？`;
+                    expl = `<p><strong>解题步骤：</strong></p><ol style="padding-left: 20px; margin-top: 10px;"><li>${p.cat1.name} = ${p.cat1.percentage}%</li><li>${p.cat2.name} = ${p.cat2.percentage}%</li><li>倍数：${p.cat1.percentage}% ÷ ${p.cat2.percentage}% = ${ratio}倍</li></ol><p><strong>答案：</strong> <span class="highlight" style="font-size: 1.3rem;">${ratio}倍</span></p>`;
+                    break;
+                case 'totalFromCategory':
+                    const catAmt = Math.round(p.total * p.cat1.percentage / 100 * 100) / 100;
+                    answer = p.total;
+                    qText = `下面的饼图显示了${bg.intro}。如果${p.cat1.name}是 <span class="highlight">${catAmt.toLocaleString()}${bg.unit}</span>，那么总数是多少？`;
+                    expl = `<p><strong>解题步骤：</strong></p><ol style="padding-left: 20px; margin-top: 10px;"><li>${p.cat1.name}的百分比：${p.cat1.percentage}%</li><li>${catAmt.toLocaleString()}${bg.unit} ÷ ${(p.cat1.percentage/100).toFixed(2)} = ${p.total.toLocaleString()}${bg.unit}</li></ol><p><strong>答案：</strong> <span class="highlight" style="font-size: 1.3rem;">${p.total.toLocaleString()}${bg.unit}</span></p>`;
+                    break;
+                case 'findMax':
+                    answer = maxAmt;
+                    qText = `下面的饼图显示了${bg.intro}。如果总数是 <span class="highlight">${p.total.toLocaleString()}${bg.unit}</span>，那么占比最大的是什么？数值是多少？`;
+                    expl = `<p><strong>解题步骤：</strong></p><ol style="padding-left: 20px; margin-top: 10px;"><li>最大类别：${max.label} = ${max.percentage}%</li><li>${p.total.toLocaleString()}${bg.unit} × ${(max.percentage/100).toFixed(2)} = ${maxAmt.toLocaleString()}${bg.unit}</li></ol><p><strong>答案：</strong> <span class="highlight" style="font-size: 1.3rem;">${max.label}（${maxAmt.toLocaleString()}${bg.unit}）</span></p>`;
+                    break;
             }
+            return { qText, answer, expl, unit: bg.unit };
+        }
 
-            function initPieChart() {
-                const params = questionParams[currentParamIndex];
-                const svg = document.querySelector('.pie-chart-svg');
-                svg.innerHTML = '';
-
-                const cx = 50, cy = 50, r = 40;
-                let currentAngle = -Math.PI / 2; // Start from top (12 o'clock)
-
-                params.pieData.forEach(item => {
-                    // Calculate the angle for this segment
-                    const segmentAngle = (item.percentage / 100) * 2 * Math.PI;
-
-                    // Calculate start and end points
-                    const x1 = cx + r * Math.cos(currentAngle);
-                    const y1 = cy + r * Math.sin(currentAngle);
-                    const x2 = cx + r * Math.cos(currentAngle + segmentAngle);
-                    const y2 = cy + r * Math.sin(currentAngle + segmentAngle);
-
-                    // Determine if this is a large arc (> 180 degrees)
-                    const largeArcFlag = segmentAngle > Math.PI ? 1 : 0;
-
-                    // Create the path for the pie sector
-                    const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-                    const d = `M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 ${largeArcFlag} 1 ${x2} ${y2} Z`;
-                    path.setAttribute('d', d);
-                    path.setAttribute('fill', item.color);
-                    path.setAttribute('class', 'pie-segment');
-                    path.setAttribute('data-label', item.label);
-                    path.setAttribute('data-percentage', item.percentage);
-                    path.style.transition = 'transform 0.2s, filter 0.2s';
-                    path.style.transformOrigin = 'center';
-
-                    path.addEventListener('mouseenter', function() {
-                        this.style.transform = 'scale(1.05)';
-                        this.style.filter = 'brightness(1.1)';
-                        const label = this.getAttribute('data-label');
-                        document.querySelectorAll('.legend-item').forEach(legendItem => {
-                            if (legendItem.querySelector('.legend-label').textContent === label) {
-                                legendItem.style.backgroundColor = '#eef5fc';
-                                legendItem.style.transform = 'scale(1.05)';
-                            }
-                        });
-                    });
-
-                    path.addEventListener('mouseleave', function() {
-                        this.style.transform = 'scale(1)';
-                        this.style.filter = 'brightness(1)';
-                        document.querySelectorAll('.legend-item').forEach(legendItem => {
-                            legendItem.style.backgroundColor = '';
-                            legendItem.style.transform = '';
-                        });
-                    });
-
-                    svg.appendChild(path);
-                    currentAngle += segmentAngle;
-                });
+        function generateOptions(answer, type, unit) {
+            const letters = ['A', 'B', 'C', 'D'];
+            let distractors;
+            if (type === 'ratio') {
+                distractors = [parseFloat((answer * 0.6).toFixed(2)), parseFloat((answer * 1.4).toFixed(2)), parseFloat((answer * 0.8).toFixed(2))];
+            } else {
+                distractors = [Math.round(answer * 0.88 * 100) / 100, Math.round(answer * 1.12 * 100) / 100, Math.round(answer * 0.76 * 100) / 100];
             }
+            const allVals = [answer, ...distractors];
+            const shuffled = [0, 1, 2, 3].sort(() => Math.random() - 0.5);
+            return shuffled.map((vi, oi) => ({
+                letter: letters[oi],
+                text: type === 'ratio' ? allVals[vi].toFixed(2) + "倍" : allVals[vi].toLocaleString() + unit,
+                value: allVals[vi],
+                isCorrect: vi === 0
+            }));
+        }
 
-            function bindOptionEvents() {
-                document.querySelectorAll('.option').forEach(option => {
-                    option.addEventListener('click', function() {
-                        if (isSubmitted) return;
+        function renderQuestion() {
+            const q = generateQuestion();
+            const opts = generateOptions(q.answer, currentType, q.unit);
+            document.getElementById('questionContent').innerHTML = `<p>${q.qText}</p>`;
+            document.getElementById('pieLegend').innerHTML = currentParams.pieData.map(item =>
+                `<div class="legend-item"><div class="legend-color" style="background-color: ${item.color};"></div><div class="legend-label">${item.label}</div><div class="legend-percentage">${item.percentage}%</div></div>`
+            ).join('');
+            document.getElementById('optionsContainer').innerHTML = opts.map(o =>
+                `<div class="option" data-value="${o.value}" data-correct="${o.isCorrect}"><div class="option-letter">${o.letter}</div><div class="option-text">${o.text}</div></div>`
+            ).join('');
+            document.getElementById('feedbackContent').innerHTML = q.expl;
+            initPieChart();
+            bindOptionEvents();
+        }
 
-                        document.querySelectorAll('.option').forEach(opt => {
-                            opt.classList.remove('selected');
-                        });
-
-                        this.classList.add('selected');
-                        selectedOption = this;
-                    });
+        function initPieChart() {
+            const svg = document.querySelector('.pie-chart-svg');
+            svg.innerHTML = '';
+            const cx = 50, cy = 50, r = 40;
+            let angle = -Math.PI / 2;
+            currentParams.pieData.forEach(item => {
+                const segAngle = (item.percentage / 100) * 2 * Math.PI;
+                const x1 = cx + r * Math.cos(angle), y1 = cy + r * Math.sin(angle);
+                const x2 = cx + r * Math.cos(angle + segAngle), y2 = cy + r * Math.sin(angle + segAngle);
+                const largeArc = segAngle > Math.PI ? 1 : 0;
+                const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+                path.setAttribute('d', `M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 ${largeArc} 1 ${x2} ${y2} Z`);
+                path.setAttribute('fill', item.color);
+                path.setAttribute('class', 'pie-segment');
+                path.setAttribute('data-label', item.label);
+                path.style.transition = 'transform 0.2s, filter 0.2s';
+                path.style.transformOrigin = 'center';
+                path.addEventListener('mouseenter', function() {
+                    this.style.transform = 'scale(1.05)';
+                    this.style.filter = 'brightness(1.1)';
                 });
-            }
-
-            function refreshParams() {
-                let newIndex;
-                do {
-                    newIndex = Math.floor(Math.random() * questionParams.length);
-                } while (newIndex === currentParamIndex && questionParams.length > 1);
-
-                currentParamIndex = newIndex;
-                selectedOption = null;
-                isSubmitted = false;
-
-                // 重置选项样式
-                document.querySelectorAll('.option').forEach(option => {
-                    option.classList.remove('selected', 'correct', 'incorrect');
-                    option.style.cursor = 'pointer';
+                path.addEventListener('mouseleave', function() {
+                    this.style.transform = 'scale(1)';
+                    this.style.filter = 'brightness(1)';
                 });
-
-                // 隐藏反馈和得分
-                document.getElementById('feedbackContainer').classList.remove('show');
-                document.getElementById('scoreContainer').classList.remove('show');
-
-                // 隐藏解析按钮和解析
-                document.getElementById('show-explanation-btn').style.display = 'none';
-                document.getElementById('explanationSection').style.display = 'none';
-
-                // 重新渲染
-                renderQuestion();
-            }
-
-            // ==================== 事件处理 ====================
-
-            // 刷新参数按钮
-            document.getElementById('refreshParamsBtn').addEventListener('click', function() {
-                refreshParams();
+                svg.appendChild(path);
+                angle += segAngle;
             });
+        }
 
-            // 提交答案
-            document.getElementById('submitBtn').addEventListener('click', function() {
-                if (!selectedOption) {
-                    alert('请先选择一个答案！');
-                    return;
-                }
-
-                isSubmitted = true;
-
-                document.querySelectorAll('.option').forEach(option => {
-                    if (option.classList.contains('selected') && option.dataset.correct === 'false') {
-                        option.classList.add('incorrect');
-                    }
-                    option.style.cursor = 'default';
+        function bindOptionEvents() {
+            document.querySelectorAll('.option').forEach(opt => {
+                opt.addEventListener('click', function() {
+                    if (isSubmitted) return;
+                    document.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+                    this.classList.add('selected');
+                    selectedOption = this;
                 });
-
-                const scoreContainer = document.getElementById('scoreContainer');
-                const scoreValue = document.getElementById('scoreValue');
-                const scoreMessage = document.getElementById('scoreMessage');
-
-                const isCorrect = selectedOption.dataset.correct === 'true';
-                const score = isCorrect ? 1 : 0;
-
-                scoreValue.textContent = `${score}/1`;
-                scoreMessage.innerHTML = isCorrect
-                    ? '<p><i class="fas fa-check-circle"></i> 回答正确！</p>'
-                    : '<p><i class="fas fa-times-circle"></i> 回答错误。</p>';
-
-                scoreContainer.classList.add('show');
-
-                document.getElementById('show-explanation-btn').style.display = 'inline-block';
-                scoreContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             });
+        }
 
-            // 重置答题
-            document.getElementById('resetBtn').addEventListener('click', function() {
-                selectedOption = null;
-                isSubmitted = false;
+        function refreshParams() {
+            const totalCombos = bgKeys.length * questionTypes.length * 10;
+            let combo, attempts = 0;
+            do {
+                const bgIdx = Math.floor(Math.random() * bgKeys.length);
+                const typeIdx = Math.floor(Math.random() * questionTypes.length);
+                const paramIdx = Math.floor(Math.random() * 10);
+                combo = `${bgIdx}-${typeIdx}-${paramIdx}`;
+                attempts++;
+            } while (usedCombinations.has(combo) && attempts < 200 && usedCombinations.size < totalCombos);
+            if (usedCombinations.size >= totalCombos) usedCombinations.clear();
+            usedCombinations.add(combo);
 
-                document.querySelectorAll('.option').forEach(option => {
-                    option.classList.remove('selected', 'correct', 'incorrect');
-                    option.style.cursor = 'pointer';
-                });
+            const [bi, ti, pi] = combo.split('-').map(Number);
+            currentBg = bgKeys[bi];
+            currentType = questionTypes[ti];
+            currentParams = datasets[currentBg][pi];
+            selectedOption = null;
+            isSubmitted = false;
 
-                document.getElementById('feedbackContainer').classList.remove('show');
-                document.getElementById('scoreContainer').classList.remove('show');
-                document.getElementById('show-explanation-btn').style.display = 'none';
-                document.getElementById('explanationSection').style.display = 'none';
-            });
-
-            // 显示答案解析按钮点击事件
-            document.getElementById('show-explanation-btn').addEventListener('click', function() {
-                const explanation = document.getElementById('explanationSection');
-                if (explanation.style.display === 'none' || explanation.style.display === '') {
-                    explanation.style.display = 'block';
-                    this.textContent = '隐藏答案解析';
-                } else {
-                    explanation.style.display = 'none';
-                    this.textContent = '查看答案解析';
-                }
-            });
-
-            // ==================== 初始化 ====================
+            document.querySelectorAll('.option').forEach(o => o.classList.remove('selected', 'correct', 'incorrect'));
+            document.getElementById('feedbackContainer').classList.remove('show');
+            document.getElementById('scoreContainer').classList.remove('show');
+            document.getElementById('show-explanation-btn').style.display = 'none';
+            document.getElementById('explanationSection').style.display = 'none';
             renderQuestion();
+        }
+
+        document.getElementById('refreshParamsBtn').addEventListener('click', refreshParams);
+        document.getElementById('submitBtn').addEventListener('click', function() {
+            if (!selectedOption) { alert('请先选择一个答案！'); return; }
+            isSubmitted = true;
+            document.querySelectorAll('.option').forEach(o => {
+                if (o.classList.contains('selected') && o.dataset.correct === 'false') o.classList.add('incorrect');
+                o.style.cursor = 'default';
+            });
+            const correct = selectedOption.dataset.correct === 'true';
+            document.getElementById('scoreValue').textContent = correct ? '1/1' : '0/1';
+            document.getElementById('scoreMessage').innerHTML = correct ? '<p><i class="fas fa-check-circle"></i> 回答正确！</p>' : '<p><i class="fas fa-times-circle"></i> 回答错误。</p>';
+            document.getElementById('scoreContainer').classList.add('show');
+            document.getElementById('show-explanation-btn').style.display = 'inline-block';
         });
+        document.getElementById('resetBtn').addEventListener('click', function() {
+            selectedOption = null; isSubmitted = false;
+            document.querySelectorAll('.option').forEach(o => { o.classList.remove('selected', 'correct', 'incorrect'); o.style.cursor = 'pointer'; });
+            document.getElementById('feedbackContainer').classList.remove('show');
+            document.getElementById('scoreContainer').classList.remove('show');
+            document.getElementById('show-explanation-btn').style.display = 'none';
+            document.getElementById('explanationSection').style.display = 'none';
+        });
+        document.getElementById('show-explanation-btn').addEventListener('click', function() {
+            const sec = document.getElementById('explanationSection');
+            if (sec.style.display === 'none' || sec.style.display === '') { sec.style.display = 'block'; this.textContent = '隐藏答案解析'; }
+            else { sec.style.display = 'none'; this.textContent = '查看答案解析'; }
+        });
+
+        currentBg = 'family'; currentType = 'sum'; currentParams = datasets.family[0];
+        usedCombinations.add('0-0-0');
+        renderQuestion();
+    });
     </script>
 </body>
 </html>

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>Canvas Drawing Test</title>
+</head>
+<body>
+    <h1>Canvas Drawing Feature Test</h1>
+    <div id="test-results"></div>
+
+    <h2>Live Canvas Test</h2>
+    <div style="position: relative; width: 600px; height: 400px; background-color: white; border: 1px solid #e0e7ee; border-radius: 10px; margin: 20px 0;">
+        <canvas id="test-canvas" width="600" height="400" style="position: absolute; top: 0; left: 0;"></canvas>
+    </div>
+    <div id="feedback">Click on the canvas to add points</div>
+    <button id="clear-btn">Clear</button>
+    <button id="answer-btn">Show Answer</button>
+
+    <script>
+        const results = [];
+
+        // Test 1: Canvas element exists
+        const canvas = document.getElementById('test-canvas');
+        results.push({
+            test: 'Canvas element exists',
+            pass: !!canvas
+        });
+
+        // Test 2: Canvas context available
+        const ctx = canvas ? canvas.getContext('2d') : null;
+        results.push({
+            test: 'Canvas 2D context available',
+            pass: !!ctx
+        });
+
+        // Test 3: Drawing parameters
+        const pad = {top: 30, right: 30, bottom: 50, left: 60};
+        const w = canvas.width - pad.left - pad.right;
+        const h = canvas.height - pad.top - pad.bottom;
+        results.push({
+            test: 'Drawing area dimensions valid',
+            pass: w > 0 && h > 0
+        });
+
+        // Test 4: Coordinate transformation
+        function toCanvas(dx, dy) {
+            return {
+                x: pad.left + (dx / 250) * w,
+                y: pad.top + (1 - dy) * h
+            };
+        }
+        const testPoint = toCanvas(0, 0);
+        results.push({
+            test: 'Origin transformation (0,0) -> canvas coords',
+            pass: testPoint.x === pad.left && Math.abs(testPoint.y - (pad.top + h)) < 0.01
+        });
+
+        const testPoint2 = toCanvas(250, 1);
+        results.push({
+            test: 'Max transformation (250,1) -> canvas coords',
+            pass: testPoint2.x === (pad.left + w) && testPoint2.y === pad.top
+        });
+
+        // Test 5: Draw axes
+        function drawAxes() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#fafbfc';
+            ctx.fillRect(pad.left, pad.top, w, h);
+            ctx.strokeStyle = '#e0e7ee';
+            ctx.lineWidth = 1;
+            for (let i = 0; i <= 5; i++) {
+                const vx = pad.left + (i / 5) * w;
+                ctx.beginPath();
+                ctx.moveTo(vx, pad.top);
+                ctx.lineTo(vx, canvas.height - pad.bottom);
+                ctx.stroke();
+                const vy = pad.top + (i / 5) * h;
+                ctx.beginPath();
+                ctx.moveTo(pad.left, vy);
+                ctx.lineTo(canvas.width - pad.right, vy);
+                ctx.stroke();
+            }
+            ctx.strokeStyle = '#7f8c8d';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(pad.left, pad.top);
+            ctx.lineTo(pad.left, canvas.height - pad.bottom);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(pad.left, canvas.height - pad.bottom);
+            ctx.lineTo(canvas.width - pad.right, canvas.height - pad.bottom);
+            ctx.stroke();
+            ctx.fillStyle = '#7f8c8d';
+            ctx.font = '12px sans-serif';
+            ctx.textAlign = 'center';
+            for (let i = 0; i <= 5; i++) {
+                const x = pad.left + (i / 5) * w;
+                ctx.fillText((i * 50).toString(), x, canvas.height - pad.bottom + 20);
+            }
+            ctx.textAlign = 'right';
+            for (let i = 0; i <= 5; i++) {
+                const y = canvas.height - pad.bottom - (i / 5) * h;
+                ctx.fillText((i / 5).toFixed(2), pad.left - 10, y + 4);
+            }
+        }
+
+        try {
+            drawAxes();
+            results.push({ test: 'drawAxes() executes without error', pass: true });
+        } catch (e) {
+            results.push({ test: 'drawAxes() executes without error', pass: false, error: e.message });
+        }
+
+        // Test 6: Point drawing
+        let points = [];
+        function drawPoints() {
+            if (points.length === 0) return;
+            const sorted = [...points].sort((a, b) => a.x - b.x);
+            if (sorted.length > 1) {
+                ctx.strokeStyle = '#3498db';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                let c = toCanvas(sorted[0].x, sorted[0].y);
+                ctx.moveTo(c.x, c.y);
+                for (let i = 1; i < sorted.length; i++) {
+                    c = toCanvas(sorted[i].x, sorted[i].y);
+                    ctx.lineTo(c.x, c.y);
+                }
+                ctx.stroke();
+            }
+            sorted.forEach(p => {
+                const c = toCanvas(p.x, p.y);
+                ctx.fillStyle = '#3498db';
+                ctx.beginPath();
+                ctx.arc(c.x, c.y, 6, 0, Math.PI * 2);
+                ctx.fill();
+            });
+        }
+
+        points = [{x: 50, y: 0.12}, {x: 100, y: 0.44}];
+        try {
+            drawPoints();
+            results.push({ test: 'drawPoints() executes without error', pass: true });
+        } catch (e) {
+            results.push({ test: 'drawPoints() executes without error', pass: false, error: e.message });
+        }
+
+        // Display results
+        const resultsDiv = document.getElementById('test-results');
+        let html = '<table border="1" cellpadding="10"><tr><th>Test</th><th>Result</th></tr>';
+        results.forEach(r => {
+            html += `<tr style="background-color: ${r.pass ? '#d4edda' : '#f8d7da'}">
+                <td>${r.test}</td>
+                <td>${r.pass ? 'PASS' : 'FAIL'} ${r.error || ''}</td>
+            </tr>`;
+        });
+        html += '</table>';
+        resultsDiv.innerHTML = html;
+
+        // Interactive test
+        points = [];
+        let showAnswer = false;
+        const correctPoints = [
+            {x: 0, y: 0},
+            {x: 50, y: 0.12},
+            {x: 100, y: 0.44},
+            {x: 150, y: 0.80},
+            {x: 200, y: 0.92},
+            {x: 250, y: 1.00}
+        ];
+
+        function redraw() {
+            drawAxes();
+            drawPoints();
+            if (showAnswer) {
+                ctx.strokeStyle = '#27ae60';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([5, 5]);
+                ctx.beginPath();
+                let c = toCanvas(correctPoints[0].x, correctPoints[0].y);
+                ctx.moveTo(c.x, c.y);
+                for (let i = 1; i < correctPoints.length; i++) {
+                    c = toCanvas(correctPoints[i].x, correctPoints[i].y);
+                    ctx.lineTo(c.x, c.y);
+                }
+                ctx.stroke();
+                ctx.setLineDash([]);
+                correctPoints.forEach(p => {
+                    const cc = toCanvas(p.x, p.y);
+                    ctx.fillStyle = '#27ae60';
+                    ctx.beginPath();
+                    ctx.arc(cc.x, cc.y, 6, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+            }
+        }
+
+        function toData(cx, cy) {
+            return {
+                x: Math.round(((cx - pad.left) / w) * 250),
+                y: Math.max(0, Math.min(1, 1 - (cy - pad.top) / h))
+            };
+        }
+
+        redraw();
+
+        canvas.addEventListener('click', function(e) {
+            const rect = canvas.getBoundingClientRect();
+            const cx = (e.clientX - rect.left) * (canvas.width / rect.width);
+            const cy = (e.clientY - rect.top) * (canvas.height / rect.height);
+
+            if (cx >= pad.left && cx <= canvas.width - pad.right &&
+                cy >= pad.top && cy <= canvas.height - pad.bottom) {
+                const data = toData(cx, cy);
+                points.push(data);
+                document.getElementById('feedback').textContent =
+                    `Added point (${data.x}, ${data.y.toFixed(2)}). Total: ${points.length} points`;
+                redraw();
+            }
+        });
+
+        document.getElementById('clear-btn').addEventListener('click', function() {
+            points = [];
+            showAnswer = false;
+            redraw();
+            document.getElementById('feedback').textContent = 'Cleared. Click to add points';
+        });
+
+        document.getElementById('answer-btn').addEventListener('click', function() {
+            showAnswer = !showAnswer;
+            this.textContent = showAnswer ? 'Hide Answer' : 'Show Answer';
+            redraw();
+        });
+
+        console.log('All tests completed. Check the table above for results.');
+    </script>
+</body>
+</html>

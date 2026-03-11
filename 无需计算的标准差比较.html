@@ -70,25 +70,32 @@
         }
 
         .histogram-container {
-            display: flex;
-            flex-direction: column;
-            gap: 40px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
             margin: 30px 0;
         }
 
+        @media (max-width: 900px) {
+            .histogram-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
         .histogram {
-            background-color: #f8fbff;
+            background-color: white;
             border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 4px 12px rgba(0, 66, 153, 0.05);
+            padding: 15px;
+            box-shadow: 0 4px 12px rgba(0, 66, 153, 0.08);
+            border: 1px solid #e0e0e0;
         }
 
         .histogram-title {
             font-weight: bold;
             color: #3366cc;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             text-align: center;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
         }
 
         .histogram-bars {
@@ -96,63 +103,80 @@
             align-items: flex-end;
             justify-content: center;
             height: 180px;
-            padding: 0 10px;
+            gap: 2px;
+            padding: 10px 5px;
+            padding-bottom: 25px;
+            border-bottom: 2px solid #333;
+            border-left: 2px solid #333;
             position: relative;
-            margin-bottom: 15px;
+            background-color: #e8f5e9;
         }
 
-        .bar {
-            width: 30px;
-            margin: 0 3px;
-            border-radius: 4px 4px 0 0;
-            transition: all 0.3s ease;
+        .bar-column {
+            display: flex;
+            flex-direction: column-reverse;
+            align-items: center;
+            width: 22px;
             position: relative;
+        }
+
+        .square {
+            width: 20px;
+            height: 20px;
+            background-color: #b39ddb;
+            border: 1px solid #7e57c2;
+            margin-top: 2px;
         }
 
         .bar-label {
             position: absolute;
-            bottom: -25px;
-            left: 0;
-            width: 100%;
+            bottom: -20px;
+            font-size: 0.7rem;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .bar-column:hover .square {
+            background-color: #9575cd;
+        }
+
+        .histogram-a .square { background-color: #4d94ff; border-color: #1a75ff; }
+        .histogram-b .square { background-color: #66b3ff; border-color: #3399ff; }
+        .histogram-c .square { background-color: #99ccff; border-color: #66b3ff; }
+
+        .histogram-a .bar-column:hover .square { background-color: #1a75ff; }
+        .histogram-b .bar-column:hover .square { background-color: #3399ff; }
+        .histogram-c .bar-column:hover .square { background-color: #66b3ff; }
+
+        .answer-display {
+            font-size: 1.5rem;
             text-align: center;
-            font-size: 0.9rem;
-            color: #666;
+            padding: 15px;
+            background-color: #e6f0ff;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-weight: bold;
+            color: #0052cc;
+            display: none;
         }
-
-        .mean-line {
-            position: absolute;
-            width: 100%;
-            height: 2px;
-            background-color: #ff6600;
-            z-index: 10;
-            left: 0;
-        }
-
-        .mean-label {
-            position: absolute;
-            background-color: #ff6600;
-            color: white;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            top: -30px;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
-        .histogram-a .bar { background-color: #4d94ff; }
-        .histogram-b .bar { background-color: #66b3ff; }
-        .histogram-c .bar { background-color: #99ccff; }
-
-        .histogram-a .bar:hover { background-color: #1a75ff; }
-        .histogram-b .bar:hover { background-color: #3399ff; }
-        .histogram-c .bar:hover { background-color: #66b3ff; }
 
         .options-container {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
             margin: 30px 0;
+        }
+
+        @media (max-width: 900px) {
+            .options-container {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .options-container {
+                grid-template-columns: 1fr;
+            }
         }
 
         .option-card {
@@ -212,32 +236,6 @@
         .feedback h3 {
             margin-bottom: 10px;
             color: #333;
-        }
-
-        .stats {
-            display: flex;
-            justify-content: space-around;
-            background-color: #f0f7ff;
-            padding: 20px;
-            border-radius: 10px;
-            margin: 25px 0;
-            text-align: center;
-        }
-
-        .stat-item {
-            flex: 1;
-        }
-
-        .stat-value {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: #0052cc;
-        }
-
-        .stat-label {
-            color: #6699ff;
-            font-size: 0.9rem;
-            margin-top: 5px;
         }
 
         .buttons-container {
@@ -315,34 +313,25 @@
             .container {
                 padding: 20px;
             }
-            
+
             h1 {
                 font-size: 1.8rem;
             }
-            
-            .options-container {
-                grid-template-columns: 1fr;
-            }
-            
+
             .histogram-bars {
                 height: 150px;
             }
-            
+
             .bar {
                 width: 20px;
             }
-            
+
             .buttons-container {
                 flex-direction: column;
             }
-            
+
             button {
                 width: 100%;
-            }
-            
-            .stats {
-                flex-direction: column;
-                gap: 20px;
             }
         }
     </style>
@@ -384,36 +373,30 @@
                 <button class="refresh-btn" id="refresh-btn" style="background-color: #34a853; color: white; padding: 8px 16px; font-size: 0.9rem; border-radius: 6px; margin-left: auto; border: none; cursor: pointer;">刷新参数</button>
             </h2>
             <div class="question-text">
-                <p>三个分布，分别标记为 <strong>(a)</strong>、<strong>(b)</strong> 和 <strong>(c)</strong>，由下面的直方图表示。每个分布都是对称的，并且由 10 次测量值组成。在不进行任何计算的情况下，对它们各自的标准差 σ<sub>a</sub>、σ<sub>b</sub> 和 σ<sub>c</sub> 进行排序。</p>
-                <p>分布的标准差是其"离散程度"的度量。测量值倾向于离均值越远，标准差就越大。</p>
-                <p>本题中的分布关于相同的值 <span class="math" id="param-mean" style="font-weight: bold; color: #d23c3c;">8</span> 对称。因此，每个分布的均值都是 <span class="math" id="param-mean2" style="font-weight: bold; color: #d23c3c;">8</span>。</p>
+                <p>三个分布，分别标记为 <strong>(a)</strong>、<strong>(b)</strong> 和 <strong>(c)</strong>，由下面的直方图表示。每个分布都由 <span id="count-total">12</span> 次测量值组成。在不进行任何计算的情况下，对它们各自的标准差 σ<sub>a</sub>、σ<sub>b</sub> 和 σ<sub>c</sub> 进行排序。</p>
+
+                <p>本题中的直方图使用方块来表示数据集中的值及其频数。位于某个值上的方块代表一次具有该值的测量。</p>
             </div>
 
             <div class="histogram-container">
                 <div class="histogram histogram-a">
                     <div class="histogram-title">分布 (a)</div>
                     <div class="histogram-bars" id="histogram-a">
-                        <!-- 直方图条将通过JS生成 -->
-                        <div class="mean-line" style="bottom: 50%;"></div>
-                        <div class="mean-label" style="top: 50%; transform: translate(-50%, -100%);">均值 = 8</div>
+                        <!-- 直方图方块将通过JS生成 -->
                     </div>
                 </div>
-                
+
                 <div class="histogram histogram-b">
                     <div class="histogram-title">分布 (b)</div>
                     <div class="histogram-bars" id="histogram-b">
-                        <!-- 直方图条将通过JS生成 -->
-                        <div class="mean-line" style="bottom: 50%;"></div>
-                        <div class="mean-label" style="top: 50%; transform: translate(-50%, -100%);">均值 = 8</div>
+                        <!-- 直方图方块将通过JS生成 -->
                     </div>
                 </div>
-                
+
                 <div class="histogram histogram-c">
                     <div class="histogram-title">分布 (c)</div>
                     <div class="histogram-bars" id="histogram-c">
-                        <!-- 直方图条将通过JS生成 -->
-                        <div class="mean-line" style="bottom: 50%;"></div>
-                        <div class="mean-label" style="top: 50%; transform: translate(-50%, -100%);">均值 = 8</div>
+                        <!-- 直方图方块将通过JS生成 -->
                     </div>
                 </div>
             </div>
@@ -438,26 +421,17 @@
                 <div class="option-card" data-answer="4">
                     σ<sub>c</sub> < σ<sub>b</sub> < σ<sub>a</sub>
                 </div>
+                <div class="option-card" data-answer="5">
+                    σ<sub>a</sub> < σ<sub>c</sub> < σ<sub>b</sub>
+                </div>
+                <div class="option-card" data-answer="6">
+                    σ<sub>b</sub> < σ<sub>c</sub> < σ<sub>a</sub>
+                </div>
             </div>
 
             <div class="feedback" id="feedback">
                 <h3 id="feedback-title"></h3>
                 <p id="feedback-text"></p>
-            </div>
-
-            <div class="stats">
-                <div class="stat-item">
-                    <div class="stat-value" id="score">0</div>
-                    <div class="stat-label">得分</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value" id="attempts">0</div>
-                    <div class="stat-label">尝试次数</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value" id="accuracy">0%</div>
-                    <div class="stat-label">正确率</div>
-                </div>
             </div>
 
             <div class="buttons-container">
@@ -488,63 +462,191 @@
 
     <script>
         // Parameter sets for different histogram configurations
+        // 每个数组代表x=1到12各值的频数，每组三个分布的测量值总数相同
         const parameterSets = [
+            // === 1. 对称分布类 (各12个) - Option 5 ===
             {
-                mean: 8,
-                histogramA: [1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1], // 分布在4-12之间
-                histogramB: [0, 0, 0, 1, 2, 3, 4, 4, 3, 2, 1, 0, 0, 0], // 分布在6-10之间
-                histogramC: [0, 0, 0, 0, 0, 1, 4, 4, 1, 0, 0, 0, 0, 0],  // 集中在7-9之间
+                histogramA: [0, 0, 0, 0, 0, 6, 6, 0, 0, 0, 0, 0], // 最集中 = 12
+                histogramB: [0, 0, 1, 2, 2, 2, 2, 2, 1, 0, 0, 0], // 宽钟形 = 12
+                histogramC: [0, 0, 0, 0, 2, 4, 4, 2, 0, 0, 0, 0], // 窄钟形 = 12
+                correctAnswer: 5, // σa < σc < σb
+                correctAnswerText: 'σ<sub>a</sub> < σ<sub>c</sub> < σ<sub>b</sub>',
+                feedbackCorrect: '太棒了！分布(a)数据完全集中在两个相邻值上，离散程度最小；分布(b)数据分布在更大的范围内，离散程度最大。',
+                feedbackIncorrect: '提示：数据越集中在均值附近，标准差越小。分布(a)最集中，(c)次之，(b)最分散。'
+            },
+            // === 2. 均匀分布 vs 集中分布 (各12个) - Option 4 ===
+            {
+                histogramA: [0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2], // 完全均匀 = 12
+                histogramB: [0, 0, 0, 0, 2, 4, 4, 2, 0, 0, 0, 0], // 钟形 = 12
+                histogramC: [0, 0, 0, 0, 0, 6, 6, 0, 0, 0, 0, 0], // 集中 = 12
                 correctAnswer: 4, // σc < σb < σa
                 correctAnswerText: 'σ<sub>c</sub> < σ<sub>b</sub> < σ<sub>a</sub>',
-                feedbackCorrect: '太棒了！你正确判断出分布(c)的离散程度最小，分布(a)的离散程度最大。标准差排序为：σc < σb < σa。',
-                feedbackIncorrect: '请仔细观察直方图：分布(c)的数据最集中（集中在7-9），分布(b)次之（分布在6-10），分布(a)最分散（分布在4-12）。因此标准差排序应为：σc < σb < σa。'
+                feedbackCorrect: '完全正确！均匀分布(a)的离散程度最大，因为它没有集中趋势；分布(c)最集中。',
+                feedbackIncorrect: '观察要点：均匀分布的离散程度最大。分布(a)是均匀分布，(c)最集中，(b)介于两者之间。'
             },
+            // === 3. 双峰分布类 (各12个) - Option 2 ===
             {
-                mean: 10,
-                histogramA: [0, 0, 0, 0, 1, 2, 4, 4, 2, 1, 0, 0, 0, 0], // 集中在8-12
-                histogramB: [1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1, 1], // 分布在6-14
-                histogramC: [0, 0, 0, 0, 0, 0, 2, 5, 2, 0, 0, 0, 0, 0],  // 集中在9-11
-                correctAnswer: 3, // σc < σa < σb
-                correctAnswerText: 'σ<sub>c</sub> < σ<sub>a</sub> < σ<sub>b</sub>',
-                feedbackCorrect: '太棒了！你正确判断出分布(c)的离散程度最小，分布(b)的离散程度最大。标准差排序为：σc < σa < σb。',
-                feedbackIncorrect: '请仔细观察直方图：分布(c)的数据最集中（集中在9-11），分布(a)次之（分布在8-12），分布(b)最分散（分布在6-14）。因此标准差排序应为：σc < σa < σb。'
-            },
-            {
-                mean: 7,
-                histogramA: [0, 0, 0, 0, 0, 0, 3, 4, 3, 0, 0, 0, 0, 0], // 集中在7-9
-                histogramB: [0, 0, 0, 0, 0, 0, 0, 4, 4, 1, 0, 0, 0, 0],  // 集中在8-10
-                histogramC: [0, 1, 2, 2, 3, 3, 3, 3, 3, 2, 2, 1, 0, 0], // 分布在3-12
+                histogramA: [0, 0, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0], // 平顶分布 = 12
+                histogramB: [0, 0, 0, 0, 0, 6, 6, 0, 0, 0, 0, 0], // 单峰集中 = 12
+                histogramC: [0, 3, 3, 0, 0, 0, 0, 0, 3, 3, 0, 0], // 双峰分布 = 12
                 correctAnswer: 2, // σb < σa < σc
                 correctAnswerText: 'σ<sub>b</sub> < σ<sub>a</sub> < σ<sub>c</sub>',
-                feedbackCorrect: '太棒了！你正确判断出分布(b)的离散程度最小，分布(c)的离散程度最大。标准差排序为：σb < σa < σc。',
-                feedbackIncorrect: '请仔细观察直方图：分布(b)的数据最集中（集中在8-10），分布(a)次之（分布在7-9），分布(c)最分散（分布在3-12）。因此标准差排序应为：σb < σa < σc。'
+                feedbackCorrect: '正确！双峰分布(c)的数据分散在两端的峰上，离散程度最大；单峰分布(b)最集中。',
+                feedbackIncorrect: '关键点：双峰分布的数据分散在两个位置，标准差较大。分布(b)最集中，(a)中等，(c)的双峰使其最分散。'
             },
+            // === 4. 右偏分布类 (各12个) - Option 1 ===
             {
-                mean: 9,
-                histogramA: [0, 0, 1, 2, 3, 4, 4, 3, 2, 1, 0, 0, 0, 0], // 分布在5-11
-                histogramB: [0, 0, 0, 0, 0, 0, 0, 0, 4, 4, 1, 0, 0, 0],  // 集中在10-12
-                histogramC: [0, 0, 0, 0, 0, 0, 2, 4, 2, 1, 0, 0, 0, 0], // 集中在8-11
-                correctAnswer: 1, // σb < σc < σa
-                correctAnswerText: 'σ<sub>b</sub> < σ<sub>c</sub> < σ<sub>a</sub>',
-                feedbackCorrect: '太棒了！你正确判断出分布(b)的离散程度最小，分布(a)的离散程度最大。标准差排序为：σb < σc < σa。',
-                feedbackIncorrect: '请仔细观察直方图：分布(b)的数据最集中（集中在10-12），分布(c)次之（分布在8-11），分布(a)最分散（分布在5-11）。因此标准差排序应为：σb < σc < σa。'
+                histogramA: [0, 0, 0, 0, 0, 6, 6, 0, 0, 0, 0, 0], // 近对称 = 12
+                histogramB: [0, 0, 0, 2, 3, 3, 2, 2, 0, 0, 0, 0], // 轻微右偏 = 12
+                histogramC: [0, 4, 3, 2, 2, 1, 0, 0, 0, 0, 0, 0], // 右偏 = 12
+                correctAnswer: 1, // σa < σb < σc
+                correctAnswerText: 'σ<sub>a</sub> < σ<sub>b</sub> < σ<sub>c</sub>',
+                feedbackCorrect: '很好！分布(a)数据最集中，标准差最小；分布(c)有明显的右偏，数据分散在左侧很大的范围内，标准差最大。',
+                feedbackIncorrect: '注意偏态分布：分布(c)高度右偏，数据从x=2到x=6都有，离散程度大。分布(a)最集中。'
             },
+            // === 5. 左偏分布类 (各12个) - Option 1 ===
             {
-                mean: 6,
-                histogramA: [0, 0, 0, 0, 0, 2, 5, 2, 0, 0, 0, 0, 0, 0], // 集中在6-8
-                histogramB: [0, 0, 0, 1, 2, 3, 3, 3, 2, 1, 0, 0, 0, 0], // 分布在4-10
-                histogramC: [0, 0, 0, 0, 0, 0, 0, 3, 4, 2, 0, 0, 0, 0],  // 集中在8-10
+                histogramA: [0, 0, 0, 0, 0, 6, 6, 0, 0, 0, 0, 0], // 集中 = 12
+                histogramB: [0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 2], // 左偏 = 12
+                histogramC: [0, 0, 0, 0, 2, 3, 3, 2, 2, 0, 0, 0], // 轻微左偏 = 12
+                correctAnswer: 1, // σa < σb < σc
+                correctAnswerText: 'σ<sub>a</sub> < σ<sub>b</sub> < σ<sub>c</sub>',
+                feedbackCorrect: '正确！分布(a)数据集中在中间，离散程度最小；分布(c)数据分散在x=5到x=9，标准差最大。',
+                feedbackIncorrect: '偏态分布的离散程度：分布(a)集中在x=6附近最集中；(b)在x=8到x=12；(c)分散在x=5到x=9。'
+            },
+            // === 6. 离群值分布 (各12个) - Option 4 ===
+            {
+                histogramA: [0, 0, 0, 0, 4, 4, 0, 0, 0, 0, 2, 2], // 有离群值 = 12
+                histogramB: [0, 0, 0, 0, 2, 4, 4, 2, 0, 0, 0, 0], // 对称钟形 = 12
+                histogramC: [0, 0, 0, 0, 0, 6, 6, 0, 0, 0, 0, 0], // 集中 = 12
+                correctAnswer: 4, // σc < σb < σa
+                correctAnswerText: 'σ<sub>c</sub> < σ<sub>b</sub> < σ<sub>a</sub>',
+                feedbackCorrect: '完全正确！分布(a)在x=11和x=12处有离群值，大大增加了标准差；分布(c)没有离群值且最集中。',
+                feedbackIncorrect: '关键：离群值会显著增大标准差。分布(a)有离群值，(c)最集中无离群值。'
+            },
+            // === 7. 窄双峰 vs 宽单峰 (各10个) - Option 5 ===
+            {
+                histogramA: [0, 0, 0, 3, 4, 3, 0, 0, 0, 0, 0, 0], // 单峰偏左 = 10
+                histogramB: [0, 0, 0, 2, 3, 0, 0, 2, 3, 0, 0, 0], // 窄双峰 = 10
+                histogramC: [0, 1, 1, 2, 2, 2, 1, 1, 0, 0, 0, 0], // 宽单峰 = 10
+                correctAnswer: 5, // σa < σc < σb
+                correctAnswerText: 'σ<sub>a</sub> < σ<sub>c</sub> < σ<sub>b</sub>',
+                feedbackCorrect: '太棒了！分布(a)数据集中在一个小范围内，标准差最小；分布(b)是双峰分布，数据分散在两个位置，标准差最大。',
+                feedbackIncorrect: '比较数据分布范围：分布(a)在x=4到x=6，最集中；(c)连续分布在x=2到x=8；(b)双峰分布在x=4到x=9但中间有空隙，最分散。'
+            },
+            // === 8. 递减分布 (各10个) - Option 2 ===
+            {
+                histogramA: [0, 4, 3, 2, 1, 0, 0, 0, 0, 0, 0, 0], // 递减 = 10
+                histogramB: [0, 0, 0, 0, 0, 5, 5, 0, 0, 0, 0, 0], // 集中 = 10
+                histogramC: [0, 0, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0], // 均匀偏左 = 10
+                correctAnswer: 2, // σb < σa < σc
+                correctAnswerText: 'σ<sub>b</sub> < σ<sub>a</sub> < σ<sub>c</sub>',
+                feedbackCorrect: '正确！分布(b)最集中，标准差最小；均匀分布(c)数据分散在x=3到x=7的5个值上，离散程度最大。',
+                feedbackIncorrect: '观察分布范围：分布(b)集中在x=6和x=7，最集中；递减分布(a)覆盖x=2到x=5；均匀分布(c)覆盖x=3到x=7且每个值数量相同，最分散。'
+            },
+            // === 9. 三种不同集中程度 (各14个) - Option 3 ===
+            {
+                histogramA: [0, 0, 0, 0, 3, 5, 4, 2, 0, 0, 0, 0], // 较集中 = 14
+                histogramB: [0, 1, 2, 2, 2, 3, 3, 1, 0, 0, 0, 0], // 中等集中 = 14
+                histogramC: [0, 0, 0, 0, 0, 7, 7, 0, 0, 0, 0, 0], // 最集中 = 14
                 correctAnswer: 3, // σc < σa < σb
                 correctAnswerText: 'σ<sub>c</sub> < σ<sub>a</sub> < σ<sub>b</sub>',
-                feedbackCorrect: '太棒了！你正确判断出分布(c)的离散程度最小，分布(b)的离散程度最大。标准差排序为：σc < σa < σb。',
-                feedbackIncorrect: '请仔细观察直方图：分布(c)的数据最集中（集中在8-10），分布(a)次之（分布在6-8），分布(b)最分散（分布在4-10）。因此标准差排序应为：σc < σa < σb。'
+                feedbackCorrect: '正确！三个分布都是单峰对称，分布(c)最集中，分布(b)最分散。',
+                feedbackIncorrect: '比较集中程度：分布(c)的数据几乎都在x=6和x=7最集中；(a)稍分散；(b)分散在x=2到x=9最分散。'
+            },
+            // === 10. 带缺口的分布 (各12个) - Option 6 ===
+            {
+                histogramA: [0, 0, 3, 3, 0, 0, 0, 0, 3, 3, 0, 0], // 双峰远离 = 12
+                histogramB: [0, 0, 0, 0, 0, 6, 6, 0, 0, 0, 0, 0], // 集中 = 12
+                histogramC: [0, 0, 0, 2, 3, 3, 2, 2, 0, 0, 0, 0], // 单峰 = 12
+                correctAnswer: 6, // σb < σc < σa
+                correctAnswerText: 'σ<sub>b</sub> < σ<sub>c</sub> < σ<sub>a</sub>',
+                feedbackCorrect: '很好！分布(a)的两个峰相距很远(x=3,4和x=9,10)，数据极度分散；分布(b)最集中。',
+                feedbackIncorrect: '双峰间距很重要：分布(a)的两个峰在x=3,4和x=9,10，相距很远；(b)集中在x=6和x=7。'
+            },
+            // === 11. 递增分布 (各10个) - Option 1 ===
+            {
+                histogramA: [0, 0, 0, 0, 0, 0, 5, 5, 0, 0, 0, 0], // 集中 = 10
+                histogramB: [0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4, 0], // 递增 = 10
+                histogramC: [0, 0, 0, 0, 0, 2, 3, 3, 2, 0, 0, 0], // 对称 = 10
+                correctAnswer: 1, // σa < σb < σc
+                correctAnswerText: 'σ<sub>a</sub> < σ<sub>b</sub> < σ<sub>c</sub>',
+                feedbackCorrect: '正确！分布(a)最集中；分布(c)数据分散在x=6到x=9的范围内，标准差最大。',
+                feedbackIncorrect: '递增分布的离散程度：分布(a)集中在x=7和x=8最集中；(b)从x=8到x=11；(c)分散在x=6到x=9。'
+            },
+            // === 12. 三角形分布 (各12个) - Option 3 ===
+            {
+                histogramA: [0, 0, 0, 0, 3, 4, 3, 2, 0, 0, 0, 0], // 梯形 = 12
+                histogramB: [0, 1, 2, 3, 3, 2, 1, 0, 0, 0, 0, 0], // 三角形 = 12
+                histogramC: [0, 0, 0, 0, 0, 6, 6, 0, 0, 0, 0, 0], // 集中 = 12
+                correctAnswer: 3, // σc < σa < σb
+                correctAnswerText: 'σ<sub>c</sub> < σ<sub>a</sub> < σ<sub>b</sub>',
+                feedbackCorrect: '太棒了！分布(c)最集中；三角形分布(b)的数据从x=2到x=7，覆盖范围最大。',
+                feedbackIncorrect: '比较覆盖范围：三角形分布(b)覆盖x=2到x=7最分散；(a)覆盖x=5到x=8；(c)仅覆盖x=6和x=7最集中。'
+            },
+            // === 13. 反向比较 (各12个) - Option 6 ===
+            {
+                histogramA: [0, 1, 1, 2, 2, 2, 2, 1, 1, 0, 0, 0], // 最分散 = 12
+                histogramB: [0, 0, 0, 0, 0, 6, 6, 0, 0, 0, 0, 0], // 最集中 = 12
+                histogramC: [0, 0, 0, 0, 3, 4, 3, 2, 0, 0, 0, 0], // 中等 = 12
+                correctAnswer: 6, // σb < σc < σa
+                correctAnswerText: 'σ<sub>b</sub> < σ<sub>c</sub> < σ<sub>a</sub>',
+                feedbackCorrect: '完全正确！分布(b)最集中，分布(a)最分散。',
+                feedbackIncorrect: '注意这次顺序不同：分布(b)集中在x=6和x=7最集中；(c)稍分散；(a)分散在x=2到x=10最分散。'
+            },
+            // === 14. 不对称双峰 (各12个) - Option 4 ===
+            {
+                histogramA: [0, 4, 2, 0, 0, 0, 0, 0, 0, 4, 2, 0], // 不对称双峰 = 12
+                histogramB: [0, 0, 0, 3, 4, 3, 2, 0, 0, 0, 0, 0], // 小峰 = 12
+                histogramC: [0, 0, 0, 0, 0, 6, 6, 0, 0, 0, 0, 0], // 集中 = 12
+                correctAnswer: 4, // σc < σb < σa
+                correctAnswerText: 'σ<sub>c</sub> < σ<sub>b</sub> < σ<sub>a</sub>',
+                feedbackCorrect: '正确！不对称双峰分布(a)在x=2和x=10各有一个峰，数据极度分散；分布(c)最集中。',
+                feedbackIncorrect: '双峰分布的分散性：分布(a)的两个峰在x=2和x=10，相距很远；(c)集中在x=6和x=7。'
+            },
+            // === 15. 平顶 vs 尖峰 (各12个) - Option 2 ===
+            {
+                histogramA: [0, 0, 0, 0, 3, 4, 3, 2, 0, 0, 0, 0], // 尖峰 = 12
+                histogramB: [0, 0, 0, 0, 0, 6, 6, 0, 0, 0, 0, 0], // 最尖 = 12
+                histogramC: [0, 0, 0, 2, 2, 2, 2, 2, 2, 0, 0, 0], // 平顶 = 12
+                correctAnswer: 2, // σb < σa < σc
+                correctAnswerText: 'σ<sub>b</sub> < σ<sub>a</sub> < σ<sub>c</sub>',
+                feedbackCorrect: '很好！平顶分布(c)的数据均匀分布在x=4到x=9，离散程度最大；尖峰分布(b)最集中。',
+                feedbackIncorrect: '峰度影响分散程度：平顶分布(c)数据分散在较宽的范围内；尖峰分布(b)数据高度集中。'
+            },
+            // === 16. 阶梯分布 (各12个) - Option 3 ===
+            {
+                histogramA: [0, 0, 0, 0, 2, 4, 4, 2, 0, 0, 0, 0], // 钟形 = 12
+                histogramB: [0, 0, 0, 2, 2, 2, 2, 2, 2, 0, 0, 0], // 长均匀 = 12
+                histogramC: [0, 0, 0, 0, 0, 6, 6, 0, 0, 0, 0, 0], // 集中 = 12
+                correctAnswer: 3, // σc < σa < σb
+                correctAnswerText: 'σ<sub>c</sub> < σ<sub>a</sub> < σ<sub>b</sub>',
+                feedbackCorrect: '正确！长均匀分布(b)的数据分散在x=4到x=9的范围内；分布(c)最集中。',
+                feedbackIncorrect: '分布范围是关键：分布(b)从x=4到x=9，范围较大；(a)从x=5到x=8；(c)集中在x=6和x=7。'
+            },
+            // === 17. U形分布 (各12个) - Option 6 ===
+            {
+                histogramA: [0, 3, 3, 0, 0, 0, 0, 0, 0, 3, 3, 0], // U形(极端) = 12
+                histogramB: [0, 0, 0, 0, 0, 6, 6, 0, 0, 0, 0, 0], // 集中 = 12
+                histogramC: [0, 0, 0, 2, 3, 3, 2, 2, 0, 0, 0, 0], // 钟形 = 12
+                correctAnswer: 6, // σb < σc < σa
+                correctAnswerText: 'σ<sub>b</sub> < σ<sub>c</sub> < σ<sub>a</sub>',
+                feedbackCorrect: '太棒了！U形分布(a)的数据集中在两端(x=2,3和x=10,11)，中间没有任何数据，离散程度极大；分布(b)最集中。',
+                feedbackIncorrect: 'U形分布非常分散：分布(a)数据在两端x=2,3和x=10,11，完全分开；(c)钟形对称；(b)最集中。'
+            },
+            // === 18. 复杂形状 (各12个) - Option 5 ===
+            {
+                histogramA: [0, 0, 0, 0, 0, 6, 6, 0, 0, 0, 0, 0], // 集中 = 12
+                histogramB: [0, 0, 2, 0, 2, 0, 2, 0, 2, 0, 2, 2], // 锯齿形 = 12
+                histogramC: [0, 0, 0, 2, 3, 3, 2, 2, 0, 0, 0, 0], // 光滑钟形 = 12
+                correctAnswer: 5, // σa < σc < σb
+                correctAnswerText: 'σ<sub>a</sub> < σ<sub>c</sub> < σ<sub>b</sub>',
+                feedbackCorrect: '正确！锯齿形分布(b)数据分散在x=3到x=12的多个位置，覆盖范围大；分布(a)最集中。',
+                feedbackIncorrect: '锯齿形分布的离散程度：分布(b)数据分散在多个间隔的位置；(c)光滑集中在x=4到x=8；(a)最集中。'
             }
         ];
 
         let currentParams = parameterSets[0];
-        let score = 0;
-        let attempts = 0;
-        let correctAttempts = 0;
         let selectedOption = null;
         let isSubmitted = false;
 
@@ -558,45 +660,33 @@
             return shuffled;
         }
 
-        // Render histogram
+        // Render histogram with stacked squares
         function renderHistogram(containerId, data) {
-            const container = document.getElementById(containerId);
-            const barsContainer = container.querySelector('.histogram-bars');
+            const barsContainer = document.getElementById(containerId);
 
-            // Clear existing bars
+            // Clear existing content
             barsContainer.innerHTML = '';
 
-            // Add mean line
-            const meanLine = document.createElement('div');
-            meanLine.className = 'mean-line';
-            meanLine.style.bottom = '50%';
-            barsContainer.appendChild(meanLine);
-
-            // Add mean label
-            const meanLabel = document.createElement('div');
-            meanLabel.className = 'mean-label';
-            meanLabel.style.top = '50%';
-            meanLabel.style.transform = 'translate(-50%, -100%)';
-            meanLabel.textContent = `均值 = ${currentParams.mean}`;
-            barsContainer.appendChild(meanLabel);
-
-            // Find max value for scaling
-            const maxValue = Math.max(...data);
-
-            // Create bars
+            // Create columns for each x-value
             for (let i = 0; i < data.length; i++) {
-                const value = data[i];
-                const height = value > 0 ? (value / maxValue * 100) : 5;
-                const bar = document.createElement('div');
-                bar.className = 'bar';
-                bar.style.height = `${height}%`;
+                const count = data[i];
+                const column = document.createElement('div');
+                column.className = 'bar-column';
 
+                // Add squares (stacked from bottom)
+                for (let j = 0; j < count; j++) {
+                    const square = document.createElement('div');
+                    square.className = 'square';
+                    column.appendChild(square);
+                }
+
+                // Add x-axis label
                 const label = document.createElement('div');
                 label.className = 'bar-label';
                 label.textContent = i + 1;
+                column.appendChild(label);
 
-                bar.appendChild(label);
-                barsContainer.appendChild(bar);
+                barsContainer.appendChild(column);
             }
         }
 
@@ -607,7 +697,9 @@
                 { value: 1, text: 'σ<sub>a</sub> < σ<sub>b</sub> < σ<sub>c</sub>' },
                 { value: 2, text: 'σ<sub>b</sub> < σ<sub>a</sub> < σ<sub>c</sub>' },
                 { value: 3, text: 'σ<sub>c</sub> < σ<sub>a</sub> < σ<sub>b</sub>' },
-                { value: 4, text: 'σ<sub>c</sub> < σ<sub>b</sub> < σ<sub>a</sub>' }
+                { value: 4, text: 'σ<sub>c</sub> < σ<sub>b</sub> < σ<sub>a</sub>' },
+                { value: 5, text: 'σ<sub>a</sub> < σ<sub>c</sub> < σ<sub>b</sub>' },
+                { value: 6, text: 'σ<sub>b</sub> < σ<sub>c</sub> < σ<sub>a</sub>' }
             ];
 
             const shuffledOptions = shuffleArray(options);
@@ -626,11 +718,21 @@
             document.getElementById('correct-answer-display').innerHTML = `正确答案: ${currentParams.correctAnswerText}`;
         }
 
+        // Calculate total measurements in a histogram
+        function calculateTotalMeasurements(histogram) {
+            return histogram.reduce((sum, count) => sum + count, 0);
+        }
+
+        // Update measurement counts in the question text
+        function updateMeasurementCounts() {
+            const countA = calculateTotalMeasurements(currentParams.histogramA);
+            document.getElementById('count-total').textContent = countA;
+        }
+
         // Initialize question
         function initializeQuestion() {
-            // Update mean values
-            document.getElementById('param-mean').textContent = currentParams.mean;
-            document.getElementById('param-mean2').textContent = currentParams.mean;
+            // Update measurement counts
+            updateMeasurementCounts();
 
             // Render histograms
             renderHistogram('histogram-a', currentParams.histogramA);
@@ -646,16 +748,6 @@
 
             // Attach event listeners
             attachOptionListeners();
-
-            // Add hover effects to bars
-            document.querySelectorAll('.bar').forEach(bar => {
-                bar.addEventListener('mouseover', function() {
-                    this.style.transform = 'scaleY(1.1)';
-                });
-                bar.addEventListener('mouseout', function() {
-                    this.style.transform = 'scaleY(1)';
-                });
-            });
         }
 
         // Attach option listeners
@@ -687,17 +779,6 @@
             const feedbackTitle = document.getElementById('feedback-title');
             const feedbackText = document.getElementById('feedback-text');
             const correctAnswerDisplay = document.getElementById('correct-answer-display');
-            const scoreElement = document.getElementById('score');
-            const attemptsElement = document.getElementById('attempts');
-            const accuracyElement = document.getElementById('accuracy');
-
-            // Update stats display
-            function updateStats() {
-                scoreElement.textContent = score;
-                attemptsElement.textContent = attempts;
-                const accuracy = attempts > 0 ? Math.round((correctAttempts / attempts) * 100) : 0;
-                accuracyElement.textContent = `${accuracy}%`;
-            }
 
             // Refresh button
             refreshBtn.addEventListener('click', function() {
@@ -716,7 +797,6 @@
                 });
                 feedback.classList.remove('correct', 'incorrect');
                 correctAnswerDisplay.style.display = 'none';
-                scoreElement.textContent = '0';
             });
 
             // Submit answer
@@ -727,14 +807,8 @@
                 }
 
                 isSubmitted = true;
-                attempts++;
 
                 const isCorrect = selectedOption === currentParams.correctAnswer;
-
-                if (isCorrect) {
-                    score += 10;
-                    correctAttempts++;
-                }
 
                 // Display feedback
                 if (isCorrect) {
@@ -763,8 +837,6 @@
                     }
                     card.style.pointerEvents = 'none';
                 });
-
-                updateStats();
             });
 
             // Reset
@@ -780,9 +852,6 @@
                 feedback.classList.remove('correct', 'incorrect');
                 correctAnswerDisplay.style.display = 'none';
             });
-
-            // Initial stats display
-            updateStats();
         });
     </script>
 </body>

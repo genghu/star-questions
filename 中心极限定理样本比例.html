@@ -295,25 +295,16 @@
     <header>
         <h1>中心极限定理：样本比例</h1>
         <p class="subtitle">交互式答题与解析 - 概率与统计</p>
+        <button class="refresh-btn" onclick="refreshQuestion()">刷新参数</button>
     </header>
 
     <div class="container">
         <section class="question-section">
             <div class="card">
-                <div class="param-header">
-                    <h2 class="question-title" style="margin: 0;">题目内容</h2>
-                    <button class="refresh-btn" onclick="refreshQuestion()">刷新参数</button>
-                </div>
+                <h2 class="question-title">题目内容</h2>
                 <div class="question-text" id="questionText">
                 </div>
 
-                <div class="note">
-                    <strong>提示：</strong> 根据中心极限定理，当样本量足够大时，样本比例 <span class="math">p</span> 的抽样分布近似正态分布。
-                </div>
-            </div>
-
-            <div class="card">
-                <h2 class="question-title">请输入你的答案</h2>
                 <div id="answersContainer">
                     <!-- 动态生成填空输入框 -->
                 </div>
@@ -322,7 +313,6 @@
 
                 <div class="buttons">
                     <button id="submitBtn">提交答案</button>
-                    <button id="resetBtn">重新作答</button>
                 </div>
 
                 <div class="stats">
@@ -349,19 +339,18 @@
                 <div class="explanation-section" id="explanationSection" style="display:none;">
                     <div class="explanation" id="explanationContent">
                     </div>
-                </div>
-            </div>
-
-            <div class="card">
-                <h2 class="question-title">中心极限定理要点</h2>
-                <div class="explanation">
-                    <p><strong>中心极限定理（样本比例）：</strong> 从总体比例为 <span class="math">p</span> 的总体中，抽取容量为 <span class="math">n</span> 的简单随机样本，当 <span class="math">n</span> 足够大时，样本比例 <span class="math">p</span> 的抽样分布近似正态分布。</p>
-                    <ul style="padding-left: 20px; margin-top: 10px;">
-                        <li>均值：<span class="math">mu_p = p</span></li>
-                        <li>标准差（标准误）：<span class="math">sigma_p = sqrt[p(1-p)/n]</span></li>
-                        <li>近似正态的条件：<span class="math">np >= 10</span> 且 <span class="math">n(1-p) >= 10</span></li>
-                    </ul>
-                    <p style="margin-top: 15px;" id="conditionCheck"></p>
+                    <div class="card" style="margin-top: 20px;">
+                        <h2 class="question-title">中心极限定理要点</h2>
+                        <div class="explanation">
+                            <p><strong>中心极限定理（样本比例）：</strong> 从总体比例为 <span class="math">p</span> 的总体中，抽取容量为 <span class="math">n</span> 的简单随机样本，当 <span class="math">n</span> 足够大时，样本比例 <span class="math">p</span> 的抽样分布近似正态分布。</p>
+                            <ul style="padding-left: 20px; margin-top: 10px;">
+                                <li>均值：<span class="math">mu_p = p</span></li>
+                                <li>标准差（标准误）：<span class="math">sigma_p = sqrt[p(1-p)/n]</span></li>
+                                <li>近似正态的条件：<span class="math">np >= 10</span> 且 <span class="math">n(1-p) >= 10</span></li>
+                            </ul>
+                            <p style="margin-top: 15px;" id="conditionCheck"></p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
@@ -387,7 +376,7 @@
                 threshold: 0.18,
                 meanAnswer: 0.15,
                 stdAnswer: 0.013,
-                probAnswer: 0.0106,
+                probAnswer: 0.0087,
                 explanation: "设随机变量 X 表示样本中患有该疾病的人数，则 X ~ Binomial(n=800, p=0.15)，且 p = X / 800。"
             },
             {
@@ -397,7 +386,7 @@
                 threshold: 0.92,
                 meanAnswer: 0.95,
                 stdAnswer: 0.010,
-                probAnswer: 0.0014,
+                probAnswer: 0.9990,
                 explanation: "设随机变量 X 表示样本中合格产品的数量，则 X ~ Binomial(n=500, p=0.95)，且 p = X / 500。"
             },
             {
@@ -407,7 +396,7 @@
                 threshold: 0.45,
                 meanAnswer: 0.42,
                 stdAnswer: 0.014,
-                probAnswer: 0.0161,
+                probAnswer: 0.0176,
                 explanation: "设随机变量 X 表示样本中支持新政策的人数，则 X ~ Binomial(n=1200, p=0.42)，且 p = X / 1200。"
             },
             {
@@ -437,11 +426,8 @@
             const randomIndex = Math.floor(Math.random() * parameterSets.length);
             currentParams = parameterSets[randomIndex];
 
-            // Update question text
-            const questionText = `<p>${currentParams.description} <span class="math">${(currentParams.p * 100).toFixed(0)}%</span>。现考虑一个由 <span class="math">n = ${currentParams.n}</span> 名个体组成的随机样本。</p>
-                <p><strong>a.</strong> 求 <span class="math">p</span> 的均值，其中 <span class="math">p</span> 是样本中具有该特征的人的比例。</p>
-                <p><strong>b.</strong> 求 <span class="math">p</span> 的标准差。</p>
-                <p><strong>c.</strong> 计算 <span class="math">P(p > ${currentParams.threshold})</span> 的近似值，即样本中超过 ${(currentParams.threshold * 100).toFixed(0)}% 的人具有该特征的概率。将你的答案四舍五入到四位小数。</p>`;
+            // Update question text - only background info
+            const questionText = `<p>${currentParams.description} <span class="math">${(currentParams.p * 100).toFixed(0)}%</span>。现考虑一个由 <span class="math">n = ${currentParams.n}</span> 名个体组成的随机样本。</p>`;
             document.getElementById('questionText').innerHTML = questionText;
 
             // Update condition check
@@ -470,7 +456,7 @@
             const container = document.getElementById('answersContainer');
             container.innerHTML = `
                 <div class="question-block">
-                    <div class="question-block-title">a. 求 p 的均值（样本比例的平均值）</div>
+                    <div class="question-block-title"><strong>a.</strong> 求 <span class="math">p</span> 的均值，其中 <span class="math">p</span> 是样本中具有该特征的人的比例。</div>
                     <div class="answer-input-container">
                         <label class="answer-label">请输入均值：</label>
                         <input type="text" class="answer-input" id="answer-a">
@@ -480,9 +466,9 @@
                 </div>
 
                 <div class="question-block">
-                    <div class="question-block-title">b. 求 p 的标准差（四舍五入到三位小数）</div>
+                    <div class="question-block-title"><strong>b.</strong> 求 <span class="math">p</span> 的标准差。</div>
                     <div class="answer-input-container">
-                        <label class="answer-label">请输入标准差：</label>
+                        <label class="answer-label">请输入标准差（四舍五入到三位小数）：</label>
                         <input type="text" class="answer-input" id="answer-b">
                         <div class="tolerance-hint">容差：±0.001</div>
                         <div class="feedback-inline" id="feedback-b"></div>
@@ -490,9 +476,9 @@
                 </div>
 
                 <div class="question-block">
-                    <div class="question-block-title">c. 计算 P(p > ${currentParams.threshold}) 的近似值（四舍五入到四位小数）</div>
+                    <div class="question-block-title"><strong>c.</strong> 计算 <span class="math">P(p > ${currentParams.threshold})</span> 的近似值，即样本中超过 ${(currentParams.threshold * 100).toFixed(0)}% 的人具有该特征的概率。</div>
                     <div class="answer-input-container">
-                        <label class="answer-label">请输入概率值：</label>
+                        <label class="answer-label">请输入概率值（四舍五入到四位小数）：</label>
                         <input type="text" class="answer-input" id="answer-c">
                         <div class="tolerance-hint">容差：±0.001</div>
                         <div class="feedback-inline" id="feedback-c"></div>
@@ -507,7 +493,6 @@
         const answeredEl = document.getElementById('answered');
         const correctCountEl = document.getElementById('correctCount');
         const submitBtn = document.getElementById('submitBtn');
-        const resetBtn = document.getElementById('resetBtn');
 
         // 更新统计信息
         function updateStats() {
@@ -674,7 +659,6 @@
 
             // 事件监听
             submitBtn.addEventListener('click', submitAnswers);
-            resetBtn.addEventListener('click', resetAnswers);
 
             updateStats();
         });

@@ -32,6 +32,10 @@
             color: #1e40af;
             font-size: 2.2rem;
             margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
         }
 
         .subtitle {
@@ -66,6 +70,13 @@
             box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
         }
 
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
         .question-number {
             display: inline-block;
             background-color: #1e40af;
@@ -76,7 +87,23 @@
             text-align: center;
             line-height: 36px;
             font-weight: bold;
-            margin-bottom: 15px;
+        }
+
+        .refresh-btn {
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .refresh-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.4);
         }
 
         .question-text {
@@ -263,209 +290,68 @@
             margin-bottom: 30px;
         }
 
-        .flowchart {
-            background-color: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            padding: 25px;
-            margin-top: 40px;
+        .show-explanation-btn {
+            display: none;
+            margin: 20px auto;
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
+        }
+        .show-explanation-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
+        }
+
+        .scenario-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
             margin-bottom: 30px;
         }
 
-        .flowchart h3 {
-            color: #1e40af;
-            margin-bottom: 20px;
-            text-align: center;
+        .scenario-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #cbd5e1;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
 
-        .flowchart-img {
-            max-width: 100%;
-            height: auto;
-            display: block;
-            margin: 0 auto;
-            border-radius: 8px;
+        .scenario-dot.active {
+            background-color: #1e40af;
+            transform: scale(1.2);
         }
 
-        .flowchart-text {
-            background-color: #f0f9ff;
-            padding: 20px;
-            border-radius: 8px;
-            margin-top: 20px;
-            font-size: 0.95rem;
-            line-height: 1.8;
+        .scenario-dot:hover {
+            background-color: #3b82f6;
         }
-
     </style>
-
-    <style>
-    .show-explanation-btn {
-        display: none;
-        margin: 20px auto;
-        padding: 14px 28px;
-        background: linear-gradient(135deg, #9b59b6, #8e44ad);
-        color: white;
-        border: none;
-        border-radius: 10px;
-        cursor: pointer;
-        font-size: 1.1rem;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
-    }
-    .show-explanation-btn:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
-    }
-    .explanation-section {
-        display: none;
-        margin-top: 20px;
-    }
-    </style>
-    </head>
+</head>
 <body>
     <header>
-        <h1>t检验与方差分析检验选择 <button id="refresh-btn" style="margin-left: 15px; padding: 8px 16px; background: linear-gradient(135deg, #34a853, #2ecc71); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(52, 168, 83, 0.3);">刷新参数</button></h1>
-        <p class="subtitle">一家大型电视网络正在评估几档潜在节目的观众兴趣</p>
+        <h1>
+            t检验与方差分析检验选择
+            <button id="refresh-btn" class="refresh-btn">切换场景</button>
+        </h1>
+        <p class="subtitle" id="subtitle">统计检验方法选择练习</p>
     </header>
 
-    <div class="info-box">
+    <div class="info-box" id="info-box">
         <h3>背景信息</h3>
-        <p>本题中提到的五种统计检验均可用于对两个或更多总体均值进行推断。您可能熟悉所有这些检验，除了可能不熟悉双因素方差分析检验，它与其他检验的不同之处在于允许考察两个自变量或因素。</p>
-        <p>选择这些检验的一个重要步骤是确定正在研究多少组。每个不同的实验条件或观察类别对应一个不同的组。</p>
+        <div id="background-content"></div>
     </div>
 
-    <div class="flowchart">
-        <h3>检验选择流程图</h3>
-        <div class="flowchart-text">
-            <p><strong>正在研究多少组？</strong></p>
-            <p><strong>两个</strong> → 所有样本测量值是否独立？ → <strong>是</strong> → 独立样本 t 检验或单因素独立样本方差分析</p>
-            <p><strong>两个</strong> → 所有样本测量值是否独立？ → <strong>否</strong> → 如果样本测量值是配对的，则使用配对样本 t 检验或单因素重复测量方差分析</p>
-            <p><strong>三个或更多</strong> → 所有样本测量值是否独立？ → <strong>是</strong> → 正在研究多少个自变量（因素）？ → <strong>一个</strong> → 单因素独立样本方差分析</p>
-            <p><strong>三个或更多</strong> → 所有样本测量值是否独立？ → <strong>是</strong> → 正在研究多少个自变量（因素）？ → <strong>两个</strong> → 双因素（独立样本）方差分析</p>
-            <p><strong>三个或更多</strong> → 所有样本测量值是否独立？ → <strong>否</strong> → 如果只有一个自变量且样本测量值在各组间相关，则使用单因素重复测量方差分析</p>
-        </div>
-    </div>
+    <div class="scenario-indicator" id="scenario-indicator"></div>
 
-    <div id="question1" class="question-container">
-        <div class="question-number">1</div>
-        <div class="question-text">
-            <p>该网络正在测试两个节目。它试图确定其中一个节目是否比另一个更受欢迎，以及年轻观众（四十岁以下）与年长观众（四十岁及以上）是否有不同的看法。</p>
-            <p>该网络随机选择 32 名四十岁以下的人和 32 名四十岁及以上的人。它将四十岁以下的人随机分成 16 人一组，并为每组分配一个不同的试播集。该网络对四十岁及以上的人也进行同样的操作。</p>
-            <p><strong>请选择所有可用于该场景的检验：</strong></p>
-        </div>
-        
-        <div class="options-container">
-            <div class="option" data-question="1" data-option="a">
-                <div class="option-label">A</div>
-                <div class="option-text">独立样本 t 检验</div>
-            </div>
-            <div class="option" data-question="1" data-option="b">
-                <div class="option-label">B</div>
-                <div class="option-text">配对样本 t 检验</div>
-            </div>
-            <div class="option" data-question="1" data-option="c">
-                <div class="option-label">C</div>
-                <div class="option-text">单因素独立样本方差分析</div>
-            </div>
-            <div class="option" data-question="1" data-option="d">
-                <div class="option-label">D</div>
-                <div class="option-text">单因素重复测量方差分析</div>
-            </div>
-            <div class="option" data-question="1" data-option="e">
-                <div class="option-label">E</div>
-                <div class="option-text">双因素（独立样本）方差分析</div>
-            </div>
-        </div>
-        
-        <div class="feedback" id="feedback1"></div>
-        
-        <button class="show-explanation-btn" data-question="1">查看答案解析</button>
-                <div class="explanation" id="explanation1">
-            <h4>解析</h4>
-            <p>正在研究四个组：两个电视节目分别在两个年龄类别中进行测试，总共产生 2 × 2 = 4 个实验条件。（这称为析因设计。）请注意，所有样本测量值都是独立的，因为观众被随机分配到这些组。还请注意，正在研究的因素有两个：电视节目和年龄类别。因此，应使用双因素（独立样本）方差分析。</p>
-            <p><strong>正确答案：E（双因素（独立样本）方差分析）</strong></p>
-        </div>
-    </div>
-
-    <div id="question2" class="question-container">
-        <div class="question-number">2</div>
-        <div class="question-text">
-            <p>该网络正在测试两个节目。对于每个节目，该网络选择一个不同的 32 人随机样本，并让他们只观看该节目的试播集。</p>
-            <p><strong>请选择所有可用于该场景的检验：</strong></p>
-        </div>
-        
-        <div class="options-container">
-            <div class="option" data-question="2" data-option="a">
-                <div class="option-label">A</div>
-                <div class="option-text">独立样本 t 检验</div>
-            </div>
-            <div class="option" data-question="2" data-option="b">
-                <div class="option-label">B</div>
-                <div class="option-text">配对样本 t 检验</div>
-            </div>
-            <div class="option" data-question="2" data-option="c">
-                <div class="option-label">C</div>
-                <div class="option-text">单因素独立样本方差分析</div>
-            </div>
-            <div class="option" data-question="2" data-option="d">
-                <div class="option-label">D</div>
-                <div class="option-text">单因素重复测量方差分析</div>
-            </div>
-            <div class="option" data-question="2" data-option="e">
-                <div class="option-label">E</div>
-                <div class="option-text">双因素（独立样本）方差分析</div>
-            </div>
-        </div>
-        
-        <div class="feedback" id="feedback2"></div>
-        
-        <button class="show-explanation-btn" data-question="2">查看答案解析</button>
-                <div class="explanation" id="explanation2">
-            <h4>解析</h4>
-            <p>正在研究两个组，每个电视节目对应一个组。每个样本测量值都独立于其他测量值，因为为每个节目选择了不同的观众随机样本。只有一个自变量（因素），即电视节目。因此，可以使用独立样本 t 检验或单因素独立样本方差分析检验。</p>
-            <p><strong>正确答案：A（独立样本 t 检验）或 C（单因素独立样本方差分析）</strong></p>
-        </div>
-    </div>
-
-    <div id="question3" class="question-container">
-        <div class="question-number">3</div>
-        <div class="question-text">
-            <p>该网络正在测试四个节目。对于每个节目，该网络选择一个不同的 16 人随机样本，并让他们只观看该节目的试播集。</p>
-            <p><strong>请选择所有可用于该场景的检验：</strong></p>
-        </div>
-        
-        <div class="options-container">
-            <div class="option" data-question="3" data-option="a">
-                <div class="option-label">A</div>
-                <div class="option-text">独立样本 t 检验</div>
-            </div>
-            <div class="option" data-question="3" data-option="b">
-                <div class="option-label">B</div>
-                <div class="option-text">配对样本 t 检验</div>
-            </div>
-            <div class="option" data-question="3" data-option="c">
-                <div class="option-label">C</div>
-                <div class="option-text">单因素独立样本方差分析</div>
-            </div>
-            <div class="option" data-question="3" data-option="d">
-                <div class="option-label">D</div>
-                <div class="option-text">单因素重复测量方差分析</div>
-            </div>
-            <div class="option" data-question="3" data-option="e">
-                <div class="option-label">E</div>
-                <div class="option-text">双因素（独立样本）方差分析</div>
-            </div>
-        </div>
-        
-        <div class="feedback" id="feedback3"></div>
-        
-        <button class="show-explanation-btn" data-question="3">查看答案解析</button>
-                <div class="explanation" id="explanation3">
-            <h4>解析</h4>
-            <p>正在研究四个组，每个电视节目对应一个组。每个样本测量值都独立于其他测量值，因为为每个节目选择了不同的观众随机样本。只有一个自变量（因素），即电视节目。因此，应使用单因素独立样本方差分析。（请注意，不能使用独立样本 t 检验，因为正在研究的组超过两个。）</p>
-            <p><strong>正确答案：C（单因素独立样本方差分析）</strong></p>
-        </div>
-    </div>
+    <div id="questions-container"></div>
 
     <div class="controls">
         <button id="submitBtn">提交答案</button>
@@ -476,99 +362,462 @@
         <h2>答题结果</h2>
         <div class="score" id="score">0/3</div>
         <div class="score-text" id="scoreText"></div>
-        <p>点击"重新作答"按钮可以重新开始答题。</p>
+        <p>点击"重新作答"或"切换场景"按钮可以继续练习。</p>
     </div>
-
-    
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-
-            // 显示答案解析按钮点击事件
-            document.querySelectorAll('.show-explanation-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    var questionId = this.getAttribute('data-question') || this.id;
-                    var explanation;
-                    if (questionId) {
-                        explanation = this.nextElementSibling;
-                    }
-                    if (explanation) {
-                        if (explanation.classList.contains('show')) {
-                            explanation.classList.remove('show');
-                            this.textContent = '查看答案解析';
-                        } else {
-                            explanation.classList.add('show');
-                            this.textContent = '隐藏答案解析';
+            // ==================== 场景定义（每个场景3个不同的实验设计问题）====================
+            const scenarios = [
+                // 场景1：电视网络
+                {
+                    background: {
+                        title: "电视节目观众兴趣评估",
+                        content: `<p>一家大型电视网络正在评估几档潜在节目的观众兴趣。该网络为每档节目拍摄了"试播集"（第一集），现在正在演播室向观众展示这些剧集进行测试。观众对节目进行评分。</p>
+                        <p>对于下面的每个实验场景，请选择所有可用于该场景的检验方法。假设总体的相关假设（分布类型、方差等）都得到满足。</p>`
+                    },
+                    questions: [
+                        {
+                            text: `<p>该网络正在测试两个节目。它试图确定其中一个节目是否比另一个更受欢迎，以及年轻观众（四十岁以下）与年长观众（四十岁及以上）是否有不同的看法。</p>
+                            <p>该网络随机选择 32 名四十岁以下的人和 32 名四十岁及以上的人。它将四十岁以下的人随机分成 16 人一组，并为每组分配一个不同的试播集。该网络对四十岁及以上的人也进行同样的操作。</p>
+                            <p><strong>请选择所有可用于该场景的检验：</strong></p>`,
+                            correctAnswers: ['e'],
+                            explanation: `<p>正在研究<strong>四个组</strong>：两个电视节目分别在两个年龄类别中进行测试，总共产生 2 × 2 = 4 个实验条件（析因设计）。</p>
+                            <p>关键特征：</p>
+                            <ul>
+                                <li>有<strong>四个组</strong>（2×2析因设计）</li>
+                                <li>所有样本测量值<strong>相互独立</strong></li>
+                                <li>有<strong>两个自变量</strong>：电视节目和年龄类别</li>
+                            </ul>
+                            <p><strong>正确答案：E（双因素（独立样本）方差分析）</strong></p>`
+                        },
+                        {
+                            text: `<p>该网络正在测试两个节目。对于每个节目，该网络选择一个不同的 32 人随机样本，并让他们只观看该节目的试播集。</p>
+                            <p><strong>请选择所有可用于该场景的检验：</strong></p>`,
+                            correctAnswers: ['a', 'c'],
+                            explanation: `<p>正在研究<strong>两个组</strong>，每个电视节目对应一个组。每个样本测量值都独立于其他测量值。</p>
+                            <p>关键特征：</p>
+                            <ul>
+                                <li>只有<strong>两个组</strong></li>
+                                <li>所有样本测量值<strong>相互独立</strong></li>
+                                <li>只有<strong>一个自变量</strong>（电视节目）</li>
+                            </ul>
+                            <p><strong>正确答案：A（独立样本 t 检验）或 C（单因素独立样本方差分析）</strong></p>`
+                        },
+                        {
+                            text: `<p>该网络正在测试四个节目。对于每个节目，该网络选择一个不同的 16 人随机样本，并让他们只观看该节目的试播集。</p>
+                            <p><strong>请选择所有可用于该场景的检验：</strong></p>`,
+                            correctAnswers: ['c'],
+                            explanation: `<p>正在研究<strong>四个组</strong>，每个电视节目对应一个组。每个样本测量值都独立于其他测量值。</p>
+                            <p>关键特征：</p>
+                            <ul>
+                                <li>有<strong>超过两个组</strong></li>
+                                <li>所有样本测量值<strong>相互独立</strong></li>
+                                <li>只有<strong>一个自变量</strong>（电视节目）</li>
+                            </ul>
+                            <p><strong>正确答案：C（单因素独立样本方差分析）</strong></p>`
                         }
-                    }
-                });
-            });
+                    ]
+                },
+                // 场景2：培训效果
+                {
+                    background: {
+                        title: "培训效果评估",
+                        content: `<p>某培训机构正在评估一项新培训项目的效果。该机构对学员进行培训前测试和培训后测试，以确定培训是否提高了学员的技能水平。</p>
+                        <p>对于下面的每个实验场景，请选择所有可用于该场景的检验方法。假设总体的相关假设（分布类型、方差等）都得到满足。</p>`
+                    },
+                    questions: [
+                        {
+                            text: `<p>该机构随机选择了 25 名学员参加培训。每个学员在培训前进行一次测试，培训后再次进行相同的测试。该机构想要确定培训后学员的得分是否显著高于培训前。</p>
+                            <p><strong>请选择所有可用于该场景的检验：</strong></p>`,
+                            correctAnswers: ['b', 'd'],
+                            explanation: `<p>正在研究的是<strong>同一组学员</strong>在培训前后的得分差异。这是一个配对设计。</p>
+                            <p>关键特征：</p>
+                            <ul>
+                                <li>只有<strong>一组被试</strong></li>
+                                <li>每个被试在<strong>两个时间点</strong>被测量</li>
+                                <li>测量值是<strong>配对的</strong></li>
+                            </ul>
+                            <p><strong>正确答案：B（配对样本 t 检验）或 D（单因素重复测量方差分析）</strong></p>`
+                        },
+                        {
+                            text: `<p>该机构随机选择了 30 名学员参加新培训方法，30 名学员参加传统培训方法。课程结束后，对所有学员进行相同的期末考试。该机构想要比较两种培训方法的效果。</p>
+                            <p><strong>请选择所有可用于该场景的检验：</strong></p>`,
+                            correctAnswers: ['a', 'c'],
+                            explanation: `<p>正在比较<strong>两个独立组</strong>的培训效果。</p>
+                            <p>关键特征：</p>
+                            <ul>
+                                <li>有<strong>两个独立的组</strong></li>
+                                <li>组间相互独立</li>
+                                <li>只有<strong>一个自变量</strong>（培训方法）</li>
+                            </ul>
+                            <p><strong>正确答案：A（独立样本 t 检验）或 C（单因素独立样本方差分析）</strong></p>`
+                        },
+                        {
+                            text: `<p>该机构对 40 名学员进行培训，分别在培训前、培训后1周、培训后1个月进行三次测试。该机构想要了解学员的技能水平是否随时间发生变化。</p>
+                            <p><strong>请选择所有可用于该场景的检验：</strong></p>`,
+                            correctAnswers: ['d'],
+                            explanation: `<p>正在研究<strong>同一组学员在三个时间点</strong>的得分变化。时间点超过两个。</p>
+                            <p>关键特征：</p>
+                            <ul>
+                                <li>只有<strong>一组被试</strong></li>
+                                <li>每个被试在<strong>超过两个时间点</strong>被测量</li>
+                                <li>测量值是<strong>相关的</strong></li>
+                            </ul>
+                            <p><strong>正确答案：D（单因素重复测量方差分析）</strong></p>`
+                        }
+                    ]
+                },
+                // 场景3：教学方法比较
+                {
+                    background: {
+                        title: "教学方法比较研究",
+                        content: `<p>某教育研究机构正在比较不同教学方法对学生学习成绩的影响。该机构想要确定哪种方法最有效。</p>
+                        <p>对于下面的每个实验场景，请选择所有可用于该场景的检验方法。假设总体的相关假设（分布类型、方差等）都得到满足。</p>`
+                    },
+                    questions: [
+                        {
+                            text: `<p>该机构随机将 90 名学生分配到三组，每组使用不同的教学方法。第一组使用传统讲授法，第二组使用讨论法，第三组使用混合教学法。课程结束后，对所有学生进行相同的期末考试。</p>
+                            <p><strong>请选择所有可用于该场景的检验：</strong></p>`,
+                            correctAnswers: ['c'],
+                            explanation: `<p>正在研究<strong>三个独立的组</strong>，每组使用不同的教学方法。</p>
+                            <p>关键特征：</p>
+                            <ul>
+                                <li>有<strong>超过两个组</strong></li>
+                                <li>所有样本测量值<strong>相互独立</strong></li>
+                                <li>只有<strong>一个自变量</strong>（教学方法）</li>
+                            </ul>
+                            <p><strong>正确答案：C（单因素独立样本方差分析）</strong></p>`
+                        },
+                        {
+                            text: `<p>该机构随机将 60 名学生分配到两组，一组使用传统讲授法，一组使用讨论法。课程结束后，对所有学生进行相同的期末考试。</p>
+                            <p><strong>请选择所有可用于该场景的检验：</strong></p>`,
+                            correctAnswers: ['a', 'c'],
+                            explanation: `<p>正在研究<strong>两个独立的组</strong>。</p>
+                            <p>关键特征：</p>
+                            <ul>
+                                <li>只有<strong>两个组</strong></li>
+                                <li>所有样本测量值<strong>相互独立</strong></li>
+                                <li>只有<strong>一个自变量</strong>（教学方法）</li>
+                            </ul>
+                            <p><strong>正确答案：A（独立样本 t 检验）或 C（单因素独立样本方差分析）</strong></p>`
+                        },
+                        {
+                            text: `<p>该机构想要研究教学方法与班级规模（大班/小班）两个因素对学生成绩的影响。80 名学生被分配到四种条件（讲授法大班、讲授法小班、讨论法大班、讨论法小班）。</p>
+                            <p><strong>请选择所有可用于该场景的检验：</strong></p>`,
+                            correctAnswers: ['e'],
+                            explanation: `<p>正在研究<strong>两个因素</strong>对学生成绩的影响。这是一个2×2的析因设计。</p>
+                            <p>关键特征：</p>
+                            <ul>
+                                <li>有<strong>两个自变量</strong>（因素）：教学方法和班级规模</li>
+                                <li>所有样本测量值<strong>相互独立</strong></li>
+                            </ul>
+                            <p><strong>正确答案：E（双因素（独立样本）方差分析）</strong></p>`
+                        }
+                    ]
+                },
+                // 场景4：药物疗效
+                {
+                    background: {
+                        title: "药物疗效研究",
+                        content: `<p>某制药公司正在研究一种新药对血压的影响。研究人员想要了解该药物在不同时间点的效果。</p>
+                        <p>对于下面的每个实验场景，请选择所有可用于该场景的检验方法。假设总体的相关假设（分布类型、方差等）都得到满足。</p>`
+                    },
+                    questions: [
+                        {
+                            text: `<p>该研究招募了 40 名高血压患者。每名患者在服药前、服药后1周、服药后2周和服药后4周分别测量血压。研究人员想要确定血压是否随时间发生显著变化。</p>
+                            <p><strong>请选择所有可用于该场景的检验：</strong></p>`,
+                            correctAnswers: ['d'],
+                            explanation: `<p>正在研究<strong>同一组患者在四个时间点</strong>的血压变化。时间点超过两个。</p>
+                            <p>关键特征：</p>
+                            <ul>
+                                <li>只有<strong>一组被试</strong></li>
+                                <li>每个被试在<strong>超过两个时间点</strong>被测量</li>
+                                <li>测量值是<strong>相关的</strong></li>
+                            </ul>
+                            <p><strong>正确答案：D（单因素重复测量方差分析）</strong></p>`
+                        },
+                        {
+                            text: `<p>该研究招募了 30 名高血压患者。每名患者在服药前和服药后4周分别测量血压。研究人员想要确定服药后血压是否显著降低。</p>
+                            <p><strong>请选择所有可用于该场景的检验：</strong></p>`,
+                            correctAnswers: ['b', 'd'],
+                            explanation: `<p>正在研究<strong>同一组患者在两个时间点</strong>的血压变化。这是一个配对设计。</p>
+                            <p>关键特征：</p>
+                            <ul>
+                                <li>只有<strong>一组被试</strong></li>
+                                <li>每个被试在<strong>两个时间点</strong>被测量</li>
+                                <li>测量值是<strong>配对的</strong></li>
+                            </ul>
+                            <p><strong>正确答案：B（配对样本 t 检验）或 D（单因素重复测量方差分析）</strong></p>`
+                        },
+                        {
+                            text: `<p>该研究招募了 30 名患者服用新药，30 名患者服用安慰剂。两组患者在服药4周后测量血压.研究人员想要比较两组患者的血压差异。</p>
+                            <p><strong>请选择所有可用于该场景的检验：</strong></p>`,
+                            correctAnswers: ['a', 'c'],
+                            explanation: `<p>正在比较<strong>两个独立组</strong>的血压值。</p>
+                            <p>关键特征：</p>
+                            <ul>
+                                <li>有<strong>两个独立的组</strong></li>
+                                <li>组间相互独立</li>
+                                <li>只有<strong>一个自变量</strong>（药物类型）</li>
+                            </ul>
+                            <p><strong>正确答案：A（独立样本 t 检验）或 C（单因素独立样本方差分析）</strong></p>`
+                        }
+                    ]
+                },
+                // 场景5：农作物产量
+                {
+                    background: {
+                        title: "农作物产量研究",
+                        content: `<p>某农业研究所正在研究肥料类型和灌溉量对农作物产量的影响。研究人员想要了解这两个因素及其交互作用如何影响产量。</p>
+                        <p>对于下面的每个实验场景，请选择所有可用于该场景的检验方法。假设总体的相关假设（分布类型、方差等）都得到满足。</p>`
+                    },
+                    questions: [
+                        {
+                            text: `<p>该研究使用了 80 块试验田.研究人员测试了两种不同的肥料类型（有机肥和化肥）和两种不同的灌溉量（低水量和高水量）。每块试验田被随机分配到四种条件之一。</p>
+                            <p><strong>请选择所有可用于该场景的检验：</strong></p>`,
+                            correctAnswers: ['e'],
+                            explanation: `<p>正在研究<strong>两个因素</strong>对农作物产量的影响。这是一个2×2的析因设计。</p>
+                            <p>关键特征：</p>
+                            <ul>
+                                <li>有<strong>两个自变量</strong>（因素）：肥料类型和灌溉量</li>
+                                <li>所有样本测量值<strong>相互独立</strong></li>
+                            </ul>
+                            <p><strong>正确答案：E（双因素（独立样本）方差分析）</strong></p>`
+                        },
+                        {
+                            text: `<p>该研究使用了 40 块试验田，随机分配到使用有机肥或化肥两组.研究人员想要比较两种肥料对产量的影响。</p>
+                            <p><strong>请选择所有可用于该场景的检验：</strong></p>`,
+                            correctAnswers: ['a', 'c'],
+                            explanation: `<p>正在研究<strong>两个独立的组</strong>（有机肥组和化肥组）。</p>
+                            <p>关键特征：</p>
+                            <ul>
+                                <li>只有<strong>两个组</strong></li>
+                                <li>所有样本测量值<strong>相互独立</strong></li>
+                                <li>只有<strong>一个自变量</strong>（肥料类型）</li>
+                            </ul>
+                            <p><strong>正确答案：A（独立样本 t 检验）或 C（单因素独立样本方差分析）</strong></p>`
+                        },
+                        {
+                            text: `<p>该研究测试了 4 种不同的肥料，每种肥料使用 20 块试验田。研究人员想要比较这些肥料的产量差异。</p>
+                            <p><strong>请选择所有可用于该场景的检验：</strong></p>`,
+                            correctAnswers: ['c'],
+                            explanation: `<p>正在研究<strong>多个独立的组</strong>（超过两个）。</p>
+                            <p>关键特征：</p>
+                            <ul>
+                                <li>有<strong>超过两个组</strong></li>
+                                <li>所有样本测量值<strong>相互独立</strong></li>
+                                <li>只有<strong>一个自变量</strong>（肥料类型）</li>
+                            </ul>
+                            <p><strong>正确答案：C（单因素独立样本方差分析）</strong></p>`
+                        }
+                    ]
+                },
+                // 场景6：性别差异
+                {
+                    background: {
+                        title: "性别差异研究",
+                        content: `<p>某市场研究公司正在调查男女消费者对某产品满意度的差异。该公司想要了解性别是否影响产品满意度评分。</p>
+                        <p>对于下面的每个实验场景，请选择所有可用于该场景的检验方法。假设总体的相关假设（分布类型、方差等）都得到满足。</p>`
+                    },
+                    questions: [
+                        {
+                            text: `<p>该公司随机调查了 50 名男性和 50 名女性，让他们对产品进行满意度评分.研究人员想要确定男女之间的满意度评分是否存在显著差异。</p>
+                            <p><strong>请选择所有可用于该场景的检验：</strong></p>`,
+                            correctAnswers: ['a', 'c'],
+                            explanation: `<p>正在研究<strong>两个独立的组</strong>（男性和女性）。</p>
+                            <p>关键特征：</p>
+                            <ul>
+                                <li>只有<strong>两个组</strong></li>
+                                <li>所有样本测量值<strong>相互独立</strong></li>
+                                <li>只有<strong>一个自变量</strong>（性别）</li>
+                            </ul>
+                            <p><strong>正确答案：A（独立样本 t 检验）或 C（单因素独立样本方差分析）</strong></p>`
+                        },
+                        {
+                            text: `<p>该公司调查了 60 对夫妻，让每对夫妻分别对产品进行满意度评分.研究人员想要比较夫妻之间的满意度差异。</p>
+                            <p><strong>请选择所有可用于该场景的检验：</strong></p>`,
+                            correctAnswers: ['b', 'd'],
+                            explanation: `<p>正在研究<strong>配对数据</strong>（夫妻）。每对夫妻提供了两个相关的测量值。</p>
+                            <p>关键特征：</p>
+                            <ul>
+                                <li>数据是<strong>配对的</strong></li>
+                                <li>每对提供<strong>两个相关的测量值</strong></li>
+                            </ul>
+                            <p><strong>正确答案：B（配对样本 t 检验）或 D（单因素重复测量方差分析）</strong></p>`
+                        },
+                        {
+                            text: `<p>该公司调查了 40 名男性、40 名女性和 40 名其他性别的消费者，让他们对产品进行满意度评分.研究人员想要比较三组之间的满意度差异。</p>
+                            <p><strong>请选择所有可用于该场景的检验：</strong></p>`,
+                            correctAnswers: ['c'],
+                            explanation: `<p>正在研究<strong>三个独立的组</strong>。</p>
+                            <p>关键特征：</p>
+                            <ul>
+                                <li>有<strong>超过两个组</strong></li>
+                                <li>所有样本测量值<strong>相互独立</strong></li>
+                                <li>只有<strong>一个自变量</strong>（性别类别）</li>
+                            </ul>
+                            <p><strong>正确答案：C（单因素独立样本方差分析）</strong></p>`
+                        }
+                    ]
+                }
+            ];
 
-            // 正确答案配置
-            const correctAnswers = {
-                1: ['e'], // 第一题正确答案是E
-                2: ['a', 'c'], // 第二题正确答案是A和C
-                3: ['c'] // 第三题正确答案是C
-            };
-            
-            // 用户选择的答案
-            const userAnswers = {
-                1: [],
-                2: [],
-                3: []
-            };
-            
-            // 题目是否已提交
+            // 选项配置
+            const options = [
+                { id: 'a', text: '独立样本 t 检验' },
+                { id: 'b', text: '配对样本 t 检验' },
+                { id: 'c', text: '单因素独立样本方差分析' },
+                { id: 'd', text: '单因素重复测量方差分析' },
+                { id: 'e', text: '双因素（独立样本）方差分析' }
+            ];
+
+            // 当前状态
+            let currentScenarioIndex = 0;
             let submitted = false;
-            
-            // 选项点击事件
-            document.querySelectorAll('.option').forEach(option => {
-                option.addEventListener('click', function() {
-                    if (submitted) return;
-                    
-                    const questionId = this.getAttribute('data-question');
-                    const optionId = this.getAttribute('data-option');
-                    
-                    // 检查是否已经选中
-                    const isSelected = this.classList.contains('selected');
-                    
-                    if (isSelected) {
-                        // 取消选中
-                        this.classList.remove('selected');
-                        const index = userAnswers[questionId].indexOf(optionId);
-                        if (index > -1) {
-                            userAnswers[questionId].splice(index, 1);
+            let userAnswers = [[], [], []];
+
+            const QUESTIONS_PER_SCENARIO = 3;
+
+            // 渲染场景指示器
+            function renderScenarioIndicator() {
+                const container = document.getElementById('scenario-indicator');
+                container.innerHTML = scenarios.map((_, i) =>
+                    `<div class="scenario-dot ${i === currentScenarioIndex ? 'active' : ''}" data-scenario="${i}"></div>`
+                ).join('');
+            }
+
+            // 渲染背景信息
+            function renderBackground() {
+                const scenario = scenarios[currentScenarioIndex];
+                document.getElementById('subtitle').textContent = scenario.background.title;
+                document.getElementById('background-content').innerHTML = scenario.background.content;
+            }
+
+            // 渲染单个题目
+            function renderQuestion(questionIndex) {
+                const scenario = scenarios[currentScenarioIndex];
+                const question = scenario.questions[questionIndex];
+
+                const optionsHtml = options.map(opt => `
+                    <div class="option" data-question="${questionIndex}" data-option="${opt.id}">
+                        <div class="option-label">${opt.id.toUpperCase()}</div>
+                        <div class="option-text">${opt.text}</div>
+                    </div>
+                `).join('');
+
+                return `
+                    <div class="question-container" id="question${questionIndex}">
+                        <div class="question-header">
+                            <div class="question-number">${questionIndex + 1}</div>
+                        </div>
+                        <div class="question-text">${question.text}</div>
+                        <div class="options-container">${optionsHtml}</div>
+                        <div class="feedback" id="feedback${questionIndex}"></div>
+                        <button class="show-explanation-btn" data-question="${questionIndex}">查看答案解析</button>
+                        <div class="explanation" id="explanation${questionIndex}">
+                            <h4>解析</h4>
+                            ${question.explanation}
+                        </div>
+                    </div>
+                `;
+            }
+
+            // 渲染当前场景的所有题目
+            function renderAllQuestions() {
+                const container = document.getElementById('questions-container');
+                const scenario = scenarios[currentScenarioIndex];
+                container.innerHTML = scenario.questions.map((_, i) => renderQuestion(i)).join('');
+                renderBackground();
+                renderScenarioIndicator();
+                attachEventListeners();
+            }
+
+            // 切换到新场景
+            function switchToScenario(scenarioIndex) {
+                currentScenarioIndex = scenarioIndex;
+                userAnswers = [[], [], []];
+                submitted = false;
+                renderAllQuestions();
+                document.getElementById('results').classList.remove('show');
+            }
+
+            // 刷新场景（随机切换）
+            function refreshScenario() {
+                let newIndex;
+                do {
+                    newIndex = Math.floor(Math.random() * scenarios.length);
+                } while (newIndex === currentScenarioIndex && scenarios.length > 1);
+                switchToScenario(newIndex);
+            }
+
+            // 附加事件监听器
+            function attachEventListeners() {
+                // 选项点击事件
+                document.querySelectorAll('.option').forEach(option => {
+                    option.addEventListener('click', function() {
+                        if (submitted) return;
+
+                        const questionId = parseInt(this.getAttribute('data-question'));
+                        const optionId = this.getAttribute('data-option');
+
+                        const isSelected = this.classList.contains('selected');
+
+                        if (isSelected) {
+                            this.classList.remove('selected');
+                            const index = userAnswers[questionId].indexOf(optionId);
+                            if (index > -1) {
+                                userAnswers[questionId].splice(index, 1);
+                            }
+                        } else {
+                            this.classList.add('selected');
+                            userAnswers[questionId].push(optionId);
                         }
-                    } else {
-                        // 选中
-                        this.classList.add('selected');
-                        userAnswers[questionId].push(optionId);
-                    }
+                    });
                 });
-            });
-            
-            // 提交按钮事件
+
+                // 场景指示器点击事件
+                document.querySelectorAll('.scenario-dot').forEach(dot => {
+                    dot.addEventListener('click', function() {
+                        const scenarioId = parseInt(this.getAttribute('data-scenario'));
+                        switchToScenario(scenarioId);
+                    });
+                });
+
+                // 显示答案解析按钮
+                document.querySelectorAll('.show-explanation-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const questionId = this.getAttribute('data-question');
+                        const explanation = document.getElementById(`explanation${questionId}`);
+                        if (explanation) {
+                            if (explanation.classList.contains('show')) {
+                                explanation.classList.remove('show');
+                                this.textContent = '查看答案解析';
+                            } else {
+                                explanation.classList.add('show');
+                                this.textContent = '隐藏答案解析';
+                            }
+                        }
+                    });
+                });
+            }
+
+            // 提交答案
             document.getElementById('submitBtn').addEventListener('click', function() {
                 if (submitted) return;
-                
+
                 submitted = true;
                 let correctCount = 0;
-                
-                // 检查每一题的答案
-                for (let questionId = 1; questionId <= 3; questionId++) {
-                    const userAnswer = userAnswers[questionId].sort();
-                    const correctAnswer = correctAnswers[questionId].sort();
-                    
-                    // 转换为字符串比较
-                    const userAnswerStr = JSON.stringify(userAnswer);
-                    const correctAnswerStr = JSON.stringify(correctAnswer);
-                    
-                    const isCorrect = userAnswerStr === correctAnswerStr;
-                    
-                    // 更新反馈
-                    const feedbackElement = document.getElementById(`feedback${questionId}`);
-                    const explanationElement = document.getElementById(`explanation${questionId}`);
-                    
+                const scenario = scenarios[currentScenarioIndex];
+
+                for (let i = 0; i < QUESTIONS_PER_SCENARIO; i++) {
+                    const userAnswer = userAnswers[i].sort();
+                    const correctAnswer = scenario.questions[i].correctAnswers.sort();
+
+                    const isCorrect = JSON.stringify(userAnswer) === JSON.stringify(correctAnswer);
+
+                    const feedbackElement = document.getElementById(`feedback${i}`);
+
                     if (isCorrect) {
                         correctCount++;
                         feedbackElement.textContent = "回答正确！";
@@ -578,19 +827,13 @@
                         feedbackElement.className = "feedback incorrect show";
                     }
 
-                    // 不自动显示解析，让用户点击按钮查看
-
-                    // 只标记错误选项，不显示正确答案
-                    const options = document.querySelectorAll(`.option[data-question="${questionId}"]`);
-                    options.forEach(option => {
+                    // 标记错误选项
+                    const optionElements = document.querySelectorAll(`.option[data-question="${i}"]`);
+                    optionElements.forEach(option => {
                         const optionId = option.getAttribute('data-option');
-
-                        // 只标记用户选择的错误答案
-                        if (userAnswers[questionId].includes(optionId) && !correctAnswers[questionId].includes(optionId)) {
+                        if (userAnswers[i].includes(optionId) && !correctAnswer.includes(optionId)) {
                             option.classList.add('incorrect');
                         }
-
-                        // 移除悬停效果
                         option.style.cursor = 'default';
                     });
                 }
@@ -601,44 +844,35 @@
                 });
 
                 // 显示结果
-                const resultsElement = document.getElementById('results');
                 const scoreElement = document.getElementById('score');
                 const scoreTextElement = document.getElementById('scoreText');
-                
-                scoreElement.textContent = `${correctCount}/3`;
-                
-                if (correctCount === 3) {
+
+                scoreElement.textContent = `${correctCount}/${QUESTIONS_PER_SCENARIO}`;
+
+                if (correctCount === QUESTIONS_PER_SCENARIO) {
                     scoreTextElement.textContent = "太棒了！您全部答对了！";
-                } else if (correctCount === 2) {
+                } else if (correctCount === QUESTIONS_PER_SCENARIO - 1) {
                     scoreTextElement.textContent = "不错！您答对了2题。";
                 } else if (correctCount === 1) {
                     scoreTextElement.textContent = "您答对了1题，继续加油！";
                 } else {
                     scoreTextElement.textContent = "您需要再复习一下相关知识点。";
                 }
-                
-                resultsElement.classList.add('show');
-                
-                // 滚动到结果区域
-                resultsElement.scrollIntoView({ behavior: 'smooth' });
+
+                document.getElementById('results').classList.add('show');
+                document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
             });
-            
-            // 重置按钮事件
+
+            // 重置答案
             document.getElementById('resetBtn').addEventListener('click', function() {
                 submitted = false;
+                userAnswers = [[], [], []];
 
-                // 重置用户答案
-                for (let questionId = 1; questionId <= 3; questionId++) {
-                    userAnswers[questionId] = [];
-                }
-
-                // 重置选项样式
                 document.querySelectorAll('.option').forEach(option => {
                     option.classList.remove('selected', 'correct', 'incorrect');
                     option.style.cursor = 'pointer';
                 });
 
-                // 隐藏反馈和解析
                 document.querySelectorAll('.feedback').forEach(feedback => {
                     feedback.classList.remove('show', 'correct', 'incorrect');
                     feedback.textContent = '';
@@ -648,55 +882,20 @@
                     explanation.classList.remove('show');
                 });
 
-
-                // 隐藏答案解析按钮
-                document.querySelectorAll('.show-explanation-btn').forEach(btn => {
-                    btn.style.display = 'none';
-                    btn.textContent = '查看答案解析';
-                });
-
-document.getElementById('results').classList.remove('show');
-
-                // 滚动到顶部
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            });
-
-            // 刷新按钮事件
-            document.getElementById('refresh-btn').addEventListener('click', function() {
-                submitted = false;
-
-                // 重置用户答案
-                for (let questionId = 1; questionId <= 3; questionId++) {
-                    userAnswers[questionId] = [];
-                }
-
-                // 重置选项样式
-                document.querySelectorAll('.option').forEach(option => {
-                    option.classList.remove('selected', 'correct', 'incorrect');
-                    option.style.cursor = 'pointer';
-                });
-
-                // 隐藏反馈和解析
-                document.querySelectorAll('.feedback').forEach(feedback => {
-                    feedback.classList.remove('show', 'correct', 'incorrect');
-                    feedback.textContent = '';
-                });
-
-                document.querySelectorAll('.explanation').forEach(explanation => {
-                    explanation.classList.remove('show');
-                });
-
-                // 隐藏答案解析按钮
                 document.querySelectorAll('.show-explanation-btn').forEach(btn => {
                     btn.style.display = 'none';
                     btn.textContent = '查看答案解析';
                 });
 
                 document.getElementById('results').classList.remove('show');
-
-                // 滚动到顶部
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             });
+
+            // 切换场景按钮
+            document.getElementById('refresh-btn').addEventListener('click', refreshScenario);
+
+            // 初始化
+            renderAllQuestions();
         });
     </script>
 </body>
