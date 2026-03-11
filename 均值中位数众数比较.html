@@ -321,38 +321,6 @@
             transform: translateY(-2px);
         }
 
-        .score-container {
-            text-align: center;
-            background-color: white;
-            border-radius: 12px;
-            padding: 25px;
-            margin-top: 30px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            display: none;
-        }
-
-        .score-container.show {
-            display: block;
-        }
-
-        .score-title {
-            font-size: 1.5rem;
-            color: #1e3a8a;
-            margin-bottom: 15px;
-        }
-
-        .score-value {
-            font-size: 3.5rem;
-            font-weight: bold;
-            color: #3b82f6;
-            margin: 10px 0;
-        }
-
-        .score-detail {
-            color: #64748b;
-            font-size: 1.1rem;
-        }
-
         .explanation {
             background-color: #f8fafc;
             border-radius: 10px;
@@ -551,12 +519,6 @@
             <button id="reset-btn">重新作答</button>
         </div>
 
-        <div class="score-container" id="score-container">
-            <div class="score-title">答题结果</div>
-            <div class="score-value" id="score-value">0/4</div>
-            <div class="score-detail" id="score-detail">您答对了0题，答错了0题</div>
-        </div>
-
         <button class="show-explanation-btn" id="show-explanation-btn">查看答案解析</button>
         <div class="explanation" id="explanation-section" style="display:none;">
             <div class="explanation-title">知识要点与解析</div>
@@ -576,16 +538,16 @@
             {
                 data: [-9, -3, -1, 2, 4, 8, 8, 9, 11, 11, 13, 14, 15, 15, 15, 18, 22, 24, 24, 26, 27, 32, 34, 35],
                 minValue: -9, newMinValue: -39,
-                answers: { a: ['4'], b: ['1'], c: ['1', '2'], d: ['3'] },
-                description: '单众数，大致对称',
+                answers: { a: ['4'], b: ['1'], c: ['1', '2'], d: ['1'] },
+                description: '单众数，负偏态',
                 mean: 14.8, median: 14.5
             },
             {
                 data: [-12, -5, -2, 1, 3, 7, 7, 10, 12, 12, 14, 16, 18, 18, 18, 20, 24, 28, 28, 30, 32, 36, 38, 42],
                 minValue: -12, newMinValue: -42,
-                answers: { a: ['4'], b: ['1'], c: ['1', '2'], d: ['3'] },
-                description: '单众数，大致对称',
-                mean: 16.5, median: 16
+                answers: { a: ['4'], b: ['1'], c: ['1', '2'], d: ['1'] },
+                description: '单众数，负偏态',
+                mean: 16.5, median: 17
             },
             {
                 data: [-8, -4, 0, 2, 5, 8, 8, 8, 12, 12, 15, 15, 15, 18, 20, 24, 28, 32, 36, 40, 44, 48, 52, 60],
@@ -604,9 +566,122 @@
             {
                 data: [-6, -2, 2, 6, 10, 10, 14, 14, 18, 22, 26, 26, 30, 30, 34, 38, 42, 46, 50, 54, 58, 62, 66, 70],
                 minValue: -6, newMinValue: -36,
-                answers: { a: ['3'], b: ['1'], c: ['1', '2'], d: ['3'] },
-                description: '多众数，大致对称',
+                answers: { a: ['3'], b: ['1'], c: ['1', '2'], d: ['2'] },
+                description: '多众数，正偏态',
                 mean: 28, median: 28
+            },
+            // 新增15组参数 - 不同数据集大小
+            {
+                data: [2, 5, 5, 8, 10, 12, 15, 18, 20, 22, 25, 28],
+                minValue: 2, newMinValue: -28,
+                answers: { a: ['4'], b: ['1'], c: ['1', '2'], d: ['2'] },
+                description: '单众数，正偏态',
+                mean: 14.2, median: 13.5
+            },
+            {
+                data: [-5, 0, 3, 7, 7, 12, 15, 19, 24, 28, 32, 38, 45, 52],
+                minValue: -5, newMinValue: -35,
+                answers: { a: ['4'], b: ['1'], c: ['1', '2'], d: ['2'] },
+                description: '单众数，正偏态',
+                mean: 16.4, median: 13.5
+            },
+            {
+                data: [-30, -25, -22, -18, -18, -15, -10, -5, 0, 5, 8, 12, 15, 18, 20, 22],
+                minValue: -30, newMinValue: -60,
+                answers: { a: ['4'], b: ['1'], c: ['1', '2'], d: ['1'] },
+                description: '单众数，负偏态',
+                mean: -2.7, median: -2.5
+            },
+            {
+                data: [5, 12, 12, 19, 26, 26, 33, 40, 47, 54, 61, 68, 75, 82, 89, 96],
+                minValue: 5, newMinValue: -25,
+                answers: { a: ['3'], b: ['1'], c: ['1', '2'], d: ['4'] },
+                description: '多众数，均匀分布',
+                mean: 46.6, median: 43.5
+            },
+            {
+                data: [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35, 37, 39],
+                minValue: 1, newMinValue: -29,
+                answers: { a: ['4'], b: ['1'], c: ['1', '2'], d: ['4'] },
+                description: '单众数，均匀分布',
+                mean: 20, median: 20
+            },
+            {
+                data: [0, 5, 5, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 90, 100, 120],
+                minValue: 0, newMinValue: -30,
+                answers: { a: ['4'], b: ['1'], c: ['1', '2'], d: ['2'] },
+                description: '单众数，正偏态',
+                mean: 41.8, median: 37.5
+            },
+            {
+                data: [-50, -40, -35, -30, -30, -30, -25, -20, -15, -10, -5, 0, 5, 10, 15],
+                minValue: -50, newMinValue: -80,
+                answers: { a: ['4'], b: ['1'], c: ['1', '2'], d: ['3'] },
+                description: '单众数，大致对称',
+                mean: -19.3, median: -20
+            },
+            {
+                data: [8, 8, 12, 16, 20, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64, 68],
+                minValue: 8, newMinValue: -22,
+                answers: { a: ['3'], b: ['1'], c: ['1', '2'], d: ['2'] },
+                description: '多众数，正偏态',
+                mean: 35.3, median: 34
+            },
+            {
+                data: [-3, 2, 7, 12, 17, 22, 27, 32, 37, 42, 47, 52, 57, 62, 67, 72, 77, 82, 87, 92, 97, 102, 107, 112, 117, 122],
+                minValue: -3, newMinValue: -33,
+                answers: { a: ['4'], b: ['1'], c: ['1', '2'], d: ['2'] },
+                description: '单众数，正偏态',
+                mean: 57, median: 52
+            },
+            {
+                data: [10, 10, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95],
+                minValue: 10, newMinValue: -20,
+                answers: { a: ['4'], b: ['1'], c: ['1', '2'], d: ['3'] },
+                description: '单众数，大致对称',
+                mean: 52.5, median: 52.5
+            },
+            {
+                data: [-8, -4, 0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64, 68, 72, 76, 80, 84, 88, 92, 96, 100],
+                minValue: -8, newMinValue: -38,
+                answers: { a: ['4'], b: ['1'], c: ['1', '2'], d: ['4'] },
+                description: '单众数，均匀分布',
+                mean: 46, median: 46
+            },
+            {
+                data: [-15, -10, -5, 0, 5, 10, 15, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 70, 80, 95, 110, 130],
+                minValue: -15, newMinValue: -45,
+                answers: { a: ['4'], b: ['1'], c: ['1', '2'], d: ['2'] },
+                description: '单众数，正偏态',
+                mean: 35.7, median: 27.5
+            },
+            {
+                data: [3, 6, 9, 12, 15, 18, 21, 24, 27, 30, 33, 36, 39, 42, 45],
+                minValue: 3, newMinValue: -27,
+                answers: { a: ['4'], b: ['1'], c: ['1', '2'], d: ['4'] },
+                description: '单众数，均匀分布',
+                mean: 24, median: 24
+            },
+            {
+                data: [-25, -20, -15, -15, -10, -5, 0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60],
+                minValue: -25, newMinValue: -55,
+                answers: { a: ['4'], b: ['1'], c: ['1', '2'], d: ['2'] },
+                description: '单众数，正偏态',
+                mean: 18.4, median: 12.5
+            },
+            {
+                data: [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60],
+                minValue: 2, newMinValue: -28,
+                answers: { a: ['4'], b: ['1'], c: ['1', '2'], d: ['4'] },
+                description: '单众数，均匀分布',
+                mean: 31, median: 31
+            },
+            {
+                data: [-12, -8, -4, 0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48, 52, 56, 60, 64, 68, 72, 76, 80, 84, 88, 92, 96, 100, 104, 108, 112],
+                minValue: -12, newMinValue: -42,
+                answers: { a: ['4'], b: ['1'], c: ['1', '2'], d: ['4'] },
+                description: '单众数，均匀分布',
+                mean: 50, median: 50
             },
         ];
 
@@ -756,8 +831,6 @@
                     feedback.innerHTML = '';
                 });
 
-                document.getElementById('score-container').classList.remove('show');
-
                 var showBtn = document.getElementById('show-explanation-btn');
                 var explanationSection = document.getElementById('explanation-section');
                 if (showBtn) {
@@ -809,8 +882,22 @@
 
             // Submit button
             document.getElementById('submit-btn').addEventListener('click', function() {
+                // Check if all questions have been answered
+                const totalQuestions = Object.keys(correctAnswers).length;
+                const unansweredQuestions = [];
+
+                for (const questionId in correctAnswers) {
+                    if (!userAnswers[questionId] || userAnswers[questionId].length === 0) {
+                        unansweredQuestions.push(questionId.toUpperCase());
+                    }
+                }
+
+                if (unansweredQuestions.length > 0) {
+                    alert(`请回答所有问题后再提交！\n未回答的问题: ${unansweredQuestions.join(', ')}`);
+                    return;
+                }
+
                 let score = 0;
-                let totalQuestions = Object.keys(correctAnswers).length;
 
                 for (const questionId in correctAnswers) {
                     const correct = correctAnswers[questionId];
@@ -826,7 +913,11 @@
                     showFeedback(questionId, isCorrect, correct, user);
                 }
 
-                showScore(score, totalQuestions);
+                // Show explanation button after submit
+                var showBtn = document.getElementById('show-explanation-btn');
+                if (showBtn) {
+                    showBtn.style.display = 'inline-block';
+                }
             });
 
             function showFeedback(questionId, isCorrect, correctAnswersArray, userAnswersArray) {
@@ -840,7 +931,8 @@
                     feedbackEl.className = 'feedback correct show';
                 } else {
                     message = `<div class="feedback-title">${questionLetters[questionId]} 回答不正确</div>`;
-                    message += `<p>您的选择: ${userAnswersArray.length > 0 ? formatAnswers(userAnswersArray) : '未选择'}</p>`;
+                    message += `<p>您的选择: ${userAnswersArray.length > 0 ? formatAnswers(questionId, userAnswersArray) : '未选择'}</p>`;
+                    message += `<p>正确答案: ${formatAnswers(questionId, correctAnswersArray)}</p>`;
                     feedbackEl.className = 'feedback incorrect show';
                 }
 
@@ -857,42 +949,26 @@
                 });
             }
 
-            function formatAnswers(answersArray) {
-                const optionTexts = {
+            function formatAnswers(questionId, answersArray) {
+                // 题目 a, b, c 的选项
+                const optionTextsABC = {
                     '1': '均值',
                     '2': '中位数',
                     '3': '众数',
                     '4': '以上都不是'
                 };
 
+                // 题目 d 的选项
+                const optionTextsD = {
+                    '1': '负偏态',
+                    '2': '正偏态',
+                    '3': '大致对称',
+                    '4': '均匀分布'
+                };
+
+                const optionTexts = questionId === 'd' ? optionTextsD : optionTextsABC;
                 const answerTexts = answersArray.map(ans => optionTexts[ans] || ans);
                 return answerTexts.join(', ');
-            }
-
-            function showScore(score, total) {
-                const scoreContainer = document.getElementById('score-container');
-                const scoreValue = document.getElementById('score-value');
-                const scoreDetail = document.getElementById('score-detail');
-
-                scoreValue.textContent = `${score}/${total}`;
-                scoreDetail.textContent = `您答对了${score}题，答错了${total - score}题`;
-
-                if (score === total) {
-                    scoreValue.style.color = '#10b981';
-                } else if (score >= total / 2) {
-                    scoreValue.style.color = '#f59e0b';
-                } else {
-                    scoreValue.style.color = '#ef4444';
-                }
-
-                scoreContainer.classList.add('show');
-
-                var showBtn = document.getElementById('show-explanation-btn');
-                if (showBtn) {
-                    showBtn.style.display = 'inline-block';
-                }
-
-                scoreContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             }
 
             // Reset button

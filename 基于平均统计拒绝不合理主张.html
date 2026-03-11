@@ -41,6 +41,11 @@
             color: #0052cc;
             margin-bottom: 10px;
             font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
         }
 
         .subtitle {
@@ -209,73 +214,15 @@
             box-shadow: 0 5px 15px rgba(0, 82, 204, 0.3);
         }
 
-        #reset-btn {
-            background-color: #f0f0f0;
-            color: #333;
+        #refresh-btn {
+            background: linear-gradient(135deg, #34a853, #2ecc71);
+            color: white;
+            box-shadow: 0 2px 8px rgba(52, 168, 83, 0.3);
         }
 
-        #reset-btn:hover {
-            background-color: #e0e0e0;
+        #refresh-btn:hover {
             transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .results {
-            background-color: #e6f0ff;
-            border-radius: 10px;
-            padding: 25px;
-            margin-top: 30px;
-            text-align: center;
-            display: none;
-        }
-
-        .results.show {
-            display: block;
-            animation: fadeIn 0.5s ease;
-        }
-
-        .score {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: #0052cc;
-            margin-bottom: 10px;
-        }
-
-        .score-text {
-            font-size: 1.2rem;
-            color: #666;
-            margin-bottom: 20px;
-        }
-
-        .correct-answers {
-            text-align: left;
-            background-color: white;
-            border-radius: 8px;
-            padding: 20px;
-            margin-top: 20px;
-        }
-
-        .correct-answers h4 {
-            color: #0052cc;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-
-        .correct-answer-item {
-            padding: 10px;
-            border-bottom: 1px solid #eee;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .correct-answer-item:last-child {
-            border-bottom: none;
-        }
-
-        .correct-answer-item i {
-            color: #00a86b;
-            font-size: 1.2rem;
+            box-shadow: 0 6px 15px rgba(52, 168, 83, 0.4);
         }
 
         .note {
@@ -295,24 +242,24 @@
             body {
                 padding: 10px;
             }
-            
+
             .container {
                 padding: 20px;
             }
-            
+
             h1 {
                 font-size: 1.5rem;
             }
-            
+
             .option {
                 padding: 15px;
             }
-            
+
             button {
                 padding: 12px 20px;
                 width: 100%;
             }
-            
+
             .controls {
                 flex-direction: column;
                 gap: 10px;
@@ -328,56 +275,125 @@
             border-left: 4px solid #0052cc;
         }
 
+        .correct-answer-item {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .correct-answer-item:last-child {
+            border-bottom: none;
+        }
+
+        .correct-answer-item i {
+            color: #00a86b;
+            font-size: 1.2rem;
+        }
+
+        .correct-answer-item i.fa-times {
+            color: #ff4d4d;
+        }
+
+        .feedback {
+            margin-top: 25px;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .feedback.correct {
+            background-color: #e6fffa;
+            border: 2px solid #00a86b;
+        }
+
+        .feedback.incorrect {
+            background-color: #ffe6e6;
+            border: 2px solid #ff4d4d;
+        }
+
+        .feedback-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .feedback.correct .feedback-content {
+            color: #00a86b;
+        }
+
+        .feedback.incorrect .feedback-content {
+            color: #ff4d4d;
+        }
+
+        .feedback i {
+            font-size: 1.5rem;
+        }
+
         .highlight {
             background-color: #fffacd;
             padding: 2px 5px;
             border-radius: 3px;
             font-weight: 600;
         }
-    </style>
 
-    <style>
-    .show-explanation-btn {
-        display: none;
-        margin: 20px auto;
-        padding: 14px 28px;
-        background: linear-gradient(135deg, #9b59b6, #8e44ad);
-        color: white;
-        border: none;
-        border-radius: 10px;
-        cursor: pointer;
-        font-size: 1.1rem;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
-    }
-    .show-explanation-btn:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
-    }
-    .explanation-section {
-        display: none;
-        margin-top: 20px;
-    }
+        .show-explanation-btn {
+            display: none;
+            margin: 20px auto;
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
+        }
+        .show-explanation-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
+        }
+
+        .param-indicator {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
     </style>
-    </head>
+</head>
 <body>
     <div class="container">
         <header>
-            <h1><i class="fas fa-chart-line"></i> 基于平均统计拒绝不合理主张 <button id="refresh-btn" style="margin-left: 15px; padding: 8px 16px; background: linear-gradient(135deg, #34a853, #2ecc71); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(52, 168, 83, 0.3);">刷新参数</button></h1>
-            <p class="subtitle">描述性统计 - 交互式答题练习</p>
+            <h1>
+                <i class="fas fa-chart-line"></i>
+                基于平均统计拒绝不合理主张
+                <span class="param-indicator" id="param-indicator">第 1/20 组</span>
+            </h1>
+            <button id="refresh-btn">
+                <i class="fas fa-sync-alt"></i> 刷新参数
+            </button>
         </header>
 
         <div class="info-box">
             <h3><i class="fas fa-info-circle"></i> 题目背景</h3>
-            <p>一家投资公司宣传称，去年其客户平均获得了8%的利润。假设这里的"平均"指的是均值，基于此信息，下列哪些主张必定为真？</p>
-            <p><strong>注意：</strong>可能有多个陈述为真。如果没有一个陈述为真，请勾选相应的方框。</p>
+            <p id="background-text"></p>
+            <p id="note-text"><strong>注意：</strong></p>
         </div>
 
         <div class="question-container">
             <div class="question-text">
-                我们被告知假设"平均"指的是均值，事实上这是"平均"一词最常见的用法。
-                根据定义，客户百分比利润的均值等于其百分比利润的总和除以客户数量。我们使用这个定义来确定以下五个陈述中哪些必定为真。
+                请判断以下陈述中哪些必定为真：
             </div>
 
             <div class="options-container" id="options-container">
@@ -397,86 +413,237 @@
             <button id="submit-btn">
                 <i class="fas fa-paper-plane"></i> 提交答案
             </button>
-            <button id="reset-btn">
-                <i class="fas fa-redo"></i> 重新作答
-            </button>
         </div>
 
-        <div class="results" id="results">
-            <div class="score" id="score">0/5</div>
-            <div class="score-text" id="score-text">您答对了 <span id="correct-count">0</span> 个陈述，答错了 <span id="incorrect-count">0</span> 个陈述</div>
-
-            <p class="note">点击"查看答案解析"按钮了解详细解析。</p>
+        <div class="feedback" id="feedback" style="display: none;">
+            <div class="feedback-content">
+                <i class="fas" id="feedback-icon"></i>
+                <span id="feedback-text"></span>
+            </div>
         </div>
+
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // 20组题目参数 - 多样化场景
+            const questionSets = [
+                {
+                    subject: "投资公司",
+                    item: "客户",
+                    metric: "利润率",
+                    value: "8%",
+                    valueNum: 8,
+                    unit: "%",
+                    timeFrame: "去年",
+                    context: "投资收益"
+                },
+                {
+                    subject: "某高校",
+                    item: "学生",
+                    metric: "期末考试成绩",
+                    value: "75分",
+                    valueNum: 75,
+                    unit: "分",
+                    timeFrame: "本学期",
+                    context: "学业成绩"
+                },
+                {
+                    subject: "一家电子产品制造商",
+                    item: "产品",
+                    metric: "生产成本",
+                    value: "120元",
+                    valueNum: 120,
+                    unit: "元",
+                    timeFrame: "上个月",
+                    context: "生产成本"
+                },
+                {
+                    subject: "某连锁餐厅",
+                    item: "门店",
+                    metric: "日均客流量",
+                    value: "200人次",
+                    valueNum: 200,
+                    unit: "人次",
+                    timeFrame: "上个月",
+                    context: "客流量统计"
+                },
+                {
+                    subject: "某物流公司",
+                    item: "快递员",
+                    metric: "日派送包裹数",
+                    value: "50件",
+                    valueNum: 50,
+                    unit: "件",
+                    timeFrame: "上周",
+                    context: "配送效率"
+                },
+                {
+                    subject: "某软件公司",
+                    item: "程序员",
+                    metric: "月薪",
+                    value: "15000元",
+                    valueNum: 15000,
+                    unit: "元",
+                    timeFrame: "本月",
+                    context: "薪资水平"
+                },
+                {
+                    subject: "某电商平台",
+                    item: "订单",
+                    metric: "金额",
+                    value: "280元",
+                    valueNum: 280,
+                    unit: "元",
+                    timeFrame: "双十一期间",
+                    context: "消费水平"
+                },
+                {
+                    subject: "某健身房",
+                    item: "会员",
+                    metric: "每周锻炼次数",
+                    value: "3次",
+                    valueNum: 3,
+                    unit: "次",
+                    timeFrame: "上个月",
+                    context: "健身习惯"
+                },
+                {
+                    subject: "某农业基地",
+                    item: "农田",
+                    metric: "亩产量",
+                    value: "500公斤",
+                    valueNum: 500,
+                    unit: "公斤",
+                    timeFrame: "今年",
+                    context: "农业生产"
+                },
+                {
+                    subject: "某网约车平台",
+                    item: "司机",
+                    metric: "日接单量",
+                    value: "25单",
+                    valueNum: 25,
+                    unit: "单",
+                    timeFrame: "昨天",
+                    context: "出行服务"
+                },
+                {
+                    subject: "某制药企业",
+                    item: "药品",
+                    metric: "研发投入",
+                    value: "800万元",
+                    valueNum: 800,
+                    unit: "万元",
+                    timeFrame: "去年",
+                    context: "研发投入"
+                },
+                {
+                    subject: "某在线教育平台",
+                    item: "课程",
+                    metric: "学员评分",
+                    value: "4.5分",
+                    valueNum: 4.5,
+                    unit: "分",
+                    timeFrame: "本季度",
+                    context: "课程质量"
+                },
+                {
+                    subject: "某汽车制造厂",
+                    item: "汽车",
+                    metric: "出厂价",
+                    value: "15万元",
+                    valueNum: 15,
+                    unit: "万元",
+                    timeFrame: "今年",
+                    context: "汽车定价"
+                },
+                {
+                    subject: "某医院",
+                    item: "病房",
+                    metric: "床位使用率",
+                    value: "85%",
+                    valueNum: 85,
+                    unit: "%",
+                    timeFrame: "上个月",
+                    context: "医疗资源"
+                },
+                {
+                    subject: "某房地产公司",
+                    item: "楼盘",
+                    metric: "销售面积",
+                    value: "12000平方米",
+                    valueNum: 12000,
+                    unit: "平方米",
+                    timeFrame: "今年上半年",
+                    context: "房产销售"
+                },
+                {
+                    subject: "某直播平台",
+                    item: "主播",
+                    metric: "日均观看人数",
+                    value: "5000人",
+                    valueNum: 5000,
+                    unit: "人",
+                    timeFrame: "上个月",
+                    context: "直播流量"
+                },
+                {
+                    subject: "某图书馆",
+                    item: "书籍",
+                    metric: "月借阅次数",
+                    value: "15次",
+                    valueNum: 15,
+                    unit: "次",
+                    timeFrame: "去年",
+                    context: "图书流通"
+                },
+                {
+                    subject: "某咖啡连锁店",
+                    item: "门店",
+                    metric: "日均销售额",
+                    value: "8000元",
+                    valueNum: 8000,
+                    unit: "元",
+                    timeFrame: "上个月",
+                    context: "经营业绩"
+                },
+                {
+                    subject: "某移动通信公司",
+                    item: "用户",
+                    metric: "月均流量使用",
+                    value: "20GB",
+                    valueNum: 20,
+                    unit: "GB",
+                    timeFrame: "本季度",
+                    context: "流量消费"
+                },
+                {
+                    subject: "某新能源车企",
+                    item: "车辆",
+                    metric: "续航里程",
+                    value: "400公里",
+                    valueNum: 400,
+                    unit: "公里",
+                    timeFrame: "最新批次",
+                    context: "车辆性能"
+                }
+            ];
 
-            // 显示答案解析按钮点击事件
-            document.querySelectorAll('.show-explanation-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    var questionId = this.getAttribute('data-question') || this.id;
-                    var explanation;
-                    if (questionId) {
-                        explanation = this.nextElementSibling;
-                    }
-                    if (explanation) {
-                        if (explanation.classList.contains('show')) {
-                            explanation.classList.remove('show');
-                            this.textContent = '查看答案解析';
-                        } else {
-                            explanation.classList.add('show');
-                            this.textContent = '隐藏答案解析';
-                        }
-                    }
-                });
-            });
-
-            // 题目数据
-            const questionData = {
-                title: "基于平均统计拒绝不合理的主张",
-                statements: [
-                    {
-                        id: 1,
-                        text: "两年前，他们的一些客户至少获得了8%的利润。",
-                        correct: false,
-                        explanation: "我们知道该投资公司的客户去年平均获得了8%的利润。我们并不确定该公司的客户两年前的表现如何。因此，此陈述不一定为真。"
-                    },
-                    {
-                        id: 2,
-                        text: "去年，他们至少有一位客户恰好获得了8%的利润。",
-                        correct: false,
-                        explanation: "此陈述不一定为真。例如，如果该公司只有两位客户，他们的利润分别是7%和9%，那么平均值将是8%，但没有客户在去年恰好获得8%的利润。"
-                    },
-                    {
-                        id: 3,
-                        text: "去年，超过一半的客户至少获得了8%的利润。",
-                        correct: false,
-                        explanation: "此陈述不一定为真。例如，如果该公司只有三位客户，他们去年的利润分别是7%、7%和10%，那么平均值将是8%，但只有三分之一的客户在去年至少获得了8%的利润。换句话说，在该例子中，只有不到一半的客户获得了至少8%的利润。"
-                    },
-                    {
-                        id: 4,
-                        text: "去年，他们的一些客户获得了8%或更多的利润。",
-                        correct: true,
-                        explanation: "如果去年每位客户的利润都少于8%，那么平均利润不可能为8%。因此，去年他们的一些客户必定获得了8%或更多的利润。因此，此陈述必定为真。"
-                    },
-                    {
-                        id: 5,
-                        text: "去年，他们所有的客户都获得了少于13%的利润。",
-                        correct: false,
-                        explanation: "此陈述不一定为真。例如，如果该公司只有两位客户，他们去年的利润分别是2%和14%，那么平均值将是8%，但'去年他们所有的客户都获得了少于13%的利润'这一陈述将是错误的。"
-                    },
-                    {
-                        id: 6,
-                        text: "以上陈述均不成立。",
-                        correct: false,
-                        explanation: "此陈述不正确，因为陈述4必定为真。"
-                    }
-                ]
-            };
+            // 正确答案类型：1=至少有一个≥平均值, 2=至少有一个≤平均值, 3=两者都有
+            const correctTypes = ['above', 'below', 'both'];
 
             // 初始化变量
+            const totalCombos = questionSets.length * correctTypes.length; // 60
+            let currentIndex = 0; // 当前在打乱数组中的位置
+
+            // 创建并打乱题目顺序
+            function createShuffledOrder() {
+                const order = Array.from({ length: totalCombos }, (_, i) => i);
+                return shuffleArray(order);
+            }
+            let shuffledOrder = createShuffledOrder();
+
             let selectedOptions = [];
             let submitted = false;
 
@@ -484,52 +651,361 @@
             const optionsContainer = document.getElementById('options-container');
             const explanation = document.getElementById('explanation');
             const explanationContent = document.getElementById('explanation-content');
-            const results = document.getElementById('results');
-            const scoreElement = document.getElementById('score');
-            const scoreText = document.getElementById('score-text');
-            const correctCountElement = document.getElementById('correct-count');
-            const incorrectCountElement = document.getElementById('incorrect-count');
             const submitBtn = document.getElementById('submit-btn');
-            const resetBtn = document.getElementById('reset-btn');
+            const refreshBtn = document.getElementById('refresh-btn');
+            const paramIndicator = document.getElementById('param-indicator');
+            const backgroundText = document.getElementById('background-text');
+            const noteText = document.getElementById('note-text');
 
-            // 生成选项
-            function renderOptions() {
+            // Fisher-Yates 洗牌算法
+            function shuffleArray(array) {
+                const shuffled = [...array];
+                for (let i = shuffled.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+                }
+                return shuffled;
+            }
+
+            // 获取之前的时间框架
+            function getPreviousTimeFrame(timeFrame) {
+                const timeMap = {
+                    "去年": "前年",
+                    "本学期": "上学期",
+                    "上个月": "前一个月",
+                    "上周": "上上周",
+                    "本月": "上个月",
+                    "双十一期间": "618期间",
+                    "今年": "去年",
+                    "昨天": "前天",
+                    "本季度": "上季度",
+                    "今年上半年": "去年上半年",
+                    "最新批次": "上一批次"
+                };
+                return timeMap[timeFrame] || "之前";
+            }
+
+            // 格式化数值
+            function formatValue(num, unit) {
+                if (unit === "%" || num % 1 !== 0) {
+                    return num.toFixed(1) + unit;
+                }
+                return Math.round(num) + unit;
+            }
+
+            // 生成基础陈述模板（不含"以上陈述均不成立"）
+            function generateBaseStatements(params, correctType) {
+                const { subject, item, metric, value, valueNum, unit, timeFrame, context } = params;
+                const prevTimeFrame = getPreviousTimeFrame(timeFrame);
+
+                // 定义多种表述方式的模板
+                const statementTemplates = {
+                    // 类型1: 过去时间的陈述（必定为假）
+                    pastTime: [
+                        {
+                            text: (p) => `${p.prevTimeFrame}，${p.subject}的一些${p.item}的${p.metric}至少达到了${p.value}。`,
+                            explanation: (p) => `我们知道${p.subject}${p.timeFrame}的${p.item}${p.metric}均值为${p.value}。我们并不确定${p.subject}的${item}${p.prevTimeFrame}的表现如何。因此，此陈述不一定为真。`
+                        },
+                        {
+                            text: (p) => `${p.prevTimeFrame}，${p.subject}大多数${p.item}的${p.metric}都超过了${p.value}。`,
+                            explanation: (p) => `我们只知道${p.timeFrame}的平均值是${p.value}，无法确定${p.prevTimeFrame}的情况。此陈述不一定为真。`
+                        }
+                    ],
+
+                    // 类型2: 恰好等于平均值的陈述（必定为假）
+                    exactlyEqual: [
+                        {
+                            text: (p) => `${p.timeFrame}，${p.subject}至少有一个${p.item}的${p.metric}恰好是${p.value}。`,
+                            explanation: (p) => `此陈述不一定为真。例如，如果${p.subject}只有两个${p.item}，他们的${p.metric}分别是${formatValue(p.valueNum * 0.875, p.unit)}和${formatValue(p.valueNum * 1.125, p.unit)}，那么平均值将是${p.value}，但没有${p.item}${p.timeFrame}的${p.metric}恰好是${p.value}。`
+                        },
+                        {
+                            text: (p) => `${p.timeFrame}，${p.subject}必然存在某个${p.item}的${p.metric}正好等于${p.value}。`,
+                            explanation: (p) => `平均值等于${p.value}并不意味着一定有某个${p.item}的${p.metric}恰好等于${p.value}。例如，两个${p.item}的${p.metric}分别是${formatValue(p.valueNum * 0.9, p.unit)}和${formatValue(p.valueNum * 1.1, p.unit)}时，平均值为${p.value}，但没有${p.item}恰好等于${p.value}。`
+                        }
+                    ],
+
+                    // 类型3: 超过一半达到平均值的陈述（必定为假）
+                    moreThanHalf: [
+                        {
+                            text: (p) => `${p.timeFrame}，超过一半的${p.item}的${p.metric}至少达到了${p.value}。`,
+                            explanation: (p) => `此陈述不一定为真。例如，如果${p.subject}只有三个${p.item}，他们${p.timeFrame}的${p.metric}分别是${formatValue(p.valueNum * 0.875, p.unit)}、${formatValue(p.valueNum * 0.875, p.unit)}和${formatValue(p.valueNum * 1.25, p.unit)}，那么平均值将约为${p.value}，但只有三分之一的${p.item}${p.timeFrame}的${p.metric}至少达到了${p.value}。`
+                        },
+                        {
+                            text: (p) => `${p.timeFrame}，${p.subject}大部分${p.item}的${p.metric}都不低于${p.value}。`,
+                            explanation: (p) => `平均值是${p.value}并不代表大部分${p.item}都达到或超过这个值。少数极高值可以拉高平均值。例如，三个${p.item}的${p.metric}分别为${formatValue(p.valueNum * 0.5, p.unit)}、${formatValue(p.valueNum * 0.5, p.unit)}和${formatValue(p.valueNum * 2, p.unit)}，平均值为${p.value}，但只有三分之一的${p.item}达到或超过${p.value}。`
+                        }
+                    ],
+
+                    // 类型4: 至少有一个达到或超过平均值（必定为真）
+                    atLeastOneAbove: [
+                        {
+                            text: (p) => `${p.timeFrame}，${p.subject}的一些${p.item}的${p.metric}达到了${p.value}或更高。`,
+                            explanation: (p) => `如果${p.timeFrame}每个${p.item}的${p.metric}都少于${p.value}，那么平均${p.metric}不可能为${p.value}。因此，${p.timeFrame}${p.subject}的一些${p.item}必定达到了${p.value}或更高的${p.metric}。因此，此陈述必定为真。`
+                        },
+                        {
+                            text: (p) => `${p.timeFrame}，${p.subject}至少有一个${p.item}的${p.metric}不小于${p.value}。`,
+                            explanation: (p) => `假设所有${p.item}的${p.metric}都严格小于${p.value}，那么它们的平均值也必然小于${p.value}，这与平均值等于${p.value}矛盾。因此，必定存在至少一个${p.item}的${p.metric}不小于${p.value}。此陈述必定为真。`
+                        },
+                        {
+                            text: (p) => `${p.timeFrame}，${p.subject}不可能所有${p.item}的${p.metric}都低于${p.value}。`,
+                            explanation: (p) => `如果所有${p.item}的${p.metric}都低于${p.value}，则平均值必然低于${p.value}。但已知平均值为${p.value}，因此不可能所有${p.item}的${p.metric}都低于${p.value}。此陈述必定为真。`
+                        }
+                    ],
+
+                    // 类型5: 至少有一个达到或低于平均值（必定为真）
+                    atLeastOneBelow: [
+                        {
+                            text: (p) => `${p.timeFrame}，${p.subject}的一些${p.item}的${p.metric}不高于${p.value}。`,
+                            explanation: (p) => `如果${p.timeFrame}每个${p.item}的${p.metric}都高于${p.value}，那么平均${p.metric}不可能为${p.value}。因此，${p.timeFrame}${p.subject}的一些${p.item}的${p.metric}必定不高于${p.value}。因此，此陈述必定为真。`
+                        },
+                        {
+                            text: (p) => `${p.timeFrame}，${p.subject}至少有一个${p.item}的${p.metric}小于或等于${p.value}。`,
+                            explanation: (p) => `假设所有${p.item}的${p.metric}都严格大于${p.value}，那么它们的平均值也必然大于${p.value}，这与平均值等于${p.value}矛盾。因此，必定存在至少一个${p.item}的${p.metric}小于或等于${p.value}。此陈述必定为真。`
+                        },
+                        {
+                            text: (p) => `${p.timeFrame}，${p.subject}不可能所有${p.item}的${p.metric}都超过${p.value}。`,
+                            explanation: (p) => `如果所有${p.item}的${p.metric}都超过${p.value}，则平均值必然超过${p.value}。但已知平均值为${p.value}，因此不可能所有${p.item}的${p.metric}都超过${p.value}。此陈述必定为真。`
+                        }
+                    ],
+
+                    // 类型6: 全部低于某值的陈述（必定为假）
+                    allBelow: [
+                        {
+                            text: (p) => `${p.timeFrame}，${p.subject}所有的${p.item}的${p.metric}都低于${formatValue(p.valueNum * 1.625, p.unit)}。`,
+                            explanation: (p) => `此陈述不一定为真。例如，如果${p.subject}只有两个${p.item}，他们${p.timeFrame}的${p.metric}分别是${formatValue(p.valueNum * 0.25, p.unit)}和${formatValue(p.valueNum * 1.75, p.unit)}，那么平均值将是${p.value}，但"${p.timeFrame}${p.subject}所有的${p.item}的${p.metric}都低于${formatValue(p.valueNum * 1.625, p.unit)}"这一陈述将是错误的。`
+                        },
+                        {
+                            text: (p) => `${p.timeFrame}，${p.subject}没有任何${p.item}的${p.metric}超过${formatValue(p.valueNum * 2, p.unit)}。`,
+                            explanation: (p) => `此陈述不一定为真。平均值是${p.value}并不能排除某些${p.item}的${p.metric}远超平均值。例如，一个${p.item}的${p.metric}为${formatValue(p.valueNum * 3, p.unit)}，另一个为${formatValue(p.valueNum * -1, p.unit)}（亏损），平均值仍为${p.value}。`
+                        }
+                    ],
+
+                    // 类型6: 中位数相关陈述（必定为假）
+                    median: [
+                        {
+                            text: (p) => `${p.timeFrame}，${p.subject}${p.item}的${p.metric}的中位数必定等于${p.value}。`,
+                            explanation: (p) => `均值和中位数是不同的概念。平均值等于${p.value}并不意味着中位数也等于${p.value}。例如，三个${p.item}的${p.metric}分别为${formatValue(p.valueNum * 0.5, p.unit)}、${formatValue(p.valueNum * 0.5, p.unit)}和${formatValue(p.valueNum * 2, p.unit)}，平均值为${p.value}，但中位数是${formatValue(p.valueNum * 0.5, p.unit)}。`
+                        },
+                        {
+                            text: (p) => `${p.timeFrame}，${p.subject}超过一半的${p.item}的${p.metric}都高于${p.value}。`,
+                            explanation: (p) => `平均值高于中位数的情况很常见（正偏态分布）。平均值等于${p.value}并不保证超过一半的${p.item}高于此值。此陈述不一定为真。`
+                        }
+                    ],
+
+                    // 类型7: 总数相关陈述（必定为假）
+                    total: [
+                        {
+                            text: (p) => `${p.timeFrame}，${p.subject}所有${p.item}的${p.metric}总和恰好是${p.value}。`,
+                            explanation: (p) => `平均值等于${p.value}意味着总和等于${p.value}乘以${p.item}数量，而不是总和等于${p.value}本身。此陈述混淆了平均值和总和的概念。`
+                        }
+                    ],
+
+                    // 类型8: 比较类陈述（必定为假）
+                    comparison: [
+                        {
+                            text: (p) => `${p.timeFrame}，${p.subject}所有${p.item}的${p.metric}都相等。`,
+                            explanation: (p) => `平均值等于${p.value}并不要求所有${p.item}的${p.metric}相等。可以有各种不同的分布情况，只要平均值为${p.value}即可。`
+                        },
+                        {
+                            text: (p) => `${p.timeFrame}，${p.subject}至少一半的${p.item}的${p.metric}恰好等于${p.value}。`,
+                            explanation: (p) => `平均值等于${p.value}并不要求任何${p.item}的${p.metric}恰好等于${p.value}，更不用说一半了。此陈述不一定为真。`
+                        }
+                    ]
+                };
+
+                // 构建参数对象
+                const p = { subject, item, metric, value, valueNum, unit, timeFrame, prevTimeFrame };
+
+                // 从每种类型中随机选择一个陈述
+                const statements = [];
+                let id = 1;
+
+                // 根据 correctType 决定添加哪种正确陈述
+                // correctType: 'above'=至少有一个≥平均值, 'below'=至少有一个≤平均值, 'both'=两者都有
+                if (correctType === 'above') {
+                    const aboveTemplates = statementTemplates.atLeastOneAbove;
+                    const selectedAbove = aboveTemplates[Math.floor(Math.random() * aboveTemplates.length)];
+                    statements.push({
+                        id: id++,
+                        text: selectedAbove.text(p),
+                        correct: true,
+                        explanation: selectedAbove.explanation(p)
+                    });
+
+                    // 随机选择4个错误陈述类型
+                    const falseTypes = ['pastTime', 'exactlyEqual', 'moreThanHalf', 'allBelow', 'median', 'total', 'comparison'];
+                    const selectedFalseTypes = shuffleArray(falseTypes).slice(0, 4);
+
+                    selectedFalseTypes.forEach(type => {
+                        const templates = statementTemplates[type];
+                        const selected = templates[Math.floor(Math.random() * templates.length)];
+                        statements.push({
+                            id: id++,
+                            text: selected.text(p),
+                            correct: false,
+                            explanation: selected.explanation(p)
+                        });
+                    });
+                } else if (correctType === 'below') {
+                    const belowTemplates = statementTemplates.atLeastOneBelow;
+                    const selectedBelow = belowTemplates[Math.floor(Math.random() * belowTemplates.length)];
+                    statements.push({
+                        id: id++,
+                        text: selectedBelow.text(p),
+                        correct: true,
+                        explanation: selectedBelow.explanation(p)
+                    });
+
+                    // 随机选择4个错误陈述类型
+                    const falseTypes = ['pastTime', 'exactlyEqual', 'moreThanHalf', 'allBelow', 'median', 'total', 'comparison'];
+                    const selectedFalseTypes = shuffleArray(falseTypes).slice(0, 4);
+
+                    selectedFalseTypes.forEach(type => {
+                        const templates = statementTemplates[type];
+                        const selected = templates[Math.floor(Math.random() * templates.length)];
+                        statements.push({
+                            id: id++,
+                            text: selected.text(p),
+                            correct: false,
+                            explanation: selected.explanation(p)
+                        });
+                    });
+                } else {
+                    // both: 两种正确陈述都添加
+                    const aboveTemplates = statementTemplates.atLeastOneAbove;
+                    const selectedAbove = aboveTemplates[Math.floor(Math.random() * aboveTemplates.length)];
+                    statements.push({
+                        id: id++,
+                        text: selectedAbove.text(p),
+                        correct: true,
+                        explanation: selectedAbove.explanation(p)
+                    });
+
+                    const belowTemplates = statementTemplates.atLeastOneBelow;
+                    const selectedBelow = belowTemplates[Math.floor(Math.random() * belowTemplates.length)];
+                    statements.push({
+                        id: id++,
+                        text: selectedBelow.text(p),
+                        correct: true,
+                        explanation: selectedBelow.explanation(p)
+                    });
+
+                    // 随机选择3个错误陈述类型
+                    const falseTypes = ['pastTime', 'exactlyEqual', 'moreThanHalf', 'allBelow', 'median', 'total', 'comparison'];
+                    const selectedFalseTypes = shuffleArray(falseTypes).slice(0, 3);
+
+                    selectedFalseTypes.forEach(type => {
+                        const templates = statementTemplates[type];
+                        const selected = templates[Math.floor(Math.random() * templates.length)];
+                        statements.push({
+                            id: id++,
+                            text: selected.text(p),
+                            correct: false,
+                            explanation: selected.explanation(p)
+                        });
+                    });
+                }
+
+                return statements;
+            }
+
+            // 生成完整陈述（包含"以上陈述均不成立"）
+            function generateStatements(params, correctType) {
+                const baseStatements = generateBaseStatements(params, correctType);
+
+                // 打乱陈述顺序
+                const shuffledStatements = shuffleArray(baseStatements);
+
+                // 重新分配ID
+                shuffledStatements.forEach((s, index) => {
+                    s.id = index + 1;
+                });
+
+                // 添加"以上陈述均不成立"选项
+                shuffledStatements.push({
+                    id: shuffledStatements.length + 1,
+                    text: "以上陈述均不成立。",
+                    correct: false,
+                    explanation: `此陈述不正确，因为存在必定为真的陈述。`
+                });
+
+                return shuffledStatements;
+            }
+
+            // 更新页面内容
+            function updateContent() {
+                // 从打乱的顺序中获取当前组合索引
+                const currentComboIndex = shuffledOrder[currentIndex];
+
+                // 计算当前参数索引和正确答案类型
+                const setIndex = Math.floor(currentComboIndex / correctTypes.length);
+                const correctTypeIndex = currentComboIndex % correctTypes.length;
+                const correctType = correctTypes[correctTypeIndex];
+
+                const params = questionSets[setIndex];
+
+                // 生成陈述
+                const statements = generateStatements(params, correctType);
+
+                // 更新参数指示器
+                paramIndicator.textContent = `第 ${currentIndex + 1}/${totalCombos} 组`;
+
+                // 更新题目背景
+                backgroundText.innerHTML = `<strong>${params.subject}</strong>宣传称，<strong>${params.timeFrame}</strong>其<strong>${params.item}</strong>平均<strong>${params.metric}</strong>为<strong>${params.value}</strong>。假设这里的"平均"指的是均值，基于此信息，下列哪些主张必定为真？`;
+
+                // 更新注意事项
+                noteText.innerHTML = `<strong>注意：</strong>这里我们假设"平均"指的是均值，事实上这是"平均"一词最常见的用法。根据定义，${params.item}${params.metric}的均值等于其${params.metric}的总和除以${params.item}数量。我们使用这个定义来确定以下陈述中哪些必定为真。可能有多个陈述为真。如果没有一个陈述为真，请勾选"以上陈述均不成立"。`;
+
+                // 存储当前陈述
+                window.currentStatements = statements;
+
+                // 渲染选项
+                renderOptions(statements);
+
+                // 重置状态
+                resetState();
+            }
+
+            // 渲染选项
+            function renderOptions(statements) {
                 optionsContainer.innerHTML = '';
-                
-                questionData.statements.forEach(statement => {
+
+                statements.forEach(statement => {
                     const optionElement = document.createElement('div');
                     optionElement.className = 'option';
                     optionElement.dataset.id = statement.id;
-                    
+
                     optionElement.innerHTML = `
                         <div class="option-checkbox"></div>
                         <div class="option-text">${statement.text}</div>
                     `;
-                    
+
                     optionElement.addEventListener('click', () => {
                         if (submitted) return;
-                        
+
+                        const lastStatementId = statements.length;
+
                         // 对于"以上陈述均不成立"选项，需要特殊处理
-                        if (statement.id === 6) {
+                        if (statement.id === lastStatementId) {
                             // 如果选择此项，则取消选择所有其他选项
-                            selectedOptions = [6];
+                            selectedOptions = [lastStatementId];
                             document.querySelectorAll('.option').forEach(opt => {
                                 opt.classList.remove('selected');
                             });
                             optionElement.classList.add('selected');
                         } else {
                             // 如果选择其他选项，则取消选择"以上陈述均不成立"
-                            const noneOption = document.querySelector('.option[data-id="6"]');
+                            const noneOption = document.querySelector(`.option[data-id="${lastStatementId}"]`);
                             if (noneOption) {
                                 noneOption.classList.remove('selected');
                             }
-                            
-                            // 从selectedOptions中移除6（如果存在）
-                            const indexOfNone = selectedOptions.indexOf(6);
+
+                            // 从selectedOptions中移除最后一项（如果存在）
+                            const indexOfNone = selectedOptions.indexOf(lastStatementId);
                             if (indexOfNone !== -1) {
                                 selectedOptions.splice(indexOfNone, 1);
                             }
-                            
+
                             // 切换当前选项的选择状态
                             const index = selectedOptions.indexOf(statement.id);
                             if (index === -1) {
@@ -541,16 +1017,39 @@
                             }
                         }
                     });
-                    
+
                     optionsContainer.appendChild(optionElement);
                 });
             }
 
+            // 重置状态
+            function resetState() {
+                selectedOptions = [];
+                submitted = false;
+
+                // 隐藏解析
+                explanation.style.display = 'none';
+
+                // 隐藏反馈
+                const feedback = document.getElementById('feedback');
+                if (feedback) {
+                    feedback.style.display = 'none';
+                }
+
+                // 隐藏答案解析按钮
+                var showBtn = document.getElementById('show-explanation-btn');
+                if (showBtn) {
+                    showBtn.style.display = 'none';
+                    showBtn.textContent = '查看答案解析';
+                }
+            }
+
             // 显示解析
             function showExplanation() {
+                const statements = window.currentStatements;
                 let explanationHTML = '';
-                
-                questionData.statements.forEach(statement => {
+
+                statements.forEach(statement => {
                     explanationHTML += `
                         <div class="correct-answer-item">
                             <i class="fas ${statement.correct ? 'fa-check' : 'fa-times'}"></i>
@@ -561,89 +1060,91 @@
                         </div>
                     `;
                 });
-                
+
                 explanationContent.innerHTML = explanationHTML;
-                // Explanation will be shown via button click
             }
 
             // 显示结果
             function showResults() {
                 submitted = true;
+                const statements = window.currentStatements;
 
-                // 计算得分
-                let correctCount = 0;
-                let incorrectCount = 0;
+                // 计算是否完全正确
+                let allCorrect = true;
+                let hasSelection = false;
 
-                // 检查每个选项（只标记用户选择的错误答案，不显示正确答案）
+                // 检查每个选项
                 document.querySelectorAll('.option').forEach(option => {
                     const id = parseInt(option.dataset.id);
-                    const statement = questionData.statements.find(s => s.id === id);
+                    const statement = statements.find(s => s.id === id);
 
                     if (!statement) return;
 
                     // 用户是否选择了这个选项
                     const isSelected = selectedOptions.includes(id);
 
+                    if (isSelected) {
+                        hasSelection = true;
+                    }
+
                     if (isSelected && statement.correct) {
                         // 用户选择了且是正确的
                         option.classList.add('correct');
-                        correctCount++;
                     } else if (isSelected && !statement.correct) {
                         // 用户选择了但是错误的
                         option.classList.add('incorrect');
-                        incorrectCount++;
+                        allCorrect = false;
                     } else if (!isSelected && statement.correct) {
-                        // 用户没有选择但这是正确的（不显示正确答案）
-                        incorrectCount++;
+                        // 用户没有选择但这是正确的 - 高亮显示正确答案
+                        option.classList.add('correct');
+                        allCorrect = false;
                     }
                 });
 
-                // 更新结果面板
-                const totalOptions = questionData.statements.length - 1; // 减去"以上陈述均不成立"选项
-                const score = correctCount;
+                // 显示反馈
+                const feedback = document.getElementById('feedback');
+                const feedbackIcon = document.getElementById('feedback-icon');
+                const feedbackText = document.getElementById('feedback-text');
 
-                scoreElement.textContent = `${score}/${totalOptions}`;
-                correctCountElement.textContent = correctCount;
-                incorrectCountElement.textContent = incorrectCount;
+                if (hasSelection && allCorrect) {
+                    feedback.className = 'feedback correct';
+                    feedbackIcon.className = 'fas fa-check-circle';
+                    feedbackText.textContent = '恭喜你，答对了！';
+                } else if (hasSelection) {
+                    feedback.className = 'feedback incorrect';
+                    feedbackIcon.className = 'fas fa-times-circle';
+                    feedbackText.textContent = '答错了，再仔细看看正确答案吧！';
+                } else {
+                    feedback.className = 'feedback incorrect';
+                    feedbackIcon.className = 'fas fa-exclamation-circle';
+                    feedbackText.textContent = '请先选择至少一个选项！';
+                    submitted = false;
+                    return;
+                }
 
-                // 显示结果面板
-                results.classList.add('show');
+                feedback.style.display = 'block';
 
                 // 显示答案解析按钮
                 var showBtn = document.getElementById('show-explanation-btn');
                 if (showBtn) {
                     showBtn.style.display = 'inline-block';
                 }
-                
-                // 显示解析
+
+                // 生成解析
                 showExplanation();
-                
-                // 滚动到结果区域
-                results.scrollIntoView({ behavior: 'smooth' });
+
+                // 滚动到反馈区域
+                feedback.scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
 
-            // 重置答题
-            function resetQuiz() {
-                selectedOptions = [];
-                submitted = false;
-
-                // 重置选项样式
-                document.querySelectorAll('.option').forEach(option => {
-                    option.classList.remove('selected', 'correct', 'incorrect');
-                });
-
-                // 隐藏结果和解析
-                results.classList.remove('show');
-                explanation.style.display = 'none';
-
-                // 隐藏答案解析按钮
-                var showBtn = document.getElementById('show-explanation-btn');
-                if (showBtn) {
-                    showBtn.style.display = 'none';
-                    showBtn.textContent = '查看答案解析';
+            // 刷新参数
+            function refreshParams() {
+                currentIndex = (currentIndex + 1) % totalCombos;
+                // 如果完成一轮，重新打乱顺序
+                if (currentIndex === 0) {
+                    shuffledOrder = createShuffledOrder();
                 }
-
-                // 滚动到顶部
+                updateContent();
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
 
@@ -663,10 +1164,10 @@
 
             // 事件监听
             submitBtn.addEventListener('click', showResults);
-            resetBtn.addEventListener('click', resetQuiz);
+            refreshBtn.addEventListener('click', refreshParams);
 
             // 初始化
-            renderOptions();
+            updateContent();
         });
     </script>
 </body>

@@ -174,70 +174,94 @@
             color: #2ecc71;
         }
 
-        .answer-options {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .answer-option {
-            background-color: white;
-            border: 2px solid #e0e6ed;
-            border-radius: 12px;
-            padding: 20px;
-            cursor: pointer;
-            transition: all 0.3s ease;
+        .input-group {
             display: flex;
             align-items: center;
             gap: 15px;
+            background-color: #f8fafc;
+            border-radius: 12px;
+            padding: 15px 20px;
+            margin-bottom: 15px;
+            border: 2px solid #e0e6ed;
+            transition: all 0.3s ease;
+            flex-wrap: wrap;
         }
 
-        .answer-option:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(52, 152, 219, 0.15);
+        .input-group:hover {
             border-color: #3498db;
         }
 
-        .answer-option.selected {
-            border-color: #3498db;
-            background-color: #e8f4fc;
-        }
-
-        .answer-option.correct {
+        .input-group.correct {
             border-color: #2ecc71;
             background-color: #e8f8ef;
         }
 
-        .answer-option.incorrect {
+        .input-group.incorrect {
             border-color: #e74c3c;
             background-color: #fdedec;
         }
 
-        .option-letter {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background-color: #3498db;
-            color: white;
+        .input-label {
+            font-size: 1.1rem;
+            color: #2c3e50;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .input-wrapper {
             display: flex;
             align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 1.2rem;
-            flex-shrink: 0;
+            gap: 10px;
+            flex: 1;
+            min-width: 200px;
         }
 
-        .answer-option.correct .option-letter {
-            background-color: #2ecc71;
-        }
-
-        .answer-option.incorrect .option-letter {
-            background-color: #e74c3c;
-        }
-
-        .option-content {
+        .answer-input {
+            width: 120px;
+            padding: 10px 12px;
             font-size: 1.1rem;
+            border: 2px solid #dce4ec;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .answer-input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 10px rgba(52, 152, 219, 0.2);
+        }
+
+        .answer-input:disabled {
+            background-color: #f5f5f5;
+            cursor: not-allowed;
+        }
+
+        .input-feedback {
+            font-size: 1rem;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+
+        .input-feedback.correct {
+            color: #27ae60;
+            background-color: #e8f8ef;
+        }
+
+        .input-feedback.incorrect {
+            color: #e74c3c;
+            background-color: #fdedec;
+        }
+
+        .correct-answer-display {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+        }
+
+        .correct-answer-display span {
+            color: #27ae60;
+            font-weight: bold;
         }
 
         .controls {
@@ -387,6 +411,13 @@
             margin-top: 20px;
         }
 
+        .hint-text {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-top: 10px;
+            font-style: italic;
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 20px;
@@ -394,10 +425,6 @@
 
             h1 {
                 font-size: 1.8rem;
-            }
-
-            .answer-options {
-                grid-template-columns: 1fr;
             }
 
             .controls {
@@ -412,6 +439,16 @@
             .question-header {
                 flex-direction: column;
                 gap: 15px;
+            }
+
+            .input-group {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .answer-input {
+                width: 100%;
+                text-align: center;
             }
         }
     </style>
@@ -437,11 +474,23 @@
             </div>
 
             <div class="answer-section">
-                <h2 class="answer-title"><i class="fas fa-pencil-alt"></i> 请选择正确答案</h2>
+                <h2 class="answer-title"><i class="fas fa-pencil-alt"></i> 请填写正确答案</h2>
 
-                <div class="answer-options" id="answerOptions">
-                    <!-- 动态生成 -->
+                <div class="input-group" id="expectedValueGroup">
+                    <span class="input-label">期望值 E(X) =</span>
+                    <input type="number" step="0.01" class="answer-input" id="expectedValueInput" placeholder="请输入">
+                    <span class="input-feedback" id="expectedValueFeedback"></span>
+                    <span class="correct-answer-display" id="expectedValueCorrect" style="display: none;"></span>
                 </div>
+
+                <div class="input-group" id="varianceGroup">
+                    <span class="input-label">方差 Var(X) =</span>
+                    <input type="number" step="0.01" class="answer-input" id="varianceInput" placeholder="请输入">
+                    <span class="input-feedback" id="varianceFeedback"></span>
+                    <span class="correct-answer-display" id="varianceCorrect" style="display: none;"></span>
+                </div>
+
+                <p class="hint-text"><i class="fas fa-info-circle"></i> 提示：答案保留两位小数，误差允许范围为 ±0.01</p>
 
                 <div class="controls">
                     <button class="submit-btn" id="submitBtn">
@@ -478,74 +527,164 @@
                     values: [-20, -10, 0, 10, 20],
                     probs: [0.45, 0.10, 0.10, 0.10, 0.25],
                     expectedValue: -4,
-                    variance: 284,
-                    options: [
-                        { letter: 'A', text: 'E(X) = -4, Var(X) = 284', correct: true },
-                        { letter: 'B', text: 'E(X) = 0, Var(X) = 200', correct: false },
-                        { letter: 'C', text: 'E(X) = -2, Var(X) = 196', correct: false },
-                        { letter: 'D', text: 'E(X) = 4, Var(X) = 284', correct: false }
-                    ]
+                    variance: 284
                 },
                 {
                     values: [-15, -5, 5, 15, 25],
                     probs: [0.30, 0.15, 0.20, 0.20, 0.15],
-                    expectedValue: 3,
-                    variance: 196,
-                    options: [
-                        { letter: 'A', text: 'E(X) = 0, Var(X) = 200', correct: false },
-                        { letter: 'B', text: 'E(X) = 3, Var(X) = 196', correct: true },
-                        { letter: 'C', text: 'E(X) = 5, Var(X) = 180', correct: false },
-                        { letter: 'D', text: 'E(X) = -3, Var(X) = 196', correct: false }
-                    ]
+                    expectedValue: 2.5,
+                    variance: 208.75
                 },
                 {
                     values: [-30, -10, 0, 10, 30],
                     probs: [0.20, 0.20, 0.20, 0.20, 0.20],
                     expectedValue: 0,
-                    variance: 320,
-                    options: [
-                        { letter: 'A', text: 'E(X) = 0, Var(X) = 320', correct: true },
-                        { letter: 'B', text: 'E(X) = 10, Var(X) = 280', correct: false },
-                        { letter: 'C', text: 'E(X) = -10, Var(X) = 300', correct: false },
-                        { letter: 'D', text: 'E(X) = 5, Var(X) = 310', correct: false }
-                    ]
+                    variance: 400
                 },
                 {
                     values: [-25, -15, 5, 15, 25],
                     probs: [0.25, 0.15, 0.25, 0.20, 0.15],
-                    expectedValue: 0,
-                    variance: 340,
-                    options: [
-                        { letter: 'A', text: 'E(X) = -5, Var(X) = 300', correct: false },
-                        { letter: 'B', text: 'E(X) = 5, Var(X) = 320', correct: false },
-                        { letter: 'C', text: 'E(X) = 0, Var(X) = 340', correct: true },
-                        { letter: 'D', text: 'E(X) = 10, Var(X) = 280', correct: false }
-                    ]
+                    expectedValue: -0.5,
+                    variance: 334.75
                 },
                 {
                     values: [-18, -8, 2, 12, 22],
                     probs: [0.35, 0.15, 0.20, 0.15, 0.15],
-                    expectedValue: -2.5,
-                    variance: 217.75,
-                    options: [
-                        { letter: 'A', text: 'E(X) = 0, Var(X) = 200', correct: false },
-                        { letter: 'B', text: 'E(X) = -2.5, Var(X) = 217.75', correct: true },
-                        { letter: 'C', text: 'E(X) = 2.5, Var(X) = 217.75', correct: false },
-                        { letter: 'D', text: 'E(X) = -5, Var(X) = 230', correct: false }
-                    ]
+                    expectedValue: -2,
+                    variance: 214
+                },
+                // 数据集 6-25
+                {
+                    values: [-12, -2, 8, 18, 28],
+                    probs: [0.20, 0.25, 0.25, 0.15, 0.15],
+                    expectedValue: 6,
+                    variance: 176
+                },
+                {
+                    values: [-50, -25, 0, 25, 50],
+                    probs: [0.15, 0.20, 0.30, 0.20, 0.15],
+                    expectedValue: 0,
+                    variance: 1000
+                },
+                {
+                    values: [-5, 0, 5, 10, 15],
+                    probs: [0.10, 0.15, 0.30, 0.25, 0.20],
+                    expectedValue: 6.5,
+                    variance: 37.75
+                },
+                {
+                    values: [-100, -50, 0, 50, 100],
+                    probs: [0.10, 0.20, 0.40, 0.20, 0.10],
+                    expectedValue: 0,
+                    variance: 3000
+                },
+                {
+                    values: [-3, -1, 1, 3, 5],
+                    probs: [0.15, 0.20, 0.30, 0.20, 0.15],
+                    expectedValue: 1,
+                    variance: 6.4
+                },
+                {
+                    values: [-8, -3, 2, 7, 12],
+                    probs: [0.25, 0.20, 0.15, 0.20, 0.20],
+                    expectedValue: 1.5,
+                    variance: 54.75
+                },
+                {
+                    values: [-40, -20, 0, 20, 40],
+                    probs: [0.10, 0.15, 0.50, 0.15, 0.10],
+                    expectedValue: 0,
+                    variance: 440
+                },
+                {
+                    values: [-6, -2, 2, 6, 10],
+                    probs: [0.30, 0.15, 0.20, 0.20, 0.15],
+                    expectedValue: 1,
+                    variance: 33.4
+                },
+                {
+                    values: [-14, -4, 6, 16, 26],
+                    probs: [0.40, 0.10, 0.20, 0.15, 0.15],
+                    expectedValue: 1.5,
+                    variance: 224.75
+                },
+                {
+                    values: [-2, 1, 4, 7, 10],
+                    probs: [0.10, 0.25, 0.30, 0.20, 0.15],
+                    expectedValue: 4.15,
+                    variance: 13.0275
+                },
+                {
+                    values: [-35, -15, 5, 25, 45],
+                    probs: [0.20, 0.25, 0.20, 0.20, 0.15],
+                    expectedValue: 2,
+                    variance: 731
+                },
+                {
+                    values: [-9, -4, 1, 6, 11],
+                    probs: [0.15, 0.25, 0.20, 0.25, 0.15],
+                    expectedValue: 1,
+                    variance: 42.5
+                },
+                {
+                    values: [-22, -12, -2, 8, 18],
+                    probs: [0.30, 0.20, 0.15, 0.20, 0.15],
+                    expectedValue: -5,
+                    variance: 211
+                },
+                {
+                    values: [-7, 0, 7, 14, 21],
+                    probs: [0.20, 0.30, 0.25, 0.15, 0.10],
+                    expectedValue: 4.55,
+                    variance: 74.8775
+                },
+                {
+                    values: [-60, -30, 0, 30, 60],
+                    probs: [0.25, 0.15, 0.20, 0.20, 0.20],
+                    expectedValue: -1.5,
+                    variance: 1926.75
+                },
+                {
+                    values: [-4, 2, 8, 14, 20],
+                    probs: [0.25, 0.25, 0.20, 0.15, 0.15],
+                    expectedValue: 6.2,
+                    variance: 68.76
+                },
+                {
+                    values: [-11, -6, -1, 4, 9],
+                    probs: [0.20, 0.20, 0.20, 0.20, 0.20],
+                    expectedValue: -1,
+                    variance: 50
+                },
+                {
+                    values: [-45, -25, -5, 15, 35],
+                    probs: [0.15, 0.25, 0.20, 0.25, 0.15],
+                    expectedValue: -5,
+                    variance: 680
+                },
+                {
+                    values: [-1, 3, 7, 11, 15],
+                    probs: [0.15, 0.30, 0.25, 0.20, 0.10],
+                    expectedValue: 6.2,
+                    variance: 23.36
+                },
+                {
+                    values: [-55, -35, -15, 5, 25],
+                    probs: [0.20, 0.20, 0.20, 0.20, 0.20],
+                    expectedValue: -15,
+                    variance: 800
                 }
             ];
 
             let currentParamIndex = 0;
-            let selectedOption = null;
             let isSubmitted = false;
+            const tolerance = 0.01;
 
             // ==================== 渲染函数 ====================
 
             function renderQuestion() {
                 const params = questionParams[currentParamIndex];
                 const questionContent = document.getElementById('questionContent');
-                const answerOptions = document.getElementById('answerOptions');
 
                 // 渲染问题文本和表格
                 let tableRows = '';
@@ -567,37 +706,12 @@
                         </tbody>
                     </table>
                     <p>求 X 的期望 E(X) 和方差 Var(X)。</p>
-                    <div class="formula">
-                        <p>离散随机变量的期望公式：E(X) = Σ xᵢ P(X = xᵢ)</p>
-                        <p>离散随机变量的方差公式：Var(X) = Σ (xᵢ - E(X))² P(X = xᵢ)</p>
-                    </div>
                 `;
-
-                // 渲染选项
-                let optionsHtml = '';
-                params.options.forEach(opt => {
-                    optionsHtml += `
-                        <div class="answer-option" data-option="${opt.letter}" data-correct="${opt.correct}">
-                            <div class="option-letter">${opt.letter}</div>
-                            <div class="option-content">${opt.text}</div>
-                        </div>
-                    `;
-                });
-                answerOptions.innerHTML = optionsHtml;
-
-                // 重新绑定选项点击事件
-                bindOptionEvents();
             }
 
             function renderExplanation() {
                 const params = questionParams[currentParamIndex];
                 const explanationSection = document.getElementById('explanationSection');
-
-                let calcEV = '';
-                for (let i = 0; i < params.values.length; i++) {
-                    calcEV += `(${params.values[i]})(${params.probs[i]})`;
-                    if (i < params.values.length - 1) calcEV += ' + ';
-                }
 
                 let terms = [];
                 for (let i = 0; i < params.values.length; i++) {
@@ -607,11 +721,9 @@
                 let calcVar = '';
                 for (let i = 0; i < params.values.length; i++) {
                     const diff = params.values[i] - params.expectedValue;
-                    calcVar += `(${diff})²(${params.probs[i]})`;
+                    calcVar += `(${diff})² × ${params.probs[i]}`;
                     if (i < params.values.length - 1) calcVar += ' + ';
                 }
-
-                const correctOption = params.options.find(o => o.correct);
 
                 explanationSection.innerHTML = `
                     <h3><i class="fas fa-lightbulb"></i> 题目解析</h3>
@@ -627,27 +739,14 @@
                         = ${calcVar}<br>
                         = <strong>${params.variance}</strong>
                     </div>
-                    <p><strong>3. 正确答案：</strong> <span class="correct-answer">${correctOption.text}</span> (选项${correctOption.letter})</p>
-                    <p><strong>4. 您的选择：</strong> <span id="userChoiceText">未选择</span> - <span id="correctnessText">未提交</span></p>
+                    <p><strong>3. 正确答案：</strong></p>
+                    <p>期望 E(X) = <span class="correct-answer">${params.expectedValue}</span></p>
+                    <p>方差 Var(X) = <span class="correct-answer">${params.variance}</span></p>
                 `;
             }
 
-            function bindOptionEvents() {
-                const answerOptions = document.querySelectorAll('.answer-option');
-                answerOptions.forEach(option => {
-                    option.addEventListener('click', function() {
-                        if (isSubmitted) return;
-
-                        // 移除之前选中的样式
-                        answerOptions.forEach(opt => {
-                            opt.classList.remove('selected');
-                        });
-
-                        // 添加当前选中的样式
-                        this.classList.add('selected');
-                        selectedOption = this;
-                    });
-                });
+            function checkAnswer(userAnswer, correctAnswer) {
+                return Math.abs(userAnswer - correctAnswer) <= tolerance;
             }
 
             function refreshParams() {
@@ -657,13 +756,32 @@
                 } while (newIndex === currentParamIndex && questionParams.length > 1);
 
                 currentParamIndex = newIndex;
-                selectedOption = null;
 
-                // 清除所有选项状态
-                document.querySelectorAll('.answer-option').forEach(option => {
-                    option.classList.remove('selected', 'correct', 'incorrect');
-                    option.style.pointerEvents = 'auto';
-                });
+                // 重置输入框
+                const expectedValueInput = document.getElementById('expectedValueInput');
+                const varianceInput = document.getElementById('varianceInput');
+                const expectedValueGroup = document.getElementById('expectedValueGroup');
+                const varianceGroup = document.getElementById('varianceGroup');
+                const expectedValueFeedback = document.getElementById('expectedValueFeedback');
+                const varianceFeedback = document.getElementById('varianceFeedback');
+                const expectedValueCorrect = document.getElementById('expectedValueCorrect');
+                const varianceCorrect = document.getElementById('varianceCorrect');
+
+                expectedValueInput.value = '';
+                varianceInput.value = '';
+                expectedValueInput.disabled = false;
+                varianceInput.disabled = false;
+
+                expectedValueGroup.classList.remove('correct', 'incorrect');
+                varianceGroup.classList.remove('correct', 'incorrect');
+
+                expectedValueFeedback.textContent = '';
+                expectedValueFeedback.classList.remove('correct', 'incorrect');
+                varianceFeedback.textContent = '';
+                varianceFeedback.classList.remove('correct', 'incorrect');
+
+                expectedValueCorrect.style.display = 'none';
+                varianceCorrect.style.display = 'none';
 
                 // 隐藏结果区域
                 document.getElementById('resultSection').classList.remove('show');
@@ -690,6 +808,15 @@
             const showExplanationBtn = document.getElementById('show-explanation-btn');
             const explanationSection = document.getElementById('explanationSection');
 
+            const expectedValueInput = document.getElementById('expectedValueInput');
+            const varianceInput = document.getElementById('varianceInput');
+            const expectedValueGroup = document.getElementById('expectedValueGroup');
+            const varianceGroup = document.getElementById('varianceGroup');
+            const expectedValueFeedback = document.getElementById('expectedValueFeedback');
+            const varianceFeedback = document.getElementById('varianceFeedback');
+            const expectedValueCorrect = document.getElementById('expectedValueCorrect');
+            const varianceCorrect = document.getElementById('varianceCorrect');
+
             // 刷新参数按钮
             refreshParamsBtn.addEventListener('click', function() {
                 refreshParams();
@@ -697,47 +824,62 @@
 
             // 提交按钮事件
             submitBtn.addEventListener('click', function() {
-                if (!selectedOption) {
-                    alert('请先选择一个答案！');
+                const evValue = parseFloat(expectedValueInput.value);
+                const varValue = parseFloat(varianceInput.value);
+
+                if (isNaN(evValue) || isNaN(varValue)) {
+                    alert('请填写所有答案！');
                     return;
                 }
 
+                if (isSubmitted) return;
                 isSubmitted = true;
+
+                const params = questionParams[currentParamIndex];
+
+                // 检查期望值
+                const evCorrect = checkAnswer(evValue, params.expectedValue);
+                if (evCorrect) {
+                    expectedValueGroup.classList.add('correct');
+                    expectedValueFeedback.textContent = '✓ 正确';
+                    expectedValueFeedback.classList.add('correct');
+                } else {
+                    expectedValueGroup.classList.add('incorrect');
+                    expectedValueFeedback.textContent = '✗ 错误';
+                    expectedValueFeedback.classList.add('incorrect');
+                    expectedValueCorrect.innerHTML = `正确答案: <span>${params.expectedValue}</span>`;
+                    expectedValueCorrect.style.display = 'block';
+                }
+
+                // 检查方差
+                const varCorrect = checkAnswer(varValue, params.variance);
+                if (varCorrect) {
+                    varianceGroup.classList.add('correct');
+                    varianceFeedback.textContent = '✓ 正确';
+                    varianceFeedback.classList.add('correct');
+                } else {
+                    varianceGroup.classList.add('incorrect');
+                    varianceFeedback.textContent = '✗ 错误';
+                    varianceFeedback.classList.add('incorrect');
+                    varianceCorrect.innerHTML = `正确答案: <span>${params.variance}</span>`;
+                    varianceCorrect.style.display = 'block';
+                }
+
+                // 禁用输入
+                expectedValueInput.disabled = true;
+                varianceInput.disabled = true;
+
+                // 计算得分
+                let score = 0;
+                if (evCorrect) score += 50;
+                if (varCorrect) score += 50;
 
                 // 渲染解释
                 renderExplanation();
 
                 // 显示结果区域
                 resultSection.classList.add('show');
-
-                // 计算得分
-                const isCorrect = selectedOption.getAttribute('data-correct') === 'true';
-                const score = isCorrect ? 100 : 0;
-
-                // 更新得分显示
                 scoreValue.textContent = score;
-
-                // 更新用户选择显示
-                const params = questionParams[currentParamIndex];
-                const selectedOptionData = params.options.find(o => o.letter === selectedOption.getAttribute('data-option'));
-                const userChoiceText = document.getElementById('userChoiceText');
-                const correctnessText = document.getElementById('correctnessText');
-
-                userChoiceText.textContent = selectedOptionData.text;
-
-                if (isCorrect) {
-                    correctnessText.textContent = '回答正确！';
-                    correctnessText.className = 'correct-answer';
-                } else {
-                    correctnessText.textContent = '回答错误！';
-                    correctnessText.className = 'incorrect-answer';
-                    selectedOption.classList.add('incorrect');
-                }
-
-                // 禁用选项点击
-                document.querySelectorAll('.answer-option').forEach(option => {
-                    option.style.pointerEvents = 'none';
-                });
 
                 // 显示答案解析按钮
                 showExplanationBtn.style.display = 'inline-block';
@@ -759,11 +901,22 @@
 
             // 重置按钮事件
             resetBtn.addEventListener('click', function() {
-                // 清除所有选项状态
-                document.querySelectorAll('.answer-option').forEach(option => {
-                    option.classList.remove('selected', 'correct', 'incorrect');
-                    option.style.pointerEvents = 'auto';
-                });
+                // 重置输入框
+                expectedValueInput.value = '';
+                varianceInput.value = '';
+                expectedValueInput.disabled = false;
+                varianceInput.disabled = false;
+
+                expectedValueGroup.classList.remove('correct', 'incorrect');
+                varianceGroup.classList.remove('correct', 'incorrect');
+
+                expectedValueFeedback.textContent = '';
+                expectedValueFeedback.classList.remove('correct', 'incorrect');
+                varianceFeedback.textContent = '';
+                varianceFeedback.classList.remove('correct', 'incorrect');
+
+                expectedValueCorrect.style.display = 'none';
+                varianceCorrect.style.display = 'none';
 
                 // 隐藏结果区域
                 resultSection.classList.remove('show');
@@ -774,7 +927,6 @@
                 showExplanationBtn.textContent = '查看答案解析';
 
                 // 重置状态
-                selectedOption = null;
                 isSubmitted = false;
 
                 // 滚动到顶部

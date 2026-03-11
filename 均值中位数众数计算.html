@@ -361,7 +361,6 @@
         <div class="input-section">
             <label class="input-label">此数据集的均值是多少？（四舍五入到一位小数）</label>
             <input type="number" id="mean-input" class="number-input" step="0.1">
-            <span>毫秒</span>
         </div>
     </div>
 
@@ -370,7 +369,6 @@
         <div class="input-section">
             <label class="input-label">此数据集的中位数是多少？</label>
             <input type="number" id="median-input" class="number-input" step="0.1">
-            <span>毫秒</span>
         </div>
     </div>
 
@@ -485,6 +483,110 @@
                     median: 320,
                     modeCount: 1,
                     modeValues: [320]
+                },
+                {
+                    data: [25, 30, 25, 35, 25, 40, 30, 30],
+                    context: '某健身房记录了8位会员每周锻炼的次数：',
+                    mean: 30.0,
+                    median: 30,
+                    modeCount: 2,
+                    modeValues: [25, 30]
+                },
+                {
+                    data: [150, 200, 150, 180, 150, 220, 190, 150],
+                    context: '某外卖平台记录了8位骑手单日送餐数量：',
+                    mean: 173.8,
+                    median: 165,
+                    modeCount: 1,
+                    modeValues: [150]
+                },
+                {
+                    data: [68, 72, 68, 75, 72, 80, 68, 72],
+                    context: '某班级8名学生的体重（单位：千克）记录如下：',
+                    mean: 71.9,
+                    median: 72,
+                    modeCount: 2,
+                    modeValues: [68, 72]
+                },
+                {
+                    data: [45, 50, 55, 50, 60, 50, 45, 55],
+                    context: '某书店连续8天每天售出的图书数量：',
+                    mean: 51.3,
+                    median: 50,
+                    modeCount: 1,
+                    modeValues: [50]
+                },
+                {
+                    data: [88, 92, 88, 95, 88, 78, 92, 88],
+                    context: '某次数学考试8名学生的成绩（满分100分）：',
+                    mean: 88.6,
+                    median: 88,
+                    modeCount: 1,
+                    modeValues: [88]
+                },
+                {
+                    data: [22, 28, 22, 35, 28, 40, 22, 28],
+                    context: '某网吧记录了8位顾客的单次上网时长（单位：小时）：',
+                    mean: 28.1,
+                    median: 28,
+                    modeCount: 2,
+                    modeValues: [22, 28]
+                },
+                {
+                    data: [180, 160, 180, 200, 180, 150, 190, 180],
+                    context: '某游泳馆记录了8位会员单月游泳次数：',
+                    mean: 177.5,
+                    median: 180,
+                    modeCount: 1,
+                    modeValues: [180]
+                },
+                {
+                    data: [95, 105, 95, 110, 95, 105, 100, 105],
+                    context: '某足球队8场比赛的控球率（百分比）：',
+                    mean: 101.3,
+                    median: 102.5,
+                    modeCount: 2,
+                    modeValues: [95, 105]
+                },
+                {
+                    data: [35, 42, 35, 50, 42, 35, 55, 42],
+                    context: '某花店连续8天每天售出的玫瑰数量：',
+                    mean: 42.0,
+                    median: 42,
+                    modeCount: 2,
+                    modeValues: [35, 42]
+                },
+                {
+                    data: [125, 130, 125, 140, 125, 135, 145, 125],
+                    context: '某出租车司机8天的日收入（单位：元）：',
+                    mean: 131.3,
+                    median: 127.5,
+                    modeCount: 1,
+                    modeValues: [125]
+                },
+                {
+                    data: [58, 62, 58, 70, 62, 58, 75, 62],
+                    context: '某餐厅8道招牌菜的顾客评分（满分100分）：',
+                    mean: 63.1,
+                    median: 62,
+                    modeCount: 2,
+                    modeValues: [58, 62]
+                },
+                {
+                    data: [420, 380, 420, 450, 420, 390, 500, 420],
+                    context: '某加油站8天的日销售量（单位：升）：',
+                    mean: 425.0,
+                    median: 420,
+                    modeCount: 1,
+                    modeValues: [420]
+                },
+                {
+                    data: [28, 32, 28, 38, 28, 32, 45, 32],
+                    context: '某咖啡店连续8天每天售出的拿铁数量：',
+                    mean: 32.9,
+                    median: 32,
+                    modeCount: 2,
+                    modeValues: [28, 32]
                 }
             ];
 
@@ -624,7 +726,7 @@
 
                 if (isMeanCorrect) {
                     score++;
-                    meanFeedback.textContent = `正确！均值是 ${params.mean} 毫秒。`;
+                    meanFeedback.textContent = `正确！均值是 ${params.mean}。`;
                     meanFeedback.className = 'feedback correct';
                 } else {
                     meanFeedback.textContent = `错误。`;
@@ -637,7 +739,7 @@
 
                 if (isMedianCorrect) {
                     score++;
-                    medianFeedback.textContent = `正确！中位数是 ${params.median} 毫秒。`;
+                    medianFeedback.textContent = `正确！中位数是 ${params.median}。`;
                     medianFeedback.className = 'feedback correct';
                 } else {
                     medianFeedback.textContent = `错误。`;

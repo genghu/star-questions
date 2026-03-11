@@ -7,9 +7,9 @@
     <style>
         * {
             box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
         }
 
         body {
@@ -17,16 +17,15 @@
             color: #333;
             line-height: 1.6;
             padding: 20px;
-            max-width: 1000px;
+            max-width: 900px;
             margin: 0 auto;
         }
 
         .container {
             background-color: white;
             border-radius: 16px;
-            box-shadow: 0 8px 30px rgba(0, 82, 204, 0.08);
+            box-shadow: 0 8px 30px rgba(0, 82, 204, 0.1);
             padding: 30px;
-            margin-bottom: 25px;
         }
 
         header {
@@ -38,8 +37,8 @@
 
         h1 {
             color: #0052cc;
-            font-size: 2.2rem;
             margin-bottom: 10px;
+            font-size: 2.2rem;
         }
 
         .subtitle {
@@ -47,160 +46,84 @@
             font-size: 1.1rem;
         }
 
-        .page-separator {
-            height: 4px;
-            background: linear-gradient(to right, #e6f0ff, #0052cc, #e6f0ff);
-            margin: 30px 0;
-            border-radius: 2px;
-        }
-
         .question-section {
             margin-bottom: 30px;
+            background-color: #f8fbff;
+            padding: 25px;
+            border-radius: 12px;
+            border-left: 5px solid #4d94ff;
         }
 
-        .section-title {
+        .question-title {
             color: #0052cc;
-            font-size: 1.4rem;
             margin-bottom: 15px;
-            padding-bottom: 8px;
-            border-bottom: 1px dashed #c2d9ff;
+            font-size: 1.4rem;
+            display: flex;
+            align-items: center;
         }
 
         .question-content {
-            background-color: #f8fbff;
-            border-left: 4px solid #4d94ff;
-            padding: 20px;
-            border-radius: 0 12px 12px 0;
-            margin-bottom: 25px;
-            font-size: 1.05rem;
-            white-space: pre-line;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            line-height: 1.8;
         }
 
         .data-points {
             display: flex;
             flex-wrap: wrap;
-            gap: 12px;
+            gap: 10px;
             margin: 20px 0;
         }
 
         .data-point {
             background-color: #e6f0ff;
-            color: #0052cc;
             padding: 10px 18px;
             border-radius: 50px;
             font-weight: bold;
-            font-size: 1.1rem;
-            box-shadow: 0 3px 6px rgba(0, 82, 204, 0.1);
-        }
-
-        .formula {
-            background-color: #f0f7ff;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 20px 0;
-            font-family: 'Cambria Math', serif;
-            text-align: center;
-            border: 1px solid #c2d9ff;
-            overflow-x: auto;
-        }
-
-        .answer-section {
-            margin-top: 30px;
-        }
-
-        .options-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 15px;
-            margin: 25px 0;
-        }
-
-        .option-card {
-            background-color: white;
-            border: 2px solid #d9e6ff;
-            border-radius: 12px;
-            padding: 20px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 1.1rem;
-            text-align: center;
-            font-weight: 500;
-        }
-
-        .option-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 82, 204, 0.15);
-            border-color: #4d94ff;
-        }
-
-        .option-card.selected {
-            border-color: #0052cc;
-            background-color: #e6f0ff;
-            box-shadow: 0 5px 15px rgba(0, 82, 204, 0.2);
-        }
-
-        .option-card.correct {
-            border-color: #00b33c;
-            background-color: #e6ffe6;
-        }
-
-        .option-card.incorrect {
-            border-color: #ff3333;
-            background-color: #ffe6e6;
-        }
-
-        .feedback {
-            padding: 20px;
-            border-radius: 12px;
-            margin: 25px 0;
-            display: none;
-        }
-
-        .feedback.correct {
-            background-color: #e6ffe6;
-            border-left: 5px solid #00b33c;
-            display: block;
-        }
-
-        .feedback.incorrect {
-            background-color: #ffe6e6;
-            border-left: 5px solid #ff3333;
-            display: block;
-        }
-
-        .feedback-title {
-            font-weight: bold;
-            margin-bottom: 10px;
-            font-size: 1.2rem;
-        }
-
-        .stats {
-            display: flex;
-            justify-content: space-around;
-            background-color: #f0f7ff;
-            padding: 20px;
-            border-radius: 12px;
-            margin: 25px 0;
-            text-align: center;
-        }
-
-        .stat-item {
-            flex: 1;
-        }
-
-        .stat-value {
-            font-size: 2.5rem;
-            font-weight: bold;
             color: #0052cc;
+            font-size: 1.1rem;
         }
 
-        .stat-label {
-            color: #6699ff;
-            font-size: 0.9rem;
-            margin-top: 5px;
+        .answer-input-container {
+            margin: 30px 0;
+            text-align: center;
         }
 
-        .buttons-container {
+        .answer-label {
+            display: block;
+            font-size: 1.1rem;
+            color: #0052cc;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .answer-input {
+            width: 200px;
+            padding: 15px 20px;
+            font-size: 1.3rem;
+            border: 3px solid #cce0ff;
+            border-radius: 12px;
+            text-align: center;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .answer-input:focus {
+            border-color: #0052cc;
+            box-shadow: 0 0 0 4px rgba(0, 82, 204, 0.1);
+        }
+
+        .answer-input.correct {
+            border-color: #00cc66;
+            background-color: #e6ffe6;
+        }
+
+        .answer-input.incorrect {
+            border-color: #ff6666;
+            background-color: #ffe6e6;
+        }
+
+        .controls {
             display: flex;
             justify-content: center;
             gap: 20px;
@@ -208,9 +131,9 @@
         }
 
         button {
-            padding: 14px 32px;
+            padding: 14px 28px;
             border: none;
-            border-radius: 50px;
+            border-radius: 8px;
             font-size: 1.1rem;
             font-weight: 600;
             cursor: pointer;
@@ -224,51 +147,84 @@
 
         #submit-btn:hover {
             background-color: #0047b3;
-            box-shadow: 0 5px 15px rgba(0, 82, 204, 0.3);
+            transform: translateY(-2px);
         }
 
         #reset-btn {
             background-color: #f0f7ff;
             color: #0052cc;
-            border: 2px solid #c2d9ff;
+            border: 2px solid #cce0ff;
         }
 
         #reset-btn:hover {
             background-color: #e6f0ff;
-            border-color: #0052cc;
         }
 
-        .answer-display {
-            font-size: 1.8rem;
-            font-weight: bold;
-            text-align: center;
+        .feedback {
             padding: 20px;
-            margin: 20px 0;
             border-radius: 12px;
-            background-color: #f8fbff;
+            margin: 25px 0;
             display: none;
         }
 
-        .correct-answer {
-            color: #00b33c;
+        .feedback.show {
+            display: block;
+        }
+
+        .feedback.correct {
+            background-color: #e6ffe6;
+            border-left: 5px solid #00cc66;
+        }
+
+        .feedback.incorrect {
+            background-color: #ffe6e6;
+            border-left: 5px solid #ff6666;
+        }
+
+        .feedback-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .show-explanation-btn {
+            display: none;
+            margin: 20px auto;
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
+        }
+
+        .show-explanation-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
         }
 
         .explanation {
             background-color: #f8fbff;
-            padding: 25px;
             border-radius: 12px;
+            padding: 25px;
             margin-top: 25px;
             border-left: 5px solid #4d94ff;
+            display: none;
         }
 
         .explanation-title {
             color: #0052cc;
             font-size: 1.3rem;
             margin-bottom: 15px;
+            font-weight: bold;
         }
 
         .step {
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             padding-bottom: 15px;
             border-bottom: 1px dashed #d9e6ff;
         }
@@ -283,78 +239,49 @@
             margin-bottom: 8px;
         }
 
+        .highlight {
+            background-color: #fffacd;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
         @media (max-width: 768px) {
             body {
                 padding: 10px;
             }
-            
+
             .container {
                 padding: 20px;
             }
-            
+
             h1 {
                 font-size: 1.8rem;
             }
-            
-            .options-container {
-                grid-template-columns: 1fr;
-            }
-            
-            .buttons-container {
+
+            .controls {
                 flex-direction: column;
             }
-            
+
             button {
                 width: 100%;
             }
-            
-            .stats {
-                flex-direction: column;
-                gap: 20px;
-            }
         }
     </style>
-
-    <style>
-    .show-explanation-btn {
-        display: none;
-        margin: 20px auto;
-        padding: 14px 28px;
-        background: linear-gradient(135deg, #9b59b6, #8e44ad);
-        color: white;
-        border: none;
-        border-radius: 10px;
-        cursor: pointer;
-        font-size: 1.1rem;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
-    }
-    .show-explanation-btn:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
-    }
-    .explanation-section {
-        display: none;
-        margin-top: 20px;
-    }
-    </style>
-    </head>
+</head>
 <body>
     <div class="container">
         <header>
-            <h1>样本标准差</h1>
-            <div class="subtitle">交互式答题与解析</div>
+            <h1>样本标准差
+                <button id="refresh-btn" style="margin-left: 15px; padding: 8px 16px; background: linear-gradient(135deg, #34a853, #2ecc71); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-weight: 600;">刷新参数</button>
+            </h1>
+            <p class="subtitle">交互式答题与解析</p>
         </header>
 
-        <div class="page-separator"></div>
-
-        <div class="question-section">
-            <h2 class="section-title">题目内容 <button id="refresh-btn" style="margin-left: 15px; padding: 8px 16px; background: linear-gradient(135deg, #3498db, #2980b9); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3);">刷新参数</button></h2>
-            <div class="question-content" id="question-content">
-购物时间数据：<span id="data-text">24, 25, 28, 43, 34, 44</span>
-
-求这些购物时间的样本标准差。将答案四舍五入到两位小数。
+        <section class="question-section">
+            <h2 class="question-title">题目内容</h2>
+            <div class="question-content" id="question-context">
+                某超市记录了6位顾客的购物时间（单位：分钟）：
             </div>
 
             <div class="data-points" id="data-points">
@@ -366,352 +293,372 @@
                 <div class="data-point">44</div>
             </div>
 
-            <div class="formula">
-                样本标准差公式：s = √[ Σ(xᵢ - x̄)² / (n-1) ]
+            <div class="question-content">
+                假设这些数据是从一个更大的总体中抽取的样本，求该样本的标准差。将你的答案四舍五入到两位小数。
             </div>
-        </div>
+        </section>
 
-        <div class="answer-section">
-            <h2 class="section-title">选择答案</h2>
-            <div class="options-container" id="options-container">
-                <div class="option-card" data-value="7.92">A. 7.92</div>
-                <div class="option-card" data-value="8.85">B. 8.85</div>
-                <div class="option-card" data-value="9.14">C. 9.14</div>
-                <div class="option-card" data-value="8.12">D. 8.12</div>
+        <section class="answer-section">
+            <div class="answer-input-container">
+                <label for="answer-input" class="answer-label">样本标准差（保留两位小数）：</label>
+                <input type="text" id="answer-input" class="answer-input" placeholder="请输入答案">
             </div>
-            <div id="correct-answer-hidden" style="display:none;">8.85</div>
 
             <div class="feedback" id="feedback">
                 <div class="feedback-title" id="feedback-title"></div>
                 <div id="feedback-content"></div>
             </div>
 
-            <div class="answer-display" id="answer-display">
-                正确答案: <span class="correct-answer" id="correct-answer">8.85</span>
-            </div>
-
-            <div class="stats">
-                <div class="stat-item">
-                    <div class="stat-value" id="score">0</div>
-                    <div class="stat-label">得分</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value" id="total-questions">1</div>
-                    <div class="stat-label">总题数</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value" id="accuracy">0%</div>
-                    <div class="stat-label">正确率</div>
-                </div>
-            </div>
-
-            <div class="buttons-container">
+            <div class="controls">
                 <button id="submit-btn">提交答案</button>
                 <button id="reset-btn">重新作答</button>
             </div>
-        </div>
+        </section>
 
-        <button class="show-explanation-btn" id="show-explanation-btn">📖 查看答案解析</button>
-<div class="explanation-section explanation">
+        <button class="show-explanation-btn" id="show-explanation-btn">查看答案解析</button>
+
+        <div class="explanation" id="explanation-section">
             <h3 class="explanation-title">题目解析</h3>
-            
-            <div class="step">
-                <div class="step-title">步骤 1: 计算样本均值 (x̄)</div>
-                <div>x̄ = (24 + 25 + 28 + 43 + 34 + 44) / 6 = 198 / 6 = 33</div>
-            </div>
-            
-            <div class="step">
-                <div class="step-title">步骤 2: 计算每个数据点与均值的差，然后平方</div>
-                <div>(24-33)² = (-9)² = 81</div>
-                <div>(25-33)² = (-8)² = 64</div>
-                <div>(28-33)² = (-5)² = 25</div>
-                <div>(43-33)² = (10)² = 100</div>
-                <div>(34-33)² = (1)² = 1</div>
-                <div>(44-33)² = (11)² = 121</div>
-            </div>
-            
-            <div class="step">
-                <div class="step-title">步骤 3: 计算平方和</div>
-                <div>Σ(xᵢ - x̄)² = 81 + 64 + 25 + 100 + 1 + 121 = 392</div>
-            </div>
-            
-            <div class="step">
-                <div class="step-title">步骤 4: 计算样本方差</div>
-                <div>样本方差 = Σ(xᵢ - x̄)² / (n-1) = 392 / (6-1) = 392 / 5 = 78.4</div>
-            </div>
-            
-            <div class="step">
-                <div class="step-title">步骤 5: 计算样本标准差</div>
-                <div>s = √(样本方差) = √78.4 ≈ 8.8544...</div>
-                <div>四舍五入到两位小数: <strong>8.85</strong></div>
-            </div>
-            
-            <div class="step">
-                <div class="step-title">公式总结</div>
-                <div class="formula">
-                    s = √[ ( (24-33)² + (25-33)² + (28-33)² + (43-33)² + (34-33)² + (44-33)² ) / (6-1) ]<br>
-                    = √(392 / 5) = √78.4 ≈ 8.85
-                </div>
-            </div>
+            <div id="explanation-content"></div>
         </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-
-            // Parameter sets with pre-computed answers
-            const questionParams = [
+            // 20组参数 - 多样化背景
+            const parameterSets = [
                 {
+                    context: '某超市记录了6位顾客的购物时间（单位：分钟）：',
                     data: [24, 25, 28, 43, 34, 44],
                     mean: 33,
+                    answer: 8.85,
+                    squaredDiffs: [81, 64, 25, 100, 1, 121],
                     sumSquaredDiff: 392,
-                    variance: 78.4,
-                    answer: "8.85",
-                    options: ["7.92", "8.85", "9.14", "8.12"]
+                    variance: 78.4
                 },
                 {
-                    data: [12, 15, 18, 22, 25, 28],
-                    mean: 20,
-                    sumSquaredDiff: 182,
-                    variance: 36.4,
-                    answer: "6.03",
-                    options: ["5.87", "6.03", "6.45", "5.52"]
+                    context: '某班级随机抽取6名学生的数学成绩：',
+                    data: [72, 85, 78, 92, 88, 75],
+                    mean: 81.67,
+                    answer: 7.99,
+                    squaredDiffs: [93.44, 11.11, 13.44, 107.11, 40.11, 44.44],
+                    sumSquaredDiff: 309.65,
+                    variance: 61.93
                 },
                 {
-                    data: [35, 40, 45, 50, 55, 60],
-                    mean: 47.5,
-                    sumSquaredDiff: 437.5,
-                    variance: 87.5,
-                    answer: "9.35",
-                    options: ["8.92", "9.35", "9.78", "8.54"]
+                    context: '某工厂随机测量5个零件的直径（单位：毫米）：',
+                    data: [10.2, 10.5, 9.8, 10.3, 10.1],
+                    mean: 10.18,
+                    answer: 0.26,
+                    squaredDiffs: [0.0004, 0.1024, 0.1444, 0.0144, 0.0064],
+                    sumSquaredDiff: 0.268,
+                    variance: 0.067
                 },
                 {
-                    data: [10, 12, 14, 16, 18, 20],
-                    mean: 15,
-                    sumSquaredDiff: 70,
-                    variance: 14,
-                    answer: "3.74",
-                    options: ["3.74", "3.52", "4.01", "3.89"]
+                    context: '某医院随机选取6名病人的等待时间（单位：分钟）：',
+                    data: [15, 22, 18, 25, 12, 30],
+                    mean: 20.33,
+                    answer: 6.56,
+                    squaredDiffs: [28.44, 2.78, 5.44, 21.78, 69.44, 93.44],
+                    sumSquaredDiff: 221.32,
+                    variance: 44.26
                 },
                 {
-                    data: [5, 8, 11, 14, 17, 20, 23],
-                    mean: 14,
-                    sumSquaredDiff: 252,
-                    variance: 42,
-                    answer: "6.48",
-                    options: ["6.12", "6.48", "6.89", "6.25"]
+                    context: '某餐厅随机抽取7天的日营业额（单位：百元）：',
+                    data: [35, 42, 38, 45, 40, 52, 48],
+                    mean: 42.86,
+                    answer: 5.97,
+                    squaredDiffs: [61.78, 0.74, 23.59, 4.59, 8.16, 83.45, 26.45],
+                    sumSquaredDiff: 208.76,
+                    variance: 34.79
                 },
                 {
-                    data: [100, 105, 110, 115, 120],
-                    mean: 110,
-                    sumSquaredDiff: 250,
-                    variance: 62.5,
-                    answer: "7.91",
-                    options: ["7.65", "7.91", "8.23", "7.48"]
+                    context: '某学校随机选取5名学生的身高（单位：厘米）：',
+                    data: [160, 165, 162, 168, 163],
+                    mean: 163.6,
+                    answer: 3.05,
+                    squaredDiffs: [12.96, 1.96, 2.56, 19.36, 0.36],
+                    sumSquaredDiff: 37.2,
+                    variance: 9.3
+                },
+                {
+                    context: '某地区随机调查6个家庭的月用电量（单位：度）：',
+                    data: [120, 135, 128, 142, 125, 138],
+                    mean: 131.33,
+                    answer: 8.31,
+                    squaredDiffs: [128.44, 13.44, 11.11, 113.78, 40.11, 44.44],
+                    sumSquaredDiff: 351.32,
+                    variance: 70.26
+                },
+                {
+                    context: '某公司随机抽取7名员工的年龄：',
+                    data: [25, 32, 28, 35, 30, 42, 38],
+                    mean: 32.86,
+                    answer: 5.98,
+                    squaredDiffs: [61.78, 0.74, 23.59, 4.59, 8.16, 83.45, 26.45],
+                    sumSquaredDiff: 208.76,
+                    variance: 34.79
+                },
+                {
+                    context: '某实验室随机进行6次实验的反应时间（单位：秒）：',
+                    data: [5.2, 5.5, 4.8, 5.3, 5.1, 5.4],
+                    mean: 5.22,
+                    answer: 0.25,
+                    squaredDiffs: [0.0004, 0.0784, 0.1764, 0.0064, 0.0144, 0.0324],
+                    sumSquaredDiff: 0.3084,
+                    variance: 0.0617
+                },
+                {
+                    context: '某城市随机选取5天的空气质量指数（AQI）：',
+                    data: [65, 72, 58, 80, 68],
+                    mean: 68.6,
+                    answer: 8.68,
+                    squaredDiffs: [12.96, 11.56, 112.36, 129.96, 0.36],
+                    sumSquaredDiff: 267.2,
+                    variance: 66.8
+                },
+                {
+                    context: '某果园随机采摘6个苹果的重量（单位：克）：',
+                    data: [145, 152, 148, 155, 150, 158],
+                    mean: 151.33,
+                    answer: 4.68,
+                    squaredDiffs: [40.11, 0.44, 11.11, 13.44, 1.78, 44.44],
+                    sumSquaredDiff: 111.32,
+                    variance: 22.26
+                },
+                {
+                    context: '某商店随机选取5种商品的价格（单位：元）：',
+                    data: [25, 32, 28, 38, 30],
+                    mean: 30.6,
+                    answer: 5.18,
+                    squaredDiffs: [31.36, 1.96, 6.76, 54.76, 0.36],
+                    sumSquaredDiff: 95.2,
+                    variance: 23.8
+                },
+                {
+                    context: '某足球队随机选取6场比赛的进球数：',
+                    data: [2, 3, 1, 4, 2, 3],
+                    mean: 2.5,
+                    answer: 1.05,
+                    squaredDiffs: [0.25, 0.25, 2.25, 2.25, 0.25, 0.25],
+                    sumSquaredDiff: 5.5,
+                    variance: 1.1
+                },
+                {
+                    context: '某书店随机调查5天的日销售额（单位：百元）：',
+                    data: [42, 48, 38, 52, 45],
+                    mean: 45,
+                    answer: 5.34,
+                    squaredDiffs: [9, 9, 49, 49, 0],
+                    sumSquaredDiff: 116,
+                    variance: 29
+                },
+                {
+                    context: '某手机店随机选取6款手机的电池容量（单位：mAh）：',
+                    data: [3500, 4000, 3800, 4200, 3900, 4100],
+                    mean: 3916.67,
+                    answer: 248.33,
+                    squaredDiffs: [173611.11, 69444.44, 13444.44, 80277.78, 277.78, 33611.11],
+                    sumSquaredDiff: 370666.67,
+                    variance: 74133.33
+                },
+                {
+                    context: '某学校随机抽取6名学生的阅读速度（单位：字/分钟）：',
+                    data: [280, 320, 300, 350, 290, 310],
+                    mean: 308.33,
+                    answer: 24.83,
+                    squaredDiffs: [802.78, 136.11, 69.44, 1746.11, 336.11, 2.78],
+                    sumSquaredDiff: 3093.33,
+                    variance: 618.67
+                },
+                {
+                    context: '某咖啡店随机记录7杯咖啡的温度（单位：°C）：',
+                    data: [62, 65, 60, 68, 63, 70, 64],
+                    mean: 64.57,
+                    answer: 3.55,
+                    squaredDiffs: [6.61, 0.18, 20.90, 11.76, 2.47, 29.47, 0.33],
+                    sumSquaredDiff: 71.72,
+                    variance: 11.95
+                },
+                {
+                    context: '某工厂随机选取5批产品的合格率（单位：%）：',
+                    data: [95, 98, 92, 96, 94],
+                    mean: 95,
+                    answer: 2.24,
+                    squaredDiffs: [0, 9, 9, 1, 1],
+                    sumSquaredDiff: 20,
+                    variance: 5
+                },
+                {
+                    context: '某城市随机调查6个路口的车流量（单位：辆/小时）：',
+                    data: [150, 180, 165, 200, 175, 190],
+                    mean: 176.67,
+                    answer: 17.67,
+                    squaredDiffs: [711.11, 11.11, 136.11, 544.44, 2.78, 177.78],
+                    sumSquaredDiff: 1583.33,
+                    variance: 316.67
+                },
+                {
+                    context: '某医院随机选取5名病人的体温（单位：°C）：',
+                    data: [36.5, 37.2, 36.8, 37.5, 36.6],
+                    mean: 36.92,
+                    answer: 0.42,
+                    squaredDiffs: [0.1764, 0.0784, 0.0144, 0.3364, 0.1024],
+                    sumSquaredDiff: 0.708,
+                    variance: 0.177
                 }
             ];
 
-            let currentParams = questionParams[0];
-
-            // 显示答案解析按钮点击事件
-            document.querySelectorAll('.show-explanation-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    var questionId = this.getAttribute('data-question') || this.id;
-                    var explanation;
-                    if (questionId) {
-                        explanation = this.nextElementSibling;
-                    }
-                    if (explanation) {
-                        if (explanation.classList.contains('show')) {
-                            explanation.classList.remove('show');
-                            this.textContent = '查看答案解析';
-                        } else {
-                            explanation.classList.add('show');
-                            this.textContent = '隐藏答案解析';
-                        }
-                    }
-                });
-            });
-
-            // 初始化变量
-            let selectedOption = null;
-            let isSubmitted = false;
+            let currentParams = parameterSets[0];
             let correctAnswer = currentParams.answer;
-            let score = 0;
-            let totalQuestions = 1;
-            let correctCount = 0;
+            const tolerance = 0.02;
+            let isSubmitted = false;
 
-            // 获取DOM元素
+            const answerInput = document.getElementById('answer-input');
             const submitBtn = document.getElementById('submit-btn');
             const resetBtn = document.getElementById('reset-btn');
             const refreshBtn = document.getElementById('refresh-btn');
             const feedback = document.getElementById('feedback');
             const feedbackTitle = document.getElementById('feedback-title');
             const feedbackContent = document.getElementById('feedback-content');
-            const answerDisplay = document.getElementById('answer-display');
-            const correctAnswerSpan = document.getElementById('correct-answer');
-            const scoreElement = document.getElementById('score');
-            const accuracyElement = document.getElementById('accuracy');
+            const showExplanationBtn = document.getElementById('show-explanation-btn');
+            const explanationSection = document.getElementById('explanation-section');
+            const explanationContent = document.getElementById('explanation-content');
 
-            // Render question with current parameters
-            function renderQuestion() {
+            // 初始化题目
+            function initializeQuestion() {
                 const params = currentParams;
+                correctAnswer = params.answer;
 
-                // Update data text
-                document.getElementById('data-text').textContent = params.data.join(', ');
-
-                // Update data points
+                document.getElementById('question-context').textContent = params.context;
                 document.getElementById('data-points').innerHTML = params.data.map(d =>
                     `<div class="data-point">${d}</div>`
                 ).join('');
-
-                // Update options
-                document.getElementById('options-container').innerHTML = params.options.map((opt, i) =>
-                    `<div class="option-card" data-value="${opt}">${String.fromCharCode(65 + i)}. ${opt}</div>`
-                ).join('');
-
-                // Update hidden correct answer
-                document.getElementById('correct-answer-hidden').textContent = params.answer;
-
-                // Update correct answer variable
-                correctAnswer = params.answer;
-
-                // Re-attach click events to new options
-                attachOptionEvents();
             }
 
-            // Attach click events to options
-            function attachOptionEvents() {
-                const optionCards = document.querySelectorAll('.option-card');
-                optionCards.forEach(card => {
-                    card.addEventListener('click', function() {
-                        if (isSubmitted) return;
+            // 生成解析内容
+            function generateExplanation() {
+                const params = currentParams;
+                const n = params.data.length;
+                const df = n - 1;
 
-                        // Remove previous selection
-                        optionCards.forEach(c => c.classList.remove('selected'));
+                let html = `
+                    <div class="step">
+                        <div class="step-title">步骤 1: 计算样本均值 (x̄)</div>
+                        <div>x̄ = (${params.data.join(' + ')}) / ${n} = <span class="highlight">${params.mean}</span></div>
+                    </div>
 
-                        // Set current selection
-                        this.classList.add('selected');
-                        selectedOption = this.getAttribute('data-value');
+                    <div class="step">
+                        <div class="step-title">步骤 2: 计算每个数据点与均值的偏差平方</div>`;
 
-                        // Hide previous feedback
-                        feedback.classList.remove('correct', 'incorrect');
-                    });
+                params.data.forEach((d, i) => {
+                    const diff = d - params.mean;
+                    const squared = params.squaredDiffs[i];
+                    html += `<div>(${d} - ${params.mean})² = (${diff.toFixed(2)})² = <span class="highlight">${squared.toFixed(2)}</span></div>`;
                 });
+
+                html += `
+                    </div>
+
+                    <div class="step">
+                        <div class="step-title">步骤 3: 计算平方和</div>
+                        <div>Σ(xᵢ - x̄)² = ${params.squaredDiffs.map(s => s.toFixed(2)).join(' + ')} = <span class="highlight">${params.sumSquaredDiff.toFixed(2)}</span></div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-title">步骤 4: 计算样本方差 (s²)</div>
+                        <div>样本方差 = Σ(xᵢ - x̄)² / (n-1) = ${params.sumSquaredDiff.toFixed(2)} / ${df} = <span class="highlight">${params.variance.toFixed(2)}</span></div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-title">步骤 5: 计算样本标准差 (s)</div>
+                        <div>s = √${params.variance.toFixed(2)} ≈ <span class="highlight">${correctAnswer}</span></div>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-title">关键区别</div>
+                        <div><strong>样本标准差</strong>使用 <span class="highlight">n-1</span> 作为分母（自由度），而总体标准差使用 <span class="highlight">n</span> 作为分母。</div>
+                    </div>
+                `;
+
+                explanationContent.innerHTML = html;
             }
 
-            // Refresh button - random parameter selection
+            // 刷新参数
             refreshBtn.addEventListener('click', function() {
-                // Select random parameters
-                const randomIndex = Math.floor(Math.random() * questionParams.length);
-                currentParams = questionParams[randomIndex];
+                let newParams;
+                do {
+                    newParams = parameterSets[Math.floor(Math.random() * parameterSets.length)];
+                } while (newParams === currentParams && parameterSets.length > 1);
 
-                // Reset state
-                selectedOption = null;
-                isSubmitted = false;
-
-                // Hide feedback and answer display
-                feedback.classList.remove('correct', 'incorrect');
-                answerDisplay.style.display = 'none';
-
-                // Hide explanation
-                document.querySelectorAll('.explanation-section').forEach(exp => {
-                    exp.classList.remove('show');
-                });
-                document.querySelectorAll('.show-explanation-btn').forEach(btn => {
-                    btn.style.display = 'none';
-                    btn.textContent = '查看答案解析';
-                });
-
-                // Re-render question
-                renderQuestion();
+                currentParams = newParams;
+                initializeQuestion();
+                resetState();
             });
 
-            // 更新统计信息
-            function updateStats() {
-                scoreElement.textContent = score;
-                const accuracy = totalQuestions > 0 ? Math.round((correctCount / totalQuestions) * 100) : 0;
-                accuracyElement.textContent = `${accuracy}%`;
-            }
+            // 重置状态
+            function resetState() {
+                answerInput.value = '';
+                answerInput.disabled = false;
+                answerInput.classList.remove('correct', 'incorrect');
 
-            // Initial attach
-            attachOptionEvents();
+                feedback.classList.remove('show', 'correct', 'incorrect');
+                showExplanationBtn.style.display = 'none';
+                explanationSection.style.display = 'none';
+                showExplanationBtn.textContent = '查看答案解析';
+
+                isSubmitted = false;
+            }
 
             // 提交答案
             submitBtn.addEventListener('click', function() {
-                if (!selectedOption) {
-                    alert('请先选择一个答案！');
+                const userAnswer = parseFloat(answerInput.value.trim());
+
+                if (isNaN(userAnswer)) {
+                    alert('请输入一个有效的数字！');
                     return;
                 }
 
                 if (isSubmitted) return;
 
                 isSubmitted = true;
-                totalQuestions = 1;
+                answerInput.disabled = true;
 
-                // 显示正确答案
-                answerDisplay.style.display = 'block';
-                correctAnswerSpan.textContent = correctAnswer;
+                const isCorrect = Math.abs(userAnswer - correctAnswer) <= tolerance;
 
-                // 检查答案
-                const isCorrect = selectedOption === correctAnswer;
-
-                // 更新分数
                 if (isCorrect) {
-                    score += 10;
-                    correctCount++;
-                }
-
-                updateStats();
-
-                // 显示反馈
-                if (isCorrect) {
+                    answerInput.classList.add('correct');
                     feedbackTitle.textContent = '回答正确！';
-                    feedbackContent.textContent = '恭喜你！你正确计算了样本标准差。样本标准差是衡量数据离散程度的重要指标。';
+                    feedbackContent.textContent = `你正确计算了样本标准差。答案是 ${correctAnswer}。`;
                     feedback.classList.add('correct');
                 } else {
+                    answerInput.classList.add('incorrect');
                     feedbackTitle.textContent = '回答不正确';
-                    feedbackContent.textContent = `你选择的答案是 ${selectedOption}。请查看下方的详细解析，了解样本标准差的计算过程。`;
+                    feedbackContent.innerHTML = `你的答案: ${userAnswer}<br>正确答案: <strong>${correctAnswer}</strong>`;
                     feedback.classList.add('incorrect');
                 }
 
-                // 标记正确和错误的选项
-                const optionCards = document.querySelectorAll('.option-card');
-                optionCards.forEach(card => {
-                    const value = card.getAttribute('data-value');
-                    if (value === correctAnswer) {
-                        card.classList.add('correct');
-                    } else if (value === selectedOption && !isCorrect) {
-                        card.classList.add('incorrect');
-                    }
-                });
-
-                // 禁用选项点击
-                optionCards.forEach(card => {
-                    card.style.cursor = 'default';
-                });
+                feedback.classList.add('show');
+                showExplanationBtn.style.display = 'block';
+                generateExplanation();
             });
 
             // 重新作答
-            resetBtn.addEventListener('click', function() {
-                // 重置所有选项
-                const optionCards = document.querySelectorAll('.option-card');
-                optionCards.forEach(card => {
-                    card.classList.remove('selected', 'correct', 'incorrect');
-                    card.style.cursor = 'pointer';
-                });
+            resetBtn.addEventListener('click', resetState);
 
-                // 隐藏反馈和答案显示
-                feedback.classList.remove('correct', 'incorrect');
-                answerDisplay.style.display = 'none';
-
-                // 重置状态
-                selectedOption = null;
-                isSubmitted = false;
+            // 查看答案解析
+            showExplanationBtn.addEventListener('click', function() {
+                if (explanationSection.style.display === 'block') {
+                    explanationSection.style.display = 'none';
+                    this.textContent = '查看答案解析';
+                } else {
+                    explanationSection.style.display = 'block';
+                    this.textContent = '隐藏答案解析';
+                }
             });
 
-            // 初始化统计信息
-            updateStats();
+            // 初始化
+            initializeQuestion();
         });
     </script>
 </body>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>基于直方图的数据集标准差近似计算</title>
+    <title>基于直方图的数据集标准差近似计算 - 交互式答题</title>
     <style>
         * {
             box-sizing: border-box;
@@ -13,270 +13,327 @@
         }
 
         body {
-            background-color: #f8fafc;
-            color: #334155;
+            background-color: #f8fafd;
+            color: #333;
             line-height: 1.6;
             padding: 20px;
             max-width: 1200px;
             margin: 0 auto;
         }
 
+        .container {
+            background-color: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0, 82, 204, 0.08);
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid #e6f0ff;
+        }
+
         header {
             text-align: center;
             margin-bottom: 30px;
             padding-bottom: 20px;
-            border-bottom: 2px solid #e2e8f0;
+            border-bottom: 2px solid #e6f0ff;
         }
 
         h1 {
-            color: #1e40af;
+            color: #1a5fb4;
             font-size: 2.2rem;
             margin-bottom: 10px;
         }
 
         .subtitle {
-            color: #64748b;
+            color: #5d7ea3;
             font-size: 1.1rem;
         }
 
-        .container {
-            display: flex;
-            flex-direction: column;
-            gap: 30px;
+        .question-section {
+            margin-bottom: 40px;
         }
 
-        .card {
-            background-color: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            padding: 25px;
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 20px;
-            border: 1px solid #e2e8f0;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e6f0ff;
+        }
+
+        .section-title {
+            color: #1a5fb4;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title::before {
+            content: "";
+            display: inline-block;
+            width: 8px;
+            height: 24px;
+            background-color: #1a5fb4;
+            border-radius: 4px;
+            margin-right: 12px;
+        }
+
+        .refresh-params-btn {
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .refresh-params-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.4);
         }
 
         .question-content {
+            background-color: #f8fafd;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-left: 5px solid #4dabf7;
             font-size: 1.05rem;
-        }
-
-        .question-content h2 {
-            color: #1e40af;
-            margin-bottom: 15px;
-            font-size: 1.5rem;
         }
 
         .question-content p {
             margin-bottom: 15px;
         }
 
-        .formula {
-            background-color: #f1f5f9;
-            padding: 15px;
+        .histogram-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
             border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .histogram-table th {
+            background-color: #1a5fb4;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .histogram-table td {
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid #e6f0ff;
+        }
+
+        .histogram-table tr:nth-child(even) {
+            background-color: #f8fafd;
+        }
+
+        .histogram-table tr:hover {
+            background-color: #e6f0ff;
+        }
+
+        .formula {
+            background-color: #f1f8ff;
+            padding: 20px;
+            border-radius: 10px;
             margin: 20px 0;
             font-family: 'Cambria Math', serif;
-            text-align: center;
-            overflow-x: auto;
-        }
-
-        .answer-section {
-            margin-top: 25px;
-        }
-
-        .fill-section {
-            margin-top: 15px;
-        }
-
-        .fill-input {
-            width: 250px;
-            padding: 10px;
             font-size: 1.1rem;
-            border: 2px solid #cbd5e1;
-            border-radius: 8px;
-            transition: all 0.3s ease;
+            text-align: center;
+            border: 1px dashed #4dabf7;
         }
 
-        .fill-input:focus {
+        .answer-input-section {
+            margin: 30px 0;
+            padding: 25px;
+            background-color: #f0f7ff;
+            border-radius: 12px;
+        }
+
+        .input-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #1a5fb4;
+            font-size: 1.2rem;
+        }
+
+        .answer-input {
+            width: 100%;
+            max-width: 300px;
+            padding: 15px;
+            font-size: 1.2rem;
+            border: 2px solid #c5d9ff;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+
+        .answer-input:focus {
             outline: none;
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+            border-color: #1a5fb4;
+            box-shadow: 0 0 0 3px rgba(26, 95, 180, 0.2);
         }
 
-        .fill-input.correct {
-            border-color: #10b981;
-            background-color: #d1fae5;
-        }
-
-        .fill-input.incorrect {
-            border-color: #ef4444;
-            background-color: #fee2e2;
-        }
-
-        .controls {
+        .button-group {
             display: flex;
             gap: 15px;
-            margin-top: 25px;
             flex-wrap: wrap;
+            margin-top: 20px;
         }
 
-        button {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
+        .btn {
+            padding: 14px 28px;
+            font-size: 1.1rem;
             font-weight: 600;
+            border: none;
+            border-radius: 10px;
             cursor: pointer;
-            transition: all 0.2s;
-            flex-grow: 1;
-            min-width: 140px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .submit-btn {
-            background-color: #3b82f6;
+        .btn-primary {
+            background-color: #1a5fb4;
             color: white;
         }
 
-        .submit-btn:hover {
-            background-color: #2563eb;
+        .btn-primary:hover {
+            background-color: #0d4a9c;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(26, 95, 180, 0.2);
         }
 
-        .submit-btn:disabled {
-            background-color: #94a3b8;
-            cursor: not-allowed;
+        .btn-secondary {
+            background-color: #f0f7ff;
+            color: #1a5fb4;
+            border: 2px solid #c5d9ff;
         }
 
-        .reset-btn {
-            background-color: #f1f5f9;
-            color: #475569;
-            border: 1px solid #cbd5e1;
+        .btn-secondary:hover {
+            background-color: #e6f0ff;
+            transform: translateY(-2px);
         }
 
-        .reset-btn:hover {
-            background-color: #e2e8f0;
+        .btn-icon {
+            margin-right: 8px;
+            font-size: 1.2rem;
         }
 
-        .feedback {
-            margin-top: 25px;
-            padding: 20px;
-            border-radius: 10px;
+        .feedback-section {
+            margin-top: 30px;
+            padding: 25px;
+            border-radius: 12px;
             display: none;
         }
 
-        .feedback.correct {
-            background-color: #d1fae5;
-            border: 1px solid #10b981;
-            color: #065f46;
-            display: block;
+        .feedback-correct {
+            background-color: #f0fff4;
+            border: 2px solid #68d391;
+            color: #22543d;
         }
 
-        .feedback.incorrect {
-            background-color: #fee2e2;
-            border: 1px solid #ef4444;
-            color: #7f1d1d;
-            display: block;
+        .feedback-incorrect {
+            background-color: #fff5f5;
+            border: 2px solid #fc8181;
+            color: #742a2a;
         }
 
-        .feedback h3 {
-            margin-bottom: 10px;
-        }
-
-        .score-display {
-            background-color: #eff6ff;
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-            margin-top: 20px;
-            border: 1px solid #bfdbfe;
-        }
-
-        .score-value {
-            font-size: 2.5rem;
+        .feedback-title {
+            font-size: 1.4rem;
             font-weight: 700;
-            color: #1e40af;
-            margin: 10px 0;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .feedback-icon {
+            margin-right: 10px;
+            font-size: 1.6rem;
         }
 
         .calculation-steps {
-            background-color: #f8fafc;
+            background-color: white;
             padding: 20px;
             border-radius: 10px;
-            margin-top: 25px;
-            border-left: 4px solid #3b82f6;
+            margin-top: 20px;
+            border-left: 4px solid #4dabf7;
         }
 
-        .calculation-steps h3 {
-            color: #1e40af;
-            margin-bottom: 15px;
-        }
-
-        .step {
+        .calculation-step {
             margin-bottom: 15px;
             padding-bottom: 15px;
-            border-bottom: 1px dashed #cbd5e1;
+            border-bottom: 1px dashed #e2e8f0;
         }
 
-        .step:last-child {
+        .calculation-step:last-child {
             border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
         }
 
-        .step-title {
-            font-weight: 600;
-            color: #475569;
-            margin-bottom: 5px;
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .answer-input {
+                max-width: 100%;
+            }
+
+            .histogram-table {
+                font-size: 0.9rem;
+            }
+
+            .histogram-table th,
+            .histogram-table td {
+                padding: 10px;
+            }
+
+            .section-header {
+                flex-direction: column;
+                gap: 15px;
+            }
         }
 
         .highlight {
-            background-color: #fef3c7;
-            padding: 2px 6px;
-            border-radius: 4px;
+            background-color: #fffacd;
+            padding: 2px 5px;
+            border-radius: 3px;
             font-weight: 600;
         }
 
-        .note {
-            background-color: #f0f9ff;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 20px;
-            border-left: 4px solid #0ea5e9;
-            font-size: 0.95rem;
-        }
-
-        .refresh-params-btn {
-            max-width: 80px;
-            min-height: 20px;
-            padding: 6px 12px;
-            background: linear-gradient(135deg, #27ae60, #2ecc71);
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.85rem;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .refresh-params-btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 3px 10px rgba(39, 174, 96, 0.4);
-        }
-
-        .question-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            padding-bottom: 8px;
-            border-bottom: 1px dashed #cbd5e1;
-        }
-
-        .question-header h2 {
-            color: #1e40af;
-            font-size: 1.5rem;
-            margin: 0;
-            border: none;
-            padding: 0;
+        .math {
+            font-family: 'Cambria Math', serif;
+            font-style: italic;
         }
 
         .show-explanation-btn {
@@ -291,74 +348,133 @@
             font-size: 1.1rem;
             font-weight: 600;
             transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
         }
-
         .show-explanation-btn:hover {
             transform: translateY(-3px);
             box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
         }
-
         .explanation-section {
             display: none;
             margin-top: 20px;
         }
 
-        .explanation-section.show {
+        /* 直方图容器样式 */
+        .histogram-container {
+            margin: 25px 0;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 82, 204, 0.1);
+        }
+
+        .histogram-title {
+            text-align: center;
+            color: #1a5fb4;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        #histogramCanvas {
             display: block;
+            margin: 0 auto;
+            max-width: 100%;
+        }
+
+        .histogram-legend {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            color: #5d7ea3;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 15px;
+            border-radius: 3px;
+        }
+
+        .note-box {
+            background-color: #fffbeb;
+            border: 1px solid #fcd34d;
+            border-left: 4px solid #f59e0b;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .note-box p {
+            margin-bottom: 8px;
+        }
+
+        .note-box p:last-child {
+            margin-bottom: 0;
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1>基于直方图的数据集标准差近似计算</h1>
-        <p class="subtitle">描述统计学 - 分组数据标准差估计 - 交互式学习</p>
-    </header>
-
     <div class="container">
+        <header>
+            <h1>基于直方图的数据集标准差近似计算</h1>
+            <p class="subtitle">描述性统计 - 分组数据标准差估计 - 交互式学习</p>
+        </header>
+
         <section class="question-section">
-            <div class="card">
-                <div class="question-header">
-                    <h2>题目描述</h2>
-                    <button class="refresh-params-btn" id="refreshParamsBtn">
-                        <span>&#8635;</span> 刷新参数
-                    </button>
-                </div>
-
-                <div class="question-content" id="question-content">
-                    <!-- 动态生成 -->
-                </div>
-
-                <div class="answer-section">
-                    <h2>请输入标准差估计值：</h2>
-                    <div class="fill-section">
-                        <input type="number" step="0.01" class="fill-input" id="std-answer" placeholder="请输入标准差估计值">
-                        <span id="fill-feedback" style="margin-left: 10px; font-size: 0.9rem;"></span>
-                    </div>
-
-                    <div class="controls">
-                        <button class="submit-btn" id="submitBtn">提交答案</button>
-                        <button class="reset-btn" id="resetBtn">重新作答</button>
-                    </div>
-
-                    <div class="feedback" id="feedback">
-                        <h3 id="feedbackTitle"></h3>
-                        <p id="feedbackText"></p>
-                    </div>
-
-                    <div class="score-display">
-                        <p>当前得分</p>
-                        <div class="score-value" id="scoreValue">0</div>
-                        <p>分 (满分: 100)</p>
-                    </div>
-                </div>
+            <div class="section-header">
+                <h2 class="section-title">题目内容</h2>
+                <button class="refresh-params-btn" id="refreshParamsBtn">
+                    <span>↻</span> 刷新参数
+                </button>
             </div>
+            <div class="question-content" id="questionContent">
+                <!-- 动态生成 -->
+            </div>
+        </section>
 
-            <button class="show-explanation-btn" id="show-explanation-btn">查看答案解析</button>
-            <div class="explanation-section calculation-steps" id="explanation-section">
-                <h3>计算步骤详解</h3>
-                <div id="explanation-content">
-                    <!-- 动态生成 -->
-                </div>
+        <section class="answer-input-section">
+            <h2 class="section-title">计算与作答</h2>
+            <label class="input-label" for="userAnswer">请输入你的答案（标准差估计值，至少保留一位小数）：</label>
+            <input type="number" id="userAnswer" class="answer-input" step="0.1">
+
+            <div class="button-group">
+                <button id="submitBtn" class="btn btn-primary">
+                    <span class="btn-icon">✓</span> 提交答案
+                </button>
+            </div>
+        </section>
+
+        <section id="feedbackCorrect" class="feedback-section feedback-correct">
+            <h3 class="feedback-title"><span class="feedback-icon">✓</span> 回答正确！</h3>
+            <p>恭喜你！你的答案 <span class="highlight" id="correctAnswerDisplay"></span> 是正确的。</p>
+            <div class="calculation-steps" id="calcStepsCorrect">
+                <!-- 动态生成 -->
+            </div>
+        </section>
+
+        <section id="feedbackIncorrect" class="feedback-section feedback-incorrect">
+            <h3 class="feedback-title"><span class="feedback-icon">✗</span> 回答不正确</h3>
+            <p>你的答案 <span class="highlight" id="incorrectAnswerDisplay"></span> 不正确。正确答案是 <span class="highlight" id="correctAnswerRef"></span>。</p>
+            <div class="note-box" style="margin-top: 15px;">
+                <p><strong>提示：</strong>数据集的描述性度量，如均值和标准差，是根据数据集的各个值计算得出的。然而，有时无法获得各个值，因为数据以直方图、频数多边形或其他显示形式呈现。</p>
+                <p>单个数据值可以估计为其所在类别的<strong>组中值</strong>。标准差的计算需要先估计均值，然后计算偏差平方和。</p>
+            </div>
+            <p style="margin-top: 15px;">点击"查看答案解析"了解详细计算过程。</p>
+        </section>
+
+        <button class="show-explanation-btn" id="show-explanation-btn">查看答案解析</button>
+        <div class="explanation-section" id="explanation-section" style="display:none;">
+            <div class="calculation-steps" id="explanationContent">
+                <!-- 动态生成 -->
             </div>
         </section>
     </div>
@@ -368,298 +484,558 @@
             // ==================== 参数化数据集 ====================
             const questionParams = [
                 {
-                    context: "多发性骨髓瘤患者的生存时间研究",
-                    total: 30,
+                    description: "一项针对30名多发性骨髓瘤患者生存时间（月）的研究结果",
+                    totalStudents: 30,
+                    dataLabel: "生存时间(月)",
+                    countLabel: "名患者",
+                    questionLabel: "患者生存时间的样本标准差",
+                    histogramTitle: "生存时间分布直方图",
                     ranges: [
-                        { range: "0 至 10", freq: 3, midpoint: 5 },
-                        { range: "10 至 20", freq: 15, midpoint: 15 },
-                        { range: "20 至 30", freq: 9, midpoint: 25 },
-                        { range: "30 至 40", freq: 3, midpoint: 35 }
+                        { range: "0 到 10", freq: 3, midpoint: 5 },
+                        { range: "10 到 20", freq: 15, midpoint: 15 },
+                        { range: "20 到 30", freq: 9, midpoint: 25 },
+                        { range: "30 到 40", freq: 3, midpoint: 35 }
                     ],
                     mean: 19,
                     answer: 8.1
                 },
                 {
-                    context: "高血压患者服药后血压下降值研究",
-                    total: 40,
+                    description: "一项针对40名高血压患者服药后血压下降值（mmHg）的研究结果",
+                    totalStudents: 40,
+                    dataLabel: "血压下降值",
+                    countLabel: "名患者",
+                    questionLabel: "血压下降值的样本标准差",
+                    histogramTitle: "血压下降值分布直方图",
                     ranges: [
-                        { range: "0 至 10", freq: 5, midpoint: 5 },
-                        { range: "10 至 20", freq: 18, midpoint: 15 },
-                        { range: "20 至 30", freq: 12, midpoint: 25 },
-                        { range: "30 至 40", freq: 5, midpoint: 35 }
+                        { range: "0 到 10", freq: 5, midpoint: 5 },
+                        { range: "10 到 20", freq: 18, midpoint: 15 },
+                        { range: "20 到 30", freq: 12, midpoint: 25 },
+                        { range: "30 到 40", freq: 5, midpoint: 35 }
                     ],
                     mean: 18.5,
                     answer: 8.3
                 },
                 {
-                    context: "糖尿病患者血糖控制研究",
-                    total: 35,
+                    description: "一项针对35名糖尿病患者血糖控制指标的研究结果",
+                    totalStudents: 35,
+                    dataLabel: "血糖指标",
+                    countLabel: "名患者",
+                    questionLabel: "血糖指标的样本标准差",
+                    histogramTitle: "血糖指标分布直方图",
                     ranges: [
-                        { range: "0 至 15", freq: 6, midpoint: 7.5 },
-                        { range: "15 至 30", freq: 14, midpoint: 22.5 },
-                        { range: "30 至 45", freq: 10, midpoint: 37.5 },
-                        { range: "45 至 60", freq: 5, midpoint: 52.5 }
+                        { range: "0 到 15", freq: 6, midpoint: 7.5 },
+                        { range: "15 到 30", freq: 14, midpoint: 22.5 },
+                        { range: "30 到 45", freq: 10, midpoint: 37.5 },
+                        { range: "45 到 60", freq: 5, midpoint: 52.5 }
                     ],
                     mean: 28.07,
                     answer: 13.4
                 },
                 {
-                    context: "心脏病患者康复时间研究",
-                    total: 25,
+                    description: "一项针对25名心脏病患者康复时间（天）的研究结果",
+                    totalStudents: 25,
+                    dataLabel: "康复时间(天)",
+                    countLabel: "名患者",
+                    questionLabel: "康复时间的样本标准差",
+                    histogramTitle: "康复时间分布直方图",
                     ranges: [
-                        { range: "5 至 15", freq: 4, midpoint: 10 },
-                        { range: "15 至 25", freq: 10, midpoint: 20 },
-                        { range: "25 至 35", freq: 8, midpoint: 30 },
-                        { range: "35 至 45", freq: 3, midpoint: 40 }
+                        { range: "5 到 15", freq: 4, midpoint: 10 },
+                        { range: "15 到 25", freq: 10, midpoint: 20 },
+                        { range: "25 到 35", freq: 8, midpoint: 30 },
+                        { range: "35 到 45", freq: 3, midpoint: 40 }
                     ],
                     mean: 23.6,
                     answer: 9.2
                 },
                 {
-                    context: "运动员训练后成绩提升研究",
-                    total: 50,
+                    description: "一项针对50名运动员训练后成绩提升值的研究结果",
+                    totalStudents: 50,
+                    dataLabel: "成绩提升",
+                    countLabel: "名运动员",
+                    questionLabel: "成绩提升值的样本标准差",
+                    histogramTitle: "成绩提升值分布直方图",
                     ranges: [
-                        { range: "0 至 5", freq: 8, midpoint: 2.5 },
-                        { range: "5 至 10", freq: 20, midpoint: 7.5 },
-                        { range: "10 至 15", freq: 15, midpoint: 12.5 },
-                        { range: "15 至 20", freq: 7, midpoint: 17.5 }
+                        { range: "0 到 5", freq: 8, midpoint: 2.5 },
+                        { range: "5 到 10", freq: 20, midpoint: 7.5 },
+                        { range: "10 到 15", freq: 15, midpoint: 12.5 },
+                        { range: "15 到 20", freq: 7, midpoint: 17.5 }
                     ],
                     mean: 9.2,
                     answer: 4.8
                 },
                 {
-                    context: "学生学习时间与成绩关系研究",
-                    total: 45,
+                    description: "一项针对45名大学生每周学习时间（小时）的调查结果",
+                    totalStudents: 45,
+                    dataLabel: "学习时间(小时)",
+                    countLabel: "名学生",
+                    questionLabel: "学习时间的样本标准差",
+                    histogramTitle: "学习时间分布直方图",
                     ranges: [
-                        { range: "0 至 2", freq: 5, midpoint: 1 },
-                        { range: "2 至 4", freq: 12, midpoint: 3 },
-                        { range: "4 至 6", freq: 18, midpoint: 5 },
-                        { range: "6 至 8", freq: 10, midpoint: 7 }
+                        { range: "0 到 2", freq: 5, midpoint: 1 },
+                        { range: "2 到 4", freq: 12, midpoint: 3 },
+                        { range: "4 到 6", freq: 18, midpoint: 5 },
+                        { range: "6 到 8", freq: 10, midpoint: 7 }
                     ],
                     mean: 4.6,
                     answer: 1.9
+                },
+                {
+                    description: "一项针对60名员工每日工作时长（小时）的统计结果",
+                    totalStudents: 60,
+                    dataLabel: "工作时长(小时)",
+                    countLabel: "名员工",
+                    questionLabel: "工作时长的样本标准差",
+                    histogramTitle: "每日工作时长分布直方图",
+                    ranges: [
+                        { range: "6 到 7", freq: 8, midpoint: 6.5 },
+                        { range: "7 到 8", freq: 22, midpoint: 7.5 },
+                        { range: "8 到 9", freq: 20, midpoint: 8.5 },
+                        { range: "9 到 10", freq: 10, midpoint: 9.5 }
+                    ],
+                    mean: 7.87,
+                    answer: 0.9
+                },
+                {
+                    description: "一项针对55户家庭月电费支出（元）的调查结果",
+                    totalStudents: 55,
+                    dataLabel: "电费支出(元)",
+                    countLabel: "户家庭",
+                    questionLabel: "电费支出的样本标准差",
+                    histogramTitle: "月电费支出分布直方图",
+                    ranges: [
+                        { range: "50 到 100", freq: 10, midpoint: 75 },
+                        { range: "100 到 150", freq: 20, midpoint: 125 },
+                        { range: "150 到 200", freq: 18, midpoint: 175 },
+                        { range: "200 到 250", freq: 7, midpoint: 225 }
+                    ],
+                    mean: 148.2,
+                    answer: 46.8
+                },
+                {
+                    description: "一项针对70名顾客购物消费金额（元）的统计结果",
+                    totalStudents: 70,
+                    dataLabel: "消费金额(元)",
+                    countLabel: "名顾客",
+                    questionLabel: "消费金额的样本标准差",
+                    histogramTitle: "购物消费金额分布直方图",
+                    ranges: [
+                        { range: "0 到 50", freq: 12, midpoint: 25 },
+                        { range: "50 到 100", freq: 25, midpoint: 75 },
+                        { range: "100 到 150", freq: 22, midpoint: 125 },
+                        { range: "150 到 200", freq: 11, midpoint: 175 }
+                    ],
+                    mean: 97.1,
+                    answer: 47.9
+                },
+                {
+                    description: "一项针对80名学生每日睡眠时间（小时）的调查结果",
+                    totalStudents: 80,
+                    dataLabel: "睡眠时间(小时)",
+                    countLabel: "名学生",
+                    questionLabel: "睡眠时间的样本标准差",
+                    histogramTitle: "每日睡眠时间分布直方图",
+                    ranges: [
+                        { range: "5 到 6", freq: 10, midpoint: 5.5 },
+                        { range: "6 到 7", freq: 28, midpoint: 6.5 },
+                        { range: "7 到 8", freq: 30, midpoint: 7.5 },
+                        { range: "8 到 9", freq: 12, midpoint: 8.5 }
+                    ],
+                    mean: 7.05,
+                    answer: 0.9
+                },
+                {
+                    description: "一项针对65名员工通勤时间（分钟）的调查结果",
+                    totalStudents: 65,
+                    dataLabel: "通勤时间(分钟)",
+                    countLabel: "名员工",
+                    questionLabel: "通勤时间的样本标准差",
+                    histogramTitle: "通勤时间分布直方图",
+                    ranges: [
+                        { range: "10 到 20", freq: 15, midpoint: 15 },
+                        { range: "20 到 30", freq: 25, midpoint: 25 },
+                        { range: "30 到 40", freq: 18, midpoint: 35 },
+                        { range: "40 到 50", freq: 7, midpoint: 45 }
+                    ],
+                    mean: 27.7,
+                    answer: 9.7
+                },
+                {
+                    description: "一项针对75名青少年每日手机使用时间（小时）的调查结果",
+                    totalStudents: 75,
+                    dataLabel: "使用时间(小时)",
+                    countLabel: "名青少年",
+                    questionLabel: "手机使用时间的样本标准差",
+                    histogramTitle: "每日手机使用时间分布直方图",
+                    ranges: [
+                        { range: "1 到 2", freq: 12, midpoint: 1.5 },
+                        { range: "2 到 3", freq: 28, midpoint: 2.5 },
+                        { range: "3 到 4", freq: 25, midpoint: 3.5 },
+                        { range: "4 到 5", freq: 10, midpoint: 4.5 }
+                    ],
+                    mean: 2.92,
+                    answer: 0.9
                 }
             ];
 
             let currentParamIndex = 0;
-            let answered = false;
-            let score = 0;
-            const tolerance = 0.1;
 
-            // ==================== 渲染直方图 ====================
-            function renderHistogram(params) {
-                const maxFreq = Math.max(...params.ranges.map(r => r.freq));
-                const chartHeight = 180;
-                const chartWidth = 320;
-                const barWidth = 60;
-                const gap = 20;
-                const yAxisWidth = 40;
-                const xAxisHeight = 30;
+            // 获取DOM元素
+            const userAnswerInput = document.getElementById('userAnswer');
+            const submitBtn = document.getElementById('submitBtn');
+            const refreshParamsBtn = document.getElementById('refreshParamsBtn');
+            const feedbackCorrect = document.getElementById('feedbackCorrect');
+            const feedbackIncorrect = document.getElementById('feedbackIncorrect');
+            const correctAnswerDisplay = document.getElementById('correctAnswerDisplay');
+            const incorrectAnswerDisplay = document.getElementById('incorrectAnswerDisplay');
+            const correctAnswerRef = document.getElementById('correctAnswerRef');
+            const showExplanationBtn = document.getElementById('show-explanation-btn');
+            const explanationSection = document.getElementById('explanation-section');
 
-                let barsHTML = '';
-                params.ranges.forEach((r, idx) => {
-                    const height = (r.freq / maxFreq) * chartHeight;
-                    const x = yAxisWidth + idx * (barWidth + gap);
-                    barsHTML += `
-                        <rect x="${x}" y="${chartHeight - height}" width="${barWidth}" height="${height}" fill="#3b82f6" rx="2">
-                            <title>频数: ${r.freq}</title>
-                        </rect>
-                        <text x="${x + barWidth/2}" y="${chartHeight - height - 8}" text-anchor="middle" font-size="12" fill="#1e40af" font-weight="600">${r.freq}</text>
-                    `;
-                });
+            // ==================== 渲染函数 ====================
 
-                let yTicksHTML = '';
-                for (let i = 0; i <= 4; i++) {
-                    const y = chartHeight - (i / 4) * chartHeight;
-                    const val = Math.round((i / 4) * maxFreq);
-                    yTicksHTML += `
-                        <line x1="${yAxisWidth - 5}" y1="${y}" x2="${yAxisWidth}" y2="${y}" stroke="#94a3b8" stroke-width="1"/>
-                        <text x="${yAxisWidth - 10}" y="${y + 4}" text-anchor="end" font-size="11" fill="#64748b">${val}</text>
-                        <line x1="${yAxisWidth}" y1="${y}" x2="${chartWidth + yAxisWidth}" y2="${y}" stroke="#e2e8f0" stroke-width="1" stroke-dasharray="4,4"/>
-                    `;
-                }
-
-                let xLabelsHTML = '';
-                params.ranges.forEach((r, idx) => {
-                    const x = yAxisWidth + idx * (barWidth + gap) + barWidth/2;
-                    xLabelsHTML += `<text x="${x}" y="${chartHeight + 20}" text-anchor="middle" font-size="11" fill="#334155">${r.range}</text>`;
-                });
-
-                return `
-                    <div style="display: flex; justify-content: center; margin: 20px 0;">
-                        <svg width="${chartWidth + yAxisWidth + 20}" height="${chartHeight + xAxisHeight + 20}" style="overflow: visible;">
-                            <line x1="${yAxisWidth}" y1="0" x2="${yAxisWidth}" y2="${chartHeight}" stroke="#94a3b8" stroke-width="2"/>
-                            <line x1="${yAxisWidth}" y1="${chartHeight}" x2="${chartWidth + yAxisWidth}" y2="${chartHeight}" stroke="#94a3b8" stroke-width="2"/>
-                            ${yTicksHTML}
-                            ${barsHTML}
-                            ${xLabelsHTML}
-                            <text x="15" y="${chartHeight/2}" text-anchor="middle" font-size="12" fill="#1e40af" font-weight="600" transform="rotate(-90, 15, ${chartHeight/2})">频数</text>
-                            <text x="${yAxisWidth + chartWidth/2}" y="${chartHeight + xAxisHeight + 10}" text-anchor="middle" font-size="12" fill="#1e40af" font-weight="600">测量值</text>
-                        </svg>
-                    </div>
-                `;
-            }
-
-            // ==================== 渲染解析 ====================
-            function renderExplanation(params) {
-                const weightedSum = params.ranges.reduce((sum, r) => sum + r.freq * r.midpoint, 0);
-                const mean = params.mean;
-
-                let deviationProducts = params.ranges.map(r => {
-                    const deviation = r.midpoint - mean;
-                    return `${r.freq}×(${deviation})²`;
-                });
-
-                let sumSquaredDeviations = params.ranges.reduce((sum, r) => {
-                    return sum + r.freq * Math.pow(r.midpoint - mean, 2);
-                }, 0);
-
-                let variance = sumSquaredDeviations / (params.total - 1);
-                let stdDev = Math.sqrt(variance);
-
-                document.getElementById('explanation-content').innerHTML = `
-                    <div class="step">
-                        <div class="step-title">步骤 1: 计算估计均值 (x̄)</div>
-                        <p>使用组中值的加权平均来估计数据集均值：</p>
-                        <div class="formula">x̄ ≈ ${weightedSum} / ${params.total} = <span class="highlight">${mean}</span></div>
-                    </div>
-
-                    <div class="step">
-                        <div class="step-title">步骤 2: 计算偏差平方和</div>
-                        <p>计算每个组中值与估计均值的偏差平方，乘以频数：</p>
-                        <div class="formula">Σfᵢ(Mᵢ - x̄)² = ${deviationProducts.join(' + ')} = <span class="highlight">${sumSquaredDeviations.toFixed(4)}</span></div>
-                    </div>
-
-                    <div class="step">
-                        <div class="step-title">步骤 3: 计算样本方差估计值</div>
-                        <p>将偏差平方和除以 (n-1)，其中 n=${params.total}：</p>
-                        <div class="formula">s² ≈ ${sumSquaredDeviations.toFixed(4)} / ${params.total - 1} ≈ <span class="highlight">${variance.toFixed(4)}</span></div>
-                    </div>
-
-                    <div class="step">
-                        <div class="step-title">步骤 4: 计算样本标准差估计值</div>
-                        <p>取方差的平方根：</p>
-                        <div class="formula">s ≈ √(${variance.toFixed(4)}) ≈ <span class="highlight">${params.answer}</span></div>
-                    </div>
-                `;
-            }
-
-            // ==================== 渲染问题 ====================
             function renderQuestion() {
                 const params = questionParams[currentParamIndex];
-                const histogramHTML = renderHistogram(params);
+                const questionContent = document.getElementById('questionContent');
 
-                document.getElementById('question-content').innerHTML = `
-                    <p>${params.context}。假设数据汇总在以下直方图中：</p>
-                    ${histogramHTML}
-                    <p>基于此直方图，估计这${params.total}个样本数据的标准差。</p>
-                    <p>请将中间计算至少保留四位小数，并将答案至少四舍五入到一位小数。</p>
-                    <div class="note">
-                        <p><strong>提示：</strong> 数据集的描述性度量，如均值和标准差，是根据数据集的各个值计算得出的。然而，有时无法获得各个值，因为数据以直方图、频数多边形或其他显示形式呈现。</p>
-                        <p>单个数据值可以估计为其所在类别的<strong>组中值</strong>。</p>
+                questionContent.innerHTML = `
+                    <p>某期刊刚刚发布了${params.description}。以下直方图总结了这${params.totalStudents}${params.countLabel}的${params.dataLabel}信息：</p>
+                    <div class="histogram-container">
+                        <h3 class="histogram-title">${params.histogramTitle}</h3>
+                        <canvas id="histogramCanvas" width="600" height="350"></canvas>
+                        <div class="histogram-legend">
+                            <div class="legend-item">
+                                <div class="legend-color" style="background-color: #4dabf7;"></div>
+                                <span>频数 (${params.countLabel}数)</span>
+                            </div>
+                        </div>
+                    </div>
+                    <p><strong>问题：</strong>根据直方图，估计${params.questionLabel}。中间计算至少保留四位小数，最终答案至少保留一位小数。</p>
+                `;
+
+                // 绘制直方图
+                drawHistogram(params);
+            }
+
+            // 绘制直方图函数
+            function drawHistogram(params) {
+                const canvas = document.getElementById('histogramCanvas');
+                if (!canvas) return;
+
+                const ctx = canvas.getContext('2d');
+                const width = canvas.width;
+                const height = canvas.height;
+
+                // 清除画布
+                ctx.clearRect(0, 0, width, height);
+
+                // 设置边距
+                const margin = { top: 30, right: 30, bottom: 60, left: 60 };
+                const chartWidth = width - margin.left - margin.right;
+                const chartHeight = height - margin.top - margin.bottom;
+
+                // 数据
+                const data = params.ranges;
+                const maxFreq = Math.max(...data.map(d => d.freq));
+
+                // 绘制背景
+                ctx.fillStyle = '#f8fafd';
+                ctx.fillRect(margin.left, margin.top, chartWidth, chartHeight);
+
+                // 绘制网格线
+                ctx.strokeStyle = '#e6f0ff';
+                ctx.lineWidth = 1;
+                const ySteps = 5;
+                for (let i = 0; i <= ySteps; i++) {
+                    const y = margin.top + (chartHeight / ySteps) * i;
+                    ctx.beginPath();
+                    ctx.moveTo(margin.left, y);
+                    ctx.lineTo(width - margin.right, y);
+                    ctx.stroke();
+                }
+
+                // 绘制直方图条形（无间隙）
+                const barWidth = chartWidth / data.length;
+                const colors = ['#4dabf7', '#5cb8ff', '#6dc4ff', '#7ed0ff', '#8fdcff'];
+                const darkerColors = ['#2d8bdb', '#3da0ef', '#4dacf3', '#5db8f7', '#6dc4fb'];
+
+                // 解析范围获取边界值
+                const boundaries = [];
+                data.forEach((d, i) => {
+                    const parts = d.range.split(' 到 ');
+                    if (i === 0) boundaries.push(parseFloat(parts[0]));
+                    boundaries.push(parseFloat(parts[1]));
+                });
+
+                data.forEach((d, i) => {
+                    const x = margin.left + i * barWidth;
+                    const barHeight = (d.freq / maxFreq) * chartHeight;
+                    const y = margin.top + chartHeight - barHeight;
+
+                    // 绘制条形渐变
+                    const gradient = ctx.createLinearGradient(x, y, x, margin.top + chartHeight);
+                    gradient.addColorStop(0, colors[i % colors.length]);
+                    gradient.addColorStop(1, darkerColors[i % darkerColors.length]);
+
+                    ctx.fillStyle = gradient;
+                    ctx.fillRect(x, y, barWidth, barHeight);
+
+                    // 绘制条形边框
+                    ctx.strokeStyle = darkerColors[i % darkerColors.length];
+                    ctx.lineWidth = 1;
+                    ctx.strokeRect(x, y, barWidth, barHeight);
+
+                    // 在条形上方显示频数值
+                    ctx.fillStyle = '#1a5fb4';
+                    ctx.font = 'bold 14px Segoe UI, Microsoft YaHei, sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(d.freq, x + barWidth / 2, y - 8);
+                });
+
+                // 绘制X轴刻度和标签（在每个边界位置）
+                ctx.fillStyle = '#5d7ea3';
+                ctx.font = '12px Segoe UI, Microsoft YaHei, sans-serif';
+                ctx.textAlign = 'center';
+
+                boundaries.forEach((boundary, i) => {
+                    const x = margin.left + i * barWidth;
+                    // 绘制刻度线
+                    ctx.strokeStyle = '#1a5fb4';
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.moveTo(x, margin.top + chartHeight);
+                    ctx.lineTo(x, margin.top + chartHeight + 5);
+                    ctx.stroke();
+                    // 绘制刻度标签
+                    ctx.fillText(boundary.toString(), x, margin.top + chartHeight + 20);
+                });
+
+                // 绘制Y轴
+                ctx.strokeStyle = '#1a5fb4';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(margin.left, margin.top);
+                ctx.lineTo(margin.left, margin.top + chartHeight);
+                ctx.stroke();
+
+                // Y轴标签
+                ctx.fillStyle = '#1a5fb4';
+                ctx.font = 'bold 14px Segoe UI, Microsoft YaHei, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.save();
+                ctx.translate(20, margin.top + chartHeight / 2);
+                ctx.rotate(-Math.PI / 2);
+                ctx.fillText('频数', 0, 0);
+                ctx.restore();
+
+                // Y轴刻度
+                ctx.fillStyle = '#5d7ea3';
+                ctx.font = '12px Segoe UI, Microsoft YaHei, sans-serif';
+                ctx.textAlign = 'right';
+                for (let i = 0; i <= ySteps; i++) {
+                    const value = Math.round(maxFreq - (maxFreq / ySteps) * i);
+                    const y = margin.top + (chartHeight / ySteps) * i;
+                    ctx.fillText(value.toString(), margin.left - 10, y + 4);
+                }
+
+                // 绘制X轴
+                ctx.strokeStyle = '#1a5fb4';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(margin.left, margin.top + chartHeight);
+                ctx.lineTo(width - margin.right, margin.top + chartHeight);
+                ctx.stroke();
+
+                // X轴标签
+                ctx.fillStyle = '#1a5fb4';
+                ctx.font = 'bold 14px Segoe UI, Microsoft YaHei, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(params.dataLabel, width / 2, height - 10);
+            }
+
+            function renderExplanation() {
+                const params = questionParams[currentParamIndex];
+                const calcStepsCorrect = document.getElementById('calcStepsCorrect');
+                const explanationContent = document.getElementById('explanationContent');
+
+                let tableRows = '';
+                params.ranges.forEach(r => {
+                    tableRows += `<tr><td>${r.range}</td><td>${r.freq}</td><td>${r.midpoint}</td></tr>`;
+                });
+
+                // 计算均值
+                const weightedSum = params.ranges.reduce((sum, r) => sum + r.freq * r.midpoint, 0);
+                const mean = weightedSum / params.totalStudents;
+
+                // 计算偏差平方和
+                let deviationProducts = params.ranges.map(r => {
+                    const deviation = r.midpoint - mean;
+                    return { product: r.freq * Math.pow(deviation, 2), deviation: deviation };
+                });
+                let sumSquaredDeviations = deviationProducts.reduce((sum, d) => sum + d.product, 0);
+
+                // 计算方差和标准差
+                let variance = sumSquaredDeviations / (params.totalStudents - 1);
+                let stdDev = Math.sqrt(variance);
+
+                calcStepsCorrect.innerHTML = `
+                    <h4>数据表格：</h4>
+                    <table class="histogram-table">
+                        <thead>
+                            <tr>
+                                <th>${params.dataLabel}</th>
+                                <th>频数</th>
+                                <th>组中值</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${tableRows}
+                        </tbody>
+                    </table>
+                    <h4>详细计算步骤：</h4>
+                    <div class="calculation-step">
+                        <p><strong>步骤 1:</strong> 计算估计均值 (x̄)</p>
+                        <p>使用组中值的加权平均来估计数据集均值：</p>
+                        <p>x̄ ≈ (${params.ranges.map(r => `${r.freq}×${r.midpoint}`).join(' + ')}) / ${params.totalStudents}</p>
+                        <p>x̄ ≈ ${weightedSum} / ${params.totalStudents} = <span class="highlight">${mean.toFixed(4)}</span></p>
+                    </div>
+                    <div class="calculation-step">
+                        <p><strong>步骤 2:</strong> 计算偏差平方和</p>
+                        <p>计算每个组中值与估计均值的偏差平方，乘以频数：</p>
+                        ${params.ranges.map((r, i) => `<p>${r.freq} × (${r.midpoint} - ${mean.toFixed(4)})² = ${r.freq} × ${deviationProducts[i].deviation.toFixed(4)}² = <span class="highlight">${deviationProducts[i].product.toFixed(4)}</span></p>`).join('')}
+                        <p>偏差平方和 = ${deviationProducts.map(d => d.product.toFixed(4)).join(' + ')} = <span class="highlight">${sumSquaredDeviations.toFixed(4)}</span></p>
+                    </div>
+                    <div class="calculation-step">
+                        <p><strong>步骤 3:</strong> 计算样本方差估计值</p>
+                        <p>将偏差平方和除以 (n-1)，其中 n = ${params.totalStudents}：</p>
+                        <p>s² ≈ ${sumSquaredDeviations.toFixed(4)} / ${params.totalStudents - 1} = <span class="highlight">${variance.toFixed(4)}</span></p>
+                    </div>
+                    <div class="calculation-step">
+                        <p><strong>步骤 4:</strong> 计算样本标准差估计值</p>
+                        <p>取方差的平方根：</p>
+                        <p>s ≈ √(${variance.toFixed(4)}) ≈ <span class="highlight">${params.answer}</span></p>
                     </div>
                 `;
 
-                renderExplanation(params);
-
-                // 重置状态
-                answered = false;
-                document.getElementById('std-answer').value = '';
-                document.getElementById('std-answer').classList.remove('correct', 'incorrect');
-                document.getElementById('std-answer').disabled = false;
-                document.getElementById('fill-feedback').textContent = '';
-                document.getElementById('feedback').className = 'feedback';
-                document.getElementById('feedback').style.display = 'none';
-                document.getElementById('scoreValue').textContent = '0';
-                document.getElementById('show-explanation-btn').style.display = 'none';
-                document.getElementById('explanation-section').classList.remove('show');
-                document.getElementById('show-explanation-btn').textContent = '查看答案解析';
+                document.getElementById('explanationContent').innerHTML = `
+                    <h4>数据表格：</h4>
+                    <table class="histogram-table">
+                        <thead>
+                            <tr>
+                                <th>${params.dataLabel}</th>
+                                <th>频数</th>
+                                <th>组中值</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${tableRows}
+                        </tbody>
+                    </table>
+                    <h4>正确计算过程：</h4>
+                    <div class="calculation-step">
+                        <p>使用分组数据标准差估计公式：s ≈ √[Σfᵢ(Mᵢ - x̄)² / (n-1)]</p>
+                    </div>
+                    <div class="calculation-step">
+                        <p><strong>步骤 1 - 计算均值：</strong></p>
+                        <p>x̄ = (${params.ranges.map(r => `${r.freq}×${r.midpoint}`).join(') + (')}) / ${params.totalStudents} = ${mean.toFixed(4)}</p>
+                    </div>
+                    <div class="calculation-step">
+                        <p><strong>步骤 2 - 计算偏差平方和：</strong></p>
+                        <p>Σfᵢ(Mᵢ - x̄)² = ${sumSquaredDeviations.toFixed(4)}</p>
+                    </div>
+                    <div class="calculation-step">
+                        <p><strong>步骤 3 - 计算方差：</strong></p>
+                        <p>s² = ${sumSquaredDeviations.toFixed(4)} / ${params.totalStudents - 1} = ${variance.toFixed(4)}</p>
+                    </div>
+                    <div class="calculation-step">
+                        <p><strong>步骤 4 - 计算标准差：</strong></p>
+                        <p>s = √(${variance.toFixed(4)}) ≈ ${params.answer}</p>
+                    </div>
+                `;
             }
 
-            // ==================== 事件处理 ====================
-
-            // 输入框变化时启用提交按钮
-            document.getElementById('std-answer').addEventListener('input', function() {
-                if (this.value.trim() !== '' && !answered) {
-                    document.getElementById('submitBtn').disabled = false;
-                }
-            });
-
-            // 刷新参数
-            document.getElementById('refreshParamsBtn').addEventListener('click', function() {
+            function refreshParams() {
                 let newIndex;
                 do {
                     newIndex = Math.floor(Math.random() * questionParams.length);
                 } while (newIndex === currentParamIndex && questionParams.length > 1);
+
                 currentParamIndex = newIndex;
+
+                // 清除输入
+                userAnswerInput.value = '';
+
+                // 隐藏所有反馈
+                feedbackCorrect.style.display = 'none';
+                feedbackIncorrect.style.display = 'none';
+
+                // 隐藏解析
+                showExplanationBtn.style.display = 'none';
+                showExplanationBtn.textContent = '查看答案解析';
+                explanationSection.style.display = 'none';
+
+                // 重新渲染
                 renderQuestion();
-                document.getElementById('submitBtn').disabled = true;
+                renderExplanation();
+            }
+
+            // ==================== 事件处理 ====================
+
+            // 刷新参数按钮
+            refreshParamsBtn.addEventListener('click', function() {
+                refreshParams();
             });
 
             // 提交答案
-            document.getElementById('submitBtn').addEventListener('click', function() {
-                if (answered) return;
+            submitBtn.addEventListener('click', function() {
+                const userAnswer = parseFloat(userAnswerInput.value);
+                const params = questionParams[currentParamIndex];
 
-                const userAnswer = parseFloat(document.getElementById('std-answer').value);
                 if (isNaN(userAnswer)) {
-                    alert('请输入有效的数字！');
+                    alert('请输入有效的数字答案！');
                     return;
                 }
 
-                answered = true;
-                const params = questionParams[currentParamIndex];
-                const feedback = document.getElementById('feedback');
-                const feedbackTitle = document.getElementById('feedbackTitle');
-                const feedbackText = document.getElementById('feedbackText');
-                const inputEl = document.getElementById('std-answer');
-                const fillFeedback = document.getElementById('fill-feedback');
+                // 检查答案是否正确（允许0.15的误差）
+                const isCorrect = Math.abs(userAnswer - params.answer) <= 0.15;
 
-                inputEl.disabled = true;
+                renderExplanation();
 
-                if (Math.abs(userAnswer - params.answer) <= tolerance) {
-                    inputEl.classList.add('correct');
-                    fillFeedback.textContent = '正确！';
-                    fillFeedback.style.color = '#10b981';
-                    feedback.className = 'feedback correct';
-                    feedbackTitle.innerHTML = '✓ 回答正确！';
-                    feedbackText.textContent = `你输入的答案是 ${userAnswer}，正确答案是 ${params.answer}。`;
-                    score = 100;
+                if (isCorrect) {
+                    feedbackCorrect.style.display = 'block';
+                    feedbackIncorrect.style.display = 'none';
+                    correctAnswerDisplay.textContent = userAnswer.toFixed(1);
                 } else {
-                    inputEl.classList.add('incorrect');
-                    fillFeedback.textContent = `错误，正确答案是 ${params.answer}`;
-                    fillFeedback.style.color = '#ef4444';
-                    feedback.className = 'feedback incorrect';
-                    feedbackTitle.innerHTML = '✗ 回答不正确';
-                    feedbackText.textContent = `你输入的答案是 ${userAnswer}，正确答案是 ${params.answer}。请查看下方的计算步骤详解。`;
-                    score = 0;
+                    feedbackIncorrect.style.display = 'block';
+                    feedbackCorrect.style.display = 'none';
+                    incorrectAnswerDisplay.textContent = userAnswer.toFixed(1);
+                    correctAnswerRef.textContent = params.answer;
                 }
 
-                document.getElementById('scoreValue').textContent = score;
-                document.getElementById('submitBtn').disabled = true;
-                document.getElementById('show-explanation-btn').style.display = 'inline-block';
+                // 显示答案解析按钮
+                showExplanationBtn.style.display = 'inline-block';
             });
 
-            // 重新作答
-            document.getElementById('resetBtn').addEventListener('click', function() {
-                renderQuestion();
-                document.getElementById('submitBtn').disabled = true;
-            });
-
-            // 显示答案解析
-            document.getElementById('show-explanation-btn').addEventListener('click', function() {
-                const explanationSection = document.getElementById('explanation-section');
-                if (explanationSection.classList.contains('show')) {
-                    explanationSection.classList.remove('show');
-                    this.textContent = '查看答案解析';
-                } else {
-                    explanationSection.classList.add('show');
+            // 显示答案解析按钮点击事件
+            showExplanationBtn.addEventListener('click', function() {
+                if (explanationSection.style.display === 'none' || explanationSection.style.display === '') {
+                    explanationSection.style.display = 'block';
                     this.textContent = '隐藏答案解析';
+                } else {
+                    explanationSection.style.display = 'none';
+                    this.textContent = '查看答案解析';
                 }
             });
 
-            // 初始化
+            // 添加键盘支持
+            userAnswerInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    submitBtn.click();
+                }
+            });
+
+            // ==================== 初始化 ====================
             renderQuestion();
-            document.getElementById('submitBtn').disabled = true;
+            renderExplanation();
         });
     </script>
 </body>

@@ -138,67 +138,58 @@
             margin: 5px 0;
         }
 
-        .option-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
+        .input-section {
             margin: 25px 0;
+            padding: 25px;
+            background-color: #f8fafc;
+            border-radius: 12px;
+            border: 2px solid #e2e8f0;
         }
 
-        .option-item {
-            padding: 18px 20px;
-            border: 2px solid #cbd5e0;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            background-color: white;
-            font-size: 1.05rem;
+        .input-label {
+            font-size: 1.15rem;
+            color: #2d3748;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+
+        .input-group {
             display: flex;
             align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
         }
 
-        .option-item:hover {
+        .answer-input {
+            padding: 14px 20px;
+            font-size: 1.2rem;
+            border: 2px solid #cbd5e0;
+            border-radius: 10px;
+            width: 150px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .answer-input:focus {
+            outline: none;
             border-color: #4a90e2;
-            background-color: #f0f7ff;
-            transform: translateY(-2px);
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
         }
 
-        .option-item.selected {
-            border-color: #3182ce;
-            background-color: #ebf8ff;
-            font-weight: 600;
-        }
-
-        .option-item.correct {
+        .answer-input.correct {
             border-color: #38a169;
             background-color: #f0fff4;
         }
 
-        .option-item.incorrect {
+        .answer-input.incorrect {
             border-color: #e53e3e;
             background-color: #fff5f5;
         }
 
-        .option-letter {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 32px;
-            height: 32px;
-            background-color: #4a90e2;
-            color: white;
-            border-radius: 50%;
-            margin-right: 15px;
-            font-weight: bold;
-            flex-shrink: 0;
-        }
-
-        .option-item.correct .option-letter {
-            background-color: #38a169;
-        }
-
-        .option-item.incorrect .option-letter {
-            background-color: #e53e3e;
+        .unit-label {
+            font-size: 1.1rem;
+            color: #4a5568;
+            font-weight: 500;
         }
 
         .controls {
@@ -351,6 +342,13 @@
                 flex-direction: column;
                 gap: 15px;
             }
+            .input-group {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .answer-input {
+                width: 120px;
+            }
         }
     </style>
 </head>
@@ -373,8 +371,12 @@
                     <!-- 动态生成 -->
                 </div>
 
-                <div class="option-list" id="option-list">
-                    <!-- 动态生成 -->
+                <div class="input-section" id="input-section">
+                    <div class="input-label">请输入你的答案（四舍五入到一位小数）：</div>
+                    <div class="input-group">
+                        <input type="number" id="answer-input" class="answer-input" placeholder="输入数值" step="0.1">
+                        <span class="unit-label" id="unit-label"></span>
+                    </div>
                 </div>
 
                 <div class="controls">
@@ -419,14 +421,7 @@
                         { count: 13, value: 7 }
                     ],
                     unit: "磅",
-                    answer: 6.1,
-                    answerOption: 'B',
-                    options: [
-                        { letter: 'A', text: '5.8 磅' },
-                        { letter: 'B', text: '6.1 磅' },
-                        { letter: 'C', text: '6.5 磅' },
-                        { letter: 'D', text: '6.8 磅' }
-                    ]
+                    answer: 6.1
                 },
                 {
                     context: "学生考试成绩",
@@ -437,14 +432,7 @@
                         { count: 5, value: 95 }
                     ],
                     unit: "分",
-                    answer: 79.5,
-                    answerOption: 'C',
-                    options: [
-                        { letter: 'A', text: '76.5 分' },
-                        { letter: 'B', text: '78.0 分' },
-                        { letter: 'C', text: '79.5 分' },
-                        { letter: 'D', text: '81.0 分' }
-                    ]
+                    answer: 79.5
                 },
                 {
                     context: "员工工作时长",
@@ -455,14 +443,7 @@
                         { count: 4, value: 50 }
                     ],
                     unit: "小时/周",
-                    answer: 42.1,
-                    answerOption: 'B',
-                    options: [
-                        { letter: 'A', text: '40.5 小时/周' },
-                        { letter: 'B', text: '42.1 小时/周' },
-                        { letter: 'C', text: '43.8 小时/周' },
-                        { letter: 'D', text: '45.0 小时/周' }
-                    ]
+                    answer: 42.1
                 },
                 {
                     context: "商品销售价格",
@@ -472,14 +453,7 @@
                         { count: 10, value: 40 }
                     ],
                     unit: "元",
-                    answer: 29.2,
-                    answerOption: 'A',
-                    options: [
-                        { letter: 'A', text: '29.2 元' },
-                        { letter: 'B', text: '30.0 元' },
-                        { letter: 'C', text: '31.5 元' },
-                        { letter: 'D', text: '32.8 元' }
-                    ]
+                    answer: 29.2
                 },
                 {
                     context: "运动员体重",
@@ -490,14 +464,7 @@
                         { count: 2, value: 90 }
                     ],
                     unit: "公斤",
-                    answer: 72.5,
-                    answerOption: 'C',
-                    options: [
-                        { letter: 'A', text: '68.5 公斤' },
-                        { letter: 'B', text: '70.0 公斤' },
-                        { letter: 'C', text: '72.5 公斤' },
-                        { letter: 'D', text: '75.0 公斤' }
-                    ]
+                    answer: 72.5
                 },
                 {
                     context: "产品生产数量",
@@ -507,21 +474,179 @@
                         { count: 5, value: 200 }
                     ],
                     unit: "件/天",
-                    answer: 155.0,
-                    answerOption: 'B',
-                    options: [
-                        { letter: 'A', text: '145.0 件/天' },
-                        { letter: 'B', text: '155.0 件/天' },
-                        { letter: 'C', text: '160.0 件/天' },
-                        { letter: 'D', text: '166.7 件/天' }
-                    ]
+                    answer: 155.0
+                },
+                {
+                    context: "水果重量",
+                    data: [
+                        { count: 10, value: 150 },
+                        { count: 15, value: 180 },
+                        { count: 8, value: 200 },
+                        { count: 7, value: 220 }
+                    ],
+                    unit: "克",
+                    answer: 184.5
+                },
+                {
+                    context: "书籍页数",
+                    data: [
+                        { count: 5, value: 200 },
+                        { count: 8, value: 250 },
+                        { count: 12, value: 300 },
+                        { count: 5, value: 350 }
+                    ],
+                    unit: "页",
+                    answer: 280.0
+                },
+                {
+                    context: "汽车油耗",
+                    data: [
+                        { count: 6, value: 6.5 },
+                        { count: 10, value: 7.8 },
+                        { count: 8, value: 8.5 },
+                        { count: 4, value: 9.2 }
+                    ],
+                    unit: "升/百公里",
+                    answer: 7.9
+                },
+                {
+                    context: "学生身高",
+                    data: [
+                        { count: 8, value: 160 },
+                        { count: 12, value: 165 },
+                        { count: 15, value: 170 },
+                        { count: 10, value: 175 }
+                    ],
+                    unit: "厘米",
+                    answer: 168.4
+                },
+                {
+                    context: "咖啡价格",
+                    data: [
+                        { count: 20, value: 25 },
+                        { count: 30, value: 30 },
+                        { count: 15, value: 35 },
+                        { count: 10, value: 40 }
+                    ],
+                    unit: "元",
+                    answer: 30.8
+                },
+                {
+                    context: "电池寿命",
+                    data: [
+                        { count: 5, value: 8 },
+                        { count: 12, value: 10 },
+                        { count: 8, value: 12 },
+                        { count: 5, value: 14 }
+                    ],
+                    unit: "小时",
+                    answer: 10.9
+                },
+                {
+                    context: "电视观看时长",
+                    data: [
+                        { count: 15, value: 2 },
+                        { count: 25, value: 3 },
+                        { count: 20, value: 4 },
+                        { count: 10, value: 5 }
+                    ],
+                    unit: "小时/天",
+                    answer: 3.4
+                },
+                {
+                    context: "快递配送时间",
+                    data: [
+                        { count: 8, value: 2 },
+                        { count: 15, value: 3 },
+                        { count: 12, value: 4 },
+                        { count: 5, value: 5 }
+                    ],
+                    unit: "天",
+                    answer: 3.4
+                },
+                {
+                    context: "房屋面积",
+                    data: [
+                        { count: 6, value: 80 },
+                        { count: 10, value: 100 },
+                        { count: 8, value: 120 },
+                        { count: 4, value: 150 }
+                    ],
+                    unit: "平方米",
+                    answer: 107.9
+                },
+                {
+                    context: "手机价格",
+                    data: [
+                        { count: 12, value: 2000 },
+                        { count: 18, value: 3000 },
+                        { count: 10, value: 4000 },
+                        { count: 5, value: 5000 }
+                    ],
+                    unit: "元",
+                    answer: 3121.2
+                },
+                {
+                    context: "餐厅评分",
+                    data: [
+                        { count: 25, value: 3.5 },
+                        { count: 40, value: 4.0 },
+                        { count: 20, value: 4.5 },
+                        { count: 15, value: 5.0 }
+                    ],
+                    unit: "分",
+                    answer: 4.1
+                },
+                {
+                    context: "工人日产量",
+                    data: [
+                        { count: 5, value: 50 },
+                        { count: 10, value: 60 },
+                        { count: 8, value: 70 },
+                        { count: 7, value: 80 }
+                    ],
+                    unit: "件",
+                    answer: 66.0
+                },
+                {
+                    context: "蔬菜价格",
+                    data: [
+                        { count: 8, value: 3.5 },
+                        { count: 15, value: 4.0 },
+                        { count: 12, value: 4.5 },
+                        { count: 5, value: 5.0 }
+                    ],
+                    unit: "元/斤",
+                    answer: 4.2
+                },
+                {
+                    context: "睡眠时间",
+                    data: [
+                        { count: 10, value: 6 },
+                        { count: 20, value: 7 },
+                        { count: 15, value: 8 },
+                        { count: 5, value: 9 }
+                    ],
+                    unit: "小时",
+                    answer: 7.3
+                },
+                {
+                    context: "跑步速度",
+                    data: [
+                        { count: 6, value: 8 },
+                        { count: 12, value: 10 },
+                        { count: 8, value: 12 },
+                        { count: 4, value: 14 }
+                    ],
+                    unit: "公里/小时",
+                    answer: 10.7
                 }
             ];
 
             let currentParamIndex = 0;
-            let selectedOption = null;
             let answered = false;
             let score = 0;
+            const tolerance = 0.05;
 
             // ==================== 渲染函数 ====================
             function renderQuestion() {
@@ -534,12 +659,8 @@
                     tableRows += `<tr><td>${d.count}</td><td>${d.value}</td></tr>`;
                 });
 
-                const weightedSum = params.data.reduce((sum, d) => sum + d.count * d.value, 0);
-                const formula1 = params.data.map(d => `${d.count}×${d.value}`).join(' + ');
-                const relativeFreqs = params.data.map(d => `${d.count}/${totalCount}`).join(', ');
-
                 document.getElementById('question-text').innerHTML = `
-                    <p>我们被要求找出样本中的平均${params.context}。为了求出这个均值，我们不能简单地取数值的平均值，因为必须考虑每个值对应的数量。</p>
+                    <p>根据下表，计算平均${params.context}。</p>
 
                     <table class="data-table">
                         <thead>
@@ -556,32 +677,24 @@
                     <p>四舍五入到一位小数后，平均${params.context}是多少？</p>
                 `;
 
-                // 渲染选项
-                let optionsHTML = '';
-                params.options.forEach(opt => {
-                    optionsHTML += `
-                        <div class="option-item" data-value="${opt.letter}">
-                            <div class="option-letter">${opt.letter}</div>
-                            <div class="option-text">${opt.text}</div>
-                        </div>
-                    `;
-                });
-                document.getElementById('option-list').innerHTML = optionsHTML;
+                // 更新单位标签
+                document.getElementById('unit-label').textContent = params.unit;
 
                 // 渲染解析
+                const weightedSum = params.data.reduce((sum, d) => sum + d.count * d.value, 0);
                 renderExplanation(params, totalCount, weightedSum);
 
                 // 重置状态
-                selectedOption = null;
                 answered = false;
+                const answerInput = document.getElementById('answer-input');
+                answerInput.value = '';
+                answerInput.classList.remove('correct', 'incorrect');
+                answerInput.disabled = false;
                 document.getElementById('feedback').classList.remove('show', 'correct', 'incorrect');
                 document.getElementById('feedback').textContent = '';
                 document.getElementById('show-explanation-btn').style.display = 'none';
                 document.getElementById('explanation-section').style.display = 'none';
                 document.getElementById('show-explanation-btn').textContent = '查看答案解析';
-
-                // 绑定选项事件
-                bindOptionEvents();
             }
 
             function renderExplanation(params, totalCount, weightedSum) {
@@ -626,19 +739,6 @@
                 `;
             }
 
-            function bindOptionEvents() {
-                const optionItems = document.querySelectorAll('.option-item');
-                optionItems.forEach(item => {
-                    item.addEventListener('click', function() {
-                        if (answered) return;
-
-                        optionItems.forEach(opt => opt.classList.remove('selected'));
-                        this.classList.add('selected');
-                        selectedOption = this.getAttribute('data-value');
-                    });
-                });
-            }
-
             function refreshParams() {
                 let newIndex;
                 do {
@@ -646,13 +746,6 @@
                 } while (newIndex === currentParamIndex && questionParams.length > 1);
 
                 currentParamIndex = newIndex;
-
-                // 重置选项样式
-                document.querySelectorAll('.option-item').forEach(item => {
-                    item.classList.remove('selected', 'correct', 'incorrect');
-                    item.style.cursor = 'pointer';
-                });
-
                 renderQuestion();
             }
 
@@ -663,8 +756,11 @@
 
             // 提交答案
             document.getElementById('submit-btn').addEventListener('click', function() {
-                if (!selectedOption) {
-                    alert('请先选择一个答案！');
+                const answerInput = document.getElementById('answer-input');
+                const userAnswer = parseFloat(answerInput.value);
+
+                if (isNaN(userAnswer)) {
+                    alert('请输入有效的数值！');
                     return;
                 }
 
@@ -673,26 +769,30 @@
                 answered = true;
                 const params = questionParams[currentParamIndex];
                 const feedback = document.getElementById('feedback');
+                const correctAnswer = params.answer;
 
-                // 显示正确答案和错误答案的样式
-                document.querySelectorAll('.option-item').forEach(item => {
-                    const value = item.getAttribute('data-value');
-                    if (value === params.answerOption) {
-                        item.classList.add('correct');
-                    } else if (value === selectedOption && value !== params.answerOption) {
-                        item.classList.add('incorrect');
-                    }
-                });
+                // 判断答案是否正确
+                const isCorrect = Math.abs(userAnswer - correctAnswer) <= tolerance;
+
+                // 显示正确/错误样式
+                if (isCorrect) {
+                    answerInput.classList.add('correct');
+                } else {
+                    answerInput.classList.add('incorrect');
+                }
+
+                // 禁用输入框
+                answerInput.disabled = true;
 
                 // 显示反馈
                 feedback.classList.remove('correct', 'incorrect');
                 feedback.textContent = '';
 
-                if (selectedOption === params.answerOption) {
+                if (isCorrect) {
                     feedback.classList.add('correct', 'show');
                     feedback.innerHTML = `
                         <h3>回答正确！</h3>
-                        <p>你选择了正确答案：${params.answer} ${params.unit}。</p>
+                        <p>你输入的答案：${userAnswer} ${params.unit}。</p>
                         <p>加权平均数的计算结果是正确的。</p>
                     `;
                     score = 1;
@@ -700,7 +800,8 @@
                     feedback.classList.add('incorrect', 'show');
                     feedback.innerHTML = `
                         <h3>回答错误</h3>
-                        <p>你选择了选项 ${selectedOption}。</p>
+                        <p>你输入的答案：${userAnswer} ${params.unit}。</p>
+                        <p>正确答案是：<strong>${correctAnswer} ${params.unit}</strong></p>
                         <p>请查看下方的解析部分，了解加权平均数的计算过程。</p>
                     `;
                     score = 0;
@@ -711,27 +812,20 @@
 
                 // 显示解析按钮
                 document.getElementById('show-explanation-btn').style.display = 'inline-block';
-
-                // 禁用所有选项的点击
-                document.querySelectorAll('.option-item').forEach(item => {
-                    item.style.cursor = 'default';
-                });
             });
 
             // 重新作答
             document.getElementById('reset-btn').addEventListener('click', function() {
-                // 重置所有选项样式
-                document.querySelectorAll('.option-item').forEach(item => {
-                    item.classList.remove('selected', 'correct', 'incorrect');
-                    item.style.cursor = 'pointer';
-                });
+                const answerInput = document.getElementById('answer-input');
+                answerInput.value = '';
+                answerInput.classList.remove('correct', 'incorrect');
+                answerInput.disabled = false;
 
                 // 隐藏反馈
                 document.getElementById('feedback').classList.remove('show', 'correct', 'incorrect');
                 document.getElementById('feedback').textContent = '';
 
                 // 重置状态
-                selectedOption = null;
                 answered = false;
                 score = 0;
                 document.getElementById('score').textContent = score;
@@ -749,6 +843,13 @@
                 } else {
                     explanationSection.style.display = 'none';
                     this.textContent = '查看答案解析';
+                }
+            });
+
+            // 回车键提交
+            document.getElementById('answer-input').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && !answered) {
+                    document.getElementById('submit-btn').click();
                 }
             });
 

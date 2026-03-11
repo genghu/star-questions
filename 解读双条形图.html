@@ -140,7 +140,7 @@
             left: 0;
             top: 0;
             bottom: 0;
-            width: 40px;
+            width: 45px;
             border-right: 2px solid #94a3b8;
             display: flex;
             flex-direction: column;
@@ -149,6 +149,12 @@
             text-align: right;
             font-size: 0.9rem;
             color: #64748b;
+            box-sizing: border-box;
+        }
+
+        .chart-y-axis span {
+            line-height: 0;
+            margin-top: 0;
         }
 
         .chart-y-label {
@@ -170,6 +176,28 @@
             height: 0;
             border-top: 2px solid #94a3b8;
             z-index: 1;
+        }
+
+        .chart-gridlines {
+            position: absolute;
+            left: 47px;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .chart-gridline {
+            height: 0;
+            border-top: 1px dashed #cbd5e1;
+        }
+
+        .chart-gridline:last-child {
+            border-top: none;
         }
 
         .x-ticks-container {
@@ -539,12 +567,9 @@
     <div class="quiz-container">
         <div class="question-header">
             <div class="question-title">
-                <span class="question-number">a</span>
-                <span id="question-a-title">估计Hillside图书馆的小说类书籍数量</span>
+                <span class="question-number">背景</span>
+                <span>题目背景</span>
             </div>
-            <button class="refresh-params-btn" id="refresh-btn">
-                <span>&#8635;</span> 刷新参数
-            </button>
         </div>
 
         <div class="question-text" id="question-intro">
@@ -568,22 +593,30 @@
             </div>
         </div>
 
-        <div class="question-text" id="hint-text-a">
-            <!-- 动态生成 -->
-        </div>
-
-        <div class="input-container">
-            <div class="range-input">
-                <span class="range-text">我的估计：</span>
-                <input type="number" id="estimate-input" min="0" max="3000" value="">
-                <span class="range-text" id="unit-text">本小说类书籍</span>
+        <div class="question-section">
+            <div class="question-header">
+                <div class="question-title">
+                    <span class="question-number">a</span>
+                    <span id="question-a-title">估计Hillside图书馆的小说类书籍数量</span>
+                </div>
+                <button class="refresh-params-btn" id="refresh-btn">
+                    <span>&#8635;</span> 刷新参数
+                </button>
             </div>
-            <div class="range-text" style="margin-top: 5px;">提示：请观察图表中对应的条形图高度。</div>
-        </div>
 
-        <div class="feedback" id="feedback-a">
-            <div class="feedback-title">回答正确！</div>
-            <p id="feedback-a-text"></p>
+            <div class="input-container">
+                <div class="range-input">
+                    <span class="range-text">我的估计：</span>
+                    <input type="number" id="estimate-input" min="0" max="3000" value="">
+                    <span class="range-text" id="unit-text">本</span>
+                </div>
+                <div class="range-text" style="margin-top: 5px;">提示：请观察图表中对应的条形图高度。</div>
+            </div>
+
+            <div class="feedback" id="feedback-a">
+                <div class="feedback-title">回答正确！</div>
+                <p id="feedback-a-text"></p>
+            </div>
         </div>
 
         <div class="question-section">
@@ -642,8 +675,8 @@
         document.addEventListener('DOMContentLoaded', function() {
             // ==================== 参数化数据集 ====================
             const questionParams = [
+                // ==================== 场景1: 图书馆 (6组数据) ====================
                 {
-                    // 原题
                     title: '三家图书馆的书籍数量分布',
                     intro: '纽伯里高地有三家图书馆。每家图书馆都有小说类和非小说类书籍。下面的双条形图显示了每家图书馆中每种书籍的数量。请使用此图回答问题。',
                     entityType: '图书馆',
@@ -659,8 +692,111 @@
                     estimateRange: [1050, 1150],
                     nonFictionMoreAnswer: ['Downtown', 'Hillside', 'Coast'],
                     totalMinAnswer: 'Coast',
-                    maxValue: 1800
+                    maxValue: 1800,
+                    unit: '本',
+                    estimateUnitText: '本小说类书籍'
                 },
+                {
+                    title: '三家图书馆的书籍数量分布',
+                    intro: '某城市有三家图书馆。每家图书馆都有小说类和非小说类书籍。下面的双条形图显示了每家图书馆中每种书籍的数量。请使用此图回答问题。',
+                    entityType: '图书馆',
+                    category1: '小说类',
+                    category2: '非小说类',
+                    libraries: [
+                        { name: '中心图书馆', cat1: 800, cat2: 1300 },
+                        { name: '东区分馆', cat1: 950, cat2: 1100 },
+                        { name: '西区分馆', cat1: 500, cat2: 700 }
+                    ],
+                    estimateLibrary: '东区分馆',
+                    estimateCategory: 'cat1',
+                    estimateRange: [900, 1000],
+                    nonFictionMoreAnswer: ['中心图书馆', '东区分馆', '西区分馆'],
+                    totalMinAnswer: '西区分馆',
+                    maxValue: 1600,
+                    unit: '本',
+                    estimateUnitText: '本小说类书籍'
+                },
+                {
+                    title: '三家图书馆的书籍数量分布',
+                    intro: '某地区有三家图书馆。每家图书馆都有小说类和非小说类书籍。下面的双条形图显示了每家图书馆中每种书籍的数量。请使用此图回答问题。',
+                    entityType: '图书馆',
+                    category1: '小说类',
+                    category2: '非小说类',
+                    libraries: [
+                        { name: '城东图书馆', cat1: 1000, cat2: 1400 },
+                        { name: '城西图书馆', cat1: 750, cat2: 900 },
+                        { name: '城南图书馆', cat1: 650, cat2: 850 }
+                    ],
+                    estimateLibrary: '城西图书馆',
+                    estimateCategory: 'cat1',
+                    estimateRange: [700, 800],
+                    nonFictionMoreAnswer: ['城东图书馆', '城南图书馆', '城西图书馆'],
+                    totalMinAnswer: '城南图书馆',
+                    maxValue: 1600,
+                    unit: '本',
+                    estimateUnitText: '本小说类书籍'
+                },
+                {
+                    title: '三家图书馆的书籍数量分布',
+                    intro: '某市有三家图书馆。每家图书馆都有小说类和非小说类书籍。下面的双条形图显示了每家图书馆中每种书籍的数量。请使用此图回答问题。',
+                    entityType: '图书馆',
+                    category1: '小说类',
+                    category2: '非小说类',
+                    libraries: [
+                        { name: '大学图书馆', cat1: 1200, cat2: 1800 },
+                        { name: '社区图书馆', cat1: 400, cat2: 600 },
+                        { name: '儿童图书馆', cat1: 300, cat2: 450 }
+                    ],
+                    estimateLibrary: '社区图书馆',
+                    estimateCategory: 'cat1',
+                    estimateRange: [350, 450],
+                    nonFictionMoreAnswer: ['大学图书馆', '社区图书馆', '儿童图书馆'],
+                    totalMinAnswer: '儿童图书馆',
+                    maxValue: 2000,
+                    unit: '本',
+                    estimateUnitText: '本小说类书籍'
+                },
+                {
+                    title: '三家图书馆的书籍数量分布',
+                    intro: '某镇有三家图书馆。每家图书馆都有小说类和非小说类书籍。下面的双条形图显示了每家图书馆中每种书籍的数量。请使用此图回答问题。',
+                    entityType: '图书馆',
+                    category1: '小说类',
+                    category2: '非小说类',
+                    libraries: [
+                        { name: '总馆', cat1: 1500, cat2: 2000 },
+                        { name: '分馆一', cat1: 700, cat2: 850 },
+                        { name: '分馆二', cat1: 550, cat2: 650 }
+                    ],
+                    estimateLibrary: '分馆一',
+                    estimateCategory: 'cat1',
+                    estimateRange: [650, 750],
+                    nonFictionMoreAnswer: ['总馆', '分馆一', '分馆二'],
+                    totalMinAnswer: '分馆二',
+                    maxValue: 2200,
+                    unit: '本',
+                    estimateUnitText: '本小说类书籍'
+                },
+                {
+                    title: '三家图书馆的书籍数量分布',
+                    intro: '某县有三家图书馆。每家图书馆都有小说类和非小说类书籍。下面的双条形图显示了每家图书馆中每种书籍的数量。请使用此图回答问题。',
+                    entityType: '图书馆',
+                    category1: '小说类',
+                    category2: '非小说类',
+                    libraries: [
+                        { name: '北区图书馆', cat1: 850, cat2: 1000 },
+                        { name: '南区图书馆', cat1: 950, cat2: 1150 },
+                        { name: '东区图书馆', cat1: 600, cat2: 750 }
+                    ],
+                    estimateLibrary: '北区图书馆',
+                    estimateCategory: 'cat1',
+                    estimateRange: [800, 900],
+                    nonFictionMoreAnswer: ['北区图书馆', '南区图书馆', '东区图书馆'],
+                    totalMinAnswer: '东区图书馆',
+                    maxValue: 1300,
+                    unit: '本',
+                    estimateUnitText: '本小说类书籍'
+                },
+                // ==================== 场景2: 学校 (6组数据) ====================
                 {
                     title: '三所学校的课外活动参与人数',
                     intro: '某地区有三所学校。每所学校都有学生参加体育活动和艺术活动。下面的双条形图显示了每所学校中每种活动的参与人数。请使用此图回答问题。',
@@ -677,8 +813,111 @@
                     estimateRange: [420, 480],
                     nonFictionMoreAnswer: ['第二中学'],
                     totalMinAnswer: '第三中学',
-                    maxValue: 600
+                    maxValue: 600,
+                    unit: '人',
+                    estimateUnitText: '人参加体育活动'
                 },
+                {
+                    title: '三所学校的课外活动参与人数',
+                    intro: '某市有三所学校。每所学校都有学生参加体育活动和艺术活动。下面的双条形图显示了每所学校中每种活动的参与人数。请使用此图回答问题。',
+                    entityType: '学校',
+                    category1: '体育活动',
+                    category2: '艺术活动',
+                    libraries: [
+                        { name: '实验中学', cat1: 500, cat2: 400 },
+                        { name: '育才中学', cat1: 350, cat2: 450 },
+                        { name: '光明中学', cat1: 300, cat2: 280 }
+                    ],
+                    estimateLibrary: '实验中学',
+                    estimateCategory: 'cat1',
+                    estimateRange: [470, 530],
+                    nonFictionMoreAnswer: ['育才中学'],
+                    totalMinAnswer: '光明中学',
+                    maxValue: 600,
+                    unit: '人',
+                    estimateUnitText: '人参加体育活动'
+                },
+                {
+                    title: '三所学校的课外活动参与人数',
+                    intro: '某区有三所小学。每所学校都有学生参加体育活动和艺术活动。下面的双条形图显示了每所学校中每种活动的参与人数。请使用此图回答问题。',
+                    entityType: '学校',
+                    category1: '体育活动',
+                    category2: '艺术活动',
+                    libraries: [
+                        { name: '第一小学', cat1: 380, cat2: 320 },
+                        { name: '第二小学', cat1: 420, cat2: 380 },
+                        { name: '第三小学', cat1: 280, cat2: 350 }
+                    ],
+                    estimateLibrary: '第二小学',
+                    estimateCategory: 'cat1',
+                    estimateRange: [390, 450],
+                    nonFictionMoreAnswer: ['第三小学'],
+                    totalMinAnswer: '第三小学',
+                    maxValue: 500,
+                    unit: '人',
+                    estimateUnitText: '人参加体育活动'
+                },
+                {
+                    title: '三所学校的课外活动参与人数',
+                    intro: '某校有三个年级。每个年级都有学生参加体育活动和艺术活动。下面的双条形图显示了每个年级中每种活动的参与人数。请使用此图回答问题。',
+                    entityType: '年级',
+                    category1: '体育活动',
+                    category2: '艺术活动',
+                    libraries: [
+                        { name: '高一年级', cat1: 280, cat2: 220 },
+                        { name: '高二年级', cat1: 350, cat2: 400 },
+                        { name: '高三年级', cat1: 200, cat2: 180 }
+                    ],
+                    estimateLibrary: '高一年级',
+                    estimateCategory: 'cat1',
+                    estimateRange: [250, 310],
+                    nonFictionMoreAnswer: ['高二年级'],
+                    totalMinAnswer: '高三年级',
+                    maxValue: 500,
+                    unit: '人',
+                    estimateUnitText: '人参加体育活动'
+                },
+                {
+                    title: '三所学校的课外活动参与人数',
+                    intro: '某县有三所中学。每所学校都有学生参加体育活动和艺术活动。下面的双条形图显示了每所学校中每种活动的参与人数。请使用此图回答问题。',
+                    entityType: '学校',
+                    category1: '体育活动',
+                    category2: '艺术活动',
+                    libraries: [
+                        { name: '重点中学', cat1: 450, cat2: 350 },
+                        { name: '普通中学', cat1: 320, cat2: 380 },
+                        { name: '职业学校', cat1: 250, cat2: 300 }
+                    ],
+                    estimateLibrary: '重点中学',
+                    estimateCategory: 'cat1',
+                    estimateRange: [420, 480],
+                    nonFictionMoreAnswer: ['普通中学', '职业学校'],
+                    totalMinAnswer: '职业学校',
+                    maxValue: 500,
+                    unit: '人',
+                    estimateUnitText: '人参加体育活动'
+                },
+                {
+                    title: '三所学校的课外活动参与人数',
+                    intro: '某市有三所学校。每所学校都有学生参加体育活动和艺术活动。下面的双条形图显示了每所学校中每种活动的参与人数。请使用此图回答问题。',
+                    entityType: '学校',
+                    category1: '体育活动',
+                    category2: '艺术活动',
+                    libraries: [
+                        { name: '城东学校', cat1: 400, cat2: 450 },
+                        { name: '城西学校', cat1: 350, cat2: 320 },
+                        { name: '城南学校', cat1: 280, cat2: 310 }
+                    ],
+                    estimateLibrary: '城西学校',
+                    estimateCategory: 'cat1',
+                    estimateRange: [320, 380],
+                    nonFictionMoreAnswer: ['城东学校', '城南学校'],
+                    totalMinAnswer: '城南学校',
+                    maxValue: 500,
+                    unit: '人',
+                    estimateUnitText: '人参加体育活动'
+                },
+                // ==================== 场景3: 餐厅 (6组数据) ====================
                 {
                     title: '三家餐厅的顾客类型分布',
                     intro: '某城市有三家餐厅。每家餐厅都有堂食顾客和外卖顾客。下面的双条形图显示了每家餐厅中每种顾客类型的数量。请使用此图回答问题。',
@@ -694,9 +933,112 @@
                     estimateCategory: 'cat1',
                     estimateRange: [800, 900],
                     nonFictionMoreAnswer: ['餐厅B', '餐厅C'],
-                    totalMinAnswer: '餐厅B',
-                    maxValue: 1200
+                    totalMinAnswer: '餐厅C',
+                    maxValue: 1200,
+                    unit: '人',
+                    estimateUnitText: '位堂食顾客'
                 },
+                {
+                    title: '三家餐厅的顾客类型分布',
+                    intro: '某市有三家餐厅。每家餐厅都有堂食顾客和外卖顾客。下面的双条形图显示了每家餐厅中每种顾客类型的数量。请使用此图回答问题。',
+                    entityType: '餐厅',
+                    category1: '堂食顾客',
+                    category2: '外卖顾客',
+                    libraries: [
+                        { name: '川菜馆', cat1: 700, cat2: 550 },
+                        { name: '粤菜馆', cat1: 600, cat2: 700 },
+                        { name: '湘菜馆', cat1: 450, cat2: 650 }
+                    ],
+                    estimateLibrary: '川菜馆',
+                    estimateCategory: 'cat1',
+                    estimateRange: [650, 750],
+                    nonFictionMoreAnswer: ['粤菜馆', '湘菜馆'],
+                    totalMinAnswer: '湘菜馆',
+                    maxValue: 800,
+                    unit: '人',
+                    estimateUnitText: '位堂食顾客'
+                },
+                {
+                    title: '三家餐厅的顾客类型分布',
+                    intro: '某区有三家餐厅。每家餐厅都有堂食顾客和外卖顾客。下面的双条形图显示了每家餐厅中每种顾客类型的数量。请使用此图回答问题。',
+                    entityType: '餐厅',
+                    category1: '堂食顾客',
+                    category2: '外卖顾客',
+                    libraries: [
+                        { name: '快餐店', cat1: 900, cat2: 800 },
+                        { name: '西餐厅', cat1: 500, cat2: 600 },
+                        { name: '日料店', cat1: 400, cat2: 550 }
+                    ],
+                    estimateLibrary: '西餐厅',
+                    estimateCategory: 'cat1',
+                    estimateRange: [450, 550],
+                    nonFictionMoreAnswer: ['西餐厅', '日料店'],
+                    totalMinAnswer: '日料店',
+                    maxValue: 1000,
+                    unit: '人',
+                    estimateUnitText: '位堂食顾客'
+                },
+                {
+                    title: '三家餐厅的顾客类型分布',
+                    intro: '某商业区有三家餐厅。每家餐厅都有堂食顾客和外卖顾客。下面的双条形图显示了每家餐厅中每种顾客类型的数量。请使用此图回答问题。',
+                    entityType: '餐厅',
+                    category1: '堂食顾客',
+                    category2: '外卖顾客',
+                    libraries: [
+                        { name: '火锅店', cat1: 800, cat2: 750 },
+                        { name: '烧烤店', cat1: 650, cat2: 700 },
+                        { name: '小吃店', cat1: 550, cat2: 600 }
+                    ],
+                    estimateLibrary: '火锅店',
+                    estimateCategory: 'cat1',
+                    estimateRange: [750, 850],
+                    nonFictionMoreAnswer: ['烧烤店', '小吃店'],
+                    totalMinAnswer: '小吃店',
+                    maxValue: 900,
+                    unit: '人',
+                    estimateUnitText: '位堂食顾客'
+                },
+                {
+                    title: '三家餐厅的顾客类型分布',
+                    intro: '某街道有三家餐厅。每家餐厅都有堂食顾客和外卖顾客。下面的双条形图显示了每家餐厅中每种顾客类型的数量。请使用此图回答问题。',
+                    entityType: '餐厅',
+                    category1: '堂食顾客',
+                    category2: '外卖顾客',
+                    libraries: [
+                        { name: '早餐店', cat1: 400, cat2: 500 },
+                        { name: '午餐厅', cat1: 750, cat2: 650 },
+                        { name: '晚餐厅', cat1: 600, cat2: 700 }
+                    ],
+                    estimateLibrary: '午餐厅',
+                    estimateCategory: 'cat1',
+                    estimateRange: [700, 800],
+                    nonFictionMoreAnswer: ['早餐店', '晚餐厅'],
+                    totalMinAnswer: '早餐店',
+                    maxValue: 800,
+                    unit: '人',
+                    estimateUnitText: '位堂食顾客'
+                },
+                {
+                    title: '三家餐厅的顾客类型分布',
+                    intro: '某购物中心有三家餐厅。每家餐厅都有堂食顾客和外卖顾客。下面的双条形图显示了每家餐厅中每种顾客类型的数量。请使用此图回答问题。',
+                    entityType: '餐厅',
+                    category1: '堂食顾客',
+                    category2: '外卖顾客',
+                    libraries: [
+                        { name: '商场餐厅', cat1: 650, cat2: 700 },
+                        { name: '街边店', cat1: 500, cat2: 600 },
+                        { name: '外卖店', cat1: 800, cat2: 900 }
+                    ],
+                    estimateLibrary: '街边店',
+                    estimateCategory: 'cat1',
+                    estimateRange: [450, 550],
+                    nonFictionMoreAnswer: ['商场餐厅', '街边店', '外卖店'],
+                    totalMinAnswer: '街边店',
+                    maxValue: 1000,
+                    unit: '人',
+                    estimateUnitText: '位堂食顾客'
+                },
+                // ==================== 场景4: 小区 (6组数据) ====================
                 {
                     title: '三个小区的家庭类型分布',
                     intro: '某地区有三个小区。每个小区都有有车家庭和无车家庭。下面的双条形图显示了每个小区中每种家庭类型的数量。请使用此图回答问题。',
@@ -713,8 +1055,111 @@
                     estimateRange: [420, 480],
                     nonFictionMoreAnswer: ['花园小区', '湖畔小区'],
                     totalMinAnswer: '湖畔小区',
-                    maxValue: 1000
+                    maxValue: 800,
+                    unit: '户',
+                    estimateUnitText: '户有车家庭'
                 },
+                {
+                    title: '三个小区的家庭类型分布',
+                    intro: '某市有三个小区。每个小区都有有车家庭和无车家庭。下面的双条形图显示了每个小区中每种家庭类型的数量。请使用此图回答问题。',
+                    entityType: '小区',
+                    category1: '有车家庭',
+                    category2: '无车家庭',
+                    libraries: [
+                        { name: '幸福小区', cat1: 600, cat2: 400 },
+                        { name: '和平小区', cat1: 500, cat2: 500 },
+                        { name: '安宁小区', cat1: 420, cat2: 480 }
+                    ],
+                    estimateLibrary: '幸福小区',
+                    estimateCategory: 'cat1',
+                    estimateRange: [570, 630],
+                    nonFictionMoreAnswer: ['安宁小区'],
+                    totalMinAnswer: '安宁小区',
+                    maxValue: 700,
+                    unit: '户',
+                    estimateUnitText: '户有车家庭'
+                },
+                {
+                    title: '三个小区的家庭类型分布',
+                    intro: '某区有三个小区。每个小区都有有车家庭和无车家庭。下面的双条形图显示了每个小区中每种家庭类型的数量。请使用此图回答问题。',
+                    entityType: '小区',
+                    category1: '有车家庭',
+                    category2: '无车家庭',
+                    libraries: [
+                        { name: '金色家园', cat1: 750, cat2: 350 },
+                        { name: '绿色家园', cat1: 550, cat2: 600 },
+                        { name: '蓝色家园', cat1: 480, cat2: 520 }
+                    ],
+                    estimateLibrary: '金色家园',
+                    estimateCategory: 'cat1',
+                    estimateRange: [720, 780],
+                    nonFictionMoreAnswer: ['绿色家园', '蓝色家园'],
+                    totalMinAnswer: '蓝色家园',
+                    maxValue: 800,
+                    unit: '户',
+                    estimateUnitText: '户有车家庭'
+                },
+                {
+                    title: '三个小区的家庭类型分布',
+                    intro: '某镇有三个小区。每个小区都有有车家庭和无车家庭。下面的双条形图显示了每个小区中每种家庭类型的数量。请使用此图回答问题。',
+                    entityType: '小区',
+                    category1: '有车家庭',
+                    category2: '无车家庭',
+                    libraries: [
+                        { name: '东城小区', cat1: 580, cat2: 420 },
+                        { name: '西城小区', cat1: 520, cat2: 580 },
+                        { name: '南城小区', cat1: 450, cat2: 500 }
+                    ],
+                    estimateLibrary: '东城小区',
+                    estimateCategory: 'cat1',
+                    estimateRange: [550, 610],
+                    nonFictionMoreAnswer: ['西城小区', '南城小区'],
+                    totalMinAnswer: '南城小区',
+                    maxValue: 700,
+                    unit: '户',
+                    estimateUnitText: '户有车家庭'
+                },
+                {
+                    title: '三个小区的家庭类型分布',
+                    intro: '某县有三个小区。每个小区都有有车家庭和无车家庭。下面的双条形图显示了每个小区中每种家庭类型的数量。请使用此图回答问题。',
+                    entityType: '小区',
+                    category1: '有车家庭',
+                    category2: '无车家庭',
+                    libraries: [
+                        { name: '新世纪小区', cat1: 700, cat2: 300 },
+                        { name: '老城区', cat1: 400, cat2: 600 },
+                        { name: '开发区', cat1: 350, cat2: 450 }
+                    ],
+                    estimateLibrary: '新世纪小区',
+                    estimateCategory: 'cat1',
+                    estimateRange: [670, 730],
+                    nonFictionMoreAnswer: ['老城区', '开发区'],
+                    totalMinAnswer: '开发区',
+                    maxValue: 800,
+                    unit: '户',
+                    estimateUnitText: '户有车家庭'
+                },
+                {
+                    title: '三个小区的家庭类型分布',
+                    intro: '某街道有三个小区。每个小区都有有车家庭和无车家庭。下面的双条形图显示了每个小区中每种家庭类型的数量。请使用此图回答问题。',
+                    entityType: '小区',
+                    category1: '有车家庭',
+                    category2: '无车家庭',
+                    libraries: [
+                        { name: '高档小区', cat1: 800, cat2: 200 },
+                        { name: '中档小区', cat1: 550, cat2: 500 },
+                        { name: '普通小区', cat1: 400, cat2: 550 }
+                    ],
+                    estimateLibrary: '中档小区',
+                    estimateCategory: 'cat1',
+                    estimateRange: [520, 580],
+                    nonFictionMoreAnswer: ['普通小区'],
+                    totalMinAnswer: '普通小区',
+                    maxValue: 900,
+                    unit: '户',
+                    estimateUnitText: '户有车家庭'
+                },
+                // ==================== 场景5: 书店 (6组数据) ====================
                 {
                     title: '三家书店的销售数据',
                     intro: '某城市有三家书店。每家书店都有线上销售和线下销售。下面的双条形图显示了每家书店中每种销售方式的数量。请使用此图回答问题。',
@@ -731,8 +1176,111 @@
                     estimateRange: [900, 1000],
                     nonFictionMoreAnswer: ['大众书局'],
                     totalMinAnswer: '知识书屋',
-                    maxValue: 1500
+                    maxValue: 1500,
+                    unit: '本',
+                    estimateUnitText: '本线上销售'
                 },
+                {
+                    title: '三家书店的销售数据',
+                    intro: '某市有三家书店。每家书店都有线上销售和线下销售。下面的双条形图显示了每家书店中每种销售方式的数量。请使用此图回答问题。',
+                    entityType: '书店',
+                    category1: '线上销售',
+                    category2: '线下销售',
+                    libraries: [
+                        { name: '教育书店', cat1: 1000, cat2: 700 },
+                        { name: '儿童书店', cat1: 600, cat2: 500 },
+                        { name: '艺术书店', cat1: 400, cat2: 350 }
+                    ],
+                    estimateLibrary: '儿童书店',
+                    estimateCategory: 'cat1',
+                    estimateRange: [570, 630],
+                    nonFictionMoreAnswer: [],
+                    totalMinAnswer: '艺术书店',
+                    maxValue: 1200,
+                    unit: '本',
+                    estimateUnitText: '本线上销售'
+                },
+                {
+                    title: '三家书店的销售数据',
+                    intro: '某区有三家书店。每家书店都有线上销售和线下销售。下面的双条形图显示了每家书店中每种销售方式的数量。请使用此图回答问题。',
+                    entityType: '书店',
+                    category1: '线上销售',
+                    category2: '线下销售',
+                    libraries: [
+                        { name: '网络书店', cat1: 1500, cat2: 1000 },
+                        { name: '实体书店', cat1: 800, cat2: 900 },
+                        { name: '二手书店', cat1: 300, cat2: 250 }
+                    ],
+                    estimateLibrary: '实体书店',
+                    estimateCategory: 'cat1',
+                    estimateRange: [750, 850],
+                    nonFictionMoreAnswer: ['实体书店'],
+                    totalMinAnswer: '二手书店',
+                    maxValue: 1700,
+                    unit: '本',
+                    estimateUnitText: '本线上销售'
+                },
+                {
+                    title: '三家书店的销售数据',
+                    intro: '某街道有三家书店。每家书店都有线上销售和线下销售。下面的双条形图显示了每家书店中每种销售方式的数量。请使用此图回答问题。',
+                    entityType: '书店',
+                    category1: '线上销售',
+                    category2: '线下销售',
+                    libraries: [
+                        { name: '科技书店', cat1: 900, cat2: 600 },
+                        { name: '文学书店', cat1: 700, cat2: 800 },
+                        { name: '考试书店', cat1: 500, cat2: 400 }
+                    ],
+                    estimateLibrary: '文学书店',
+                    estimateCategory: 'cat1',
+                    estimateRange: [650, 750],
+                    nonFictionMoreAnswer: ['文学书店'],
+                    totalMinAnswer: '考试书店',
+                    maxValue: 1000,
+                    unit: '本',
+                    estimateUnitText: '本线上销售'
+                },
+                {
+                    title: '三家书店的销售数据',
+                    intro: '某购物中心有三家书店。每家书店都有线上销售和线下销售。下面的双条形图显示了每家书店中每种销售方式的数量。请使用此图回答问题。',
+                    entityType: '书店',
+                    category1: '线上销售',
+                    category2: '线下销售',
+                    libraries: [
+                        { name: '连锁书店A', cat1: 1100, cat2: 900 },
+                        { name: '连锁书店B', cat1: 800, cat2: 750 },
+                        { name: '独立书店', cat1: 400, cat2: 500 }
+                    ],
+                    estimateLibrary: '连锁书店B',
+                    estimateCategory: 'cat1',
+                    estimateRange: [750, 850],
+                    nonFictionMoreAnswer: ['独立书店'],
+                    totalMinAnswer: '独立书店',
+                    maxValue: 1200,
+                    unit: '本',
+                    estimateUnitText: '本线上销售'
+                },
+                {
+                    title: '三家书店的销售数据',
+                    intro: '某县有三家书店。每家书店都有线上销售和线下销售。下面的双条形图显示了每家书店中每种销售方式的数量。请使用此图回答问题。',
+                    entityType: '书店',
+                    category1: '线上销售',
+                    category2: '线下销售',
+                    libraries: [
+                        { name: '城东书店', cat1: 750, cat2: 650 },
+                        { name: '城西书店', cat1: 850, cat2: 900 },
+                        { name: '城南书店', cat1: 500, cat2: 550 }
+                    ],
+                    estimateLibrary: '城东书店',
+                    estimateCategory: 'cat1',
+                    estimateRange: [700, 800],
+                    nonFictionMoreAnswer: ['城西书店', '城南书店'],
+                    totalMinAnswer: '城南书店',
+                    maxValue: 1000,
+                    unit: '本',
+                    estimateUnitText: '本线上销售'
+                },
+                // ==================== 场景6: 班级 (6组数据) ====================
                 {
                     title: '三个班级的成绩分布',
                     intro: '某学校有三个班级。每个班级都有优秀和良好的学生。下面的双条形图显示了每个班级中每种成绩等级的人数。请使用此图回答问题。',
@@ -749,7 +1297,109 @@
                     estimateRange: [22, 28],
                     nonFictionMoreAnswer: ['一班', '三班'],
                     totalMinAnswer: '三班',
-                    maxValue: 40
+                    maxValue: 40,
+                    unit: '人',
+                    estimateUnitText: '名优秀学生'
+                },
+                {
+                    title: '三个班级的成绩分布',
+                    intro: '某年级有三个班级。每个班级都有优秀和良好的学生。下面的双条形图显示了每个班级中每种成绩等级的人数。请使用此图回答问题。',
+                    entityType: '班级',
+                    category1: '优秀人数',
+                    category2: '良好人数',
+                    libraries: [
+                        { name: '四班', cat1: 20, cat2: 18 },
+                        { name: '五班', cat1: 22, cat2: 20 },
+                        { name: '六班', cat1: 15, cat2: 22 }
+                    ],
+                    estimateLibrary: '四班',
+                    estimateCategory: 'cat1',
+                    estimateRange: [17, 23],
+                    nonFictionMoreAnswer: ['六班'],
+                    totalMinAnswer: '六班',
+                    maxValue: 35,
+                    unit: '人',
+                    estimateUnitText: '名优秀学生'
+                },
+                {
+                    title: '三个班级的成绩分布',
+                    intro: '某中学有三个班级。每个班级都有优秀和良好的学生。下面的双条形图显示了每个班级中每种成绩等级的人数。请使用此图回答问题。',
+                    entityType: '班级',
+                    category1: '优秀人数',
+                    category2: '良好人数',
+                    libraries: [
+                        { name: '甲班', cat1: 24, cat2: 14 },
+                        { name: '乙班', cat1: 16, cat2: 24 },
+                        { name: '丙班', cat1: 20, cat2: 20 }
+                    ],
+                    estimateLibrary: '甲班',
+                    estimateCategory: 'cat1',
+                    estimateRange: [21, 27],
+                    nonFictionMoreAnswer: ['乙班'],
+                    totalMinAnswer: '甲班',
+                    maxValue: 35,
+                    unit: '人',
+                    estimateUnitText: '名优秀学生'
+                },
+                {
+                    title: '三个班级的成绩分布',
+                    intro: '某校有三个不同类型的班级。每个班级都有优秀和良好的学生。下面的双条形图显示了每个班级中每种成绩等级的人数。请使用此图回答问题。',
+                    entityType: '班级',
+                    category1: '优秀人数',
+                    category2: '良好人数',
+                    libraries: [
+                        { name: '实验班', cat1: 28, cat2: 12 },
+                        { name: '普通班', cat1: 18, cat2: 20 },
+                        { name: '提高班', cat1: 22, cat2: 18 }
+                    ],
+                    estimateLibrary: '普通班',
+                    estimateCategory: 'cat1',
+                    estimateRange: [15, 21],
+                    nonFictionMoreAnswer: ['普通班'],
+                    totalMinAnswer: '普通班',
+                    maxValue: 35,
+                    unit: '人',
+                    estimateUnitText: '名优秀学生'
+                },
+                {
+                    title: '三个班级的成绩分布',
+                    intro: '某高中有三个班级。每个班级都有优秀和良好的学生。下面的双条形图显示了每个班级中每种成绩等级的人数。请使用此图回答问题。',
+                    entityType: '班级',
+                    category1: '优秀人数',
+                    category2: '良好人数',
+                    libraries: [
+                        { name: '理科班', cat1: 25, cat2: 15 },
+                        { name: '文科班', cat1: 15, cat2: 22 },
+                        { name: '综合班', cat1: 20, cat2: 20 }
+                    ],
+                    estimateLibrary: '理科班',
+                    estimateCategory: 'cat1',
+                    estimateRange: [22, 28],
+                    nonFictionMoreAnswer: ['文科班'],
+                    totalMinAnswer: '文科班',
+                    maxValue: 35,
+                    unit: '人',
+                    estimateUnitText: '名优秀学生'
+                },
+                {
+                    title: '三个班级的成绩分布',
+                    intro: '某学校有三个年级。每个年级都有优秀和良好的学生。下面的双条形图显示了每个年级中每种成绩等级的人数。请使用此图回答问题。',
+                    entityType: '年级',
+                    category1: '优秀人数',
+                    category2: '良好人数',
+                    libraries: [
+                        { name: '高一', cat1: 22, cat2: 18 },
+                        { name: '高二', cat1: 20, cat2: 22 },
+                        { name: '高三', cat1: 18, cat2: 20 }
+                    ],
+                    estimateLibrary: '高二',
+                    estimateCategory: 'cat1',
+                    estimateRange: [17, 23],
+                    nonFictionMoreAnswer: ['高二', '高三'],
+                    totalMinAnswer: '高三',
+                    maxValue: 30,
+                    unit: '人',
+                    estimateUnitText: '名优秀学生'
                 }
             ];
 
@@ -772,14 +1422,17 @@
                 const ySteps = 7;
                 const stepValue = params.maxValue / (ySteps - 1);
                 let yAxisHtml = '';
+                let gridlinesHtml = '';
                 for (let i = ySteps - 1; i >= 0; i--) {
                     yAxisHtml += `<span>${Math.round(stepValue * i)}</span>`;
+                    gridlinesHtml += `<div class="chart-gridline"></div>`;
                 }
 
                 // 生成图表
                 chartArea.innerHTML = `
                     <div class="chart-y-axis">${yAxisHtml}</div>
                     <div class="chart-y-label">数量</div>
+                    <div class="chart-gridlines">${gridlinesHtml}</div>
                     <div class="chart-x-line"></div>
 
                     ${params.libraries.map(lib => {
@@ -810,18 +1463,11 @@
                 document.querySelector('.legend-item:first-child span').textContent = params.category1;
                 document.querySelector('.legend-item:last-child span').textContent = params.category2;
 
-                // 更新提示文本
-                const estimateLib = params.libraries.find(l => l.name === params.estimateLibrary);
-                const estimateValue = params.estimateCategory === 'cat1' ? estimateLib.cat1 : estimateLib.cat2;
-                document.getElementById('hint-text-a').innerHTML = `
-                    <p>${params.estimateLibrary}的${params.category1}数量介于 <strong>${params.estimateRange[0] - 100}</strong> 和 <strong>${params.estimateRange[1] + 100}</strong> 之间。该数量更接近 <strong>${params.estimateRange[1]}</strong> 而不是 <strong>${params.estimateRange[0] - 100}</strong>。我们可以估计它大约为 <strong>${estimateValue}</strong>。（任何介于 ${params.estimateRange[0]} 和 ${params.estimateRange[1]} 之间的答案都是可接受的。）</p>
-                `;
-
                 // 更新输入框
                 document.getElementById('estimate-input').value = '';
                 document.getElementById('estimate-input').min = params.estimateRange[0] - 200;
                 document.getElementById('estimate-input').max = params.estimateRange[1] + 200;
-                document.getElementById('unit-text').textContent = `本${params.category1}`;
+                document.getElementById('unit-text').textContent = params.estimateUnitText || params.unit;
 
                 // 更新问题b的标题
                 document.getElementById('question-b-title').textContent = `哪些${params.entityType}的${params.category2}数量多于${params.category1}？`;

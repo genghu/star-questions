@@ -284,37 +284,6 @@
             padding-bottom: 0;
         }
 
-        .stats-section {
-            display: flex;
-            justify-content: space-around;
-            flex-wrap: wrap;
-            gap: 20px;
-            margin-top: 30px;
-            padding-top: 30px;
-            border-top: 2px solid #e6f0ff;
-        }
-
-        .stat-box {
-            background-color: #f8fafd;
-            padding: 20px;
-            border-radius: 12px;
-            text-align: center;
-            min-width: 180px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-        }
-
-        .stat-value {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: #1a5fb4;
-            margin-bottom: 5px;
-        }
-
-        .stat-label {
-            color: #5d7ea3;
-            font-size: 1rem;
-        }
-
         @media (max-width: 768px) {
             body {
                 padding: 10px;
@@ -389,6 +358,51 @@
             display: none;
             margin-top: 20px;
         }
+
+        /* 直方图容器样式 */
+        .histogram-container {
+            margin: 25px 0;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 82, 204, 0.1);
+        }
+
+        .histogram-title {
+            text-align: center;
+            color: #1a5fb4;
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        #histogramCanvas {
+            display: block;
+            margin: 0 auto;
+            max-width: 100%;
+        }
+
+        .histogram-legend {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            color: #5d7ea3;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 15px;
+            border-radius: 3px;
+        }
     </style>
 </head>
 <body>
@@ -419,12 +433,6 @@
                 <button id="submitBtn" class="btn btn-primary">
                     <span class="btn-icon">✓</span> 提交答案
                 </button>
-                <button id="hintBtn" class="btn btn-secondary">
-                    <span class="btn-icon">?</span> 显示计算提示
-                </button>
-                <button id="resetBtn" class="btn btn-secondary">
-                    <span class="btn-icon">↺</span> 重新作答
-                </button>
             </div>
         </section>
 
@@ -442,34 +450,6 @@
             <p><strong>提示：</strong>确保你使用了正确的组中值，并且将所有组的加权和除以总频数。点击"查看答案解析"了解详细计算过程。</p>
         </section>
 
-        <section id="hintSection" class="feedback-section" style="background-color: #f0fff8; border: 2px solid #68d391; display: none;">
-            <h3 class="feedback-title"><span class="feedback-icon">💡</span> 计算提示</h3>
-            <p>要估计分组数据的均值，请按照以下步骤操作：</p>
-            <ol style="margin-left: 20px; margin-top: 10px;">
-                <li>确定每个组的组中值（已提供在表格中）</li>
-                <li>将每个组的频数乘以对应的组中值</li>
-                <li>将所有乘积相加得到总和</li>
-                <li>将总和除以总频数</li>
-                <li>将结果四舍五入到要求的小数位数</li>
-            </ol>
-            <p id="hintFormula">尝试使用正确的公式计算</p>
-        </section>
-
-        <section class="stats-section">
-            <div class="stat-box">
-                <div class="stat-value" id="attemptsCount">0</div>
-                <div class="stat-label">尝试次数</div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-value" id="correctCount">0</div>
-                <div class="stat-label">正确次数</div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-value" id="accuracyRate">0%</div>
-                <div class="stat-label">正确率</div>
-            </div>
-        </section>
-
         <button class="show-explanation-btn" id="show-explanation-btn">查看答案解析</button>
         <div class="explanation-section" id="explanation-section" style="display:none;">
             <div class="calculation-steps" id="explanationContent">
@@ -485,6 +465,10 @@
                 {
                     description: "一项针对51名完成了数学测试备考课程的学生的研究结果",
                     totalStudents: 51,
+                    dataLabel: "测试分数",
+                    countLabel: "名学生",
+                    questionLabel: "学生的平均测试分数",
+                    histogramTitle: "测试分数分布直方图",
                     ranges: [
                         { range: "550 到 600", freq: 5, midpoint: 575 },
                         { range: "600 到 650", freq: 11, midpoint: 625 },
@@ -497,6 +481,10 @@
                 {
                     description: "一项针对60名完成了阅读测试备考课程的学生的研究结果",
                     totalStudents: 60,
+                    dataLabel: "测试分数",
+                    countLabel: "名学生",
+                    questionLabel: "学生的平均测试分数",
+                    histogramTitle: "测试分数分布直方图",
                     ranges: [
                         { range: "400 到 450", freq: 8, midpoint: 425 },
                         { range: "450 到 500", freq: 15, midpoint: 475 },
@@ -509,6 +497,10 @@
                 {
                     description: "一项针对45名完成了写作测试备考课程的学生的研究结果",
                     totalStudents: 45,
+                    dataLabel: "测试分数",
+                    countLabel: "名学生",
+                    questionLabel: "学生的平均测试分数",
+                    histogramTitle: "测试分数分布直方图",
                     ranges: [
                         { range: "480 到 520", freq: 6, midpoint: 500 },
                         { range: "520 到 560", freq: 10, midpoint: 540 },
@@ -521,6 +513,10 @@
                 {
                     description: "一项针对55名完成了科学测试备考课程的学生的研究结果",
                     totalStudents: 55,
+                    dataLabel: "测试分数",
+                    countLabel: "名学生",
+                    questionLabel: "学生的平均测试分数",
+                    histogramTitle: "测试分数分布直方图",
                     ranges: [
                         { range: "520 到 560", freq: 9, midpoint: 540 },
                         { range: "560 到 600", freq: 14, midpoint: 580 },
@@ -533,6 +529,10 @@
                 {
                     description: "一项针对48名完成了历史测试备考课程的学生的研究结果",
                     totalStudents: 48,
+                    dataLabel: "测试分数",
+                    countLabel: "名学生",
+                    questionLabel: "学生的平均测试分数",
+                    histogramTitle: "测试分数分布直方图",
                     ranges: [
                         { range: "450 到 500", freq: 7, midpoint: 475 },
                         { range: "500 到 550", freq: 12, midpoint: 525 },
@@ -541,27 +541,259 @@
                         { range: "650 到 700", freq: 5, midpoint: 675 }
                     ],
                     answer: 558.3
+                },
+                {
+                    description: "一项针对75名某公司员工年龄分布的调查结果",
+                    totalStudents: 75,
+                    dataLabel: "年龄",
+                    countLabel: "名员工",
+                    questionLabel: "员工的平均年龄",
+                    histogramTitle: "员工年龄分布直方图",
+                    ranges: [
+                        { range: "25 到 30", freq: 8, midpoint: 27.5 },
+                        { range: "30 到 35", freq: 15, midpoint: 32.5 },
+                        { range: "35 到 40", freq: 22, midpoint: 37.5 },
+                        { range: "40 到 45", freq: 18, midpoint: 42.5 },
+                        { range: "45 到 50", freq: 12, midpoint: 47.5 }
+                    ],
+                    answer: 38.2
+                },
+                {
+                    description: "一项针对130个快递包裹重量的统计结果",
+                    totalStudents: 130,
+                    dataLabel: "重量",
+                    countLabel: "个包裹",
+                    questionLabel: "包裹的平均重量",
+                    histogramTitle: "包裹重量分布直方图",
+                    ranges: [
+                        { range: "0 到 2", freq: 25, midpoint: 1 },
+                        { range: "2 到 4", freq: 42, midpoint: 3 },
+                        { range: "4 到 6", freq: 35, midpoint: 5 },
+                        { range: "6 到 8", freq: 18, midpoint: 7 },
+                        { range: "8 到 10", freq: 10, midpoint: 9 }
+                    ],
+                    answer: 4.2
+                },
+                {
+                    description: "一项针对100名健身应用用户每日步数（千步）的统计结果",
+                    totalStudents: 100,
+                    dataLabel: "步数",
+                    countLabel: "名用户",
+                    questionLabel: "用户的平均每日步数",
+                    histogramTitle: "每日步数分布直方图",
+                    ranges: [
+                        { range: "4 到 6", freq: 12, midpoint: 5 },
+                        { range: "6 到 8", freq: 28, midpoint: 7 },
+                        { range: "8 到 10", freq: 35, midpoint: 9 },
+                        { range: "10 到 12", freq: 18, midpoint: 11 },
+                        { range: "12 到 14", freq: 7, midpoint: 13 }
+                    ],
+                    answer: 8.6
+                },
+                {
+                    description: "一项针对95名大学生每晚睡眠时长（小时）的调查结果",
+                    totalStudents: 95,
+                    dataLabel: "睡眠时长",
+                    countLabel: "名学生",
+                    questionLabel: "学生的平均睡眠时长",
+                    histogramTitle: "睡眠时长分布直方图",
+                    ranges: [
+                        { range: "4 到 5", freq: 5, midpoint: 4.5 },
+                        { range: "5 到 6", freq: 12, midpoint: 5.5 },
+                        { range: "6 到 7", freq: 28, midpoint: 6.5 },
+                        { range: "7 到 8", freq: 35, midpoint: 7.5 },
+                        { range: "8 到 9", freq: 15, midpoint: 8.5 }
+                    ],
+                    answer: 6.9
+                },
+                {
+                    description: "一项针对105户家庭月用电量（度）的统计结果",
+                    totalStudents: 105,
+                    dataLabel: "用电量",
+                    countLabel: "户家庭",
+                    questionLabel: "家庭的平均月用电量",
+                    histogramTitle: "月用电量分布直方图",
+                    ranges: [
+                        { range: "100 到 200", freq: 8, midpoint: 150 },
+                        { range: "200 到 300", freq: 22, midpoint: 250 },
+                        { range: "300 到 400", freq: 35, midpoint: 350 },
+                        { range: "400 到 500", freq: 28, midpoint: 450 },
+                        { range: "500 到 600", freq: 12, midpoint: 550 }
+                    ],
+                    answer: 363.3
+                },
+                {
+                    description: "一项针对100套房屋成交价格（万元）的调查结果",
+                    totalStudents: 100,
+                    dataLabel: "成交价格",
+                    countLabel: "套房屋",
+                    questionLabel: "房屋的平均成交价格",
+                    histogramTitle: "房屋成交价格分布直方图",
+                    ranges: [
+                        { range: "100 到 150", freq: 15, midpoint: 125 },
+                        { range: "150 到 200", freq: 28, midpoint: 175 },
+                        { range: "200 到 250", freq: 32, midpoint: 225 },
+                        { range: "250 到 300", freq: 18, midpoint: 275 },
+                        { range: "300 到 350", freq: 7, midpoint: 325 }
+                    ],
+                    answer: 212.0
+                },
+                {
+                    description: "一项针对100名员工通勤距离（公里）的调查结果",
+                    totalStudents: 100,
+                    dataLabel: "通勤距离",
+                    countLabel: "名员工",
+                    questionLabel: "员工的平均通勤距离",
+                    histogramTitle: "通勤距离分布直方图",
+                    ranges: [
+                        { range: "0 到 5", freq: 18, midpoint: 2.5 },
+                        { range: "5 到 10", freq: 32, midpoint: 7.5 },
+                        { range: "10 到 15", freq: 25, midpoint: 12.5 },
+                        { range: "15 到 20", freq: 15, midpoint: 17.5 },
+                        { range: "20 到 25", freq: 10, midpoint: 22.5 }
+                    ],
+                    answer: 10.9
+                },
+                {
+                    description: "一项针对105名图书馆会员年阅读量的调查结果",
+                    totalStudents: 105,
+                    dataLabel: "阅读量",
+                    countLabel: "名会员",
+                    questionLabel: "会员的平均年阅读量",
+                    histogramTitle: "年阅读量分布直方图",
+                    ranges: [
+                        { range: "0 到 5", freq: 22, midpoint: 2.5 },
+                        { range: "5 到 10", freq: 35, midpoint: 7.5 },
+                        { range: "10 到 15", freq: 28, midpoint: 12.5 },
+                        { range: "15 到 20", freq: 12, midpoint: 17.5 },
+                        { range: "20 到 25", freq: 8, midpoint: 22.5 }
+                    ],
+                    answer: 10.1
+                },
+                {
+                    description: "一项针对105名青少年每日屏幕使用时间（小时）的调查结果",
+                    totalStudents: 105,
+                    dataLabel: "屏幕使用时间",
+                    countLabel: "名青少年",
+                    questionLabel: "青少年的平均屏幕使用时间",
+                    histogramTitle: "屏幕使用时间分布直方图",
+                    ranges: [
+                        { range: "2 到 4", freq: 8, midpoint: 3 },
+                        { range: "4 到 6", freq: 22, midpoint: 5 },
+                        { range: "6 到 8", freq: 38, midpoint: 7 },
+                        { range: "8 到 10", freq: 25, midpoint: 9 },
+                        { range: "10 到 12", freq: 12, midpoint: 11 }
+                    ],
+                    answer: 7.2
+                },
+                {
+                    description: "一项针对105个家庭每周食品支出（元）的调查结果",
+                    totalStudents: 105,
+                    dataLabel: "食品支出",
+                    countLabel: "个家庭",
+                    questionLabel: "家庭的平均每周食品支出",
+                    histogramTitle: "每周食品支出分布直方图",
+                    ranges: [
+                        { range: "200 到 300", freq: 12, midpoint: 250 },
+                        { range: "300 到 400", freq: 28, midpoint: 350 },
+                        { range: "400 到 500", freq: 35, midpoint: 450 },
+                        { range: "500 到 600", freq: 22, midpoint: 550 },
+                        { range: "600 到 700", freq: 8, midpoint: 650 }
+                    ],
+                    answer: 436.7
+                },
+                {
+                    description: "一项针对75天日最高气温（°C）的统计结果",
+                    totalStudents: 75,
+                    dataLabel: "气温",
+                    countLabel: "天",
+                    questionLabel: "平均日最高气温",
+                    histogramTitle: "日最高气温分布直方图",
+                    ranges: [
+                        { range: "15 到 18", freq: 8, midpoint: 16.5 },
+                        { range: "18 到 21", freq: 15, midpoint: 19.5 },
+                        { range: "21 到 24", freq: 22, midpoint: 22.5 },
+                        { range: "24 到 27", freq: 18, midpoint: 25.5 },
+                        { range: "27 到 30", freq: 12, midpoint: 28.5 }
+                    ],
+                    answer: 22.9
+                },
+                {
+                    description: "一项针对100名上班族每日咖啡饮用杯数的调查结果",
+                    totalStudents: 100,
+                    dataLabel: "咖啡杯数",
+                    countLabel: "名上班族",
+                    questionLabel: "上班族的平均每日咖啡饮用杯数",
+                    histogramTitle: "每日咖啡饮用杯数分布直方图",
+                    ranges: [
+                        { range: "0 到 1", freq: 15, midpoint: 0.5 },
+                        { range: "1 到 2", freq: 32, midpoint: 1.5 },
+                        { range: "2 到 3", freq: 28, midpoint: 2.5 },
+                        { range: "3 到 4", freq: 18, midpoint: 3.5 },
+                        { range: "4 到 5", freq: 7, midpoint: 4.5 }
+                    ],
+                    answer: 2.2
+                },
+                {
+                    description: "一项针对135名健身爱好者每日运动时长（分钟）的调查结果",
+                    totalStudents: 135,
+                    dataLabel: "运动时长",
+                    countLabel: "名健身爱好者",
+                    questionLabel: "健身爱好者的平均每日运动时长",
+                    histogramTitle: "每日运动时长分布直方图",
+                    ranges: [
+                        { range: "10 到 20", freq: 18, midpoint: 15 },
+                        { range: "20 到 30", freq: 35, midpoint: 25 },
+                        { range: "30 到 40", freq: 42, midpoint: 35 },
+                        { range: "40 到 50", freq: 28, midpoint: 45 },
+                        { range: "50 到 60", freq: 12, midpoint: 55 }
+                    ],
+                    answer: 33.6
+                },
+                {
+                    description: "一项针对110名城市居民每周外出就餐支出（元）的调查结果",
+                    totalStudents: 110,
+                    dataLabel: "外出就餐支出",
+                    countLabel: "名居民",
+                    questionLabel: "居民的平均每周外出就餐支出",
+                    histogramTitle: "每周外出就餐支出分布直方图",
+                    ranges: [
+                        { range: "50 到 100", freq: 22, midpoint: 75 },
+                        { range: "100 到 150", freq: 38, midpoint: 125 },
+                        { range: "150 到 200", freq: 28, midpoint: 175 },
+                        { range: "200 到 250", freq: 15, midpoint: 225 },
+                        { range: "250 到 300", freq: 7, midpoint: 275 }
+                    ],
+                    answer: 150.9
+                },
+                {
+                    description: "一项针对100人每日饮水量（升）的调查结果",
+                    totalStudents: 100,
+                    dataLabel: "饮水量",
+                    countLabel: "人",
+                    questionLabel: "人的平均每日饮水量",
+                    histogramTitle: "每日饮水量分布直方图",
+                    ranges: [
+                        { range: "1 到 1.5", freq: 12, midpoint: 1.25 },
+                        { range: "1.5 到 2", freq: 28, midpoint: 1.75 },
+                        { range: "2 到 2.5", freq: 35, midpoint: 2.25 },
+                        { range: "2.5 到 3", freq: 18, midpoint: 2.75 },
+                        { range: "3 到 3.5", freq: 7, midpoint: 3.25 }
+                    ],
+                    answer: 2.2
                 }
             ];
 
             let currentParamIndex = 0;
-            let attempts = 0;
-            let correct = 0;
 
             // 获取DOM元素
             const userAnswerInput = document.getElementById('userAnswer');
             const submitBtn = document.getElementById('submitBtn');
-            const hintBtn = document.getElementById('hintBtn');
-            const resetBtn = document.getElementById('resetBtn');
             const refreshParamsBtn = document.getElementById('refreshParamsBtn');
             const feedbackCorrect = document.getElementById('feedbackCorrect');
             const feedbackIncorrect = document.getElementById('feedbackIncorrect');
-            const hintSection = document.getElementById('hintSection');
             const correctAnswerDisplay = document.getElementById('correctAnswerDisplay');
             const incorrectAnswerDisplay = document.getElementById('incorrectAnswerDisplay');
-            const attemptsCountEl = document.getElementById('attemptsCount');
-            const correctCountEl = document.getElementById('correctCount');
-            const accuracyRateEl = document.getElementById('accuracyRate');
             const showExplanationBtn = document.getElementById('show-explanation-btn');
             const explanationSection = document.getElementById('explanation-section');
 
@@ -571,18 +803,181 @@
                 const params = questionParams[currentParamIndex];
                 const questionContent = document.getElementById('questionContent');
 
+                questionContent.innerHTML = `
+                    <p>某期刊刚刚发布了${params.description}。以下直方图总结了这${params.totalStudents}${params.countLabel}的${params.dataLabel}信息：</p>
+                    <div class="histogram-container">
+                        <h3 class="histogram-title">${params.histogramTitle}</h3>
+                        <canvas id="histogramCanvas" width="600" height="350"></canvas>
+                        <div class="histogram-legend">
+                            <div class="legend-item">
+                                <div class="legend-color" style="background-color: #4dabf7;"></div>
+                                <span>频数 (${params.countLabel}数)</span>
+                            </div>
+                        </div>
+                    </div>
+                    <p><strong>问题：</strong>根据直方图，估计${params.questionLabel}。中间计算至少保留四位小数，最终答案至少保留一位小数。</p>
+                `;
+
+                // 绘制直方图
+                drawHistogram(params);
+            }
+
+            // 绘制直方图函数
+            function drawHistogram(params) {
+                const canvas = document.getElementById('histogramCanvas');
+                if (!canvas) return;
+
+                const ctx = canvas.getContext('2d');
+                const width = canvas.width;
+                const height = canvas.height;
+
+                // 清除画布
+                ctx.clearRect(0, 0, width, height);
+
+                // 设置边距
+                const margin = { top: 30, right: 30, bottom: 60, left: 60 };
+                const chartWidth = width - margin.left - margin.right;
+                const chartHeight = height - margin.top - margin.bottom;
+
+                // 数据
+                const data = params.ranges;
+                const maxFreq = Math.max(...data.map(d => d.freq));
+
+                // 绘制背景
+                ctx.fillStyle = '#f8fafd';
+                ctx.fillRect(margin.left, margin.top, chartWidth, chartHeight);
+
+                // 绘制网格线
+                ctx.strokeStyle = '#e6f0ff';
+                ctx.lineWidth = 1;
+                const ySteps = 5;
+                for (let i = 0; i <= ySteps; i++) {
+                    const y = margin.top + (chartHeight / ySteps) * i;
+                    ctx.beginPath();
+                    ctx.moveTo(margin.left, y);
+                    ctx.lineTo(width - margin.right, y);
+                    ctx.stroke();
+                }
+
+                // 绘制直方图条形（无间隙）
+                const barWidth = chartWidth / data.length;
+                const colors = ['#4dabf7', '#5cb8ff', '#6dc4ff', '#7ed0ff', '#8fdcff'];
+                const darkerColors = ['#2d8bdb', '#3da0ef', '#4dacf3', '#5db8f7', '#6dc4fb'];
+
+                // 解析范围获取边界值
+                const boundaries = [];
+                data.forEach((d, i) => {
+                    const parts = d.range.split(' 到 ');
+                    if (i === 0) boundaries.push(parseInt(parts[0]));
+                    boundaries.push(parseInt(parts[1]));
+                });
+
+                data.forEach((d, i) => {
+                    const x = margin.left + i * barWidth;
+                    const barHeight = (d.freq / maxFreq) * chartHeight;
+                    const y = margin.top + chartHeight - barHeight;
+
+                    // 绘制条形渐变
+                    const gradient = ctx.createLinearGradient(x, y, x, margin.top + chartHeight);
+                    gradient.addColorStop(0, colors[i % colors.length]);
+                    gradient.addColorStop(1, darkerColors[i % darkerColors.length]);
+
+                    ctx.fillStyle = gradient;
+                    ctx.fillRect(x, y, barWidth, barHeight);
+
+                    // 绘制条形边框
+                    ctx.strokeStyle = darkerColors[i % darkerColors.length];
+                    ctx.lineWidth = 1;
+                    ctx.strokeRect(x, y, barWidth, barHeight);
+
+                    // 在条形上方显示频数值
+                    ctx.fillStyle = '#1a5fb4';
+                    ctx.font = 'bold 14px Segoe UI, Microsoft YaHei, sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(d.freq, x + barWidth / 2, y - 8);
+                });
+
+                // 绘制X轴刻度和标签（在每个边界位置）
+                ctx.fillStyle = '#5d7ea3';
+                ctx.font = '12px Segoe UI, Microsoft YaHei, sans-serif';
+                ctx.textAlign = 'center';
+
+                boundaries.forEach((boundary, i) => {
+                    const x = margin.left + i * barWidth;
+                    // 绘制刻度线
+                    ctx.strokeStyle = '#1a5fb4';
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.moveTo(x, margin.top + chartHeight);
+                    ctx.lineTo(x, margin.top + chartHeight + 5);
+                    ctx.stroke();
+                    // 绘制刻度标签
+                    ctx.fillText(boundary.toString(), x, margin.top + chartHeight + 20);
+                });
+
+                // 绘制Y轴
+                ctx.strokeStyle = '#1a5fb4';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(margin.left, margin.top);
+                ctx.lineTo(margin.left, margin.top + chartHeight);
+                ctx.stroke();
+
+                // Y轴标签
+                ctx.fillStyle = '#1a5fb4';
+                ctx.font = 'bold 14px Segoe UI, Microsoft YaHei, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.save();
+                ctx.translate(20, margin.top + chartHeight / 2);
+                ctx.rotate(-Math.PI / 2);
+                ctx.fillText('频数', 0, 0);
+                ctx.restore();
+
+                // Y轴刻度
+                ctx.fillStyle = '#5d7ea3';
+                ctx.font = '12px Segoe UI, Microsoft YaHei, sans-serif';
+                ctx.textAlign = 'right';
+                for (let i = 0; i <= ySteps; i++) {
+                    const value = Math.round(maxFreq - (maxFreq / ySteps) * i);
+                    const y = margin.top + (chartHeight / ySteps) * i;
+                    ctx.fillText(value.toString(), margin.left - 10, y + 4);
+                }
+
+                // 绘制X轴
+                ctx.strokeStyle = '#1a5fb4';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(margin.left, margin.top + chartHeight);
+                ctx.lineTo(width - margin.right, margin.top + chartHeight);
+                ctx.stroke();
+
+                // X轴标签
+                ctx.fillStyle = '#1a5fb4';
+                ctx.font = 'bold 14px Segoe UI, Microsoft YaHei, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(params.dataLabel, width / 2, height - 10);
+            }
+
+            function renderExplanation() {
+                const params = questionParams[currentParamIndex];
+                const calcStepsCorrect = document.getElementById('calcStepsCorrect');
+                const explanationContent = document.getElementById('explanationContent');
+
                 let tableRows = '';
                 params.ranges.forEach(r => {
                     tableRows += `<tr><td>${r.range}</td><td>${r.freq}</td><td>${r.midpoint}</td></tr>`;
                 });
 
-                questionContent.innerHTML = `
-                    <p>每年，一项全国性测试的平均分大约是500。日报《美国一瞥》刚刚发布了${params.description}。以下直方图总结了这${params.totalStudents}名学生的测试分数信息：</p>
+                let weightedProducts = params.ranges.map(r => `${r.freq} × ${r.midpoint} = ${(r.freq * r.midpoint).toLocaleString()}`);
+                let weightedSum = params.ranges.reduce((sum, r) => sum + r.freq * r.midpoint, 0);
+
+                calcStepsCorrect.innerHTML = `
+                    <h4>数据表格：</h4>
                     <table class="histogram-table">
                         <thead>
                             <tr>
-                                <th>测试分数</th>
-                                <th>频率</th>
+                                <th>${params.dataLabel}</th>
+                                <th>频数</th>
                                 <th>组中值</th>
                             </tr>
                         </thead>
@@ -590,23 +985,6 @@
                             ${tableRows}
                         </tbody>
                     </table>
-                    <p><strong>问题：</strong>根据直方图，估计研究中学生的平均测试分数。中间计算至少保留四位小数，最终答案至少保留一位小数。</p>
-                `;
-
-                // 更新提示公式
-                const formula = params.ranges.map(r => `${r.freq}×${r.midpoint}`).join(' + ');
-                document.getElementById('hintFormula').innerHTML = `尝试使用公式：<span class="math">(${formula}) / ${params.totalStudents}</span>`;
-            }
-
-            function renderExplanation() {
-                const params = questionParams[currentParamIndex];
-                const calcStepsCorrect = document.getElementById('calcStepsCorrect');
-                const explanationContent = document.getElementById('explanation-content');
-
-                let weightedProducts = params.ranges.map(r => `${r.freq} × ${r.midpoint} = ${(r.freq * r.midpoint).toLocaleString()}`);
-                let weightedSum = params.ranges.reduce((sum, r) => sum + r.freq * r.midpoint, 0);
-
-                calcStepsCorrect.innerHTML = `
                     <h4>详细计算步骤：</h4>
                     <div class="calculation-step">
                         <p><strong>步骤 1:</strong> 计算每个组的加权和 (频数 × 组中值)</p>
@@ -630,6 +1008,19 @@
                 `;
 
                 document.getElementById('explanationContent').innerHTML = `
+                    <h4>数据表格：</h4>
+                    <table class="histogram-table">
+                        <thead>
+                            <tr>
+                                <th>${params.dataLabel}</th>
+                                <th>频数</th>
+                                <th>组中值</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${tableRows}
+                        </tbody>
+                    </table>
                     <h4>正确计算过程：</h4>
                     <div class="calculation-step">
                         <p>使用分组数据均值估计公式：x̄ ≈ Σ(fᵢ × Mᵢ) / n</p>
@@ -657,7 +1048,6 @@
                 // 隐藏所有反馈
                 feedbackCorrect.style.display = 'none';
                 feedbackIncorrect.style.display = 'none';
-                hintSection.style.display = 'none';
 
                 // 隐藏解析
                 showExplanationBtn.style.display = 'none';
@@ -667,14 +1057,6 @@
                 // 重新渲染
                 renderQuestion();
                 renderExplanation();
-            }
-
-            // 更新统计显示
-            function updateStats() {
-                attemptsCountEl.textContent = attempts;
-                correctCountEl.textContent = correct;
-                const accuracy = attempts > 0 ? Math.round((correct / attempts) * 100) : 0;
-                accuracyRateEl.textContent = `${accuracy}%`;
             }
 
             // ==================== 事件处理 ====================
@@ -694,50 +1076,23 @@
                     return;
                 }
 
-                attempts++;
-
                 // 检查答案是否正确（允许0.15的误差）
                 const isCorrect = Math.abs(userAnswer - params.answer) <= 0.15;
 
                 renderExplanation();
 
                 if (isCorrect) {
-                    correct++;
                     feedbackCorrect.style.display = 'block';
                     feedbackIncorrect.style.display = 'none';
-                    hintSection.style.display = 'none';
                     correctAnswerDisplay.textContent = userAnswer.toFixed(1);
                 } else {
                     feedbackIncorrect.style.display = 'block';
                     feedbackCorrect.style.display = 'none';
-                    hintSection.style.display = 'none';
                     incorrectAnswerDisplay.textContent = userAnswer.toFixed(1);
                 }
 
                 // 显示答案解析按钮
                 showExplanationBtn.style.display = 'inline-block';
-
-                updateStats();
-            });
-
-            // 显示提示
-            hintBtn.addEventListener('click', function() {
-                hintSection.style.display = 'block';
-                feedbackCorrect.style.display = 'none';
-                feedbackIncorrect.style.display = 'none';
-            });
-
-            // 重置答案
-            resetBtn.addEventListener('click', function() {
-                userAnswerInput.value = '';
-                feedbackCorrect.style.display = 'none';
-                feedbackIncorrect.style.display = 'none';
-                hintSection.style.display = 'none';
-
-                // 隐藏答案解析按钮和解析内容
-                showExplanationBtn.style.display = 'none';
-                showExplanationBtn.textContent = '查看答案解析';
-                explanationSection.style.display = 'none';
             });
 
             // 显示答案解析按钮点击事件
@@ -761,7 +1116,6 @@
             // ==================== 初始化 ====================
             renderQuestion();
             renderExplanation();
-            updateStats();
         });
     </script>
 </body>
