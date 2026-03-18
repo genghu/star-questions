@@ -56,8 +56,6 @@
             gap: 40px;
         }
 
-        /* Single column layout */
-
         .section-title {
             color: #3498db;
             font-size: 1.5rem;
@@ -120,78 +118,18 @@
             height: 400px;
         }
 
-        .instructions {
-            background-color: #fffde7;
+        .interactive-hint {
+            background-color: #e8f5e9;
             border-radius: 10px;
             padding: 20px;
             margin: 20px 0;
-            border-left: 5px solid #ffc107;
-        }
-
-        .instructions h3 {
-            color: #ff9800;
-            margin-bottom: 10px;
-        }
-
-        .instructions ul {
-            padding-left: 20px;
-        }
-
-        .instructions li {
-            margin-bottom: 8px;
-        }
-
-        .interactive-controls {
-            background-color: #f8f9fa;
-            border-radius: 15px;
-            padding: 25px;
-            margin-top: 30px;
-        }
-
-        .control-group {
-            margin-bottom: 25px;
-        }
-
-        .control-label {
-            display: block;
-            margin-bottom: 10px;
-            font-weight: 600;
-            color: #2c3e50;
-        }
-
-        .slider-container {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .slider-value {
-            min-width: 60px;
+            border-left: 5px solid #4caf50;
             text-align: center;
-            font-weight: bold;
-            color: #3498db;
-            background-color: #e8f4fc;
-            padding: 5px 10px;
-            border-radius: 5px;
         }
 
-        input[type="range"] {
-            flex: 1;
-            height: 10px;
-            -webkit-appearance: none;
-            background: #dfe6e9;
-            border-radius: 5px;
-            outline: none;
-        }
-
-        input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            background: #3498db;
-            cursor: pointer;
-            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
+        .interactive-hint h3 {
+            color: #388e3c;
+            margin-bottom: 10px;
         }
 
         .button-group {
@@ -199,6 +137,7 @@
             gap: 15px;
             flex-wrap: wrap;
             margin-top: 30px;
+            justify-content: center;
         }
 
         button {
@@ -218,7 +157,6 @@
         .submit-btn {
             background-color: #2ecc71;
             color: white;
-            flex: 1;
         }
 
         .submit-btn:hover {
@@ -230,7 +168,6 @@
         .reset-btn {
             background-color: #e74c3c;
             color: white;
-            flex: 1;
         }
 
         .reset-btn:hover {
@@ -299,49 +236,111 @@
             font-weight: 600;
         }
 
-        .z-score-display {
-            background-color: #2c3e50;
+        .show-explanation-btn {
+            display: none;
+            margin: 20px auto;
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
             color: white;
-            padding: 15px;
+            border: none;
             border-radius: 10px;
-            text-align: center;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
+        }
+        .show-explanation-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
+        }
+        .explanation-section {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .user-selection-panel {
+            background-color: #fff8e1;
+            border: 2px solid #ffb74d;
+            border-radius: 15px;
+            padding: 20px;
             margin: 20px 0;
-            font-family: 'Cambria Math', serif;
-            font-size: 1.3rem;
+            display: none;
         }
 
-        .calculation {
-            background-color: #f9f9f9;
-            padding: 15px;
+        .user-selection-panel.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .user-selection-panel h4 {
+            color: #e65100;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .z-value-display {
+            text-align: center;
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #e65100;
+            margin: 10px 0;
+        }
+
+        .direction-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .direction-btn {
+            padding: 12px 30px;
+            border: 3px solid #ccc;
             border-radius: 10px;
-            margin: 15px 0;
-            border-left: 4px solid #9b59b6;
+            background-color: white;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
-    </style>
 
-    <style>
-    .show-explanation-btn {
-        display: none;
-        margin: 20px auto;
-        padding: 14px 28px;
-        background: linear-gradient(135deg, #9b59b6, #8e44ad);
-        color: white;
-        border: none;
-        border-radius: 10px;
-        cursor: pointer;
-        font-size: 1.1rem;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
-    }
-    .show-explanation-btn:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
-    }
-    .explanation-section {
-        display: none;
-        margin-top: 20px;
-    }
+        .direction-btn:hover {
+            border-color: #ff9800;
+            background-color: #fff3e0;
+        }
+
+        .direction-btn.selected {
+            border-color: #ff9800;
+            background-color: #ffe0b2;
+            color: #e65100;
+        }
+
+        .direction-btn i {
+            font-size: 1.2rem;
+        }
+
+        .current-selection {
+            text-align: center;
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #e8f5e9;
+            border-radius: 8px;
+            font-size: 1.1rem;
+        }
+
+        .current-selection .label {
+            color: #666;
+        }
+
+        .current-selection .value {
+            font-weight: bold;
+            color: #2e7d32;
+        }
     </style>
     </head>
 <body>
@@ -350,231 +349,206 @@
             <h1><i class="fas fa-chart-bell-curve"></i> 正态分布与标准正态分布密度曲线 <button id="refresh-btn" style="margin-left: 15px; padding: 8px 16px; background: linear-gradient(135deg, #34a853, #2ecc71); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(52, 168, 83, 0.3);">刷新参数</button></h1>
             <p class="subtitle">交互式学习模块 - 理解z变换与概率区域对应关系</p>
         </header>
-        
+
         <div class="content-wrapper">
             <div class="question-section">
                 <div class="section-title">
                     <i class="fas fa-question-circle"></i> 题目内容
                 </div>
-                
+
                 <div class="question-card">
-                    <div class="question-text">
+                    <div class="question-text" id="question-text">
                         <p>下图是一个均值为 <span class="highlight">μ = -1</span>、标准差为 <span class="highlight">σ = 4</span> 的正态分布图。阴影区域表示从该分布中获得一个小于 <span class="highlight">5</span> 的值的概率。</p>
                         <p>请在下面的标准正态密度曲线上标出相应的区域。</p>
                     </div>
-                    
-                    <div class="instructions">
-                        <h3><i class="fas fa-lightbulb"></i> 解题思路</h3>
-                        <ul>
-                            <li>标准正态分布是均值为 0、标准差为 1 的正态分布。</li>
-                            <li>任何值 c 都位于距离分布均值 c 个标准差的位置。</li>
-                            <li>使用 z 变换将原始正态分布的值转换为标准正态分布的 z 分数：</li>
-                        </ul>
-                        <div class="formula">z = (x - μ) / σ</div>
-                        <p>其中 x 是原始分布的值，μ 是均值，σ 是标准差。</p>
-                    </div>
-                    
-                    <div class="calculation">
-                        <h4><i class="fas fa-calculator"></i> 计算过程</h4>
-                        <p>对于本题：μ = -1, σ = 4, x = 5</p>
-                        <div class="formula">z = (5 - (-1)) / 4 = (5 + 1) / 4 = 6 / 4 = 1.5</div>
-                        <p>因此，x = 5 对应的 z 分数为 <span class="highlight">1.5</span>。</p>
-                    </div>
-                    
-                    <div class="z-score-display">
-                        <i class="fas fa-arrow-right"></i> z = 1.5 <i class="fas fa-arrow-left"></i>
-                    </div>
-                    
-                    <div class="question-text">
-                        <p>这意味着在标准正态分布中，我们需要标出 <span class="highlight">z = 1.5 左侧</span> 的区域，该区域对应于原始正态分布中 x < 5 的概率。</p>
-                    </div>
                 </div>
-                
-                <div class="interactive-controls">
-                    <div class="section-title">
-                        <i class="fas fa-sliders-h"></i> 交互控制
+
+                <div class="graph-container">
+                    <div class="graph-title" id="original-graph-title">原始正态分布 N(μ = -1, σ = 4)</div>
+                    <div id="original-plot" class="plotly-graph"></div>
+                </div>
+
+                <div class="interactive-hint">
+                    <h3><i class="fas fa-hand-pointer"></i> 交互提示</h3>
+                    <p id="interactive-hint-main">请在下方的标准正态分布图上<strong>点击</strong>选择对应的z分数位置。</p>
+                    <p id="interactive-condition">根据原始分布中的条件 P(X < 5)，找出标准正态分布中对应的区域。</p>
+                </div>
+
+                <div class="graph-container">
+                    <div class="graph-title">标准正态分布 N(0, 1) - <span style="color: #e74c3c;">点击选择z分数</span></div>
+                    <div id="standard-plot" class="plotly-graph"></div>
+                </div>
+
+                <!-- 用户选择面板 -->
+                <div class="user-selection-panel" id="user-selection-panel">
+                    <h4><i class="fas fa-sliders-h"></i> 请选择阴影区域方向</h4>
+                    <div class="z-value-display">
+                        z = <span id="selected-z-display">-</span>
                     </div>
-                    
-                    <div class="control-group">
-                        <label class="control-label">调整原始正态分布的均值 (μ):</label>
-                        <div class="slider-container">
-                            <span class="slider-value" id="mu-value">-1</span>
-                            <input type="range" id="mu-slider" min="-5" max="3" step="0.1" value="-1">
-                        </div>
-                    </div>
-                    
-                    <div class="control-group">
-                        <label class="control-label">调整原始正态分布的标准差 (σ):</label>
-                        <div class="slider-container">
-                            <span class="slider-value" id="sigma-value">4</span>
-                            <input type="range" id="sigma-slider" min="1" max="8" step="0.1" value="4">
-                        </div>
-                    </div>
-                    
-                    <div class="control-group">
-                        <label class="control-label">调整原始分布中的 x 值:</label>
-                        <div class="slider-container">
-                            <span class="slider-value" id="x-value">5</span>
-                            <input type="range" id="x-slider" min="-10" max="10" step="0.1" value="5">
-                        </div>
-                    </div>
-                    
-                    <div class="button-group">
-                        <button class="submit-btn" id="submit-btn">
-                            <i class="fas fa-check-circle"></i> 提交答案
+                    <p style="text-align: center; color: #666;">您已选择z分数，请选择要标记的区域方向：</p>
+                    <div class="direction-buttons">
+                        <button class="direction-btn" id="left-btn" onclick="selectDirection('<')">
+                            <i class="fas fa-arrow-left"></i> 标记左侧区域
                         </button>
-                        <button class="reset-btn" id="reset-btn">
-                            <i class="fas fa-redo"></i> 重新作答
+                        <button class="direction-btn" id="right-btn" onclick="selectDirection('>')">
+                            标记右侧区域 <i class="fas fa-arrow-right"></i>
                         </button>
                     </div>
+                    <div class="current-selection" id="current-selection" style="display: none;">
+                        <span class="label">当前选择：</span>
+                        <span class="value" id="selection-summary">-</span>
+                    </div>
                 </div>
-                
+
+                <div class="button-group">
+                    <button class="submit-btn" id="submit-btn">
+                        <i class="fas fa-check-circle"></i> 提交答案
+                    </button>
+                    <button class="reset-btn" id="reset-btn">
+                        <i class="fas fa-redo"></i> 重新作答
+                    </button>
+                </div>
+
                 <div class="result-panel" id="result-panel">
                     <h3 class="result-title"><i class="fas fa-poll"></i> 答题结果</h3>
                     <div class="result-content">
-                        <p>您的选择: <span id="user-choice-text">z = 1.5 左侧的区域</span></p>
-
-                        <p id="result-message" class="correct">回答正确！您成功理解了z变换与概率区域对应关系。</p>
+                        <p id="user-choice-display">您的选择: z = <span id="user-z-choice">-</span>，标记 <span id="user-direction-choice">-</span> 区域</p>
+                        <p>正确答案: z = <span id="correct-z">1.5</span>，标记 <span id="correct-direction">左侧</span> 区域</p>
+                        <p id="result-message"></p>
                     </div>
 
                     <button class="show-explanation-btn" id="show-explanation-btn">查看答案解析</button>
                     <div class="explanation-section explanation" id="explanation-section" style="display: none;">
-                        <h4><i class="fas fa-graduation-cap"></i> 题目解析</h4>
-                        <p>1. 原始正态分布：N(μ = <span id="exp-mu">-1</span>, σ = <span id="exp-sigma">4</span>)</p>
-                        <p>2. 需要计算 P(X < <span id="exp-x">5</span>)</p>
-                        <p>3. 应用z变换：z = (<span id="exp-x2">5</span> - (<span id="exp-mu2">-1</span>)) / <span id="exp-sigma2">4</span> = <span id="exp-z">1.5</span></p>
-                        <p>4. 因此 P(X < <span id="exp-x3">5</span>) = P(Z < <span id="exp-z2">1.5</span>)</p>
-                        <p>5. 在标准正态曲线上，应标出 z = <span id="exp-z3">1.5</span> 左侧的区域。</p>
+                        <h4><i class="fas fa-graduation-cap"></i> 解题思路</h4>
+                        <ul style="padding-left: 20px; margin-bottom: 15px;">
+                            <li>标准正态分布是均值为 0、标准差为 1 的正态分布。</li>
+                            <li>任何值 c 都位于距离分布均值 c 个标准差的位置。</li>
+                            <li>使用 z 变换将原始正态分布的值转换为标准正态分布的 z 分数：</li>
+                        </ul>
+
+                        <h4><i class="fas fa-calculator"></i> 计算过程</h4>
+                        <p style="margin: 10px 0;"><strong>z 变换公式：</strong></p>
+                        <div class="formula">z = (x - μ) / σ</div>
+                        <p style="margin: 10px 0;">其中 x 是原始分布的值，μ 是均值，σ 是标准差。</p>
+
+                        <p style="margin: 15px 0 10px 0;"><strong>代入本题数值：</strong></p>
+                        <p id="exp-params">μ = -1, σ = 4, x = 5</p>
+                        <div class="formula" id="exp-calculation">z = (5 - (-1)) / 4 = (5 + 1) / 4 = 6 / 4 = 1.5</div>
+
+                        <p style="margin: 15px 0 10px 0;"><strong>结论：</strong></p>
+                        <p id="exp-conclusion-1">x = 5 对应的 z 分数为 <span class="highlight">1.5</span>。</p>
+                        <p id="exp-conclusion-2">在标准正态分布中，需要标出 <span class="highlight">z = 1.5 左侧</span> 的区域，该区域对应于原始正态分布中 P(X < 5) 的概率。</p>
                     </div>
                 </div>
             </div>
-            
-            <div class="interactive-section">
-                <div class="section-title">
-                    <i class="fas fa-chart-line"></i> 可视化图表
-                </div>
-                
-                <div class="graph-container">
-                    <div class="graph-title">原始正态分布 N(μ = -1, σ = 4)</div>
-                    <div id="original-plot" class="plotly-graph"></div>
-                </div>
-                
-                <div class="graph-container">
-                    <div class="graph-title">标准正态分布 N(0, 1)</div>
-                    <div id="standard-plot" class="plotly-graph"></div>
-                </div>
-                
-                <div class="instructions">
-                    <h3><i class="fas fa-mouse-pointer"></i> 交互说明</h3>
-                    <p>1. 使用上方的滑块调整参数，观察两个分布的变化。</p>
-                    <p>2. 原始正态分布中的阴影区域表示 P(X < x)。</p>
-                    <p>3. 标准正态分布中的阴影区域表示对应的 P(Z < z)。</p>
-                    <p>4. 点击"提交答案"检查您的理解。</p>
-                    <p>5. 使用"重新作答"重置所有参数。</p>
-                </div>
-            </div>
         </div>
-        
-        
     </div>
 
     <script>
-        // 初始参数
-        let mu = -1;
-        let sigma = 4;
-        let x = 5;
+        // 16组预设参数（包括初始参数）
+        const parameterSets = [
+            { mu: -1, sigma: 4, x: 5, comparison: '<' },       // z = 1.5
+            { mu: 20, sigma: 5, x: 27.5, comparison: '<' },    // z = 1.5 (原标准正态改为一般正态)
+            { mu: 100, sigma: 15, x: 115, comparison: '<' },   // z = 1.0
+            { mu: 50, sigma: 10, x: 35, comparison: '>' },     // z = -1.5
+            { mu: 0, sigma: 2, x: -2, comparison: '<' },       // z = -1.0
+            { mu: 25, sigma: 5, x: 30, comparison: '>' },      // z = 1.0
+            { mu: 10, sigma: 3, x: 13, comparison: '<' },      // z = 1.0
+            { mu: 200, sigma: 20, x: 180, comparison: '>' },   // z = -1.0
+            { mu: -5, sigma: 2, x: -3, comparison: '<' },      // z = 1.0
+            { mu: 75, sigma: 8, x: 85, comparison: '>' },      // z = 1.25
+            { mu: 60, sigma: 10, x: 45, comparison: '>' },     // z = -1.5 (原标准正态改为一般正态)
+            { mu: 500, sigma: 50, x: 450, comparison: '<' },   // z = -1.0
+            { mu: 30, sigma: 6, x: 40, comparison: '>' },      // z = 1.67
+            { mu: -2, sigma: 3, x: 1, comparison: '<' },       // z = 1.0
+            { mu: 80, sigma: 12, x: 68, comparison: '>' },     // z = -1.0
+            { mu: 15, sigma: 4, x: 20, comparison: '<' }       // z = 1.25
+        ];
+
+        let currentParamIndex = 0;
+
+        // 当前参数
+        let mu = parameterSets[0].mu;
+        let sigma = parameterSets[0].sigma;
+        let x = parameterSets[0].x;
+        let comparison = parameterSets[0].comparison; // '<' 或 '>'
         let z = (x - mu) / sigma;
-        
+        let userSelectedZ = null;
+        let userSelectedDirection = null; // 用户选择的方向 '<' 或 '>'
+
         // DOM元素
-        const muSlider = document.getElementById('mu-slider');
-        const sigmaSlider = document.getElementById('sigma-slider');
-        const xSlider = document.getElementById('x-slider');
-        const muValue = document.getElementById('mu-value');
-        const sigmaValue = document.getElementById('sigma-value');
-        const xValue = document.getElementById('x-value');
         const submitBtn = document.getElementById('submit-btn');
         const resetBtn = document.getElementById('reset-btn');
         const resultPanel = document.getElementById('result-panel');
         const resultMessage = document.getElementById('result-message');
-        const userChoiceText = document.getElementById('user-choice-text');
-        
-        // 更新显示值的函数
-        function updateDisplayValues() {
-            muValue.textContent = mu.toFixed(1);
-            sigmaValue.textContent = sigma.toFixed(1);
-            xValue.textContent = x.toFixed(1);
-            
-            // 更新解释部分的值
-            document.getElementById('exp-mu').textContent = mu.toFixed(1);
-            document.getElementById('exp-mu2').textContent = mu.toFixed(1);
-            document.getElementById('exp-sigma').textContent = sigma.toFixed(1);
-            document.getElementById('exp-sigma2').textContent = sigma.toFixed(1);
-            document.getElementById('exp-x').textContent = x.toFixed(1);
-            document.getElementById('exp-x2').textContent = x.toFixed(1);
-            document.getElementById('exp-x3').textContent = x.toFixed(1);
-            document.getElementById('exp-z').textContent = z.toFixed(2);
-            document.getElementById('exp-z2').textContent = z.toFixed(2);
-            document.getElementById('exp-z3').textContent = z.toFixed(2);
-        }
-        
+        const userSelectionPanel = document.getElementById('user-selection-panel');
+
         // 计算正态分布PDF
         function normalPDF(x, mu, sigma) {
-            return (1 / (sigma * Math.sqrt(2 * Math.PI))) * 
+            return (1 / (sigma * Math.sqrt(2 * Math.PI))) *
                    Math.exp(-0.5 * Math.pow((x - mu) / sigma, 2));
         }
-        
+
         // 创建原始正态分布图表
         function createOriginalPlot() {
-            // 生成x轴数据
             const xMin = mu - 4 * sigma;
             const xMax = mu + 4 * sigma;
             const xValues = [];
             const yValues = [];
-            
+
             for (let i = xMin; i <= xMax; i += (xMax - xMin) / 200) {
                 xValues.push(i);
                 yValues.push(normalPDF(i, mu, sigma));
             }
-            
-            // 阴影区域数据
-            const shadeX = [];
-            const shadeY = [];
-            
-            for (let i = xMin; i <= x; i += (x - xMin) / 100) {
-                shadeX.push(i);
-                shadeY.push(normalPDF(i, mu, sigma));
-            }
-            
-            // 垂直线数据
-            const verticalLineX = [x, x];
-            const verticalLineY = [0, normalPDF(x, mu, sigma)];
-            
-            const trace1 = {
+
+            const traces = [];
+
+            // 曲线
+            traces.push({
                 x: xValues,
                 y: yValues,
                 mode: 'lines',
                 name: `N(${mu.toFixed(1)}, ${sigma.toFixed(1)}²)`,
                 line: {color: '#3498db', width: 3}
-            };
-            
-            const trace2 = {
+            });
+
+            // 阴影区域数据 - 根据 comparison 决定方向
+            const shadeX = [];
+            const shadeY = [];
+
+            if (comparison === '<') {
+                for (let i = xMin; i <= x; i += (x - xMin) / 100) {
+                    shadeX.push(i);
+                    shadeY.push(normalPDF(i, mu, sigma));
+                }
+            } else {
+                for (let i = x; i <= xMax; i += (xMax - x) / 100) {
+                    shadeX.push(i);
+                    shadeY.push(normalPDF(i, mu, sigma));
+                }
+            }
+
+            const probLabel = comparison === '<' ? `P(X < ${x.toFixed(1)})` : `P(X > ${x.toFixed(1)})`;
+
+            traces.push({
                 x: shadeX,
                 y: shadeY,
                 mode: 'lines',
                 fill: 'tozeroy',
-                name: `P(X < ${x.toFixed(1)})`,
+                name: probLabel,
                 line: {color: 'rgba(52, 152, 219, 0.5)', width: 0},
                 fillcolor: 'rgba(52, 152, 219, 0.3)'
-            };
-            
-            const trace3 = {
-                x: verticalLineX,
-                y: verticalLineY,
+            });
+
+            // 垂直线
+            traces.push({
+                x: [x, x],
+                y: [0, normalPDF(x, mu, sigma)],
                 mode: 'lines',
                 name: `x = ${x.toFixed(1)}`,
                 line: {color: '#e74c3c', width: 2, dash: 'dash'}
-            };
-            
+            });
+
             const layout = {
                 title: `原始正态分布: μ = ${mu.toFixed(1)}, σ = ${sigma.toFixed(1)}`,
                 xaxis: {
@@ -593,64 +567,76 @@
                 font: {family: 'Arial, sans-serif', size: 12},
                 margin: {l: 60, r: 30, t: 50, b: 50}
             };
-            
-            Plotly.newPlot('original-plot', [trace1, trace2, trace3], layout);
+
+            Plotly.newPlot('original-plot', traces, layout);
         }
-        
-        // 创建标准正态分布图表
-        function createStandardPlot() {
-            // 生成x轴数据
+
+        // 创建标准正态分布图表（带交互）
+        function createStandardPlot(selectedZ = null, selectedDir = null) {
             const zMin = -4;
             const zMax = 4;
             const zValues = [];
             const yValues = [];
-            
-            for (let i = zMin; i <= zMax; i += (zMax - zMin) / 200) {
+
+            for (let i = zMin; i <= zMax; i += 0.01) {
                 zValues.push(i);
                 yValues.push(normalPDF(i, 0, 1));
             }
-            
-            // 阴影区域数据
-            const shadeX = [];
-            const shadeY = [];
-            
-            for (let i = zMin; i <= z; i += (z - zMin) / 100) {
-                shadeX.push(i);
-                shadeY.push(normalPDF(i, 0, 1));
-            }
-            
-            // 垂直线数据
-            const verticalLineX = [z, z];
-            const verticalLineY = [0, normalPDF(z, 0, 1)];
-            
-            const trace1 = {
+
+            const traces = [];
+
+            // 曲线
+            traces.push({
                 x: zValues,
                 y: yValues,
                 mode: 'lines',
                 name: '标准正态分布 N(0, 1)',
                 line: {color: '#9b59b6', width: 3}
-            };
-            
-            const trace2 = {
-                x: shadeX,
-                y: shadeY,
-                mode: 'lines',
-                fill: 'tozeroy',
-                name: `P(Z < ${z.toFixed(2)})`,
-                line: {color: 'rgba(155, 89, 182, 0.5)', width: 0},
-                fillcolor: 'rgba(155, 89, 182, 0.3)'
-            };
-            
-            const trace3 = {
-                x: verticalLineX,
-                y: verticalLineY,
-                mode: 'lines',
-                name: `z = ${z.toFixed(2)}`,
-                line: {color: '#e74c3c', width: 2, dash: 'dash'}
-            };
-            
+            });
+
+            // 如果用户选择了z值和方向，显示阴影区域
+            if (selectedZ !== null && selectedDir !== null) {
+                const shadeX = [];
+                const shadeY = [];
+
+                if (selectedDir === '<') {
+                    for (let i = zMin; i <= selectedZ; i += (selectedZ - zMin) / 100) {
+                        shadeX.push(i);
+                        shadeY.push(normalPDF(i, 0, 1));
+                    }
+                } else {
+                    for (let i = selectedZ; i <= zMax; i += (zMax - selectedZ) / 100) {
+                        shadeX.push(i);
+                        shadeY.push(normalPDF(i, 0, 1));
+                    }
+                }
+
+                const probLabel = selectedDir === '<'
+                    ? `您选择: P(Z < ${selectedZ.toFixed(2)})`
+                    : `您选择: P(Z > ${selectedZ.toFixed(2)})`;
+
+                traces.push({
+                    x: shadeX,
+                    y: shadeY,
+                    mode: 'lines',
+                    fill: 'tozeroy',
+                    name: probLabel,
+                    line: {color: 'rgba(230, 81, 0, 0.5)', width: 0},
+                    fillcolor: 'rgba(255, 152, 0, 0.4)'
+                });
+
+                // 垂直线
+                traces.push({
+                    x: [selectedZ, selectedZ],
+                    y: [0, normalPDF(selectedZ, 0, 1)],
+                    mode: 'lines',
+                    name: `z = ${selectedZ.toFixed(2)}`,
+                    line: {color: '#e65100', width: 2, dash: 'dash'}
+                });
+            }
+
             const layout = {
-                title: `标准正态分布: z = ${z.toFixed(2)}`,
+                title: '标准正态分布 N(0, 1) - 点击选择z分数',
                 xaxis: {
                     title: 'z (标准分数)',
                     range: [zMin, zMax],
@@ -665,46 +651,140 @@
                 plot_bgcolor: 'white',
                 paper_bgcolor: 'white',
                 font: {family: 'Arial, sans-serif', size: 12},
-                margin: {l: 60, r: 30, t: 50, b: 50}
+                margin: {l: 60, r: 30, t: 50, b: 50},
+                clickmode: 'event+select'
             };
-            
-            Plotly.newPlot('standard-plot', [trace1, trace2, trace3], layout);
+
+            Plotly.newPlot('standard-plot', traces, layout);
+
+            // 添加点击事件监听
+            const plotDiv = document.getElementById('standard-plot');
+            plotDiv.on('plotly_click', function(data) {
+                const clickedZ = data.points[0].x;
+                userSelectedZ = clickedZ;
+                userSelectedDirection = null; // 重置方向选择
+
+                // 更新显示
+                document.getElementById('selected-z-display').textContent = clickedZ.toFixed(2);
+                userSelectionPanel.classList.add('show');
+
+                // 重置方向按钮状态
+                document.getElementById('left-btn').classList.remove('selected');
+                document.getElementById('right-btn').classList.remove('selected');
+                document.getElementById('current-selection').style.display = 'none';
+
+                // 更新图表（只显示z值，不显示阴影）
+                createStandardPlot(clickedZ, null);
+            });
         }
-        
-        // 更新所有图表
-        function updateAllPlots() {
+
+        // 选择方向
+        function selectDirection(dir) {
+            userSelectedDirection = dir;
+
+            // 更新按钮状态
+            document.getElementById('left-btn').classList.toggle('selected', dir === '<');
+            document.getElementById('right-btn').classList.toggle('selected', dir === '>');
+
+            // 更新当前选择显示
+            const dirText = dir === '<' ? '左侧' : '右侧';
+            document.getElementById('selection-summary').textContent =
+                `z = ${userSelectedZ.toFixed(2)}，标记${dirText}区域`;
+            document.getElementById('current-selection').style.display = 'block';
+
+            // 更新图表显示阴影
+            createStandardPlot(userSelectedZ, userSelectedDirection);
+        }
+
+        // 更新正确答案显示
+        function updateCorrectAnswer() {
+            document.getElementById('correct-z').textContent = z.toFixed(2);
+            document.getElementById('correct-direction').textContent = comparison === '<' ? '左侧' : '右侧';
+        }
+
+        // 更新动态文本内容
+        function updateDynamicContent() {
+            const comparisonText = comparison === '<' ? '小于' : '大于';
+            const comparisonSymbol = comparison === '<' ? '<' : '>';
+            const sideText = comparison === '<' ? '左侧' : '右侧';
+
+            // 更新题目文本
+            document.getElementById('question-text').innerHTML = `
+                <p>下图是一个均值为 <span class="highlight">μ = ${mu.toFixed(1)}</span>、标准差为 <span class="highlight">σ = ${sigma.toFixed(1)}</span> 的正态分布图。阴影区域表示从该分布中获得一个${comparisonText} <span class="highlight">${x.toFixed(1)}</span> 的值的概率。</p>
+                <p>请在下面的标准正态密度曲线上标出相应的区域。</p>
+            `;
+
+            // 更新原始图表标题
+            document.getElementById('original-graph-title').textContent =
+                `原始正态分布 N(μ = ${mu.toFixed(1)}, σ = ${sigma.toFixed(1)})`;
+
+            // 更新交互提示
+            document.getElementById('interactive-condition').innerHTML =
+                `根据原始分布中的条件 <strong>P(X ${comparisonSymbol} ${x.toFixed(1)})</strong>，找出标准正态分布中对应的区域。`;
+
+            // 更新答案解析中的参数
+            document.getElementById('exp-params').textContent =
+                `μ = ${mu.toFixed(1)}, σ = ${sigma.toFixed(1)}, x = ${x.toFixed(1)}`;
+
+            // 更新计算过程
+            const muStr = mu >= 0 ? mu.toFixed(1) : `(${mu.toFixed(1)})`;
+            const xMinusMu = x - mu;
+            document.getElementById('exp-calculation').innerHTML =
+                `z = (${x.toFixed(1)} - ${muStr}) / ${sigma.toFixed(1)} = ${xMinusMu.toFixed(1)} / ${sigma.toFixed(1)} = ${z.toFixed(2)}`;
+
+            // 更新结论
+            document.getElementById('exp-conclusion-1').innerHTML =
+                `x = ${x.toFixed(1)} 对应的 z 分数为 <span class="highlight">${z.toFixed(2)}</span>。`;
+            document.getElementById('exp-conclusion-2').innerHTML =
+                `在标准正态分布中，需要标出 <span class="highlight">z = ${z.toFixed(2)} ${sideText}</span> 的区域，该区域对应于原始正态分布中 P(X ${comparisonSymbol} ${x.toFixed(1)}) 的概率。`;
+        }
+
+        // 初始化图表
+        function initPlots() {
             z = (x - mu) / sigma;
             createOriginalPlot();
             createStandardPlot();
-            updateDisplayValues();
+            updateCorrectAnswer();
+            updateDynamicContent();
         }
-        
-        // 事件监听器
-        muSlider.addEventListener('input', function() {
-            mu = parseFloat(this.value);
-            updateAllPlots();
-        });
-        
-        sigmaSlider.addEventListener('input', function() {
-            sigma = parseFloat(this.value);
-            updateAllPlots();
-        });
-        
-        xSlider.addEventListener('input', function() {
-            x = parseFloat(this.value);
-            updateAllPlots();
-        });
-        
+
+        // 提交按钮事件
         submitBtn.addEventListener('click', function() {
+            if (userSelectedZ === null) {
+                alert('请先在标准正态分布图上点击选择一个 z 分数！');
+                return;
+            }
+
+            if (userSelectedDirection === null) {
+                alert('请选择阴影区域的方向（左侧或右侧）！');
+                return;
+            }
+
             // 显示结果面板
             resultPanel.classList.add('show');
 
-            // 设置用户选择文本
-            userChoiceText.textContent = `z = ${z.toFixed(2)} 左侧的区域`;
+            // 设置用户选择
+            document.getElementById('user-z-choice').textContent = userSelectedZ.toFixed(2);
+            document.getElementById('user-direction-choice').textContent = userSelectedDirection === '<' ? '左侧' : '右侧';
 
-            // 总是显示正确（因为这是一个演示，不是真正的测验）
-            resultMessage.textContent = "回答正确！您成功理解了z变换与概率区域对应关系。";
-            resultMessage.className = "correct";
+            // 判断答案是否正确
+            const tolerance = 0.3;
+            const zCorrect = Math.abs(userSelectedZ - z) <= tolerance;
+            const dirCorrect = userSelectedDirection === comparison;
+
+            if (zCorrect && dirCorrect) {
+                resultMessage.textContent = "回答正确！您成功理解了z变换与概率区域对应关系。";
+                resultMessage.className = "correct";
+            } else if (zCorrect && !dirCorrect) {
+                resultMessage.textContent = `z分数正确，但方向选择错误。P(X ${comparison === '<' ? '<' : '>'} x) 应该对应 P(Z ${comparison === '<' ? '<' : '>'} z)。`;
+                resultMessage.className = "incorrect";
+            } else if (!zCorrect && dirCorrect) {
+                resultMessage.textContent = `方向选择正确，但z分数有误。正确的z分数应该是 ${z.toFixed(2)}。`;
+                resultMessage.className = "incorrect";
+            } else {
+                resultMessage.textContent = `回答错误。正确的答案是 z = ${z.toFixed(2)}，标记${comparison === '<' ? '左侧' : '右侧'}区域。请查看解析理解计算过程。`;
+                resultMessage.className = "incorrect";
+            }
 
             // 显示答案解析按钮
             document.getElementById('show-explanation-btn').style.display = 'inline-block';
@@ -726,20 +806,33 @@
                 }
             }
         });
-        
+
+        // 重置按钮事件 - 使用预设参数集
         resetBtn.addEventListener('click', function() {
-            // 重置所有参数
-            mu = -1;
-            sigma = 4;
-            x = 5;
+            // 重置用户选择
+            userSelectedZ = null;
+            userSelectedDirection = null;
 
-            // 重置滑块
-            muSlider.value = mu;
-            sigmaSlider.value = sigma;
-            xSlider.value = x;
+            // 切换到下一个参数集
+            currentParamIndex = (currentParamIndex + 1) % parameterSets.length;
 
-            // 更新图表和显示
-            updateAllPlots();
+            // 加载新参数
+            mu = parameterSets[currentParamIndex].mu;
+            sigma = parameterSets[currentParamIndex].sigma;
+            x = parameterSets[currentParamIndex].x;
+            comparison = parameterSets[currentParamIndex].comparison;
+
+            // 重新计算z
+            z = (x - mu) / sigma;
+
+            // 重置图表
+            initPlots();
+
+            // 隐藏用户选择面板
+            userSelectionPanel.classList.remove('show');
+            document.getElementById('left-btn').classList.remove('selected');
+            document.getElementById('right-btn').classList.remove('selected');
+            document.getElementById('current-selection').style.display = 'none';
 
             // 隐藏结果面板
             resultPanel.classList.remove('show');
@@ -749,9 +842,14 @@
             document.getElementById('explanation-section').style.display = 'none';
             document.getElementById('show-explanation-btn').textContent = '查看答案解析';
         });
-        
+
+        // 刷新参数按钮
+        document.getElementById('refresh-btn').addEventListener('click', function() {
+            resetBtn.click();
+        });
+
         // 初始化
-        updateAllPlots();
+        initPlots();
     </script>
 </body>
 </html>

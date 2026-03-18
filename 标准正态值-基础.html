@@ -175,15 +175,14 @@
             transform: scale(1.05);
         }
 
-        #reset-btn {
-            background-color: #f0f7ff;
-            color: #0052cc;
-            border: 2px solid #c2d9ff;
+        #next-btn {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
         }
 
-        #reset-btn:hover {
-            background-color: #e6f0ff;
+        #next-btn:hover {
             transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.4);
         }
 
         .feedback-container {
@@ -226,29 +225,67 @@
         }
 
         .stats {
-            display: flex;
-            justify-content: space-around;
-            flex-wrap: wrap;
             background-color: #e6f0ff;
             padding: 20px;
             border-radius: 12px;
             margin-top: 20px;
-            text-align: center;
         }
 
-        .stat-item {
-            margin: 10px;
-        }
-
-        .stat-value {
-            font-size: 2rem;
-            font-weight: bold;
+        .stats-title {
+            font-size: 1rem;
             color: #0052cc;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: 600;
         }
 
-        .stat-label {
+        .results-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            min-height: 40px;
+            align-items: center;
+        }
+
+        .result-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+            animation: popIn 0.3s ease;
+        }
+
+        .result-icon.correct {
+            background-color: #27ae60;
+        }
+
+        .result-icon.correct::after {
+            content: '✓';
+        }
+
+        .result-icon.incorrect {
+            background-color: #e74c3c;
+        }
+
+        .result-icon.incorrect::after {
+            content: '✗';
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0); }
+            70% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .no-results {
+            color: #999;
             font-size: 0.9rem;
-            color: #6699ff;
         }
 
         .question-header {
@@ -256,26 +293,6 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 15px;
-        }
-
-        .refresh-params-btn {
-            padding: 8px 16px;
-            background: linear-gradient(135deg, #27ae60, #2ecc71);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .refresh-params-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.4);
         }
 
         .show-explanation-btn {
@@ -323,19 +340,12 @@
     <div class="container">
         <header>
             <h1>标准正态值 基础</h1>
-            <p class="subtitle">交互式答题与解析</p>
+            
         </header>
 
         <div class="question-container">
             <div class="question-header">
                 <span>问题</span>
-                <button class="refresh-params-btn" id="refresh-btn">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                        <path fill-rule="evenodd" d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
-                        <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
-                    </svg>
-                    刷新参数
-                </button>
             </div>
             <div class="question-text" id="question-text">
                 <!-- 动态生成 -->
@@ -351,7 +361,7 @@
 
         <div class="controls">
             <button id="submit-btn">提交答案</button>
-            <button id="reset-btn">重新作答</button>
+            <button id="next-btn">下一题</button>
         </div>
 
         <div class="feedback-container" id="feedback">
@@ -364,21 +374,9 @@
         </div>
 
         <div class="stats">
-            <div class="stat-item">
-                <div class="stat-value" id="score">0</div>
-                <div class="stat-label">得分</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-value" id="answered">0</div>
-                <div class="stat-label">已回答</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-value" id="correct-count">0</div>
-                <div class="stat-label">正确</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-value" id="incorrect-count">0</div>
-                <div class="stat-label">错误</div>
+            <div class="stats-title">答题记录</div>
+            <div class="results-container" id="results-container">
+                <span class="no-results">尚未开始答题</span>
             </div>
         </div>
     </div>
@@ -435,6 +433,78 @@
                     answer: -2.00,
                     complement: 0.9772,
                     explanation: '因为概率 0.0228 小于 0.5，所以 c 的值应为负数。'
+                },
+                {
+                    probability: 0.0062,
+                    answer: -2.50,
+                    complement: 0.9938,
+                    explanation: '因为概率 0.0062 小于 0.5，所以 c 的值应为负数。'
+                },
+                {
+                    probability: 0.0401,
+                    answer: -1.75,
+                    complement: 0.9599,
+                    explanation: '因为概率 0.0401 小于 0.5，所以 c 的值应为负数。'
+                },
+                {
+                    probability: 0.1056,
+                    answer: -1.25,
+                    complement: 0.8944,
+                    explanation: '因为概率 0.1056 小于 0.5，所以 c 的值应为负数。'
+                },
+                {
+                    probability: 0.4013,
+                    answer: -0.25,
+                    complement: 0.5987,
+                    explanation: '因为概率 0.4013 小于 0.5，所以 c 的值应为负数。'
+                },
+                {
+                    probability: 0.5987,
+                    answer: 0.25,
+                    complement: 0.4013,
+                    explanation: '因为概率 0.5987 大于 0.5，所以 c 的值应为正数。'
+                },
+                {
+                    probability: 0.6915,
+                    answer: 0.50,
+                    complement: 0.3085,
+                    explanation: '因为概率 0.6915 大于 0.5，所以 c 的值应为正数。'
+                },
+                {
+                    probability: 0.7734,
+                    answer: 0.75,
+                    complement: 0.2266,
+                    explanation: '因为概率 0.7734 大于 0.5，所以 c 的值应为正数。'
+                },
+                {
+                    probability: 0.8944,
+                    answer: 1.25,
+                    complement: 0.1056,
+                    explanation: '因为概率 0.8944 大于 0.5，所以 c 的值应为正数。'
+                },
+                {
+                    probability: 0.9599,
+                    answer: 1.75,
+                    complement: 0.0401,
+                    explanation: '因为概率 0.9599 大于 0.5，所以 c 的值应为正数。'
+                },
+                {
+                    probability: 0.9938,
+                    answer: 2.50,
+                    complement: 0.0062,
+                    explanation: '因为概率 0.9938 大于 0.5，所以 c 的值应为正数。'
+                },
+                {
+                    probability: 0.1587,
+                    answer: -1.00,
+                    complement: 0.8413,
+                    explanation: '因为概率 0.1587 小于 0.5，所以 c 的值应为负数。'
+                },
+                {
+                    probability: 0.9878,
+                    answer: 2.25,
+                    complement: 0.0122,
+                    explanation: '因为概率 0.9878 大于 0.5，所以 c 的值应为正数。'
                 }
             ];
 
@@ -454,7 +524,7 @@
                         P(Z <= c) = ${params.probability}
                     </div>
                     <p>将你的中间计算至少保留四位小数。将你的答案四舍五入到两位小数。</p>
-                    <p><em>标准正态分布，也称为 Z 分布，是一个均值为 0、标准差为 1 的正态分布。服从该分布的变量用 Z（或 z）表示。</em></p>
+                    
                 `;
 
                 // 渲染解析
@@ -510,29 +580,22 @@
             // ==================== 事件处理 ====================
 
             let isSubmitted = false;
-            let score = 0;
-            let answered = 0;
-            let correctCount = 0;
-            let incorrectCount = 0;
+            let answerResults = []; // 记录答题结果
 
             // 获取DOM元素
             const submitBtn = document.getElementById('submit-btn');
-            const resetBtn = document.getElementById('reset-btn');
-            const refreshBtnEl = document.getElementById('refresh-btn');
+            const nextBtn = document.getElementById('next-btn');
             const feedback = document.getElementById('feedback');
             const feedbackTitle = document.getElementById('feedback-title-text');
             const feedbackText = document.getElementById('feedback-text');
-            const scoreElement = document.getElementById('score');
-            const answeredElement = document.getElementById('answered');
-            const correctCountElement = document.getElementById('correct-count');
-            const incorrectCountElement = document.getElementById('incorrect-count');
+            const resultsContainer = document.getElementById('results-container');
             const showExplanationBtn = document.getElementById('show-explanation-btn');
             const explanation = document.getElementById('explanation');
             const answerInput = document.getElementById('answer-input');
             const feedbackInline = document.getElementById('feedback-inline');
 
-            // 刷新参数按钮
-            refreshBtnEl.addEventListener('click', refreshParams);
+            // 下一题按钮
+            nextBtn.addEventListener('click', refreshParams);
 
             // 显示答案解析按钮点击事件
             showExplanationBtn.addEventListener('click', function() {
@@ -544,6 +607,21 @@
                     this.textContent = '隐藏答案解析';
                 }
             });
+
+            // 添加结果图标
+            function addResultIcon(isCorrect) {
+                answerResults.push(isCorrect);
+
+                // 清除"尚未开始答题"提示
+                if (answerResults.length === 1) {
+                    resultsContainer.innerHTML = '';
+                }
+
+                // 创建图标
+                const icon = document.createElement('div');
+                icon.className = `result-icon ${isCorrect ? 'correct' : 'incorrect'}`;
+                resultsContainer.appendChild(icon);
+            }
 
             // 提交答案
             submitBtn.addEventListener('click', function() {
@@ -557,17 +635,16 @@
                 if (isSubmitted) return;
 
                 isSubmitted = true;
-                answered++;
-                answeredElement.textContent = answered;
 
                 const params = questionParams[currentParamIndex];
                 const tolerance = 0.01;
                 const isCorrect = Math.abs(userAnswer - params.answer) <= tolerance;
 
-                // 更新统计
+                // 添加结果图标
+                addResultIcon(isCorrect);
+
+                // 更新反馈
                 if (isCorrect) {
-                    score += 100;
-                    correctCount++;
                     answerInput.classList.add('correct');
                     feedbackInline.textContent = '正确！';
                     feedbackInline.className = 'feedback-inline correct';
@@ -576,7 +653,6 @@
                     feedback.classList.remove('incorrect-feedback');
                     feedback.classList.add('correct-feedback');
                 } else {
-                    incorrectCount++;
                     answerInput.classList.add('incorrect');
                     feedbackInline.textContent = `不正确。正确答案是 ${params.answer.toFixed(2)}`;
                     feedbackInline.className = 'feedback-inline incorrect';
@@ -585,11 +661,6 @@
                     feedback.classList.remove('correct-feedback');
                     feedback.classList.add('incorrect-feedback');
                 }
-
-                // 更新统计显示
-                scoreElement.textContent = score;
-                correctCountElement.textContent = correctCount;
-                incorrectCountElement.textContent = incorrectCount;
 
                 // 显示反馈
                 feedback.classList.add('show');
@@ -601,36 +672,8 @@
                 answerInput.disabled = true;
             });
 
-            // 重新作答
-            resetBtn.addEventListener('click', function() {
-                // 重置输入
-                answerInput.value = '';
-                answerInput.classList.remove('correct', 'incorrect');
-                answerInput.disabled = false;
-
-                feedbackInline.className = 'feedback-inline';
-                feedbackInline.textContent = '';
-
-                // 隐藏反馈
-                feedback.classList.remove('show');
-
-                // 隐藏解析按钮和内容
-                showExplanationBtn.style.display = 'none';
-                showExplanationBtn.textContent = '查看答案解析';
-                explanation.style.display = 'none';
-
-                // 重置状态
-                isSubmitted = false;
-            });
-
             // ==================== 初始化 ====================
             renderQuestion();
-
-            // 初始统计显示
-            scoreElement.textContent = score;
-            answeredElement.textContent = answered;
-            correctCountElement.textContent = correctCount;
-            incorrectCountElement.textContent = incorrectCount;
         });
     </script>
 </body>

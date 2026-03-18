@@ -16,7 +16,10 @@
       "Bash(do if ! grep -q \"刷新参数\\\\|refreshParams\\\\|refreshBtn\\\\|refresh-btn\\\\|questionParams\\\\|parameterSets\" \"$file\")",
       "Bash(do if ! grep -q \"刷新参数\\\\|refreshParams\\\\|refresh-btn\\\\|refresh-btn\" \"$file\")",
       "Bash(node -c temp_check.js)",
-      "mcp__zai-mcp-server__analyze_image"
+      "mcp__zai-mcp-server__analyze_image",
+      "mcp__zai-mcp-server__extract_text_from_screenshot",
+      "mcp__web-reader__webReader",
+      "Bash(node -c \"正态分布求原始分数.html\")"
     ]
   }
 }

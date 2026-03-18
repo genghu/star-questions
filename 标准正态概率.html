@@ -158,8 +158,8 @@
         }
         .explanation {
             margin-top: 20px;
-            padding: 20px;
-            border-radius: 8px;
+            padding: 25px;
+            border-radius: 12px;
             background-color: #f0f9ff;
             border-left: 4px solid #4d94ff;
             display: none;
@@ -167,6 +167,19 @@
         .explanation.show {
             display: block;
             animation: fadeIn 0.5s ease;
+        }
+        .explanation #explanations-content p {
+            padding: 15px;
+            margin: 10px 0;
+            background-color: white;
+            border-radius: 8px;
+            border-left: 3px solid #9b59b6;
+        }
+        .explanation #explanations-content p:first-child {
+            margin-top: 0;
+        }
+        .explanation #explanations-content p:last-child {
+            margin-bottom: 0;
         }
         @keyframes fadeIn {
             from { opacity: 0; }
@@ -291,7 +304,6 @@
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
                     <h1>标准正态概率</h1>
-                    <p class="subtitle">交互式答题练习 - 理解标准正态分布的概率计算</p>
                 </div>
                 <button class="refresh-btn" id="global-refresh-btn">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -333,14 +345,14 @@
                     questions: [
                         { z: -1.65, type: 'less', answer: 0.050, prob: 0.0495 },
                         { z: -0.84, type: 'greater', answer: 0.800, probLess: 0.2005 },
-                        { z1: 0.52, z2: 2.05, type: 'between', answer: 0.296, probZ1: 0.6985, probZ2: 0.9798 }
+                        { z1: 0.52, z2: 2.05, type: 'between', answer: 0.281, probZ1: 0.6985, probZ2: 0.9798 }
                     ]
                 },
                 {
                     questions: [
                         { z: -2.33, type: 'less', answer: 0.010, prob: 0.0099 },
                         { z: -1.96, type: 'greater', answer: 0.975, probLess: 0.0250 },
-                        { z1: -0.44, z2: 1.52, type: 'between', answer: 0.613, probZ1: 0.3300, probZ2: 0.9357 }
+                        { z1: -0.44, z2: 1.52, type: 'between', answer: 0.606, probZ1: 0.3300, probZ2: 0.9357 }
                     ]
                 },
                 {
@@ -356,6 +368,112 @@
                         { z: -0.67, type: 'greater', answer: 0.749, probLess: 0.2514 },
                         { z1: 0.00, z2: 1.96, type: 'between', answer: 0.475, probZ1: 0.5000, probZ2: 0.9750 }
                     ]
+                },
+                // ========== 新增15组参数 ==========
+                {
+                    questions: [
+                        { z: -2.00, type: 'less', answer: 0.023, prob: 0.0228 },
+                        { z: -1.50, type: 'greater', answer: 0.933, probLess: 0.0668 },
+                        { z1: -0.67, z2: 0.84, type: 'between', answer: 0.548, probZ1: 0.2514, probZ2: 0.7995 }
+                    ]
+                },
+                {
+                    questions: [
+                        { z: -0.25, type: 'less', answer: 0.401, prob: 0.4013 },
+                        { z: -2.00, type: 'greater', answer: 0.977, probLess: 0.0228 },
+                        { z1: 1.28, z2: 2.33, type: 'between', answer: 0.090, probZ1: 0.8997, probZ2: 0.9901 }
+                    ]
+                },
+                {
+                    questions: [
+                        { z: 0.52, type: 'less', answer: 0.699, prob: 0.6985 },
+                        { z: 0.25, type: 'greater', answer: 0.401, probLess: 0.5987 },
+                        { z1: -1.50, z2: 1.50, type: 'between', answer: 0.866, probZ1: 0.0668, probZ2: 0.9332 }
+                    ]
+                },
+                {
+                    questions: [
+                        { z: -1.00, type: 'less', answer: 0.159, prob: 0.1587 },
+                        { z: -0.44, type: 'greater', answer: 0.670, probLess: 0.3300 },
+                        { z1: -2.58, z2: -0.52, type: 'between', answer: 0.297, probZ1: 0.0049, probZ2: 0.3015 }
+                    ]
+                },
+                {
+                    questions: [
+                        { z: -2.58, type: 'less', answer: 0.005, prob: 0.0049 },
+                        { z: 1.00, type: 'greater', answer: 0.159, probLess: 0.8413 },
+                        { z1: 0.84, z2: 2.58, type: 'between', answer: 0.196, probZ1: 0.7995, probZ2: 0.9951 }
+                    ]
+                },
+                {
+                    questions: [
+                        { z: -0.84, type: 'less', answer: 0.200, prob: 0.2005 },
+                        { z: 0.52, type: 'greater', answer: 0.302, probLess: 0.6985 },
+                        { z1: -1.28, z2: 0.67, type: 'between', answer: 0.648, probZ1: 0.1003, probZ2: 0.7486 }
+                    ]
+                },
+                {
+                    questions: [
+                        { z: -1.28, type: 'less', answer: 0.100, prob: 0.1003 },
+                        { z: 0.67, type: 'greater', answer: 0.251, probLess: 0.7486 },
+                        { z1: -0.84, z2: 1.28, type: 'between', answer: 0.699, probZ1: 0.2005, probZ2: 0.8997 }
+                    ]
+                },
+                {
+                    questions: [
+                        { z: 1.50, type: 'less', answer: 0.933, prob: 0.9332 },
+                        { z: -1.65, type: 'greater', answer: 0.951, probLess: 0.0495 },
+                        { z1: 0.25, z2: 2.00, type: 'between', answer: 0.379, probZ1: 0.5987, probZ2: 0.9772 }
+                    ]
+                },
+                {
+                    questions: [
+                        { z: -1.75, type: 'less', answer: 0.040, prob: 0.0401 },
+                        { z: 1.28, type: 'greater', answer: 0.100, probLess: 0.8997 },
+                        { z1: -1.75, z2: 1.75, type: 'between', answer: 0.920, probZ1: 0.0401, probZ2: 0.9599 }
+                    ]
+                },
+                {
+                    questions: [
+                        { z: 0.84, type: 'less', answer: 0.800, prob: 0.7995 },
+                        { z: -0.25, type: 'greater', answer: 0.599, probLess: 0.4013 },
+                        { z1: -2.33, z2: 0.00, type: 'between', answer: 0.490, probZ1: 0.0099, probZ2: 0.5000 }
+                    ]
+                },
+                {
+                    questions: [
+                        { z: -2.25, type: 'less', answer: 0.012, prob: 0.0122 },
+                        { z: 1.50, type: 'greater', answer: 0.067, probLess: 0.9332 },
+                        { z1: -1.00, z2: 2.00, type: 'between', answer: 0.819, probZ1: 0.1587, probZ2: 0.9772 }
+                    ]
+                },
+                {
+                    questions: [
+                        { z: 1.28, type: 'less', answer: 0.900, prob: 0.8997 },
+                        { z: -2.33, type: 'greater', answer: 0.990, probLess: 0.0099 },
+                        { z1: 0.00, z2: 2.33, type: 'between', answer: 0.490, probZ1: 0.5000, probZ2: 0.9901 }
+                    ]
+                },
+                {
+                    questions: [
+                        { z: -1.50, type: 'less', answer: 0.067, prob: 0.0668 },
+                        { z: 0.84, type: 'greater', answer: 0.201, probLess: 0.7995 },
+                        { z1: -2.00, z2: 0.25, type: 'between', answer: 0.576, probZ1: 0.0228, probZ2: 0.5987 }
+                    ]
+                },
+                {
+                    questions: [
+                        { z: 0.00, type: 'less', answer: 0.500, prob: 0.5000 },
+                        { z: -1.00, type: 'greater', answer: 0.841, probLess: 0.1587 },
+                        { z1: -1.65, z2: 0.84, type: 'between', answer: 0.750, probZ1: 0.0495, probZ2: 0.7995 }
+                    ]
+                },
+                {
+                    questions: [
+                        { z: -0.67, type: 'less', answer: 0.251, prob: 0.2514 },
+                        { z: 2.00, type: 'greater', answer: 0.023, probLess: 0.9772 },
+                        { z1: 0.52, z2: 2.58, type: 'between', answer: 0.297, probZ1: 0.6985, probZ2: 0.9951 }
+                    ]
                 }
             ];
 
@@ -364,10 +482,14 @@
             let userAnswers = { 1: null, 2: null, 3: null };
             let submitted = false;
 
+            // 存储解析文本
+            let explanationsData = [];
+
             // ==================== 渲染函数 ====================
             function renderQuestions() {
                 const params = questionParams[currentParamIndex];
                 const container = document.getElementById('questions-container');
+                explanationsData = []; // 重置解析数据
 
                 let html = '';
                 params.questions.forEach((q, idx) => {
@@ -376,14 +498,17 @@
 
                     if (q.type === 'less') {
                         questionText = `设 <span class="math">Z</span> 为标准正态随机变量。计算 <span class="math">P(Z <= ${q.z})</span>，即标准正态随机变量取值小于或等于 ${q.z} 的概率。`;
-                        explanationText = `<span class="math">P(Z <= ${q.z}) = ${q.prob.toFixed(4)}</span>，四舍五入到三位小数：<strong>${q.answer.toFixed(3)}</strong>`;
+                        explanationText = `<strong>问题${qNum}：</strong><span class="math">P(Z <= ${q.z}) = ${q.prob.toFixed(4)}</span>，四舍五入到三位小数：<strong>${q.answer.toFixed(3)}</strong>`;
                     } else if (q.type === 'greater') {
                         questionText = `设 <span class="math">Z</span> 为标准正态随机变量。计算 <span class="math">P(Z > ${q.z})</span>，即标准正态随机变量取值大于 ${q.z} 的概率。`;
-                        explanationText = `根据补集规则：<span class="math">P(Z > ${q.z}) = 1 - P(Z <= ${q.z}) = 1 - ${q.probLess.toFixed(4)} = ${q.answer.toFixed(3)}</span>`;
+                        explanationText = `<strong>问题${qNum}：</strong>根据补集规则：<span class="math">P(Z > ${q.z}) = 1 - P(Z <= ${q.z}) = 1 - ${q.probLess.toFixed(4)} = ${q.answer.toFixed(3)}</span>`;
                     } else if (q.type === 'between') {
                         questionText = `设 <span class="math">Z</span> 为标准正态随机变量。计算 <span class="math">P(${q.z1} < Z < ${q.z2})</span>，即标准正态随机变量取值在 ${q.z1} 和 ${q.z2} 之间的概率。`;
-                        explanationText = `<span class="math">P(${q.z1} < Z < ${q.z2}) = P(Z <= ${q.z2}) - P(Z <= ${q.z1}) = ${q.probZ2.toFixed(4)} - ${q.probZ1.toFixed(4)} = ${q.answer.toFixed(3)}</span>`;
+                        explanationText = `<strong>问题${qNum}：</strong><span class="math">P(${q.z1} < Z < ${q.z2}) = P(Z <= ${q.z2}) - P(Z <= ${q.z1}) = ${q.probZ2.toFixed(4)} - ${q.probZ1.toFixed(4)} = ${q.answer.toFixed(3)}</span>`;
                     }
+
+                    // 保存解析数据
+                    explanationsData.push(explanationText);
 
                     html += `
                         <div class="question-section" id="question${qNum}">
@@ -398,14 +523,18 @@
                                 <div class="tolerance-hint">容差：±0.01</div>
                                 <div class="feedback-inline" id="feedback${qNum}"></div>
                             </div>
-                            <button class="show-explanation-btn" data-question="${qNum}">查看答案解析</button>
-                            <div class="explanation" id="explanation${qNum}">
-                                <h3 class="explanation-title">解析</h3>
-                                <p>${explanationText}</p>
-                            </div>
                         </div>
                     `;
                 });
+
+                // 添加统一的查看解析按钮和合并的解析容器
+                html += `
+                    <button class="show-explanation-btn" id="show-all-explanations-btn">查看答案解析</button>
+                    <div class="explanation" id="all-explanations">
+                        <h3 class="explanation-title">答案解析</h3>
+                        <div id="explanations-content"></div>
+                    </div>
+                `;
 
                 container.innerHTML = html;
 
@@ -414,20 +543,24 @@
             }
 
             function bindEvents() {
-                // 显示答案解析按钮点击事件
-                document.querySelectorAll('.show-explanation-btn').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const questionId = this.getAttribute('data-question');
-                        const explanation = document.getElementById(`explanation${questionId}`);
-                        if (explanation.classList.contains('show')) {
-                            explanation.classList.remove('show');
+                // 统一的显示答案解析按钮点击事件
+                const showAllBtn = document.getElementById('show-all-explanations-btn');
+                const allExplanations = document.getElementById('all-explanations');
+                const explanationsContent = document.getElementById('explanations-content');
+
+                if (showAllBtn && allExplanations) {
+                    showAllBtn.addEventListener('click', function() {
+                        if (allExplanations.classList.contains('show')) {
+                            allExplanations.classList.remove('show');
                             this.textContent = '查看答案解析';
                         } else {
-                            explanation.classList.add('show');
+                            // 填充解析内容
+                            explanationsContent.innerHTML = explanationsData.map(text => `<p>${text}</p>`).join('');
+                            allExplanations.classList.add('show');
                             this.textContent = '隐藏答案解析';
                         }
                     });
-                });
+                }
             }
 
             function refreshParams() {
@@ -495,10 +628,11 @@
                 scoreDetails.textContent = `您答对了 ${correctCount} 题，答错了 ${totalQuestions - correctCount} 题`;
                 scorePanel.classList.add('show');
 
-                // 显示所有解析按钮
-                document.querySelectorAll('.show-explanation-btn').forEach(btn => {
-                    btn.style.display = 'inline-block';
-                });
+                // 显示统一的解析按钮
+                const showAllBtn = document.getElementById('show-all-explanations-btn');
+                if (showAllBtn) {
+                    showAllBtn.style.display = 'inline-block';
+                }
 
                 // 滚动到得分面板
                 scorePanel.scrollIntoView({ behavior: 'smooth' });
@@ -522,15 +656,16 @@
                     feedback.textContent = '';
                 }
 
-                // 隐藏答案解析
-                document.querySelectorAll('.show-explanation-btn').forEach(btn => {
-                    btn.style.display = 'none';
-                    btn.textContent = '查看答案解析';
-                });
-
-                document.querySelectorAll('.explanation').forEach(explanation => {
-                    explanation.classList.remove('show');
-                });
+                // 隐藏统一的答案解析
+                const showAllBtn = document.getElementById('show-all-explanations-btn');
+                const allExplanations = document.getElementById('all-explanations');
+                if (showAllBtn) {
+                    showAllBtn.style.display = 'none';
+                    showAllBtn.textContent = '查看答案解析';
+                }
+                if (allExplanations) {
+                    allExplanations.classList.remove('show');
+                }
 
                 // 隐藏得分面板
                 document.getElementById('score-panel').classList.remove('show');

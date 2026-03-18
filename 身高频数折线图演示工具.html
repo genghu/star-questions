@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>身高频数折线图演示工具</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 30px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 15px;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 200px;
+        }
+
+        .control-group label {
+            font-weight: bold;
+            color: #555;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .control-group input[type="range"] {
+            width: 180px;
+            height: 8px;
+            -webkit-appearance: none;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            border-radius: 4px;
+            outline: none;
+        }
+
+        .control-group input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border: 3px solid #667eea;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+
+        .value-display {
+            font-size: 18px;
+            font-weight: bold;
+            color: #667eea;
+            margin-top: 8px;
+        }
+
+        .spinner-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .spinner-btn {
+            width: 40px;
+            height: 30px;
+            border: none;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .spinner-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 3px 10px rgba(102, 126, 234, 0.4);
+        }
+
+        .spinner-btn:active {
+            transform: scale(0.95);
+        }
+
+        .spinner-btn.up:hover {
+            background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%);
+        }
+
+        .spinner-btn.down:hover {
+            background: linear-gradient(135deg, #cb2d3e 0%, #ef473a 100%);
+        }
+
+        .spinner-container .value-input {
+            min-width: 80px;
+            width: 100px;
+            text-align: center;
+            padding: 8px 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 2px solid #667eea;
+            font-size: 16px;
+            font-weight: bold;
+            color: #667eea;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .spinner-container .value-input:focus {
+            border-color: #764ba2;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.3);
+        }
+
+        .spinner-container .value-input::-webkit-inner-spin-button,
+        .spinner-container .value-input::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .chart-container {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .chart-box {
+            flex: 1;
+            min-width: 500px;
+            background: #fafafa;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .chart-box h3 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        canvas {
+            display: block;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+        }
+
+        .stats-panel {
+            margin-top: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 15px;
+        }
+
+        .stats-panel h3 {
+            color: #333;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .stat-item {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+
+        .stat-item .label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .stat-item .value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .data-table {
+            margin-top: 30px;
+            overflow-x: auto;
+        }
+
+        .data-table table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .data-table th, .data-table td {
+            padding: 12px 15px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+        }
+
+        .data-table th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: bold;
+        }
+
+        .data-table tr:hover {
+            background: #f5f5f5;
+        }
+
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .explanation {
+            margin-top: 30px;
+            padding: 20px;
+            background: #e8f4fd;
+            border-left: 4px solid #667eea;
+            border-radius: 0 10px 10px 0;
+        }
+
+        .explanation h4 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .explanation p {
+            color: #555;
+            line-height: 1.8;
+        }
+
+        @media (max-width: 768px) {
+            .chart-box {
+                min-width: 100%;
+            }
+
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 身高频数折线图演示工具</h1>
+
+        <div class="controls">
+            <div class="control-group">
+                <label>样本大小 (n)</label>
+                <div class="spinner-container">
+                    <button class="spinner-btn up" onclick="adjustSampleSize(1)">&#9650;</button>
+                    <input type="number" class="value-input" id="sampleSize" min="10" max="10000" value="100" onchange="onValueChange('sampleSize')">
+                    <button class="spinner-btn down" onclick="adjustSampleSize(-1)">&#9660;</button>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label>组距精确度 (cm)</label>
+                <div class="spinner-container">
+                    <button class="spinner-btn up" onclick="adjustClassWidth(1)">&#9650;</button>
+                    <input type="number" class="value-input" id="classWidth" min="0.01" max="10" value="5" step="0.01" onchange="onValueChange('classWidth')">
+                    <button class="spinner-btn down" onclick="adjustClassWidth(-1)">&#9660;</button>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label>测量精确度 (cm)</label>
+                <div class="spinner-container">
+                    <button class="spinner-btn up" onclick="adjustMeasurePrecision(1)">&#9650;</button>
+                    <input type="number" class="value-input" id="measurePrecision" min="0.001" max="1" value="0.1" step="0.001" onchange="onValueChange('measurePrecision')">
+                    <button class="spinner-btn down" onclick="adjustMeasurePrecision(-1)">&#9660;</button>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label>平均身高 (μ)</label>
+                <div class="spinner-container">
+                    <button class="spinner-btn up" onclick="adjustValue('meanHeight', 1)">&#9650;</button>
+                    <input type="number" class="value-input" id="meanHeight" min="150" max="190" value="170" onchange="onValueChange('meanHeight')">
+                    <button class="spinner-btn down" onclick="adjustValue('meanHeight', -1)">&#9660;</button>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <label>标准差 (σ)</label>
+                <div class="spinner-container">
+                    <button class="spinner-btn up" onclick="adjustValue('stdDev', 0.5)">&#9650;</button>
+                    <input type="number" class="value-input" id="stdDev" min="3" max="15" value="8" onchange="onValueChange('stdDev')">
+                    <button class="spinner-btn down" onclick="adjustValue('stdDev', -0.5)">&#9660;</button>
+                </div>
+            </div>
+
+            <div class="control-group" style="justify-content: center;">
+                <button class="btn btn-primary" onclick="generateData()">🎲 生成新数据</button>
+                <button class="btn btn-secondary" onclick="resetToDefault()">↩️ 重置</button>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <div class="chart-box">
+                <h3>频数折线图 (Frequency Polygon)</h3>
+                <canvas id="lineChart" width="500" height="350"></canvas>
+            </div>
+            <div class="chart-box">
+                <h3>频数直方图 (Histogram)</h3>
+                <canvas id="barChart" width="500" height="350"></canvas>
+            </div>
+            <div class="chart-box">
+                <h3>累积频数曲线 (Ogive)</h3>
+                <canvas id="ogiveChart" width="500" height="350"></canvas>
+            </div>
+        </div>
+
+        <div class="stats-panel">
+            <h3>📈 统计摘要</h3>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="label">样本大小</div>
+                    <div class="value" id="statN">-</div>
+                </div>
+                <div class="stat-item">
+                    <div class="label">样本均值</div>
+                    <div class="value" id="statMean">-</div>
+                </div>
+                <div class="stat-item">
+                    <div class="label">样本标准差</div>
+                    <div class="value" id="statStd">-</div>
+                </div>
+                <div class="stat-item">
+                    <div class="label">最小值</div>
+                    <div class="value" id="statMin">-</div>
+                </div>
+                <div class="stat-item">
+                    <div class="label">最大值</div>
+                    <div class="value" id="statMax">-</div>
+                </div>
+                <div class="stat-item">
+                    <div class="label">组数</div>
+                    <div class="value" id="statClasses">-</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="data-table">
+            <h3 style="text-align: center; margin-bottom: 15px; color: #333;">📋 频数分布表</h3>
+            <table id="freqTable">
+                <thead>
+                    <tr>
+                        <th>组别 (cm)</th>
+                        <th>组中值</th>
+                        <th>频数 (f)</th>
+                        <th>相对频率</th>
+                        <th>累积频数</th>
+                        <th>累积频率</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                </tbody>
+            </table>
+        </div>
+
+        <div class="explanation">
+            <h4>💡 说明</h4>
+            <p>
+                <strong>频数折线图</strong>是一种展示数据分布的图形，通过连接各组中点对应的频数来显示数据的分布形态。
+                本工具模拟人类身高数据（服从正态分布），您可以调整以下参数来观察变化：
+            </p>
+            <p>
+                • <strong>样本大小</strong>：数据点的数量，越大越接近理论分布<br>
+                • <strong>组距精确度</strong>：分组的区间宽度，越小分组越细致<br>
+                • <strong>平均身高</strong>：正态分布的均值参数<br>
+                • <strong>标准差</strong>：数据的离散程度，越大分布越平坦
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // 全局变量
+        let data = [];
+        let frequencyTable = [];
+
+        // 生成正态分布随机数 (Box-Muller变换)
+        function normalRandom(mean, std) {
+            let u1 = Math.random();
+            let u2 = Math.random();
+            let z = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+            return mean + z * std;
+        }
+
+        // 生成身高数据
+        function generateData() {
+            const n = parseInt(document.getElementById('sampleSize').value);
+            const mean = parseFloat(document.getElementById('meanHeight').value);
+            const std = parseFloat(document.getElementById('stdDev').value);
+            const classWidth = parseFloat(document.getElementById('classWidth').value);
+            const measurePrecision = parseFloat(document.getElementById('measurePrecision').value);
+
+            // 计算小数位数
+            let decimalPlaces = 0;
+            let temp = measurePrecision;
+            while (temp < 1 && decimalPlaces < 6) {
+                temp *= 10;
+                decimalPlaces++;
+            }
+
+            // 生成正态分布数据
+            data = [];
+            const multiplier = Math.pow(10, decimalPlaces);
+            for (let i = 0; i < n; i++) {
+                let height = normalRandom(mean, std);
+                // 根据测量精确度四舍五入
+                data.push(Math.round(height / measurePrecision) * measurePrecision);
+            }
+
+            // 构建频数分布表
+            buildFrequencyTable(classWidth);
+
+            // 更新显示
+            updateStats();
+            drawLineChart();
+            drawBarChart();
+            drawOgive();
+            updateTable();
+        }
+
+        // 构建频数分布表
+        function buildFrequencyTable(classWidth) {
+            const dataMin = Math.min(...data);
+            const dataMax = Math.max(...data);
+            const range = dataMax - dataMin;
+
+            // 计算组数并限制最大组数
+            let numClasses = Math.ceil(range / classWidth);
+            const MAX_CLASSES = 100; // 最大组数限制
+
+            let actualClassWidth = classWidth;
+            if (numClasses > MAX_CLASSES) {
+                // 自动调整组距以限制组数
+                actualClassWidth = Math.ceil(range / MAX_CLASSES * 1000) / 1000;
+                numClasses = Math.ceil(range / actualClassWidth);
+            }
+
+            const min = Math.floor(dataMin / actualClassWidth) * actualClassWidth;
+            const max = Math.ceil(dataMax / actualClassWidth) * actualClassWidth;
+
+            frequencyTable = [];
+            let cumulativeFreq = 0;
+
+            // 使用计数器避免浮点数累加误差
+            const epsilon = actualClassWidth / 1000;
+            let lower = min;
+            let count = 0;
+
+            while (lower < max - epsilon && count < MAX_CLASSES + 10) {
+                const upper = lower + actualClassWidth;
+                const midpoint = (lower + upper) / 2;
+
+                // 计算频数
+                let freq = 0;
+                for (let val of data) {
+                    if (val >= lower - epsilon && val < upper - epsilon) {
+                        freq++;
+                    }
+                }
+
+                cumulativeFreq += freq;
+                const relativeFreq = freq / data.length;
+                const cumulativeRelFreq = cumulativeFreq / data.length;
+
+                frequencyTable.push({
+                    lower: Math.round(lower * 1000) / 1000,
+                    upper: Math.round(upper * 1000) / 1000,
+                    midpoint: Math.round(midpoint * 1000) / 1000,
+                    freq,
+                    relativeFreq,
+                    cumulativeFreq,
+                    cumulativeRelFreq
+                });
+
+                lower = upper;
+                count++;
+            }
+        }
+
+        // 更新统计信息
+        function updateStats() {
+            const n = data.length;
+            const mean = data.reduce((a, b) => a + b, 0) / n;
+            const variance = data.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / n;
+            const std = Math.sqrt(variance);
+            const min = Math.min(...data);
+            const max = Math.max(...data);
+
+            document.getElementById('statN').textContent = n;
+            document.getElementById('statMean').textContent = mean.toFixed(2) + ' cm';
+            document.getElementById('statStd').textContent = std.toFixed(2) + ' cm';
+            document.getElementById('statMin').textContent = min.toFixed(1) + ' cm';
+            document.getElementById('statMax').textContent = max.toFixed(1) + ' cm';
+            document.getElementById('statClasses').textContent = frequencyTable.length;
+        }
+
+        // 绘制频数折线图
+        function drawLineChart() {
+            const canvas = document.getElementById('lineChart');
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width;
+            const height = canvas.height;
+
+            // 清空画布
+            ctx.clearRect(0, 0, width, height);
+
+            if (frequencyTable.length === 0) return;
+
+            // 设置边距
+            const margin = { top: 30, right: 30, bottom: 50, left: 50 };
+            const chartWidth = width - margin.left - margin.right;
+            const chartHeight = height - margin.top - margin.bottom;
+
+            // 计算比例
+            const maxFreq = Math.max(...frequencyTable.map(d => d.freq));
+            const xScale = chartWidth / (frequencyTable.length + 1);
+            const yScale = chartHeight / (maxFreq * 1.1);
+
+            // 绘制坐标轴
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(margin.left, margin.top);
+            ctx.lineTo(margin.left, height - margin.bottom);
+            ctx.lineTo(width - margin.right, height - margin.bottom);
+            ctx.stroke();
+
+            // 绘制网格线
+            ctx.strokeStyle = '#eee';
+            ctx.lineWidth = 1;
+            for (let i = 0; i <= 5; i++) {
+                const y = margin.top + (chartHeight * i / 5);
+                ctx.beginPath();
+                ctx.moveTo(margin.left, y);
+                ctx.lineTo(width - margin.right, y);
+                ctx.stroke();
+            }
+
+            // 绘制Y轴标签
+            ctx.fillStyle = '#666';
+            ctx.font = '12px Arial';
+            ctx.textAlign = 'right';
+            for (let i = 0; i <= 5; i++) {
+                const value = Math.round(maxFreq * 1.1 * (5 - i) / 5);
+                const y = margin.top + (chartHeight * i / 5);
+                ctx.fillText(value, margin.left - 10, y + 4);
+            }
+
+            // 绘制折线
+            ctx.strokeStyle = '#667eea';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+
+            // 添加起点 (第一个组中点左侧)
+            const firstMid = frequencyTable[0].midpoint;
+            const firstLower = frequencyTable[0].lower;
+            const startX = margin.left + (firstMid - firstLower + frequencyTable[0].lower - frequencyTable[0].upper/2 + firstMid) / (frequencyTable[frequencyTable.length-1].upper - frequencyTable[0].lower + (frequencyTable[0].upper - frequencyTable[0].lower)) * chartWidth;
+            ctx.moveTo(margin.left, height - margin.bottom);
+
+            frequencyTable.forEach((d, i) => {
+                const x = margin.left + (i + 1) * xScale;
+                const y = height - margin.bottom - d.freq * yScale;
+
+                if (i === 0) {
+                    // 从Y轴开始
+                    ctx.moveTo(margin.left, height - margin.bottom);
+                    ctx.lineTo(x, y);
+                } else {
+                    ctx.lineTo(x, y);
+                }
+            });
+
+            // 连接到X轴
+            const lastX = margin.left + frequencyTable.length * xScale;
+            ctx.lineTo(lastX, height - margin.bottom);
+            ctx.stroke();
+
+            // 绘制数据点
+            ctx.fillStyle = '#764ba2';
+            frequencyTable.forEach((d, i) => {
+                const x = margin.left + (i + 1) * xScale;
+                const y = height - margin.bottom - d.freq * yScale;
+
+                ctx.beginPath();
+                ctx.arc(x, y, 6, 0, Math.PI * 2);
+                ctx.fill();
+            });
+
+            // 绘制X轴标签
+            ctx.fillStyle = '#666';
+            ctx.font = '11px Arial';
+            ctx.textAlign = 'center';
+            frequencyTable.forEach((d, i) => {
+                const x = margin.left + (i + 1) * xScale;
+                ctx.fillText(d.midpoint.toFixed(0), x, height - margin.bottom + 20);
+            });
+
+            // 轴标题
+            ctx.fillStyle = '#333';
+            ctx.font = 'bold 14px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('身高 (cm)', width / 2, height - 10);
+
+            ctx.save();
+            ctx.translate(15, height / 2);
+            ctx.rotate(-Math.PI / 2);
+            ctx.fillText('频数', 0, 0);
+            ctx.restore();
+        }
+
+        // 绘制直方图
+        function drawBarChart() {
+            const canvas = document.getElementById('barChart');
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width;
+            const height = canvas.height;
+
+            // 清空画布
+            ctx.clearRect(0, 0, width, height);
+
+            if (frequencyTable.length === 0) return;
+
+            // 设置边距
+            const margin = { top: 30, right: 30, bottom: 50, left: 50 };
+            const chartWidth = width - margin.left - margin.right;
+            const chartHeight = height - margin.top - margin.bottom;
+
+            // 计算比例
+            const maxFreq = Math.max(...frequencyTable.map(d => d.freq));
+            const barWidth = chartWidth / frequencyTable.length - 2;
+            const yScale = chartHeight / (maxFreq * 1.1);
+
+            // 绘制坐标轴
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(margin.left, margin.top);
+            ctx.lineTo(margin.left, height - margin.bottom);
+            ctx.lineTo(width - margin.right, height - margin.bottom);
+            ctx.stroke();
+
+            // 绘制网格线
+            ctx.strokeStyle = '#eee';
+            ctx.lineWidth = 1;
+            for (let i = 0; i <= 5; i++) {
+                const y = margin.top + (chartHeight * i / 5);
+                ctx.beginPath();
+                ctx.moveTo(margin.left, y);
+                ctx.lineTo(width - margin.right, y);
+                ctx.stroke();
+            }
+
+            // 绘制Y轴标签
+            ctx.fillStyle = '#666';
+            ctx.font = '12px Arial';
+            ctx.textAlign = 'right';
+            for (let i = 0; i <= 5; i++) {
+                const value = Math.round(maxFreq * 1.1 * (5 - i) / 5);
+                const y = margin.top + (chartHeight * i / 5);
+                ctx.fillText(value, margin.left - 10, y + 4);
+            }
+
+            // 绘制柱状图
+            const gradient = ctx.createLinearGradient(0, margin.top, 0, height - margin.bottom);
+            gradient.addColorStop(0, '#667eea');
+            gradient.addColorStop(1, '#764ba2');
+
+            frequencyTable.forEach((d, i) => {
+                const x = margin.left + i * (barWidth + 2) + 2;
+                const barHeight = d.freq * yScale;
+                const y = height - margin.bottom - barHeight;
+
+                ctx.fillStyle = gradient;
+                ctx.fillRect(x, y, barWidth, barHeight);
+
+                // 柱子边框
+                ctx.strokeStyle = '#5a67d8';
+                ctx.lineWidth = 1;
+                ctx.strokeRect(x, y, barWidth, barHeight);
+            });
+
+            // 绘制X轴标签
+            ctx.fillStyle = '#666';
+            ctx.font = '11px Arial';
+            ctx.textAlign = 'center';
+            frequencyTable.forEach((d, i) => {
+                const x = margin.left + i * (barWidth + 2) + 2 + barWidth / 2;
+                ctx.fillText(d.lower + '-' + d.upper, x, height - margin.bottom + 20);
+            });
+
+            // 轴标题
+            ctx.fillStyle = '#333';
+            ctx.font = 'bold 14px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('身高区间 (cm)', width / 2, height - 10);
+
+            ctx.save();
+            ctx.translate(15, height / 2);
+            ctx.rotate(-Math.PI / 2);
+            ctx.fillText('频数', 0, 0);
+            ctx.restore();
+        }
+
+        // 绘制累积频数曲线 (Ogive)
+        function drawOgive() {
+            const canvas = document.getElementById('ogiveChart');
+            const ctx = canvas.getContext('2d');
+            const width = canvas.width;
+            const height = canvas.height;
+
+            ctx.clearRect(0, 0, width, height);
+
+            if (frequencyTable.length === 0) return;
+
+            const margin = { top: 40, right: 30, bottom: 60, left: 60 };
+            const chartWidth = width - margin.left - margin.right;
+            const chartHeight = height - margin.top - margin.bottom;
+
+            // 计算比例
+            const dataMin = frequencyTable[0].lower;
+            const dataMax = frequencyTable[frequencyTable.length - 1].upper;
+            const xRange = dataMax - dataMin;
+            const maxCumFreq = frequencyTable[frequencyTable.length - 1].cumulativeFreq;
+
+            const xScale = chartWidth / xRange;
+            const yScale = chartHeight / (maxCumFreq * 1.1);
+
+            // 绘制网格线
+            ctx.strokeStyle = '#eee';
+            ctx.lineWidth = 1;
+            for (let i = 0; i <= 5; i++) {
+                const y = margin.top + (chartHeight * i / 5);
+                ctx.beginPath();
+                ctx.moveTo(margin.left, y);
+                ctx.lineTo(width - margin.right, y);
+                ctx.stroke();
+            }
+
+            // 绘制坐标轴
+            ctx.strokeStyle = '#333';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(margin.left, margin.top);
+            ctx.lineTo(margin.left, height - margin.bottom);
+            ctx.lineTo(width - margin.right, height - margin.bottom);
+            ctx.stroke();
+
+            // 绘制Y轴标签
+            ctx.fillStyle = '#666';
+            ctx.font = '11px Arial';
+            ctx.textAlign = 'right';
+            for (let i = 0; i <= 5; i++) {
+                const value = Math.round(maxCumFreq * 1.1 * (5 - i) / 5);
+                const y = margin.top + (chartHeight * i / 5);
+                ctx.fillText(value, margin.left - 10, y + 4);
+            }
+
+            // 绘制X轴标签
+            ctx.textAlign = 'center';
+            const xLabels = [dataMin];
+            frequencyTable.forEach(d => xLabels.push(d.upper));
+            xLabels.forEach((label, i) => {
+                const x = margin.left + (label - dataMin) * xScale;
+                if (x <= width - margin.right + 5) {
+                    ctx.fillText(label.toFixed(1), x, height - margin.bottom + 20);
+                }
+            });
+
+            // 绘制累积频数曲线
+            ctx.strokeStyle = '#e53e3e';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+
+            // 从第一个组的下限开始（累积频数为0）
+            let firstX = margin.left;
+            let firstY = height - margin.bottom;
+            ctx.moveTo(firstX, firstY);
+
+            // 绘制到每个组的上限
+            frequencyTable.forEach((d, i) => {
+                const x = margin.left + (d.upper - dataMin) * xScale;
+                const y = height - margin.bottom - d.cumulativeFreq * yScale;
+                ctx.lineTo(x, y);
+            });
+
+            ctx.stroke();
+
+            // 绘制数据点
+            ctx.fillStyle = '#c53030';
+            frequencyTable.forEach((d, i) => {
+                const x = margin.left + (d.upper - dataMin) * xScale;
+                const y = height - margin.bottom - d.cumulativeFreq * yScale;
+
+                ctx.beginPath();
+                ctx.arc(x, y, 5, 0, Math.PI * 2);
+                ctx.fill();
+            });
+
+            // 绘制0点
+            ctx.beginPath();
+            ctx.arc(firstX, firstY, 5, 0, Math.PI * 2);
+            ctx.fill();
+
+            // 轴标题
+            ctx.fillStyle = '#333';
+            ctx.font = 'bold 14px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('身高 (cm)', width / 2, height - 10);
+
+            ctx.save();
+            ctx.translate(20, height / 2);
+            ctx.rotate(-Math.PI / 2);
+            ctx.fillText('累积频数', 0, 0);
+            ctx.restore();
+
+            // 绘制标题
+            ctx.fillStyle = '#666';
+            ctx.font = '12px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText(`累积频数曲线 (Ogive) - 总样本数: ${maxCumFreq}`, width / 2, 20);
+        }
+
+        // 更新表格
+        function updateTable() {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+
+            let totalFreq = 0;
+            frequencyTable.forEach(d => {
+                totalFreq += d.freq;
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${d.lower} - ${d.upper}</td>
+                    <td>${d.midpoint.toFixed(1)}</td>
+                    <td>${d.freq}</td>
+                    <td>${(d.relativeFreq * 100).toFixed(1)}%</td>
+                    <td>${d.cumulativeFreq}</td>
+                    <td>${(d.cumulativeRelFreq * 100).toFixed(1)}%</td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            // 添加合计行
+            const totalRow = document.createElement('tr');
+            totalRow.style.background = '#f0f0f0';
+            totalRow.style.fontWeight = 'bold';
+            totalRow.innerHTML = `
+                <td>合计</td>
+                <td>-</td>
+                <td>${totalFreq}</td>
+                <td>100%</td>
+                <td>-</td>
+                <td>-</td>
+            `;
+            tbody.appendChild(totalRow);
+        }
+
+        // 重置为默认值
+        function resetToDefault() {
+            document.getElementById('sampleSize').value = 100;
+            document.getElementById('classWidth').value = 5;
+            document.getElementById('measurePrecision').value = 0.1;
+            document.getElementById('meanHeight').value = 170;
+            document.getElementById('stdDev').value = 8;
+
+            generateData();
+        }
+
+        // 获取样本大小的步长
+        function getSampleSizeStep(value) {
+            if (value < 100) return 10;
+            if (value < 1000) return 50;
+            return 100;
+        }
+
+        // 获取组距精确度的步长
+        function getClassWidthStep(value) {
+            if (value < 1) return 0.01;
+            return 1;
+        }
+
+        // 获取测量精确度的步长
+        function getMeasurePrecisionStep(value) {
+            if (value < 0.01) return 0.001;
+            if (value < 0.1) return 0.01;
+            return 0.1;
+        }
+
+        // 调整样本大小
+        function adjustSampleSize(direction) {
+            const input = document.getElementById('sampleSize');
+            let value = parseFloat(input.value);
+            const min = parseFloat(input.min);
+            const max = parseFloat(input.max);
+            const step = getSampleSizeStep(value);
+
+            value += step * direction;
+
+            if (value < min) value = min;
+            if (value > max) value = max;
+
+            input.value = Math.round(value);
+            generateData();
+        }
+
+        // 调整组距精确度
+        function adjustClassWidth(direction) {
+            const input = document.getElementById('classWidth');
+            let value = parseFloat(input.value);
+            const min = parseFloat(input.min);
+            const max = parseFloat(input.max);
+            const step = getClassWidthStep(value);
+
+            value += step * direction;
+
+            if (value < min) value = min;
+            if (value > max) value = max;
+
+            input.value = Math.round(value * 100) / 100;
+            generateData();
+        }
+
+        // 调整测量精确度
+        function adjustMeasurePrecision(direction) {
+            const input = document.getElementById('measurePrecision');
+            let value = parseFloat(input.value);
+            const min = parseFloat(input.min);
+            const max = parseFloat(input.max);
+            const step = getMeasurePrecisionStep(value);
+
+            value += step * direction;
+
+            if (value < min) value = min;
+            if (value > max) value = max;
+
+            input.value = Math.round(value * 1000) / 1000;
+            generateData();
+        }
+
+        // 调整参数值（通用，用于平均身高和标准差）
+        function adjustValue(id, delta) {
+            const input = document.getElementById(id);
+            let value = parseFloat(input.value);
+            const min = parseFloat(input.min);
+            const max = parseFloat(input.max);
+
+            value += delta;
+
+            if (value < min) value = min;
+            if (value > max) value = max;
+
+            input.value = value;
+            generateData();
+        }
+
+        // 手动输入值变化时
+        function onValueChange(id) {
+            const input = document.getElementById(id);
+            let value = parseFloat(input.value);
+            const min = parseFloat(input.min);
+            const max = parseFloat(input.max);
+
+            if (isNaN(value) || value < min) value = min;
+            if (value > max) value = max;
+
+            input.value = value;
+            generateData();
+        }
+
+        // 初始化
+        window.onload = function() {
+            generateData();
+        };
+    </script>
+</body>
+</html>
