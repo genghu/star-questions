@@ -115,20 +115,21 @@
 
         .options-container {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 15px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
         }
 
         .option {
             background-color: white;
             border: 2px solid #e0e6ed;
-            border-radius: 10px;
-            padding: 18px 15px;
+            border-radius: 8px;
+            padding: 10px 10px;
             cursor: pointer;
             transition: all 0.2s ease;
             display: flex;
             align-items: center;
             font-weight: 500;
+            text-align: left;
         }
 
         .option:hover {
@@ -219,17 +220,17 @@
         }
 
         button {
-            padding: 15px 30px;
+            padding: 10px 24px;
             border: none;
-            border-radius: 10px;
-            font-size: 1rem;
+            border-radius: 8px;
+            font-size: 0.95rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 8px;
         }
 
         #submit-btn {
@@ -244,13 +245,13 @@
         }
 
         #reset-btn {
-            background-color: #f8f9fa;
-            color: #555;
-            border: 2px solid #e0e6ed;
+            background-color: #2ecc71;
+            color: white;
+            border: none;
         }
 
         #reset-btn:hover {
-            background-color: #e9ecef;
+            background-color: #27ae60;
             transform: translateY(-3px);
         }
 
@@ -260,17 +261,7 @@
             padding: 25px;
             background-color: #f8fafc;
             border-radius: 15px;
-            display: none;
-        }
-
-        .results.active {
             display: block;
-            animation: fadeIn 0.8s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
         }
 
         .score {
@@ -326,15 +317,15 @@
             .container {
                 padding: 20px;
             }
-            
+
             h1 {
                 font-size: 1.8rem;
             }
-            
+
             .options-container {
-                grid-template-columns: 1fr;
+                grid-template-columns: repeat(2, 1fr);
             }
-            
+
             .controls {
                 flex-direction: column;
             }
@@ -373,223 +364,271 @@
         display: none;
         margin-top: 20px;
     }
+
+    .history-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #2c3e50;
+        margin-bottom: 15px;
+    }
+
+    .history-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
+        margin-bottom: 15px;
+    }
+
+    .history-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 1.1rem;
+        color: white;
+    }
+
+    .history-icon.correct {
+        background-color: #2ecc71;
+    }
+
+    .history-icon.incorrect {
+        background-color: #e74c3c;
+    }
+
+    .history-stats {
+        font-size: 0.95rem;
+        color: #7f8c8d;
+    }
     </style>
     </head>
 <body>
     <div class="container">
         <header>
-            <h1><i class="fas fa-chart-bar"></i> 总体均值推断的分布选择 <button id="refresh-btn" style="margin-left: 15px; padding: 8px 16px; background: linear-gradient(135deg, #34a853, #2ecc71); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(52, 168, 83, 0.3);">刷新参数</button></h1>
-            <p class="subtitle">置信区间与假设检验 - 交互式答题练习</p>
+            <h1><i class="fas fa-chart-bar"></i> 总体均值推断的分布选择</h1>
+        
         </header>
         
         <div class="info-box">
             <h3><i class="fas fa-info-circle"></i> 题目背景</h3>
-            <p>我们想要估计年龄在55岁或以上的成年人的平均胆固醇水平。随机抽取的样本均值为191 mg/dL，标准差为19.5 mg/dL。对于以下每种抽样场景，请确定在对总体均值进行推断陈述时，哪种检验统计量是合适的。</p>
+            <p id="background-text">我们想要估计年龄在55岁或以上的成年人的平均胆固醇水平。随机抽取的样本均值为191 mg/dL，标准差为19.5 mg/dL。对于以下每种抽样场景，请确定在对总体均值进行推断陈述时，哪种检验统计量是合适的。</p>
             <p>（在表中，<span class="math">Z</span> 指服从标准正态分布的变量，<span class="math">t</span> 指服从 <span class="math">t</span> 分布的变量。）</p>
         </div>
-        
+
         <div class="question-container">
-            <!-- 问题1 -->
+            <!-- 单个问题 -->
             <div class="question" id="question1">
-                <div class="question-number">1</div>
-                <div class="question-text">样本容量为10，且来自一个我们对其分布知之甚少的总体。</div>
+                <div class="question-text" id="question1-text">样本容量为10，且来自一个我们对其分布知之甚少的总体。</div>
                 <div class="options-container">
                     <div class="option" data-question="1" data-option="a">
-                        <div class="option-letter">a</div>
+                        <div class="option-letter">A</div>
                         <div class="option-text">Z</div>
                     </div>
                     <div class="option" data-question="1" data-option="b">
-                        <div class="option-letter">b</div>
+                        <div class="option-letter">B</div>
                         <div class="option-text">t</div>
                     </div>
                     <div class="option" data-question="1" data-option="c">
-                        <div class="option-letter">c</div>
+                        <div class="option-letter">C</div>
                         <div class="option-text">可以使用 Z 或 t</div>
                     </div>
                     <div class="option" data-question="1" data-option="d">
-                        <div class="option-letter">d</div>
+                        <div class="option-letter">D</div>
                         <div class="option-text">不确定</div>
                     </div>
                 </div>
                 <button class="show-explanation-btn" data-question="1">查看答案解析</button>
                 <div class="explanation" id="explanation1">
                     <h4><i class="fas fa-lightbulb"></i> 解析</h4>
-                    <p>由于我们对总体分布一无所知且样本容量小（n=10＜30），我们需要更多信息来选择检验统计量。因此正确答案是"不确定"。</p>
-                </div>
-            </div>
-            
-            <!-- 问题2 -->
-            <div class="question" id="question2">
-                <div class="question-number">2</div>
-                <div class="question-text">样本容量为16，且来自一个标准差已知为19.2的正态分布总体。</div>
-                <div class="options-container">
-                    <div class="option" data-question="2" data-option="a">
-                        <div class="option-letter">a</div>
-                        <div class="option-text">Z</div>
-                    </div>
-                    <div class="option" data-question="2" data-option="b">
-                        <div class="option-letter">b</div>
-                        <div class="option-text">t</div>
-                    </div>
-                    <div class="option" data-question="2" data-option="c">
-                        <div class="option-letter">c</div>
-                        <div class="option-text">可以使用 Z 或 t</div>
-                    </div>
-                    <div class="option" data-question="2" data-option="d">
-                        <div class="option-letter">d</div>
-                        <div class="option-text">不确定</div>
-                    </div>
-                </div>
-                <button class="show-explanation-btn" data-question="2">查看答案解析</button>
-                <div class="explanation" id="explanation2">
-                    <h4><i class="fas fa-lightbulb"></i> 解析</h4>
-                    <p>由于样本来自标准差已知的正态分布总体，无论样本容量大小，我们都可以使用 Z 统计量。因为随机变量 <span class="math">Z = (x̄ - μ) / (σ/√n)</span> 服从标准正态分布。</p>
-                </div>
-            </div>
-            
-            <!-- 问题3 -->
-            <div class="question" id="question3">
-                <div class="question-number">3</div>
-                <div class="question-text">样本容量为110，且来自一个非正态分布总体。</div>
-                <div class="options-container">
-                    <div class="option" data-question="3" data-option="a">
-                        <div class="option-letter">a</div>
-                        <div class="option-text">Z</div>
-                    </div>
-                    <div class="option" data-question="3" data-option="b">
-                        <div class="option-letter">b</div>
-                        <div class="option-text">t</div>
-                    </div>
-                    <div class="option" data-question="3" data-option="c">
-                        <div class="option-letter">c</div>
-                        <div class="option-text">可以使用 Z 或 t</div>
-                    </div>
-                    <div class="option" data-question="3" data-option="d">
-                        <div class="option-letter">d</div>
-                        <div class="option-text">不确定</div>
-                    </div>
-                </div>
-                <button class="show-explanation-btn" data-question="3">查看答案解析</button>
-                <div class="explanation" id="explanation3">
-                    <h4><i class="fas fa-lightbulb"></i> 解析</h4>
-                    <p>由于样本容量很大（n=110≥30），根据中心极限定理，样本均值近似服从正态分布。在这种情况下，两种统计量都合适，因为自由度很大时 t 分布与标准正态分布几乎相同。</p>
-                </div>
-            </div>
-            
-            <!-- 问题4 -->
-            <div class="question" id="question4">
-                <div class="question-number">4</div>
-                <div class="question-text">样本容量为18，且来自一个标准差未知的正态分布总体。</div>
-                <div class="options-container">
-                    <div class="option" data-question="4" data-option="a">
-                        <div class="option-letter">a</div>
-                        <div class="option-text">Z</div>
-                    </div>
-                    <div class="option" data-question="4" data-option="b">
-                        <div class="option-letter">b</div>
-                        <div class="option-text">t</div>
-                    </div>
-                    <div class="option" data-question="4" data-option="c">
-                        <div class="option-letter">c</div>
-                        <div class="option-text">可以使用 Z 或 t</div>
-                    </div>
-                    <div class="option" data-question="4" data-option="d">
-                        <div class="option-letter">d</div>
-                        <div class="option-text">不确定</div>
-                    </div>
-                </div>
-                <button class="show-explanation-btn" data-question="4">查看答案解析</button>
-                <div class="explanation" id="explanation4">
-                    <h4><i class="fas fa-lightbulb"></i> 解析</h4>
-                    <p>由于样本来自标准差未知的正态分布总体，且样本容量小（n=18＜30），我们使用 t 统计量，它（精确地）服从自由度为 n-1 的 t 分布。</p>
-                </div>
-            </div>
-            
-            <!-- 问题5 -->
-            <div class="question" id="question5">
-                <div class="question-number">5</div>
-                <div class="question-text">样本容量为100，且来自一个标准差已知为19.2的非正态分布总体。</div>
-                <div class="options-container">
-                    <div class="option" data-question="5" data-option="a">
-                        <div class="option-letter">a</div>
-                        <div class="option-text">Z</div>
-                    </div>
-                    <div class="option" data-question="5" data-option="b">
-                        <div class="option-letter">b</div>
-                        <div class="option-text">t</div>
-                    </div>
-                    <div class="option" data-question="5" data-option="c">
-                        <div class="option-letter">c</div>
-                        <div class="option-text">可以使用 Z 或 t</div>
-                    </div>
-                    <div class="option" data-question="5" data-option="d">
-                        <div class="option-letter">d</div>
-                        <div class="option-text">不确定</div>
-                    </div>
-                </div>
-                <button class="show-explanation-btn" data-question="5">查看答案解析</button>
-                <div class="explanation" id="explanation5">
-                    <h4><i class="fas fa-lightbulb"></i> 解析</h4>
-                    <p>由于样本容量很大（n=100≥30），样本均值（近似）服从正态分布，且总体标准差已知，Z 检验统计量是合适的。</p>
+                    <p id="explanation1-text">由于我们对总体分布一无所知且样本容量小（n=10＜30），我们需要更多信息来选择检验统计量。因此正确答案是"不确定"。</p>
                 </div>
             </div>
         </div>
-        
+
         <div class="controls">
             <button id="submit-btn">
                 <i class="fas fa-paper-plane"></i> 提交答案
             </button>
             <button id="reset-btn">
-                <i class="fas fa-redo"></i> 重新作答
+                <i class="fas fa-redo"></i> 下一题
             </button>
         </div>
-        
+
         <div class="results" id="results">
-            <div class="score" id="score">0/5</div>
-            <div class="score-text" id="score-text">完成所有题目，查看你的得分！</div>
-            
-            <div class="summary">
-                <div class="summary-item">
-                    <h4>正确</h4>
-                    <p class="correct-count" id="correct-count">0</p>
-                </div>
-                <div class="summary-item">
-                    <h4>错误</h4>
-                    <p class="incorrect-count" id="incorrect-count">0</p>
-                </div>
-                <div class="summary-item">
-                    <h4>准确率</h4>
-                    <p id="accuracy">0%</p>
-                </div>
-            </div>
+            <div class="history-title">答题记录</div>
+            <div class="history-container" id="history-container"></div>
+            <div class="history-stats" id="history-stats">已做 0 题，正确 0 题</div>
         </div>
         
     </div>
 
     <script>
-        // 正确答案映射
-        const correctAnswers = {
-            1: 'd',
-            2: 'a',
-            3: 'c',
-            4: 'b',
-            5: 'a'
+        // 当前正确答案
+        let correctAnswer = 'd';
+
+        // 题目类型到正确答案的映射
+        const typeToAnswer = {
+            'unknown_small': 'd',      // 分布未知，小样本 → 不确定
+            'normal_known': 'a',       // 正态分布，标准差已知 → Z
+            'nonnormal_large': 'c',    // 非正态分布，大样本 → 可以使用Z或t
+            'normal_unknown': 'b',     // 正态分布，标准差未知，小样本 → t
+            'nonnormal_known': 'a'     // 非正态分布，大样本，标准差已知 → Z
         };
-        
+
+        // 题目类型到解析模板的映射
+        const explanationTemplates = {
+            'unknown_small': (q) => `由于我们对总体分布一无所知且样本容量小（n=${q.n}＜30），我们需要更多信息来选择检验统计量。因此正确答案是"不确定"。`,
+            'normal_known': (q) => `由于样本来自标准差已知（σ=${q.stdValue}）的正态分布总体，无论样本容量大小，我们都可以使用 Z 统计量。因为随机变量 <span class="math">Z = (x̄ - μ) / (σ/√n)</span> 服从标准正态分布。`,
+            'nonnormal_large': (q) => `由于样本容量很大（n=${q.n}≥30），根据中心极限定理，样本均值近似服从正态分布。在这种情况下，两种统计量都合适，因为自由度很大时 t 分布与标准正态分布几乎相同。`,
+            'normal_unknown': (q) => `由于样本来自标准差未知的正态分布总体，且样本容量小（n=${q.n}＜30），我们使用 t 统计量，它（精确地）服从自由度为 ${q.n-1} 的 t 分布。`,
+            'nonnormal_known': (q) => `由于样本容量很大（n=${q.n}≥30），样本均值（近似）服从正态分布，且总体标准差已知（σ=${q.stdValue}），Z 检验统计量是合适的。`
+        };
+
+        // 获取题目类型
+        function getQuestionType(q) {
+            if (q.distribution === "unknown") return 'unknown_small';
+            if (q.distribution === "normal" && q.stdKnown) return 'normal_known';
+            if (q.distribution === "non-normal" && !q.stdKnown) return 'nonnormal_large';
+            if (q.distribution === "normal" && !q.stdKnown) return 'normal_unknown';
+            if (q.distribution === "non-normal" && q.stdKnown) return 'nonnormal_known';
+        }
+
+        // 20组背景参数
+        const parameterSets = [
+            { id: 1, background: "我们想要估计年龄在55岁或以上的成年人的平均胆固醇水平。随机抽取的样本均值为191 mg/dL，标准差为19.5 mg/dL。" },
+            { id: 2, background: "研究人员想估计某城市大学生的平均每日睡眠时间。随机抽取的样本均值为6.8小时，标准差为1.2小时。" },
+            { id: 3, background: "某医院想估计高血压患者的平均收缩压。随机抽取的样本均值为145 mmHg，标准差为18 mmHg。" },
+            { id: 4, background: "教育部门想估计小学生的平均每周课外阅读时间。随机抽取的样本均值为4.5小时，标准差为2.1小时。" },
+            { id: 5, background: "营养学家想估计成年人的平均每日卡路里摄入量。随机抽取的样本均值为2150 kcal，标准差为350 kcal。" },
+            { id: 6, background: "市场研究公司想估计某品牌手机用户的平均每日使用时长。随机抽取的样本均值为3.2小时，标准差为1.5小时。" },
+            { id: 7, background: "环保部门想估计城市空气中PM2.5的平均浓度。随机抽取的样本均值为45 μg/m³，标准差为12 μg/m³。" },
+            { id: 8, background: "人力资源部门想估计员工的平均年度培训时长。随机抽取的样本均值为28小时，标准差为8.5小时。" },
+            { id: 9, background: "农业研究人员想估计某地区玉米的平均亩产量。随机抽取的样本均值为650公斤，标准差为85公斤。" },
+            { id: 10, background: "健身中心想估计会员的平均每周锻炼时长。随机抽取的样本均值为4.2小时，标准差为1.8小时。" },
+            { id: 11, background: "电商平台想估计用户的平均单次购物金额。随机抽取的样本均值为185元，标准差为65元。" },
+            { id: 12, background: "心理学家想估计成年人的平均每日屏幕使用时间。随机抽取的样本均值为5.5小时，标准差为2.3小时。" },
+            { id: 13, background: "餐饮连锁店想估计顾客的平均等餐时间。随机抽取的样本均值为12.5分钟，标准差为4.2分钟。" },
+            { id: 14, background: "交通部门想估计城市居民的平均通勤时间。随机抽取的样本均值为35分钟，标准差为12分钟。" },
+            { id: 15, background: "房地产公司想估计某区域房屋的平均面积。随机抽取的样本均值为95平方米，标准差为25平方米。" },
+            { id: 16, background: "制药公司想估计某药物在血液中的平均半衰期。随机抽取的样本均值为6.2小时，标准差为1.4小时。" },
+            { id: 17, background: "语言培训机构想估计学员的平均词汇量。随机抽取的样本均值为3500个，标准差为850个。" },
+            { id: 18, background: "水务公司想估计居民的平均月用水量。随机抽取的样本均值为12.5吨，标准差为3.8吨。" },
+            { id: 19, background: "电信公司想估计用户的平均月度数据流量。随机抽取的样本均值为15.2 GB，标准差为6.5 GB。" },
+            { id: 20, background: "旅游公司想估计游客的平均停留天数。随机抽取的样本均值为4.8天，标准差为2.2天。" }
+        ];
+
+        // 5种题目类型模板
+        const questionTemplates = [
+            { type: 'unknown_small', nRange: [8, 15], stdKnown: false, distribution: "unknown" },
+            { type: 'normal_known', nRange: [14, 28], stdKnown: true, distribution: "normal" },
+            { type: 'nonnormal_large', nRange: [110, 200], stdKnown: false, distribution: "non-normal" },
+            { type: 'normal_unknown', nRange: [15, 26], stdKnown: false, distribution: "normal" },
+            { type: 'nonnormal_known', nRange: [76, 120], stdKnown: true, distribution: "non-normal" }
+        ];
+
+        // 生成问题文本
+        function generateQuestionText(q) {
+            const distText = q.distribution === "normal" ? "正态分布" :
+                            q.distribution === "non-normal" ? "非正态分布" : "我们对其分布知之甚少";
+
+            if (q.distribution === "unknown") {
+                return `样本容量为${q.n}，且来自一个我们对其分布知之甚少的总体。`;
+            } else if (q.stdKnown) {
+                return `样本容量为${q.n}，且来自一个标准差已知为${q.stdValue}的${distText}总体。`;
+            } else {
+                return `样本容量为${q.n}，且来自一个标准差未知的${distText}总体。`;
+            }
+        }
+
+        // 随机生成题目参数
+        function generateRandomQuestion() {
+            // 随机选择背景
+            const bgIndex = Math.floor(Math.random() * parameterSets.length);
+            const bg = parameterSets[bgIndex];
+
+            // 随机选择题目类型
+            const templateIndex = Math.floor(Math.random() * questionTemplates.length);
+            const template = questionTemplates[templateIndex];
+
+            // 随机生成样本容量
+            const n = Math.floor(Math.random() * (template.nRange[1] - template.nRange[0] + 1)) + template.nRange[0];
+
+            // 生成标准差值（如果需要）
+            let stdValue = null;
+            if (template.stdKnown) {
+                stdValue = (Math.random() * 20 + 1).toFixed(1);
+            }
+
+            const question = {
+                n: n,
+                stdKnown: template.stdKnown,
+                stdValue: stdValue,
+                distribution: template.distribution
+            };
+
+            const questionType = getQuestionType(question);
+            correctAnswer = typeToAnswer[questionType];
+
+            return {
+                background: bg.background,
+                question: question,
+                questionType: questionType
+            };
+        }
+
+        // 应用新题目
+        function applyNewQuestion() {
+            const data = generateRandomQuestion();
+
+            // 更新背景
+            document.getElementById('background-text').textContent = data.background + "对于以下抽样场景，请确定在对总体均值进行推断陈述时，哪种检验统计量是合适的。";
+
+            // 更新问题文本
+            document.getElementById('question1-text').textContent = generateQuestionText(data.question);
+
+            // 更新解析文本
+            document.getElementById('explanation1-text').innerHTML = explanationTemplates[data.questionType](data.question);
+        }
+
         // 用户选择的答案
-        let userAnswers = {};
-        
+        let userAnswer = null;
+
+        // 答题历史记录
+        let answerHistory = [];
+
+        // 更新历史记录显示
+        function updateHistoryDisplay() {
+            const container = document.getElementById('history-container');
+            container.innerHTML = '';
+
+            let correctCount = 0;
+            answerHistory.forEach((result, index) => {
+                if (result) correctCount++;
+
+                const icon = document.createElement('div');
+                icon.className = `history-icon ${result ? 'correct' : 'incorrect'}`;
+                icon.innerHTML = result ? '✓' : '✗';
+                container.appendChild(icon);
+            });
+
+            // 更新统计
+            document.getElementById('history-stats').textContent =
+                `已做 ${answerHistory.length} 题，正确 ${correctCount} 题`;
+        }
+
         // 初始化
         document.addEventListener('DOMContentLoaded', function() {
+            // 初始化第一道题
+            applyNewQuestion();
 
             // 显示答案解析按钮点击事件
             document.querySelectorAll('.show-explanation-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
-                    var questionId = this.getAttribute('data-question') || this.id;
-                    var explanation;
-                    if (questionId) {
-                        explanation = this.nextElementSibling;
-                    }
+                    const explanation = this.nextElementSibling;
                     if (explanation) {
                         if (explanation.classList.contains('show')) {
                             explanation.classList.remove('show');
@@ -605,138 +644,107 @@
             // 为每个选项添加点击事件
             document.querySelectorAll('.option').forEach(option => {
                 option.addEventListener('click', function() {
-                    const questionId = this.getAttribute('data-question');
-                    const optionValue = this.getAttribute('data-option');
-                    
-                    // 清除该问题下所有选项的选中状态
-                    document.querySelectorAll(`.option[data-question="${questionId}"]`).forEach(opt => {
+                    // 清除所有选项的选中状态
+                    document.querySelectorAll('.option').forEach(opt => {
                         opt.classList.remove('selected');
                     });
-                    
+
                     // 设置当前选项为选中状态
                     this.classList.add('selected');
-                    
+
                     // 保存用户答案
-                    userAnswers[questionId] = optionValue;
+                    userAnswer = this.getAttribute('data-option');
                 });
             });
-            
+
             // 提交按钮事件
             document.getElementById('submit-btn').addEventListener('click', function() {
-                submitAnswers();
+                submitAnswer();
             });
-            
-            // 重置按钮事件
+
+            // 重置按钮事件（改为下一题）
             document.getElementById('reset-btn').addEventListener('click', function() {
-                resetQuiz();
+                nextQuestion();
             });
-            
-            // 初始隐藏所有解析
+
+            // 初始隐藏解析
             document.querySelectorAll('.explanation').forEach(exp => {
                 exp.classList.remove('active');
             });
         });
-        
+
         // 提交答案函数
-        function submitAnswers() {
-            let correctCount = 0;
-            let totalQuestions = Object.keys(correctAnswers).length;
-            
-            // 检查每个问题
-            for (let i = 1; i <= totalQuestions; i++) {
-                const questionId = i.toString();
-                const userAnswer = userAnswers[questionId];
-                const correctAnswer = correctAnswers[questionId];
-                
-                // 获取该问题的所有选项
-                const options = document.querySelectorAll(`.option[data-question="${questionId}"]`);
-                
-                // 重置所有选项的样式
-                options.forEach(option => {
-                    option.classList.remove('correct', 'incorrect');
-                });
-                
-                // 如果没有选择答案，跳过
-                if (!userAnswer) {
-                    continue;
-                }
-                
-                // 标记正确答案 - removed highlighting
-
-                // 标记用户答案
-                const userOption = document.querySelector(`.option[data-question="${questionId}"][data-option="${userAnswer}"]`);
-
-                // 如果用户答案正确
-                if (userAnswer === correctAnswer) {
-                    correctCount++;
-                } else {
-                    // 如果用户答案错误
-                    if (userOption) {
-                        userOption.classList.add('incorrect');
-                    }
-                }
-
-                // 显示该问题的解析
-                const explanation = document.getElementById(`explanation${questionId}`);
-                if (explanation) {
-                    explanation.classList.add('active');
-                }
+        function submitAnswer() {
+            if (!userAnswer) {
+                alert('请先选择一个答案！');
+                return;
             }
-            
-            // 计算得分
-            const incorrectCount = totalQuestions - correctCount;
-            const accuracy = totalQuestions > 0 ? Math.round((correctCount / totalQuestions) * 100) : 0;
-            
-            // 更新结果显示
-            document.getElementById('score').textContent = `${correctCount}/${totalQuestions}`;
-            document.getElementById('correct-count').textContent = correctCount;
-            document.getElementById('incorrect-count').textContent = incorrectCount;
-            document.getElementById('accuracy').textContent = `${accuracy}%`;
-            
-            // 设置得分文本
-            let scoreText = '';
-            if (correctCount === totalQuestions) {
-                scoreText = '太棒了！全部回答正确！';
-            } else if (correctCount >= totalQuestions * 0.7) {
-                scoreText = '做得不错！继续努力！';
-            } else if (correctCount >= totalQuestions * 0.5) {
-                scoreText = '还可以，但需要更多练习。';
+
+            // 获取所有选项
+            const options = document.querySelectorAll('.option');
+
+            // 重置所有选项的样式
+            options.forEach(option => {
+                option.classList.remove('correct', 'incorrect');
+            });
+
+            // 标记用户答案
+            const userOption = document.querySelector(`.option[data-option="${userAnswer}"]`);
+
+            // 判断正确与否
+            const isCorrect = userAnswer === correctAnswer;
+
+            // 记录答题历史
+            answerHistory.push(isCorrect);
+
+            if (isCorrect) {
+                if (userOption) {
+                    userOption.classList.add('correct');
+                }
             } else {
-                scoreText = '需要复习相关知识点。';
+                if (userOption) {
+                    userOption.classList.add('incorrect');
+                }
+                // 显示正确答案
+                const correctOption = document.querySelector(`.option[data-option="${correctAnswer}"]`);
+                if (correctOption) {
+                    correctOption.classList.add('correct');
+                }
             }
-            document.getElementById('score-text').textContent = scoreText;
-            
-            // 显示结果区域
-            document.getElementById('results').classList.add('active');
-            
-            // 滚动到结果区域
-            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+
+            // 更新历史记录显示
+            updateHistoryDisplay();
+
+            // 显示解析
+            const explanation = document.getElementById('explanation1');
+            if (explanation) {
+                explanation.classList.add('active');
+            }
         }
-        
-        // 重置测验函数
-        function resetQuiz() {
+
+        // 下一题函数
+        function nextQuestion() {
             // 清除用户答案
-            userAnswers = {};
-            
+            userAnswer = null;
+
             // 清除所有选项的样式
             document.querySelectorAll('.option').forEach(option => {
                 option.classList.remove('selected', 'correct', 'incorrect');
             });
-            
-            
-                // 隐藏答案解析按钮
-                document.querySelectorAll('.show-explanation-btn').forEach(btn => {
-                    btn.style.display = 'none';
-                    btn.textContent = '查看答案解析';
-                });
 
-document.querySelectorAll('.explanation').forEach(exp => {
+            // 隐藏解析
+            document.querySelectorAll('.explanation').forEach(exp => {
                 exp.classList.remove('active');
             });
-            
-            // 隐藏结果区域
-            document.getElementById('results').classList.remove('active');
-            
+
+            // 重置解析按钮文本
+            document.querySelectorAll('.show-explanation-btn').forEach(btn => {
+                btn.textContent = '查看答案解析';
+            });
+
+            // 生成新题目
+            applyNewQuestion();
+
             // 滚动到顶部
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }

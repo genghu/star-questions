@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>确定原假设与备择假设 - 假设检验练习</title>
+    <title>确定零假设与备择假设 - 假设检验练习</title>
     <style>
         * {
             box-sizing: border-box;
@@ -44,8 +44,6 @@
             flex-direction: column;
             gap: 30px;
         }
-
-        /* Single column layout */
 
         .card {
             background-color: white;
@@ -91,21 +89,22 @@
 
         .hypothesis-form {
             display: flex;
-            flex-direction: column;
-            gap: 20px;
+            gap: 30px;
             margin-top: 20px;
         }
 
         .hypothesis-input-group {
             display: flex;
-            flex-direction: column;
-            gap: 8px;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
         }
 
         .hypothesis-label {
             font-weight: bold;
             color: #2c5aa0;
-            font-size: 1.1rem;
+            font-size: 1rem;
+            white-space: nowrap;
         }
 
         .hypothesis-input {
@@ -114,6 +113,7 @@
             border-radius: 8px;
             font-size: 1rem;
             transition: border-color 0.3s;
+            font-family: 'Times New Roman', serif;
         }
 
         .hypothesis-input:focus {
@@ -122,79 +122,107 @@
             box-shadow: 0 0 0 3px rgba(74, 123, 200, 0.2);
         }
 
-        .options-container {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
+        .hypothesis-input:disabled {
+            background-color: #f5f5f5;
+            cursor: not-allowed;
+        }
+
+        .hypothesis-input.correct {
+            border-color: #2ecc71;
+            background-color: rgba(46, 204, 113, 0.1);
+        }
+
+        .hypothesis-input.incorrect {
+            border-color: #e74c3c;
+            background-color: rgba(231, 76, 60, 0.1);
+        }
+
+        /* 特殊符号选择区 */
+        .symbol-palette {
+            background-color: #f8fafc;
+            border: 2px solid #e1ecff;
+            border-radius: 10px;
+            padding: 15px;
             margin-top: 20px;
         }
 
-        .option {
-            padding: 15px;
-            border: 2px solid #e1ecff;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s;
+        .symbol-palette-title {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 10px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
 
-        .option:hover {
-            background-color: #f0f6ff;
-            border-color: #a8c6ff;
+        .symbol-palette-title::before {
+            content: "📝";
         }
 
-        .option.selected {
-            background-color: #e8f0ff;
-            border-color: #4a7bc8;
+        .symbol-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
         }
 
-        .option.correct {
-            background-color: #e8f7ef;
-            border-color: #2ecc71;
-        }
-
-        .option.incorrect {
-            background-color: #fdeaea;
-            border-color: #e74c3c;
-        }
-
-        .option-letter {
-            background-color: #e8f0ff;
-            color: #2c5aa0;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
+        .symbol-btn {
+            width: 40px;
+            height: 40px;
+            border: 2px solid #d0dff5;
+            border-radius: 6px;
+            background-color: white;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-weight: bold;
-            flex-shrink: 0;
+            font-family: 'Times New Roman', serif;
         }
 
-        .option-text {
-            flex-grow: 1;
+        .symbol-btn:hover {
+            background-color: #e8f0ff;
+            border-color: #4a7bc8;
+            transform: translateY(-2px);
+        }
+
+        .symbol-btn:active {
+            transform: translateY(0);
+        }
+
+        .symbol-btn.section-label {
+            width: auto;
+            padding: 0 12px;
+            font-size: 0.8rem;
+            color: #999;
+            background-color: transparent;
+            border: none;
+            cursor: default;
+        }
+
+        .symbol-btn.section-label:hover {
+            transform: none;
+            background-color: transparent;
         }
 
         .buttons-container {
             display: flex;
             gap: 15px;
             margin-top: 25px;
-            flex-wrap: wrap;
+            justify-content: flex-start;
         }
 
         .btn {
-            padding: 12px 25px;
+            padding: 10px 20px;
             border: none;
             border-radius: 8px;
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
-            flex-grow: 1;
             text-align: center;
-            min-width: 140px;
+            width: auto;
+            min-width: 100px;
         }
 
         .btn-primary {
@@ -207,14 +235,14 @@
             transform: translateY(-2px);
         }
 
-        .btn-secondary {
-            background-color: #f0f6ff;
-            color: #4a7bc8;
-            border: 2px solid #d0dff5;
+        .btn-next {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
         }
 
-        .btn-secondary:hover {
-            background-color: #e1ecff;
+        .btn-next:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.4);
         }
 
         .result-section {
@@ -239,24 +267,65 @@
             gap: 10px;
         }
 
-        .score-display {
+        /* 新的得分容器样式 */
+        .score-container {
             text-align: center;
+            background: linear-gradient(135deg, #3498db, #2c3e50);
+            color: white;
             padding: 20px;
-            background-color: #f0f6ff;
-            border-radius: 10px;
+            border-radius: 12px;
             margin-bottom: 20px;
+            display: none;
+        }
+
+        .score-container.show {
+            display: block;
         }
 
         .score-value {
             font-size: 2.5rem;
             font-weight: bold;
-            color: #2c5aa0;
-            margin: 10px 0;
+            margin-bottom: 5px;
+        }
+
+        .result-icons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 15px 0;
+        }
+
+        .result-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            font-weight: bold;
+            transition: transform 0.3s ease;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+        }
+
+        .result-icon.correct {
+            background-color: #2ecc71;
+            color: white;
+        }
+
+        .result-icon.incorrect {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .result-icon:hover {
+            transform: scale(1.15);
         }
 
         .score-text {
-            color: #666;
             font-size: 1rem;
+            opacity: 0.9;
         }
 
         .feedback {
@@ -313,58 +382,77 @@
         .math-symbol {
             font-style: italic;
             font-weight: bold;
+            font-family: 'Times New Roman', serif;
         }
 
+        .show-explanation-btn {
+            display: none;
+            margin: 20px auto;
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
+        }
+
+        .show-explanation-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
+        }
+
+        .explanation-section {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .correct-answer-display {
+            margin-top: 10px;
+            padding: 10px 15px;
+            background-color: #e8f7ef;
+            border-radius: 8px;
+            color: #27ae60;
+            font-weight: bold;
+        }
 
         @media (max-width: 767px) {
             body {
                 padding: 15px;
             }
-            
+
             .card {
                 padding: 20px;
             }
-            
+
             h1 {
                 font-size: 1.5rem;
             }
-            
+
             .btn {
-                min-width: 100%;
+                min-width: 90px;
+                padding: 8px 16px;
+            }
+
+            .hypothesis-form {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .symbol-btn {
+                width: 36px;
+                height: 36px;
+                font-size: 1rem;
             }
         }
     </style>
-
-    <style>
-    .show-explanation-btn {
-        display: none;
-        margin: 20px auto;
-        padding: 14px 28px;
-        background: linear-gradient(135deg, #9b59b6, #8e44ad);
-        color: white;
-        border: none;
-        border-radius: 10px;
-        cursor: pointer;
-        font-size: 1.1rem;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
-    }
-    .show-explanation-btn:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
-    }
-    .explanation-section {
-        display: none;
-        margin-top: 20px;
-    }
-    </style>
-    </head>
+</head>
 <body>
     <div class="header">
-        <h1>确定原假设与备择假设
-            <button id="refresh-btn" style="margin-left: 15px; padding: 8px 16px; background: linear-gradient(135deg, #34a853, #2ecc71); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(52, 168, 83, 0.3);">刷新参数</button>
-        </h1>
+        <h1>确定零假设与备择假设</h1>
         <div class="subtitle">置信区间与假设检验练习 · 交互式学习</div>
     </div>
 
@@ -377,330 +465,582 @@
                 </div>
                 <div class="question-text">
                     <div style="margin-top: 20px; padding: 15px; background-color: #f9fbff; border-radius: 8px;">
-                        <p>某玩具制造商声称，其最畅销玩具吸引儿童注意力的平均时间至少为 35 分钟。假设我们怀疑这一说法，并打算进行假设检验以试图反驳该说法。请陈述我们将用于此检验的原假设 H₀ 和备择假设 H₁。</p>
-                    </div>
-                    
-                    <div style="margin-top: 20px;">
-                        <p><strong>参数说明：</strong>此处的说法是关于最畅销玩具吸引儿童注意力的平均时间。因此，该假设检验涉及参数 <span class="math-symbol">μ</span>，在本例中，<span class="math-symbol">μ</span> 代表玩具吸引儿童注意力的所有时间长度的总体均值。</p>
-                        <p>制造商声称 <span class="math-symbol">μ ≥ 35</span>。这是我们为了反驳它而暂时假设为真的说法。</p>
-                        <p><strong>注意：</strong>原假设总是包含等号。</p>
+                        <p id="scenario-text">某玩具制造商声称，其最畅销玩具吸引儿童注意力的平均时间至少为 35 分钟。假设我们怀疑这一说法，并打算进行假设检验以试图反驳该说法.请陈述用于此检验的零假设和备择假设.</p>
                     </div>
                 </div>
-                
+
                 <div class="hypothesis-form">
                     <div class="hypothesis-input-group">
-                        <label class="hypothesis-label">原假设 H₀:</label>
-                        <input type="text" id="h0-input" class="hypothesis-input" value="μ ≥ 35">
+                        <label class="hypothesis-label">零假设</label>
+                        <input type="text" id="h0-label" class="hypothesis-input" style="width: 50px; text-align: center;" placeholder="H?" maxlength="3">
+                        <span>:</span>
+                        <input type="text" id="h0-input" class="hypothesis-input" placeholder="μ ≥ 10" style="flex: 1;">
                     </div>
-                    
+
                     <div class="hypothesis-input-group">
-                        <label class="hypothesis-label">备择假设 H₁:</label>
-                        <input type="text" id="h1-input" class="hypothesis-input" value="μ < 35">
+                        <label class="hypothesis-label">备择假设</label>
+                        <input type="text" id="h1-label" class="hypothesis-input" style="width: 50px; text-align: center;" placeholder="H?" maxlength="3">
+                        <span>:</span>
+                        <input type="text" id="h1-input" class="hypothesis-input" placeholder="μ < 10" style="flex: 1;">
                     </div>
                 </div>
-                
-                <div class="options-container">
-                    <div class="option" data-option="A">
-                        <div class="option-letter">A</div>
-                        <div class="option-text">H₀: μ ≥ 35, H₁: μ < 35</div>
-                    </div>
-                    
-                    <div class="option" data-option="B">
-                        <div class="option-letter">B</div>
-                        <div class="option-text">H₀: μ ≤ 35, H₁: μ > 35</div>
-                    </div>
-                    
-                    <div class="option" data-option="C">
-                        <div class="option-letter">C</div>
-                        <div class="option-text">H₀: μ = 35, H₁: μ ≠ 35</div>
-                    </div>
-                    
-                    <div class="option" data-option="D">
-                        <div class="option-letter">D</div>
-                        <div class="option-text">H₀: μ < 35, H₁: μ ≥ 35</div>
+
+                <!-- 特殊符号选择区 -->
+                <div class="symbol-palette">
+                    <div class="symbol-palette-title">点击符号插入到输入框</div>
+                    <div class="symbol-grid">
+                        <span class="symbol-btn section-label">常用符号:</span>
+                        <button class="symbol-btn" data-symbol="μ" title="mu">μ</button>
+                        <button class="symbol-btn" data-symbol="σ" title="sigma">σ</button>
+                        <button class="symbol-btn" data-symbol="α" title="alpha">α</button>
+                        <button class="symbol-btn" data-symbol="β" title="beta">β</button>
+                        <button class="symbol-btn" data-symbol="χ" title="chi">χ</button>
+
+                        <span class="symbol-btn section-label">假设:</span>
+                        <button class="symbol-btn" data-symbol="H₀" title="H0">H₀</button>
+                        <button class="symbol-btn" data-symbol="H₁" title="H1">H₁</button>
+
+                        <span class="symbol-btn section-label">运算符:</span>
+                        <button class="symbol-btn" data-symbol="=" title="等于">=</button>
+                        <button class="symbol-btn" data-symbol="≠" title="不等于">≠</button>
+                        <button class="symbol-btn" data-symbol="<" title="小于">&lt;</button>
+                        <button class="symbol-btn" data-symbol=">" title="大于">&gt;</button>
+                        <button class="symbol-btn" data-symbol="≤" title="小于等于">≤</button>
+                        <button class="symbol-btn" data-symbol="≥" title="大于等于">≥</button>
+
+                        <span class="symbol-btn section-label">数字:</span>
+                        <button class="symbol-btn" data-symbol="₀" title="下标0">₀</button>
+                        <button class="symbol-btn" data-symbol="₁" title="下标1">₁</button>
+                        <button class="symbol-btn" data-symbol="²" title="平方">²</button>
                     </div>
                 </div>
-                
+
                 <div class="buttons-container">
                     <button id="submit-btn" class="btn btn-primary">提交答案</button>
-                    <button id="reset-btn" class="btn btn-secondary">重新作答</button>
+                    <button id="next-btn" class="btn btn-next">下一题</button>
                 </div>
-                
+
                 <div id="feedback" class="feedback">
                     <div id="feedback-title" class="feedback-title"></div>
                     <div id="feedback-text"></div>
+                    <div id="correct-answer-display" class="correct-answer-display" style="display:none;"></div>
                 </div>
             </div>
         </div>
-        
+
         <div class="result-section">
-            <div class="result-card">
-                <div class="result-title">
-                    <span>答题结果</span>
-                </div>
-                
-                <div class="score-display">
-                    <div class="score-text">当前得分</div>
-                    <div id="score-value" class="score-value">0</div>
-                    <div class="score-text">满分: 100</div>
-                </div>
-                
-                <div>
-                    <div style="margin-bottom: 15px; font-weight: bold; color: #2c5aa0;">答题统计</div>
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                        <span>尝试次数:</span>
-                        <span id="attempt-count">0</span>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                        <span>正确次数:</span>
-                        <span id="correct-count">0</span>
-                    </div>
-                    <div style="display: flex; justify-content: space-between;">
-                        <span>正确率:</span>
-                        <span id="accuracy-rate">0%</span>
-                    </div>
-                </div>
-            </div>
-            
             <div class="card">
                 <button class="show-explanation-btn" id="show-explanation-btn" style="display:none;">查看答案解析</button>
                 <div class="explanation" id="explanation-section" style="display:none;">
                     <div class="explanation-title">知识要点与解析</div>
-                    <div class="explanation-text">
-                        <p>1. 制造商声称玩具吸引注意力的平均时间<strong>至少为35分钟</strong>，即 <span class="math-symbol">μ ≥ 35</span>。</p>
-                        <p>2. 我们怀疑这一说法，并试图通过假设检验来<strong>反驳它</strong>。</p>
-                        <p>3. 在假设检验中，原假设 H₀ 是我们暂时假设为真的陈述，通常包含等号（=, ≥, ≤）。</p>
-                        <p>4. 备择假设 H₁ 是我们想要证明的陈述，是原假设的对立面。</p>
-                        <p>5. 因此，原假设应为制造商的声称：<span class="math-symbol">H₀: μ ≥ 35</span></p>
-                        <p>6. 备择假设应为我们的怀疑：<span class="math-symbol">H₁: μ < 35</span></p>
+                    <div class="explanation-text" id="explanation-text">
+                        <!-- 动态生成 -->
                     </div>
                 </div>
             </div>
+
+            <div class="result-card">
+                <div class="result-title">
+                    <span>答题结果</span>
+                </div>
+
+                <div class="score-container" id="score-container">
+                    <div class="score-value" id="score-value">0/0</div>
+                    <div class="result-icons" id="result-icons">
+                        <!-- 动态生成历史图标 -->
+                    </div>
+                    <div class="score-text" id="score-text">开始答题吧！</div>
+                </div>
+
+            </div>
         </div>
     </div>
-    
-    
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // 题目参数集 - 均匀分布左侧检验、右侧检验、双侧检验
+            const parameterSets = [
+                // ========== 左侧检验 (H₁: μ < X) - 8组 ==========
+                {
+                    scenario: '某玩具制造商声称，其最畅销玩具吸引儿童注意力的平均时间至少为 35 分钟。假设我们怀疑这一说法，并打算进行假设检验以试图反驳该说法。请陈述用于此检验的零假设和备择假设。',
+                    h0: 'μ ≥ 35',
+                    h1: 'μ < 35',
+                    claim: '至少为 35 分钟',
+                    doubt: '更短'
+                },
+                {
+                    scenario: '某灯泡制造商声称，其生产的灯泡平均寿命至少为 1000 小时。消费者协会怀疑这一说法，想要验证灯泡的平均寿命是否真的有那么长。请陈述用于此检验的零假设和备择假设。',
+                    h0: 'μ ≥ 1000',
+                    h1: 'μ < 1000',
+                    claim: '至少为 1000 小时',
+                    doubt: '更短'
+                },
+                {
+                    scenario: '某饮料公司声称其瓶装饮料的容量至少为 500 毫升。质检部门想要验证是否存在少装的情况。请陈述用于此检验的零假设和备择假设。',
+                    h0: 'μ ≥ 500',
+                    h1: 'μ < 500',
+                    claim: '至少为 500 毫升',
+                    doubt: '更少'
+                },
+                {
+                    scenario: '某培训机构声称其培训课程可以使学员的成绩平均提高至少 15 分。有家长怀疑这一说法。请陈述用于此检验的零假设和备择假设。',
+                    h0: 'μ ≥ 15',
+                    h1: 'μ < 15',
+                    claim: '至少为 15 分',
+                    doubt: '更少'
+                },
+                {
+                    scenario: '某高中声称其学生的数学平均成绩至少为 75 分。教育局想要验证这一数据是否属实。请陈述用于此检验的零假设和备择假设。',
+                    h0: 'μ ≥ 75',
+                    h1: 'μ < 75',
+                    claim: '至少为 75 分',
+                    doubt: '更低'
+                },
+                {
+                    scenario: '某制药公司声称其新研发的降压药可以使患者的收缩压平均降低至少 15 mmHg。有医生怀疑效果可能没那么好。请陈述用于此检验的零假设和备择假设。',
+                    h0: 'μ ≥ 15',
+                    h1: 'μ < 15',
+                    claim: '至少为 15 mmHg',
+                    doubt: '更少'
+                },
+                {
+                    scenario: '某农业公司声称其新型小麦品种的亩产量至少为 600 公斤。农民协会想要验证这一说法。请陈述用于此检验的零假设和备择假设。',
+                    h0: 'μ ≥ 600',
+                    h1: 'μ < 600',
+                    claim: '至少为 600 公斤',
+                    doubt: '更低'
+                },
+                {
+                    scenario: '某连锁超市声称其门店的日均销售额至少为 50000 元。审计部门想要验证这一说法是否属实。请陈述用于此检验的零假设和备择假设。',
+                    h0: 'μ ≥ 50000',
+                    h1: 'μ < 50000',
+                    claim: '至少为 50000 元',
+                    doubt: '更低'
+                },
 
-            // 显示答案解析按钮点击事件
-            document.querySelectorAll('.show-explanation-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    var explanation = this.nextElementSibling;
-                    if (explanation) {
-                        if (explanation.style.display === 'none' || explanation.style.display === '') {
-                            explanation.style.display = 'block';
-                            this.textContent = '隐藏答案解析';
-                        } else {
-                            explanation.style.display = 'none';
-                            this.textContent = '查看答案解析';
-                        }
-                    }
-                });
-            });
+                // ========== 右侧检验 (H₁: μ > X) - 8组 ==========
+                {
+                    scenario: '某餐厅声称顾客的平均等待时间不超过 15 分钟。有顾客认为实际等待时间更长。请陈述用于此检验的零假设和备择假设。',
+                    h0: 'μ ≤ 15',
+                    h1: 'μ > 15',
+                    claim: '不超过 15 分钟',
+                    doubt: '更长'
+                },
+                {
+                    scenario: '某银行声称其 ATM 机的平均服务时间不超过 2 分钟。有客户认为服务速度可能更慢。请陈述用于此检验的零假设和备择假设。',
+                    h0: 'μ ≤ 2',
+                    h1: 'μ > 2',
+                    claim: '不超过 2 分钟',
+                    doubt: '更长'
+                },
+                {
+                    scenario: '某快递公司声称包裹的平均配送时间不超过 3 天。有商家怀疑配送效率。请陈述用于此检验的零假设和备择假设。',
+                    h0: 'μ ≤ 3',
+                    h1: 'μ > 3',
+                    claim: '不超过 3 天',
+                    doubt: '更长'
+                },
+                {
+                    scenario: '某药品制造商声称新药的平均治愈时间不超过 7 天。研究人员想要验证这一说法。请陈述用于此检验的零假设和备择假设。',
+                    h0: 'μ ≤ 7',
+                    h1: 'μ > 7',
+                    claim: '不超过 7 天',
+                    doubt: '更长'
+                },
+                {
+                    scenario: '某网络服务商声称其网络延迟不超过 50 毫秒。用户怀疑网络质量。请陈述用于此检验的零假设和备择假设。',
+                    h0: 'μ ≤ 50',
+                    h1: 'μ > 50',
+                    claim: '不超过 50 毫秒',
+                    doubt: '更高'
+                },
+                {
+                    scenario: '某机械厂声称其生产的精密零件直径误差不超过 0.02 毫米。质检部门怀疑实际误差可能更大。请陈述用于此检验的零假设和备择假设。',
+                    h0: 'μ ≤ 0.02',
+                    h1: 'μ > 0.02',
+                    claim: '不超过 0.02 毫米',
+                    doubt: '更大'
+                },
+                {
+                    scenario: '某环保部门声称该地区的 PM2.5 日均浓度不超过 35 微克/立方米。环保组织怀疑实际浓度可能更高。请陈述用于此检验的零假设和备择假设。',
+                    h0: 'μ ≤ 35',
+                    h1: 'μ > 35',
+                    claim: '不超过 35 微克/立方米',
+                    doubt: '更高'
+                },
+                {
+                    scenario: '某汽车制造商声称其新款轿车的百公里油耗不超过 6 升。消费者组织怀疑实际油耗可能更高。请陈述用于此检验的零假设和备择假设。',
+                    h0: 'μ ≤ 6',
+                    h1: 'μ > 6',
+                    claim: '不超过 6 升',
+                    doubt: '更高'
+                },
+
+                // ========== 双侧检验 (H₁: μ ≠ X) - 9组 ==========
+                {
+                    scenario: '某食品加工厂声称其生产的袋装薯片净含量为 150 克。质检部门想要验证实际含量是否符合标准（可能偏多或偏少）。请陈述用于此检验的零假设和备择假设。',
+                    h0: 'μ = 150',
+                    h1: 'μ ≠ 150',
+                    acceptableH0: ['μ = 150', 'μ=150'],
+                    acceptableH1: ['μ ≠ 150', 'μ≠150'],
+                    claim: '为 150 克',
+                    doubt: '不同'
+                },
+                {
+                    scenario: '某矿泉水公司声称其瓶装水的 pH 值为 7.0（中性）。质检部门想要验证实际 pH 值是否偏离标准值。请陈述用于此检验的零假设和备择假设。',
+                    h0: 'μ = 7.0',
+                    h1: 'μ ≠ 7.0',
+                    acceptableH0: ['μ = 7', 'μ = 7.0', 'μ=7', 'μ=7.0'],
+                    acceptableH1: ['μ ≠ 7', 'μ ≠ 7.0', 'μ≠7', 'μ≠7.0'],
+                    claim: '为 7.0',
+                    doubt: '偏离'
+                },
+                {
+                    scenario: '某螺栓制造商声称其生产的 M8 螺栓直径为 8 毫米。客户想要验证实际直径是否精确。请陈述用于此检验的零假设和备择假设。',
+                    h0: 'μ = 8',
+                    h1: 'μ ≠ 8',
+                    acceptableH0: ['μ = 8', 'μ=8', 'μ = 8mm', 'μ=8mm'],
+                    acceptableH1: ['μ ≠ 8', 'μ≠8', 'μ ≠ 8mm', 'μ≠8mm'],
+                    claim: '为 8 毫米',
+                    doubt: '偏离'
+                },
+                {
+                    scenario: '某电子元件厂声称其生产的电阻阻值为 1000 欧姆。采购方想要验证电阻值是否准确。请陈述用于此检验的零假设和备择假设。',
+                    h0: 'μ = 1000',
+                    h1: 'μ ≠ 1000',
+                    acceptableH0: ['μ = 1000', 'μ=1000', 'μ = 1kΩ', 'μ=1kΩ'],
+                    acceptableH1: ['μ ≠ 1000', 'μ≠1000', 'μ ≠ 1kΩ', 'μ≠1kΩ'],
+                    claim: '为 1000 欧姆',
+                    doubt: '偏离'
+                },
+                {
+                    scenario: '某电池厂声称其生产的 AA 电池标称电压为 1.5 伏特。检测机构想要验证实际电压是否符合标称值。请陈述用于此检验的零假设和备择假设。',
+                    h0: 'μ = 1.5',
+                    h1: 'μ ≠ 1.5',
+                    acceptableH0: ['μ = 1.5', 'μ=1.5', 'μ = 1.5V', 'μ=1.5V'],
+                    acceptableH1: ['μ ≠ 1.5', 'μ≠1.5', 'μ ≠ 1.5V', 'μ≠1.5V'],
+                    claim: '为 1.5 伏特',
+                    doubt: '偏离'
+                },
+                {
+                    scenario: '某化肥厂声称其生产的复合肥氮含量为 20%。农业部门怀疑实际含量可能不符合标准（含量偏低会导致肥效不足，偏高则可能造成肥害）。请陈述用于此检验的零假设和备择假设。',
+                    h0: 'μ = 20%',
+                    h1: 'μ ≠ 20%',
+                    acceptableH0: ['μ = 20%', 'μ=20%', 'μ = 0.2', 'μ=0.2', 'μ = 0.20', 'μ=0.20'],
+                    acceptableH1: ['μ ≠ 20%', 'μ≠20%', 'μ ≠ 0.2', 'μ≠0.2', 'μ ≠ 0.20', 'μ≠0.20'],
+                    claim: '为 20%',
+                    doubt: '偏离'
+                },
+                {
+                    scenario: '某药厂声称其生产的片剂每片含有效成分 50 毫克。药监部门想要验证实际含量是否准确。请陈述用于此检验的零假设和备择假设。',
+                    h0: 'μ = 50',
+                    h1: 'μ ≠ 50',
+                    acceptableH0: ['μ = 50', 'μ=50', 'μ = 50mg', 'μ=50mg'],
+                    acceptableH1: ['μ ≠ 50', 'μ≠50', 'μ ≠ 50mg', 'μ≠50mg'],
+                    claim: '为 50 毫克',
+                    doubt: '偏离'
+                },
+                {
+                    scenario: '某酿酒厂声称其产品的酒精度为 12%。质监部门想要验证实际酒精度是否准确。请陈述用于此检验的零假设和备择假设。',
+                    h0: 'μ = 12%',
+                    h1: 'μ ≠ 12%',
+                    acceptableH0: ['μ = 12%', 'μ=12%', 'μ = 0.12', 'μ=0.12', 'μ = 0.12', 'μ=0.12'],
+                    acceptableH1: ['μ ≠ 12%', 'μ≠12%', 'μ ≠ 0.12', 'μ≠0.12', 'μ ≠ 0.12', 'μ≠0.12'],
+                    claim: '为 12%',
+                    doubt: '偏离'
+                },
+                {
+                    scenario: '某玻璃厂声称其生产的玻璃厚度为 5 毫米。建筑检测部门怀疑实际厚度可能不符合规格（偏薄会影响强度，偏厚则影响安装）。请陈述用于此检验的零假设和备择假设。',
+                    h0: 'μ = 5',
+                    h1: 'μ ≠ 5',
+                    acceptableH0: ['μ = 5', 'μ=5', 'μ = 5mm', 'μ=5mm'],
+                    acceptableH1: ['μ ≠ 5', 'μ≠5', 'μ ≠ 5mm', 'μ≠5mm'],
+                    claim: '为 5 毫米',
+                    doubt: '偏离'
+                }
+            ];
 
             // 状态变量
-            let score = 0;
-            let attemptCount = 0;
-            let correctCount = 0;
-            let selectedOption = null;
             let isSubmitted = false;
-            
+            let currentParams = parameterSets[Math.floor(Math.random() * parameterSets.length)];
+            let quizHistory = [];
+            let lastFocusedInput = null;
+
             // DOM元素
-            const options = document.querySelectorAll('.option');
+            const h0LabelInput = document.getElementById('h0-label');
+            const h1LabelInput = document.getElementById('h1-label');
+            const h0Input = document.getElementById('h0-input');
+            const h1Input = document.getElementById('h1-input');
             const submitBtn = document.getElementById('submit-btn');
-            const resetBtn = document.getElementById('reset-btn');
+            const nextBtn = document.getElementById('next-btn');
             const feedback = document.getElementById('feedback');
             const feedbackTitle = document.getElementById('feedback-title');
             const feedbackText = document.getElementById('feedback-text');
-            const scoreValue = document.getElementById('score-value');
-            const attemptCountEl = document.getElementById('attempt-count');
-            const correctCountEl = document.getElementById('correct-count');
-            const accuracyRateEl = document.getElementById('accuracy-rate');
-            const h0Input = document.getElementById('h0-input');
-            const h1Input = document.getElementById('h1-input');
-            
-            // 正确答案
-            const correctAnswer = {
-                h0: "μ ≥ 35",
-                h1: "μ < 35",
-                option: "A"
-            };
-            
-            // 初始化
-            updateStats();
-            
-            // 选项点击事件
-            options.forEach(option => {
-                option.addEventListener('click', function() {
-                    if (isSubmitted) return;
-                    
-                    // 移除之前的选择
-                    options.forEach(opt => {
-                        opt.classList.remove('selected');
-                    });
-                    
-                    // 设置当前选择
-                    this.classList.add('selected');
-                    selectedOption = this.getAttribute('data-option');
-                    
-                    // 根据选项设置输入框的值
-                    switch(selectedOption) {
-                        case 'A':
-                            h0Input.value = "μ ≥ 35";
-                            h1Input.value = "μ < 35";
-                            break;
-                        case 'B':
-                            h0Input.value = "μ ≤ 35";
-                            h1Input.value = "μ > 35";
-                            break;
-                        case 'C':
-                            h0Input.value = "μ = 35";
-                            h1Input.value = "μ ≠ 35";
-                            break;
-                        case 'D':
-                            h0Input.value = "μ < 35";
-                            h1Input.value = "μ ≥ 35";
-                            break;
-                    }
+            const correctAnswerDisplay = document.getElementById('correct-answer-display');
+            const scenarioText = document.getElementById('scenario-text');
+
+            // 初始化题目
+            function initializeQuestion() {
+                scenarioText.textContent = currentParams.scenario;
+                h0LabelInput.value = '';
+                h1LabelInput.value = '';
+                h0Input.value = '';
+                h1Input.value = '';
+                h0LabelInput.disabled = false;
+                h1LabelInput.disabled = false;
+                h0Input.disabled = false;
+                h1Input.disabled = false;
+                h0LabelInput.classList.remove('correct', 'incorrect');
+                h1LabelInput.classList.remove('correct', 'incorrect');
+                h0Input.classList.remove('correct', 'incorrect');
+                h1Input.classList.remove('correct', 'incorrect');
+                isSubmitted = false;
+
+                // 隐藏反馈
+                feedback.className = 'feedback';
+                feedbackTitle.innerHTML = '';
+                feedbackText.innerHTML = '';
+                correctAnswerDisplay.style.display = 'none';
+
+                // 隐藏解析按钮和解析
+                document.getElementById('show-explanation-btn').style.display = 'none';
+                document.getElementById('explanation-section').style.display = 'none';
+                document.getElementById('show-explanation-btn').textContent = '查看答案解析';
+            }
+
+            // 特殊符号插入功能
+            const symbolBtns = document.querySelectorAll('.symbol-btn[data-symbol]');
+
+            // 记录最后聚焦的输入框
+            h0LabelInput.addEventListener('focus', () => lastFocusedInput = h0LabelInput);
+            h1LabelInput.addEventListener('focus', () => lastFocusedInput = h1LabelInput);
+            h0Input.addEventListener('focus', () => lastFocusedInput = h0Input);
+            h1Input.addEventListener('focus', () => lastFocusedInput = h1Input);
+
+            symbolBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const symbol = this.getAttribute('data-symbol');
+                    const targetInput = lastFocusedInput || h0Input;
+
+                    // 在光标位置插入符号
+                    const start = targetInput.selectionStart;
+                    const end = targetInput.selectionEnd;
+                    const value = targetInput.value;
+
+                    targetInput.value = value.substring(0, start) + symbol + value.substring(end);
+                    targetInput.focus();
+
+                    // 将光标移动到插入符号之后
+                    const newPosition = start + symbol.length;
+                    targetInput.setSelectionRange(newPosition, newPosition);
                 });
             });
-            
-            // 输入框变化时清除选项选择
-            [h0Input, h1Input].forEach(input => {
-                input.addEventListener('input', function() {
-                    if (isSubmitted) return;
-                    
-                    // 清除选项选择
-                    options.forEach(opt => {
-                        opt.classList.remove('selected');
-                    });
-                    selectedOption = null;
-                });
-            });
-            
+
+            // 标准化答案（去除空格，统一符号）
+            function normalizeAnswer(answer) {
+                return answer
+                    .replace(/\s+/g, '')
+                    .replace(/μ/g, 'μ')
+                    .replace(/>=/g, '≥')
+                    .replace(/<=/g, '≤')
+                    .replace(/!=/g, '≠')
+                    .replace(/<>/g, '≠');
+            }
+
             // 提交按钮事件
             submitBtn.addEventListener('click', function() {
                 if (isSubmitted) return;
-                
-                attemptCount++;
+
+                const userH0Label = h0LabelInput.value.trim();
+                const userH1Label = h1LabelInput.value.trim();
                 const userH0 = h0Input.value.trim();
                 const userH1 = h1Input.value.trim();
-                
-                // 检查答案
-                let isCorrect = false;
-                let feedbackMessage = "";
-                
-                // 检查是否通过选项选择
-                if (selectedOption) {
-                    isCorrect = selectedOption === correctAnswer.option;
-                    feedbackMessage = isCorrect 
-                        ? `您选择了选项${selectedOption}，这是正确的！`
-                        : `您选择了选项${selectedOption}，这是不正确的。`;
-                } 
-                // 检查是否通过输入框输入
-                else if (userH0 && userH1) {
-                    const normalizedH0 = userH0.replace(/\s+/g, '');
-                    const normalizedH1 = userH1.replace(/\s+/g, '');
-                    const normalizedCorrectH0 = correctAnswer.h0.replace(/\s+/g, '');
-                    const normalizedCorrectH1 = correctAnswer.h1.replace(/\s+/g, '');
-                    
-                    isCorrect = normalizedH0 === normalizedCorrectH0 && normalizedH1 === normalizedCorrectH1;
-                    feedbackMessage = isCorrect
-                        ? `您输入的原假设和备择假设是正确的！`
-                        : `您输入的原假设和备择假设不正确。`;
-                } 
-                // 没有提供答案
-                else {
-                    feedbackMessage = "请选择或输入原假设和备择假设。";
-                    attemptCount--; // 不计算尝试次数
+
+                if (!userH0Label || !userH1Label || !userH0 || !userH1) {
+                    alert('请填写所有内容！');
                     return;
                 }
-                
-                // 更新正确次数
-                if (isCorrect) {
-                    correctCount++;
-                    score = 100;
 
-                    // 显示正确反馈
-                    feedback.className = "feedback correct";
-                    feedbackTitle.className = "feedback-title correct";
-                    feedbackTitle.innerHTML = '✓ 回答正确！';
-                    feedbackText.innerHTML = feedbackMessage;
+                // 标准化标签输入
+                const normalizedH0Label = userH0Label.replace(/[₀0]/g, '₀').replace(/\s+/g, '');
+                const normalizedH1Label = userH1Label.replace(/[₁1]/g, '₁').replace(/\s+/g, '');
 
-                    // 不再高亮显示正确选项
-                    options.forEach(option => {
-                        option.classList.remove('selected');
-                    });
-                } else {
-                    // 显示错误反馈
-                    feedback.className = "feedback incorrect";
-                    feedbackTitle.className = "feedback-title incorrect";
-                    feedbackTitle.innerHTML = '✗ 回答不正确';
-                    feedbackText.innerHTML = feedbackMessage + "< 35";
+                // 检查标签是否正确（第一个应该是H₀，第二个应该是H₁）
+                const isH0LabelCorrect = normalizedH0Label === 'H₀' || normalizedH0Label === 'H0';
+                const isH1LabelCorrect = normalizedH1Label === 'H₁' || normalizedH1Label === 'H1';
 
-                    // 不再高亮显示正确选项，只标记用户选择的错误选项
-                    options.forEach(option => {
-                        const optionLetter = option.getAttribute('data-option');
-                        if (optionLetter === selectedOption) {
-                            option.classList.add('incorrect');
-                        }
-                        option.classList.remove('selected');
-                    });
+                // 检查假设内容
+                const normalizedH0 = normalizeAnswer(userH0);
+                const normalizedH1 = normalizeAnswer(userH1);
+                const normalizedCorrectH0 = normalizeAnswer(currentParams.h0);
+                const normalizedCorrectH1 = normalizeAnswer(currentParams.h1);
+
+                // 检查H0是否正确（支持多种可接受的答案）
+                let isH0ContentCorrect = normalizedH0 === normalizedCorrectH0;
+                if (!isH0ContentCorrect && currentParams.acceptableH0) {
+                    isH0ContentCorrect = currentParams.acceptableH0.some(
+                        ans => normalizeAnswer(ans) === normalizedH0
+                    );
                 }
 
+                // 检查H1是否正确（支持多种可接受的答案）
+                let isH1ContentCorrect = normalizedH1 === normalizedCorrectH1;
+                if (!isH1ContentCorrect && currentParams.acceptableH1) {
+                    isH1ContentCorrect = currentParams.acceptableH1.some(
+                        ans => normalizeAnswer(ans) === normalizedH1
+                    );
+                }
+
+                const isH0Correct = isH0LabelCorrect && isH0ContentCorrect;
+                const isH1Correct = isH1LabelCorrect && isH1ContentCorrect;
+                const isCorrect = isH0Correct && isH1Correct;
+
+                // 更新输入框样式
+                h0LabelInput.classList.add(isH0LabelCorrect ? 'correct' : 'incorrect');
+                h1LabelInput.classList.add(isH1LabelCorrect ? 'correct' : 'incorrect');
+                h0Input.classList.add(isH0ContentCorrect ? 'correct' : 'incorrect');
+                h1Input.classList.add(isH1ContentCorrect ? 'correct' : 'incorrect');
+
                 // 禁用输入
+                h0LabelInput.disabled = true;
+                h1LabelInput.disabled = true;
                 h0Input.disabled = true;
                 h1Input.disabled = true;
                 isSubmitted = true;
 
-                // 显示答案解析按钮
-                var showBtn = document.getElementById('show-explanation-btn');
-                if (showBtn) {
-                    showBtn.style.display = 'inline-block';
+                if (isCorrect) {
+                    feedback.className = 'feedback correct';
+                    feedbackTitle.className = 'feedback-title correct';
+                    feedbackTitle.innerHTML = '✓ 回答正确！';
+                    feedbackText.innerHTML = `您输入的零假设和备择假设完全正确！`;
+                } else {
+                    feedback.className = 'feedback incorrect';
+                    feedbackTitle.className = 'feedback-title incorrect';
+                    feedbackTitle.innerHTML = '✗ 回答不正确';
+
+                    let message = '';
+                    if (!isH0LabelCorrect && !isH1LabelCorrect && !isH0ContentCorrect && !isH1ContentCorrect) {
+                        message = '标签和假设内容都不正确。';
+                    } else if (!isH0LabelCorrect && !isH0ContentCorrect) {
+                        message = '第一个假设的标签和内容都不正确。';
+                    } else if (!isH1LabelCorrect && !isH1ContentCorrect) {
+                        message = '第二个假设的标签和内容都不正确。';
+                    } else if (!isH0LabelCorrect) {
+                        message = '第一个假设的标签不正确，应该是H₀。';
+                    } else if (!isH1LabelCorrect) {
+                        message = '第二个假设的标签不正确，应该是H₁。';
+                    } else if (!isH0ContentCorrect && !isH1ContentCorrect) {
+                        message = '两个假设的内容都不正确。';
+                    } else if (!isH0ContentCorrect) {
+                        message = '零假设的内容不正确。';
+                    } else {
+                        message = '备择假设的内容不正确。';
+                    }
+                    feedbackText.innerHTML = message;
+
+                    // 显示正确答案
+                    correctAnswerDisplay.style.display = 'block';
+                    correctAnswerDisplay.innerHTML = `正确答案：H₀: ${currentParams.h0}, H₁: ${currentParams.h1}`;
                 }
 
-                // 更新统计信息
-                updateStats();
-            });
-            
-            // 重置按钮事件
-            resetBtn.addEventListener('click', function() {
-                // 重置状态
-                isSubmitted = false;
-                selectedOption = null;
-                
-                // 清除选项样式
-                options.forEach(option => {
-                    option.classList.remove('selected', 'correct', 'incorrect');
-                });
-                
-                // 重置输入框
-                h0Input.value = "μ ≥ 35";
-                h1Input.value = "μ < 35";
-                h0Input.disabled = false;
-                h1Input.disabled = false;
-                
-                // 隐藏反馈
-                feedback.className = "feedback";
-                feedbackTitle.innerHTML = '';
-                feedbackText.innerHTML = '';
-                
-                // 重置分数（但保留统计）
-                score = 0;
-                updateStats();
-            });
-            
-            // 更新统计信息
-            function updateStats() {
-                scoreValue.textContent = score;
-                attemptCountEl.textContent = attemptCount;
-                correctCountEl.textContent = correctCount;
+                // 显示答案解析按钮
+                document.getElementById('show-explanation-btn').style.display = 'inline-block';
 
-                const accuracyRate = attemptCount > 0 ? Math.round((correctCount / attemptCount) * 100) : 0;
-                accuracyRateEl.textContent = `${accuracyRate}%`;
+                // 记录历史
+                quizHistory.push({ correct: isCorrect });
+                updateHistoryDisplay();
+            });
+
+            // 下一题按钮事件
+            nextBtn.addEventListener('click', function() {
+                let newParams;
+                do {
+                    newParams = parameterSets[Math.floor(Math.random() * parameterSets.length)];
+                } while (newParams === currentParams && parameterSets.length > 1);
+
+                currentParams = newParams;
+                initializeQuestion();
+            });
+
+            // 显示答案解析按钮点击事件
+            document.getElementById('show-explanation-btn').addEventListener('click', function() {
+                const explanationSection = document.getElementById('explanation-section');
+                if (explanationSection.style.display === 'none' || explanationSection.style.display === '') {
+                    // 动态生成解析内容
+                    updateExplanation();
+                    explanationSection.style.display = 'block';
+                    this.textContent = '隐藏答案解析';
+                } else {
+                    explanationSection.style.display = 'none';
+                    this.textContent = '查看答案解析';
+                }
+            });
+
+            // 动态更新答案解析
+            function updateExplanation() {
+                const explanationText = document.getElementById('explanation-text');
+                const claim = currentParams.claim || '';
+                const doubt = currentParams.doubt || '';
+                const h0 = currentParams.h0;
+                const h1 = currentParams.h1;
+
+                // 判断检验类型
+                let testType = '';
+                let testTypeDesc = '';
+                if (h1.includes('<') && !h1.includes('≠')) {
+                    testType = '左侧检验';
+                    testTypeDesc = '我们怀疑实际值可能比声称值更低/更少/更短';
+                } else if (h1.includes('>') && !h1.includes('≠')) {
+                    testType = '右侧检验';
+                    testTypeDesc = '我们怀疑实际值可能比声称值更高/更多/更长';
+                } else if (h1.includes('≠')) {
+                    testType = '双侧检验';
+                    testTypeDesc = '我们怀疑实际值可能与声称值不同（可能偏高或偏低）';
+                }
+
+                explanationText.innerHTML = `
+                    <p>1. 被检验方声称参数值<strong>${claim}</strong>，即 <span class="math-symbol">${h0}</span>。</p>
+                    <p>2. ${testTypeDesc}。</p>
+                    <p>3. 在假设检验中，零假设 H₀ 是我们暂时假设为真的陈述，通常包含等号（=, ≥, ≤）。</p>
+                    <p>4. 备择假设 H₁ 是我们想要证明的陈述，是零假设的对立面。</p>
+                    <p>5. 因此，零假设应为被检验方的声称：<span class="math-symbol">H₀: ${h0}</span></p>
+                    <p>6. 备择假设应为我们的怀疑：<span class="math-symbol">H₁: ${h1}</span></p>
+                    <p>7. 这是一个<strong>${testType}</strong>。</p>
+                `;
             }
+
+            // 更新历史记录显示
+            function updateHistoryDisplay() {
+                if (quizHistory.length > 0) {
+                    let iconsHtml = '';
+                    quizHistory.forEach((result, index) => {
+                        if (result.correct) {
+                            iconsHtml += `<div class="result-icon correct" title="第${index + 1}题：正确">✓</div>`;
+                        } else {
+                            iconsHtml += `<div class="result-icon incorrect" title="第${index + 1}题：错误">✗</div>`;
+                        }
+                    });
+                    document.getElementById('result-icons').innerHTML = iconsHtml;
+                    document.getElementById('score-container').classList.add('show');
+
+                    // 更新得分文字
+                    const total = quizHistory.length;
+                    const correct = quizHistory.filter(r => r.correct).length;
+                    document.getElementById('score-value').textContent = `${correct}/${total}`;
+
+                    if (correct === total) {
+                        document.getElementById('score-text').textContent = '太棒了！全部答对！';
+                    } else {
+                        const rate = Math.round((correct / total) * 100);
+                        document.getElementById('score-text').textContent = `正确率：${rate}%，继续加油！`;
+                    }
+                } else {
+                    document.getElementById('score-container').classList.remove('show');
+                }
+            }
+
+            // 初始化
+            initializeQuestion();
         });
     </script>
 </body>

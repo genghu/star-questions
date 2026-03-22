@@ -14,8 +14,8 @@
             --neutral-gray: #ecf0f1;
             --text-dark: #2c3e50;
             --text-light: #7f8c8d;
-            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            --border-radius: 8px;
+            --shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            --border-radius: 6px;
         }
 
         * {
@@ -28,78 +28,109 @@
         body {
             background-color: #f9f9f9;
             color: var(--text-dark);
-            line-height: 1.6;
-            padding: 20px;
-            max-width: 1000px;
+            line-height: 1.5;
+            padding: 15px;
+            max-width: 900px;
             margin: 0 auto;
+            font-size: 14px;
         }
 
         header {
             text-align: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
             border-bottom: 2px solid var(--primary-blue);
         }
 
         h1 {
             color: var(--dark-blue);
-            margin-bottom: 10px;
-            font-size: 2.2rem;
+            margin-bottom: 5px;
+            font-size: 1.5rem;
         }
 
         .subtitle {
             color: var(--text-light);
-            font-size: 1.1rem;
+            font-size: 0.9rem;
         }
 
         .problem-container {
             background-color: white;
             border-radius: var(--border-radius);
             box-shadow: var(--shadow);
-            padding: 25px;
-            margin-bottom: 25px;
+            padding: 15px;
+            margin-bottom: 15px;
         }
 
         .problem-title {
             color: var(--primary-blue);
-            border-left: 4px solid var(--primary-blue);
-            padding-left: 15px;
-            margin-bottom: 20px;
-            font-size: 1.4rem;
+            border-left: 3px solid var(--primary-blue);
+            padding-left: 10px;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
         }
 
         .problem-text {
-            margin-bottom: 20px;
-            font-size: 1.05rem;
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+        }
+
+        .problem-text p {
+            margin-bottom: 6px;
         }
 
         .question {
             background-color: var(--light-blue);
-            padding: 20px;
+            padding: 12px;
             border-radius: var(--border-radius);
-            margin: 25px 0;
-            border-left: 4px solid var(--dark-blue);
+            margin: 12px 0;
+            border-left: 3px solid var(--dark-blue);
+            border: 2px solid transparent;
+            transition: border-color 0.3s ease, background-color 0.3s ease;
+        }
+
+        .question.correct {
+            border: 2px solid var(--success-green);
+            background-color: rgba(46, 204, 113, 0.1);
+        }
+
+        .question.incorrect {
+            border: 2px solid var(--error-red);
+            background-color: rgba(231, 76, 60, 0.1);
+        }
+
+        select.correct {
+            border: 2px solid var(--success-green) !important;
+            background-color: rgba(46, 204, 113, 0.1);
+        }
+
+        select.incorrect {
+            border: 2px solid var(--error-red) !important;
+            background-color: rgba(231, 76, 60, 0.1);
         }
 
         .question-title {
             font-weight: 600;
-            margin-bottom: 15px;
+            margin-bottom: 8px;
             color: var(--dark-blue);
-            font-size: 1.2rem;
+            font-size: 1rem;
+        }
+
+        .question p {
+            margin: 4px 0;
         }
 
         .options-container {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 12px;
-            margin-top: 15px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-top: 8px;
         }
 
         .option {
             background-color: white;
             border: 2px solid var(--neutral-gray);
             border-radius: var(--border-radius);
-            padding: 15px;
+            padding: 10px;
             cursor: pointer;
             transition: all 0.2s ease;
             display: flex;
@@ -108,7 +139,7 @@
 
         .option:hover {
             border-color: var(--primary-blue);
-            transform: translateY(-2px);
+            transform: translateY(-1px);
             box-shadow: var(--shadow);
         }
 
@@ -131,47 +162,49 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 28px;
-            height: 28px;
+            width: 24px;
+            height: 24px;
             background-color: var(--primary-blue);
             color: white;
             border-radius: 50%;
-            margin-right: 12px;
+            margin-right: 8px;
             font-weight: bold;
             flex-shrink: 0;
+            font-size: 0.85rem;
         }
 
         .option-text {
             flex-grow: 1;
+            font-size: 0.95rem;
         }
 
         .dropdown-container {
             display: inline-block;
-            margin: 0 5px;
+            margin: 0 3px;
         }
 
         select {
-            padding: 8px 12px;
+            padding: 5px 8px;
             border-radius: 4px;
             border: 1px solid #ccc;
             background-color: white;
-            font-size: 1rem;
-            min-width: 120px;
+            font-size: 0.9rem;
+            min-width: 100px;
         }
 
         .controls {
             display: flex;
             justify-content: center;
-            gap: 15px;
-            margin-top: 30px;
-            margin-bottom: 20px;
+            gap: 10px;
+            margin-top: 15px;
+            margin-bottom: 10px;
         }
 
         button {
-            padding: 12px 24px;
+            padding: 8px 20px;
             border: none;
             border-radius: var(--border-radius);
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s ease;
@@ -186,21 +219,27 @@
             background-color: var(--dark-blue);
         }
 
-        #reset-btn {
-            background-color: var(--neutral-gray);
-            color: var(--text-dark);
+        #next-btn {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
         }
 
-        #reset-btn:hover {
-            background-color: #d5dbdb;
+        #next-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.4);
+        }
+
+        #submit-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
 
         .results {
             background-color: white;
             border-radius: var(--border-radius);
             box-shadow: var(--shadow);
-            padding: 25px;
-            margin-top: 30px;
+            padding: 15px;
+            margin-top: 15px;
             display: none;
         }
 
@@ -208,10 +247,86 @@
             display: block;
         }
 
+        .score-container {
+            text-align: center;
+            background: linear-gradient(135deg, #3498db, #2c3e50);
+            color: white;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            margin-top: 15px;
+            display: none;
+        }
+
+        .score-container.show {
+            display: block;
+        }
+
+        .result-icons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 15px 0;
+        }
+
+        .result-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            font-weight: bold;
+            transition: transform 0.3s ease;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+        }
+
+        .result-icon-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .result-score-label {
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: #fff;
+            background-color: rgba(0,0,0,0.3);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .result-icon.correct {
+            background-color: #2ecc71;
+            color: white;
+        }
+
+        .result-icon.incorrect {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .result-icon:hover {
+            transform: scale(1.15);
+        }
+
+        .score-value {
+            font-size: 2.2rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .score-text {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
         .score-display {
             text-align: center;
-            font-size: 1.8rem;
-            margin-bottom: 20px;
+            font-size: 1.3rem;
+            margin-bottom: 10px;
             color: var(--dark-blue);
         }
 
@@ -221,22 +336,27 @@
         }
 
         .feedback {
-            margin-top: 20px;
-            padding: 15px;
+            margin-top: 10px;
+            padding: 10px;
             border-radius: var(--border-radius);
             background-color: var(--light-blue);
         }
 
         .feedback-title {
             font-weight: 600;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             color: var(--dark-blue);
         }
 
         .explanation {
-            margin-top: 15px;
-            padding-top: 15px;
+            margin-top: 10px;
+            padding-top: 10px;
             border-top: 1px dashed #ccc;
+            font-size: 0.9rem;
+        }
+
+        .explanation p {
+            margin-bottom: 5px;
         }
 
         .correct-answer {
@@ -246,18 +366,19 @@
 
         .table-container {
             overflow-x: auto;
-            margin: 20px 0;
+            margin: 10px 0;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin: 15px 0;
+            margin: 8px 0;
+            font-size: 0.9rem;
         }
 
         th, td {
             border: 1px solid #ddd;
-            padding: 12px;
+            padding: 6px 8px;
             text-align: center;
         }
 
@@ -273,57 +394,30 @@
 
         @media (max-width: 768px) {
             body {
-                padding: 15px;
+                padding: 10px;
             }
-            
+
             h1 {
-                font-size: 1.8rem;
+                font-size: 1.3rem;
             }
-            
+
             .options-container {
                 grid-template-columns: 1fr;
             }
-            
+
             .controls {
                 flex-direction: column;
             }
-            
+
             button {
                 width: 100%;
             }
         }
     </style>
-
-    <style>
-    .show-explanation-btn {
-        display: none;
-        margin: 20px auto;
-        padding: 14px 28px;
-        background: linear-gradient(135deg, #9b59b6, #8e44ad);
-        color: white;
-        border: none;
-        border-radius: 10px;
-        cursor: pointer;
-        font-size: 1.1rem;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
-    }
-    .show-explanation-btn:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
-    }
-    .explanation-section {
-        display: none;
-        margin-top: 20px;
-    }
-    </style>
     </head>
 <body>
     <header>
-        <h1>第一类错误与第二类错误
-            <button class="refresh-btn" id="refresh-btn" style="background-color: #34a853; color: white; padding: 8px 16px; font-size: 0.9rem; border-radius: 6px; margin-left: 20px; border: none; cursor: pointer;">刷新参数</button>
-        </h1>
+        <h1>第一类错误与第二类错误</h1>
         <p class="subtitle">置信区间与假设检验 - 交互式答题练习</p>
     </header>
 
@@ -331,9 +425,7 @@
         <div class="problem-container">
             <h2 class="problem-title">问题背景</h2>
             <div class="problem-text">
-                <p>一家连锁超市的高管对顾客在购物行程中花费的时间感兴趣。据报道，顾客在该超市的平均购物时间 μ 为 <span id="param-mu" class="math">36</span> 分钟，但高管聘请了一位统计顾问，并要求她确定是否可以得出 μ 小于 <span id="param-mu2" class="math">36</span> 分钟的结论。</p>
-                <p>为了进行统计检验，该顾问收集了超市购物时间的一个随机样本。她计算出这些时间的均值为 <span id="param-sample-mean" class="math">32</span> 分钟，时间的标准差为 <span id="param-std" class="math">16</span> 分钟。</p>
-                <p>基于这些信息，回答以下问题。</p>
+                <!-- Content will be dynamically generated by JavaScript -->
             </div>
 
             <div class="question" id="question-a">
@@ -341,10 +433,11 @@
                 <p>H₀: μ
                     <span class="dropdown-container">
                         <select id="h0-operator">
+                            <option value="" selected>请选择</option>
                             <option value="a">小于</option>
                             <option value="b">小于或等于</option>
                             <option value="c">大于</option>
-                            <option value="d" selected>大于或等于</option>
+                            <option value="d">大于或等于</option>
                             <option value="e">不等于</option>
                             <option value="f">等于</option>
                         </select>
@@ -358,7 +451,8 @@
                 <p>H₁: μ
                     <span class="dropdown-container">
                         <select id="h1-operator">
-                            <option value="a" selected>小于</option>
+                            <option value="" selected>请选择</option>
+                            <option value="a">小于</option>
                             <option value="b">小于或等于</option>
                             <option value="c">大于</option>
                             <option value="d">大于或等于</option>
@@ -375,21 +469,23 @@
             </div>
 
             <div class="question" id="question-b">
-                <div class="question-title">(b) 在此检验的背景下，什么是第一类错误？</div>
-                <p>第一类错误是
+                <div class="question-title" id="question-b-title">(b) 在此检验的背景下，什么是第一类错误？</div>
+                <p id="question-b-text">第一类错误是
                     <span class="dropdown-container">
                         <select id="type1-action">
-                            <option value="a" selected>拒绝</option>
+                            <option value="" selected>请选择</option>
+                            <option value="a">拒绝</option>
                             <option value="b">未能拒绝</option>
                         </select>
                     </span>
                     假设 μ 是
                     <span class="dropdown-container">
                         <select id="type1-hypothesis-operator">
+                            <option value="" selected>请选择</option>
                             <option value="a">小于</option>
                             <option value="b">小于或等于</option>
                             <option value="c">大于</option>
-                            <option value="d" selected>大于或等于</option>
+                            <option value="d">大于或等于</option>
                             <option value="e">不等于</option>
                             <option value="f">等于</option>
                         </select>
@@ -402,10 +498,11 @@
                     ，而事实上 μ 是
                     <span class="dropdown-container">
                         <select id="type1-truth-operator">
+                            <option value="" selected>请选择</option>
                             <option value="a">小于</option>
                             <option value="b">小于或等于</option>
                             <option value="c">大于</option>
-                            <option value="d" selected>大于或等于</option>
+                            <option value="d">大于或等于</option>
                             <option value="e">不等于</option>
                             <option value="f">等于</option>
                         </select>
@@ -420,7 +517,7 @@
             </div>
 
             <div class="question" id="question-c">
-                <div class="question-title">(c) 假设顾问决定拒绝原假设。她可能犯哪种错误？</div>
+                <div class="question-title" id="question-c-title">(c) 假设顾问决定拒绝原假设。她可能犯哪种错误？</div>
                 <div class="options-container">
                     <div class="option" data-value="a">
                         <div class="option-letter">A</div>
@@ -436,30 +533,30 @@
 
         <div class="controls">
             <button id="submit-btn">提交答案</button>
-            <button id="reset-btn">重新作答</button>
+            <button id="next-btn">下一题</button>
         </div>
 
         <div class="results" id="results">
             <div class="score-display">得分: <span class="score-number" id="score">0</span> / 3</div>
-            
+
             <div class="feedback">
                 <div class="feedback-title">题目解析</div>
-                
-                <div class="explanation">
-                    <p><strong>(a) 正确答案:</strong> <span class="correct-answer">H₀: μ 大于或等于 36, H₁: μ 小于 36</span></p>
-                    <p>商店高管认为平均购物时间 μ 小于 36 分钟。被检验的陈述是 μ 不小于 36 分钟。在进行检验时，统计顾问将暂时假设 μ 不小于 36 分钟，然后她会检查样本证据，看这个假设是否可以被拒绝。因此，原假设是 μ 不小于 36 分钟，备择假设是 μ 小于 36 分钟。</p>
+
+                <div class="explanation" id="explanation-a">
+                    <p><strong>(a) 正确答案:</strong> <span class="correct-answer" id="answer-a"></span></p>
+                    <p id="explanation-a-text"></p>
                 </div>
-                
-                <div class="explanation">
-                    <p><strong>(b) 正确答案:</strong> <span class="correct-answer">第一类错误是拒绝假设 μ 是大于或等于 36，而事实上 μ 是大于或等于 36。</span></p>
-                    <p>一般来说，第一类错误是当原假设为真时拒绝了它。在此假设检验中，因为原假设是 H₀: μ 大于或等于 36，所以第一类错误是拒绝了 μ 大于或等于 36 分钟的假设，而事实上 μ 大于或等于 36 分钟。</p>
+
+                <div class="explanation" id="explanation-b">
+                    <p><strong>(b) 正确答案:</strong> <span class="correct-answer" id="answer-b"></span></p>
+                    <p id="explanation-b-text"></p>
                 </div>
-                
-                <div class="explanation">
-                    <p><strong>(c) 正确答案:</strong> <span class="correct-answer">第一类错误</span></p>
-                    <p>当原假设被拒绝时，只可能发生一种类型的错误：错误地拒绝原假设，即当原假设为真时拒绝了它。因此，顾问可能犯的是第一类错误。</p>
+
+                <div class="explanation" id="explanation-c">
+                    <p><strong>(c) 正确答案:</strong> <span class="correct-answer" id="answer-c">第一类错误</span></p>
+                    <p id="explanation-c-text">当原假设被拒绝时，只可能发生一种类型的错误：错误地拒绝原假设，即当原假设为真时拒绝了它。因此，顾问可能犯的是第一类错误。</p>
                 </div>
-                
+
                 <div class="table-container">
                     <table>
                         <thead>
@@ -485,22 +582,43 @@
                 </div>
             </div>
         </div>
+
+        <div class="score-container" id="score-container">
+            <div class="score-value" id="score-value">0/3</div>
+            <div class="result-icons" id="result-icons">
+                <!-- 动态生成历史图标 -->
+            </div>
+            <div class="score-text" id="score-text"></div>
+        </div>
     </main>
 
     <script>
         // Parameter sets for hypothesis testing questions
+        // testType: 'left' = 左侧检验 (H₁: μ < mu), 'right' = 右侧检验 (H₁: μ > mu), 'two-tailed' = 双侧检验 (H₁: μ ≠ mu)
         const parameterSets = [
+            // 左侧检验 (7组)
             {
                 mu: 36,
                 sampleMean: 32,
                 std: 16,
-                valueOptions: ['a', 'b', 'c'], // mu, std, sampleMean
+                testType: 'left',
+                scenario: '超市购物',
+                background: '一家连锁超市的高管对顾客在购物行程中花费的时间感兴趣。',
+                reportedMean: '据报道，顾客在该超市的平均购物时间 μ 为 {mu} 分钟。',
+                claim: '高管怀疑平均时间可能比报道的更短，于是聘请了一位统计顾问，想知道平均时间是否小于 {mu} 分钟。',
+                valueOptions: ['a', 'b', 'c'],
                 valueLabels: ['36', '16', '32']
             },
             {
                 mu: 45,
                 sampleMean: 40,
                 std: 12,
+                testType: 'left',
+                errorType: 'type2',
+                scenario: '餐厅用餐',
+                background: '一家连锁餐厅的经理对顾客用餐花费的时间感兴趣。',
+                reportedMean: '据报道，顾客在该餐厅的平均用餐时间 μ 为 {mu} 分钟。',
+                claim: '经理怀疑平均时间可能比报道的更短，于是聘请了一位统计顾问，想知道平均时间是否小于 {mu} 分钟。',
                 valueOptions: ['a', 'b', 'c'],
                 valueLabels: ['45', '12', '40']
             },
@@ -508,6 +626,11 @@
                 mu: 50,
                 sampleMean: 44,
                 std: 15,
+                testType: 'left',
+                scenario: '银行服务',
+                background: '一家银行的主管对客户办理业务花费的时间感兴趣。',
+                reportedMean: '据报道，客户在该银行的平均办理时间 μ 为 {mu} 分钟。',
+                claim: '主管怀疑平均时间可能比报道的更短，于是聘请了一位统计顾问，想知道平均时间是否小于 {mu} 分钟。',
                 valueOptions: ['a', 'b', 'c'],
                 valueLabels: ['50', '15', '44']
             },
@@ -515,6 +638,12 @@
                 mu: 28,
                 sampleMean: 24,
                 std: 10,
+                testType: 'left',
+                errorType: 'type2',
+                scenario: '医院候诊',
+                background: '一家医院的院长对患者候诊花费的时间感兴趣。',
+                reportedMean: '据报道，患者在该医院的平均候诊时间 μ 为 {mu} 分钟。',
+                claim: '院长怀疑平均时间可能比报道的更短，于是聘请了一位统计顾问，想知道平均时间是否小于 {mu} 分钟。',
                 valueOptions: ['a', 'b', 'c'],
                 valueLabels: ['28', '10', '24']
             },
@@ -522,12 +651,207 @@
                 mu: 60,
                 sampleMean: 52,
                 std: 20,
+                testType: 'left',
+                scenario: '快递配送',
+                background: '一家快递公司的负责人对包裹配送花费的时间感兴趣。',
+                reportedMean: '据报道，包裹的平均配送时间 μ 为 {mu} 分钟。',
+                claim: '负责人怀疑平均时间可能比报道的更短，于是聘请了一位统计顾问，想知道平均时间是否小于 {mu} 分钟。',
                 valueOptions: ['a', 'b', 'c'],
                 valueLabels: ['60', '20', '52']
+            },
+            {
+                mu: 42,
+                sampleMean: 37,
+                std: 14,
+                testType: 'left',
+                errorType: 'type2',
+                scenario: '客服通话',
+                background: '一家客服中心的总监对客服通话花费的时间感兴趣。',
+                reportedMean: '据报道，客服的平均通话时长 μ 为 {mu} 分钟。',
+                claim: '总监怀疑平均时间可能比报道的更短，于是聘请了一位统计顾问，想知道平均时间是否小于 {mu} 分钟。',
+                valueOptions: ['a', 'b', 'c'],
+                valueLabels: ['42', '14', '37']
+            },
+            {
+                mu: 55,
+                sampleMean: 48,
+                std: 18,
+                testType: 'left',
+                scenario: '网页加载',
+                background: '一家互联网公司的产品经理对网页加载花费的时间感兴趣。',
+                reportedMean: '据报道，网页的平均加载时间 μ 为 {mu} 秒。',
+                claim: '产品经理怀疑加载时间可能比报道的更短，于是聘请了一位统计顾问，想知道加载时间是否小于 {mu} 秒。',
+                valueOptions: ['a', 'b', 'c'],
+                valueLabels: ['55', '18', '48']
+            },
+            // 右侧检验 (7组)
+            {
+                mu: 30,
+                sampleMean: 35,
+                std: 11,
+                testType: 'right',
+                scenario: '超市购物',
+                background: '一家连锁超市的高管对顾客在购物行程中花费的时间感兴趣。',
+                reportedMean: '据报道，顾客在该超市的平均购物时间 μ 为 {mu} 分钟。',
+                claim: '高管怀疑平均时间可能比报道的更长，于是聘请了一位统计顾问，想知道平均时间是否大于 {mu} 分钟。',
+                valueOptions: ['a', 'b', 'c'],
+                valueLabels: ['30', '11', '35']
+            },
+            {
+                mu: 40,
+                sampleMean: 46,
+                std: 13,
+                testType: 'right',
+                errorType: 'type2',
+                scenario: '餐厅用餐',
+                background: '一家连锁餐厅的经理对顾客用餐花费的时间感兴趣。',
+                reportedMean: '据报道，顾客在该餐厅的平均用餐时间 μ 为 {mu} 分钟。',
+                claim: '经理怀疑平均时间可能比报道的更长，于是聘请了一位统计顾问，想知道平均时间是否大于 {mu} 分钟。',
+                valueOptions: ['a', 'b', 'c'],
+                valueLabels: ['40', '13', '46']
+            },
+            {
+                mu: 25,
+                sampleMean: 30,
+                std: 9,
+                testType: 'right',
+                errorType: 'type2',
+                scenario: '银行服务',
+                background: '一家银行的主管对客户办理业务花费的时间感兴趣。',
+                reportedMean: '据报道，客户在该银行的平均办理时间 μ 为 {mu} 分钟。',
+                claim: '主管怀疑平均时间可能比报道的更长，于是聘请了一位统计顾问，想知道平均时间是否大于 {mu} 分钟。',
+                valueOptions: ['a', 'b', 'c'],
+                valueLabels: ['25', '9', '30']
+            },
+            {
+                mu: 35,
+                sampleMean: 41,
+                std: 12,
+                testType: 'right',
+                errorType: 'type2',
+                scenario: '医院候诊',
+                background: '一家医院的院长对患者候诊花费的时间感兴趣。',
+                reportedMean: '据报道，患者在该医院的平均候诊时间 μ 为 {mu} 分钟。',
+                claim: '院长怀疑平均时间可能比报道的更长，于是聘请了一位统计顾问，想知道平均时间是否大于 {mu} 分钟。',
+                valueOptions: ['a', 'b', 'c'],
+                valueLabels: ['35', '12', '41']
+            },
+            {
+                mu: 48,
+                sampleMean: 55,
+                std: 16,
+                testType: 'right',
+                errorType: 'type2',
+                scenario: '快递配送',
+                background: '一家快递公司的负责人对包裹配送花费的时间感兴趣。',
+                reportedMean: '据报道，包裹的平均配送时间 μ 为 {mu} 分钟。',
+                claim: '负责人怀疑平均时间可能比报道的更长，于是聘请了一位统计顾问，想知道平均时间是否大于 {mu} 分钟。',
+                valueOptions: ['a', 'b', 'c'],
+                valueLabels: ['48', '16', '55']
+            },
+            {
+                mu: 38,
+                sampleMean: 44,
+                std: 14,
+                testType: 'right',
+                scenario: '客服通话',
+                background: '一家客服中心的总监对客服通话花费的时间感兴趣。',
+                reportedMean: '据报道，客服的平均通话时长 μ 为 {mu} 分钟。',
+                claim: '总监怀疑平均时间可能比报道的更长，于是聘请了一位统计顾问，想知道平均时间是否大于 {mu} 分钟。',
+                valueOptions: ['a', 'b', 'c'],
+                valueLabels: ['38', '14', '44']
+            },
+            {
+                mu: 52,
+                sampleMean: 59,
+                std: 17,
+                testType: 'right',
+                scenario: '网页加载',
+                background: '一家互联网公司的产品经理对网页加载花费的时间感兴趣。',
+                reportedMean: '据报道，网页的平均加载时间 μ 为 {mu} 秒。',
+                claim: '产品经理怀疑加载时间可能比报道的更长，于是聘请了一位统计顾问，想知道加载时间是否大于 {mu} 秒。',
+                valueOptions: ['a', 'b', 'c'],
+                valueLabels: ['52', '17', '59']
+            },
+            // 双侧检验 (6组)
+            {
+                mu: 44,
+                sampleMean: 48,
+                std: 14,
+                testType: 'two-tailed',
+                scenario: '超市购物',
+                background: '一家连锁超市的高管对顾客在购物行程中花费的时间感兴趣。',
+                reportedMean: '据报道，顾客在该超市的平均购物时间 μ 为 {mu} 分钟。',
+                claim: '高管怀疑平均时间可能与报道不符，于是聘请了一位统计顾问，想知道顾客的平均购物时间是否为 {mu} 分钟。',
+                valueOptions: ['a', 'b', 'c'],
+                valueLabels: ['44', '14', '48']
+            },
+            {
+                mu: 58,
+                sampleMean: 52,
+                std: 19,
+                testType: 'two-tailed',
+                scenario: '餐厅用餐',
+                background: '一家连锁餐厅的经理对顾客用餐花费的时间感兴趣。',
+                reportedMean: '据报道，顾客在该餐厅的平均用餐时间 μ 为 {mu} 分钟。',
+                claim: '经理怀疑平均时间可能与报道不符，于是聘请了一位统计顾问，想知道顾客的平均用餐时间是否为 {mu} 分钟。',
+                valueOptions: ['a', 'b', 'c'],
+                valueLabels: ['58', '19', '52']
+            },
+            {
+                mu: 65,
+                sampleMean: 70,
+                std: 21,
+                testType: 'two-tailed',
+                errorType: 'type2',
+                scenario: '银行服务',
+                background: '一家银行的主管对客户办理业务花费的时间感兴趣。',
+                reportedMean: '据报道，客户在该银行的平均办理时间 μ 为 {mu} 分钟。',
+                claim: '主管怀疑平均时间可能与报道不符，于是聘请了一位统计顾问,想知道客户的平均办理时间是否为 {mu} 分钟。',
+                valueOptions: ['a', 'b', 'c'],
+                valueLabels: ['65', '21', '70']
+            },
+            {
+                mu: 33,
+                sampleMean: 28,
+                std: 12,
+                testType: 'two-tailed',
+                errorType: 'type2',
+                scenario: '医院候诊',
+                background: '一家医院的院长对患者候诊花费的时间感兴趣。',
+                reportedMean: '据报道，患者在该医院的平均候诊时间 μ 为 {mu} 分钟。',
+                claim: '院长怀疑平均时间可能与报道不符，于是聘请了一位统计顾问，想知道患者的平均候诊时间是否为 {mu} 分钟。',
+                valueOptions: ['a', 'b', 'c'],
+                valueLabels: ['33', '12', '28']
+            },
+            {
+                mu: 72,
+                sampleMean: 66,
+                std: 22,
+                testType: 'two-tailed',
+                scenario: '快递配送',
+                background: '一家快递公司的负责人对包裹配送花费的时间感兴趣。',
+                reportedMean: '据报道，包裹的平均配送时间 μ 为 {mu} 分钟。',
+                claim: '负责人怀疑平均时间可能与报道不符，于是聘请了一位统计顾问，想知道包裹的平均配送时间是否为 {mu} 分钟。',
+                valueOptions: ['a', 'b', 'c'],
+                valueLabels: ['72', '22', '66']
+            },
+            {
+                mu: 68,
+                sampleMean: 74,
+                std: 23,
+                testType: 'two-tailed',
+                scenario: '客服通话',
+                background: '一家客服中心的总监对客服通话花费的时间感兴趣。',
+                reportedMean: '据报道，客服的平均通话时长 μ 为 {mu} 分钟。',
+                claim: '总监怀疑平均时间可能与报道不符，于是聘请了一位统计顾问，想知道客服的平均通话时长是否为 {mu} 分钟。',
+                valueOptions: ['a', 'b', 'c'],
+                valueLabels: ['68', '23', '74']
             }
         ];
 
-        let currentParams = parameterSets[0];
+        // 随机选择初始参数
+        let currentParams = parameterSets[Math.floor(Math.random() * parameterSets.length)];
 
         // Populate dropdown options
         function populateValueDropdowns() {
@@ -540,11 +864,17 @@
                 const select = document.getElementById(selectId);
                 select.innerHTML = '';
 
+                // Add "请选择" as first option
+                const defaultOption = document.createElement('option');
+                defaultOption.value = '';
+                defaultOption.textContent = '请选择';
+                defaultOption.selected = true;
+                select.appendChild(defaultOption);
+
                 currentParams.valueLabels.forEach((label, index) => {
                     const option = document.createElement('option');
                     option.value = currentParams.valueOptions[index];
                     option.textContent = label;
-                    if (index === 0) option.selected = true;
                     select.appendChild(option);
                 });
             });
@@ -552,28 +882,144 @@
 
         // Update parameter display
         function updateParameterDisplay() {
-            document.getElementById('param-mu').textContent = currentParams.mu;
-            document.getElementById('param-mu2').textContent = currentParams.mu;
-            document.getElementById('param-sample-mean').textContent = currentParams.sampleMean;
-            document.getElementById('param-std').textContent = currentParams.std;
+            // Update context text with scenario
+            const problemText = document.querySelector('.problem-text');
+            const unit = currentParams.scenario === '网页加载' ? '秒' : '分钟';
+
+            problemText.innerHTML = `
+                <p>${currentParams.background} ${currentParams.reportedMean.replace(/{mu}/g, currentParams.mu)}</p>
+                <p>${currentParams.claim.replace(/{mu}/g, currentParams.mu)}</p>
+                <p>为了进行统计检验，该顾问收集了一个随机样本。她计算出这些时间的均值为 <span id="param-sample-mean" class="math">${currentParams.sampleMean}</span> ${unit}，时间的标准差为 <span id="param-std" class="math">${currentParams.std}</span> ${unit}。</p>
+                <p>基于这些信息，回答以下问题。</p>
+            `;
         }
 
         // Initialize question
         function initializeQuestion() {
             updateParameterDisplay();
+
+            // 根据errorType更新问题标题
+            const isType2 = currentParams.errorType === 'type2';
+            if (isType2) {
+                // 第二类错误的问题
+                document.getElementById('question-b-title').textContent = '(b) 在此检验的背景下，什么是第二类错误？';
+                document.getElementById('question-b-text').innerHTML = `第二类错误是
+                    <span class="dropdown-container">
+                        <select id="type1-action">
+                            <option value="" selected>请选择</option>
+                            <option value="a">拒绝</option>
+                            <option value="b">未能拒绝</option>
+                        </select>
+                    </span>
+                    假设 μ 是
+                    <span class="dropdown-container">
+                        <select id="type1-hypothesis-operator">
+                            <option value="" selected>请选择</option>
+                            <option value="a">小于</option>
+                            <option value="b">小于或等于</option>
+                            <option value="c">大于</option>
+                            <option value="d">大于或等于</option>
+                            <option value="e">不等于</option>
+                            <option value="f">等于</option>
+                        </select>
+                    </span>
+                    <span class="dropdown-container">
+                        <select id="type1-hypothesis-value">
+                            <!-- Options will be dynamically generated -->
+                        </select>
+                    </span>
+                    ，而事实上 μ 是
+                    <span class="dropdown-container">
+                        <select id="type1-truth-operator">
+                            <option value="" selected>请选择</option>
+                            <option value="a">小于</option>
+                            <option value="b">小于或等于</option>
+                            <option value="c">大于</option>
+                            <option value="d">大于或等于</option>
+                            <option value="e">不等于</option>
+                            <option value="f">等于</option>
+                        </select>
+                    </span>
+                    <span class="dropdown-container">
+                        <select id="type1-truth-value">
+                            <!-- Options will be dynamically generated -->
+                        </select>
+                    </span>
+                    。`;
+                document.getElementById('question-c-title').textContent = '(c) 假设顾问决定未能拒绝原假设。她可能犯哪种错误？';
+            } else {
+                // 第一类错误的问题
+                document.getElementById('question-b-title').textContent = '(b) 在此检验的背景下，什么是第一类错误？';
+                document.getElementById('question-b-text').innerHTML = `第一类错误是
+                    <span class="dropdown-container">
+                        <select id="type1-action">
+                            <option value="" selected>请选择</option>
+                            <option value="a">拒绝</option>
+                            <option value="b">未能拒绝</option>
+                        </select>
+                    </span>
+                    假设 μ 是
+                    <span class="dropdown-container">
+                        <select id="type1-hypothesis-operator">
+                            <option value="" selected>请选择</option>
+                            <option value="a">小于</option>
+                            <option value="b">小于或等于</option>
+                            <option value="c">大于</option>
+                            <option value="d">大于或等于</option>
+                            <option value="e">不等于</option>
+                            <option value="f">等于</option>
+                        </select>
+                    </span>
+                    <span class="dropdown-container">
+                        <select id="type1-hypothesis-value">
+                            <!-- Options will be dynamically generated -->
+                        </select>
+                    </span>
+                    ，而事实上 μ 是
+                    <span class="dropdown-container">
+                        <select id="type1-truth-operator">
+                            <option value="" selected>请选择</option>
+                            <option value="a">小于</option>
+                            <option value="b">小于或等于</option>
+                            <option value="c">大于</option>
+                            <option value="d">大于或等于</option>
+                            <option value="e">不等于</option>
+                            <option value="f">等于</option>
+                        </select>
+                    </span>
+                    <span class="dropdown-container">
+                        <select id="type1-truth-value">
+                            <!-- Options will be dynamically generated -->
+                        </select>
+                    </span>
+                    。`;
+                document.getElementById('question-c-title').textContent = '(c) 假设顾问决定拒绝原假设。她可能犯哪种错误？';
+            }
+
+            // 填充下拉框选项（在HTML设置之后）
             populateValueDropdowns();
 
-            // Reset dropdown selections
-            document.getElementById('h0-operator').value = 'd';
-            document.getElementById('h0-value').value = 'a';
-            document.getElementById('h1-operator').value = 'a';
-            document.getElementById('h1-value').value = 'a';
+            // Reset dropdown selections to "请选择"
+            document.getElementById('h0-operator').value = '';
+            document.getElementById('h0-value').value = '';
+            document.getElementById('h1-operator').value = '';
+            document.getElementById('h1-value').value = '';
 
-            document.getElementById('type1-action').value = 'a';
-            document.getElementById('type1-hypothesis-operator').value = 'd';
-            document.getElementById('type1-hypothesis-value').value = 'a';
-            document.getElementById('type1-truth-operator').value = 'd';
-            document.getElementById('type1-truth-value').value = 'a';
+            document.getElementById('type1-action').value = '';
+            document.getElementById('type1-hypothesis-operator').value = '';
+            document.getElementById('type1-hypothesis-value').value = '';
+            document.getElementById('type1-truth-operator').value = '';
+            document.getElementById('type1-truth-value').value = '';
+
+            // Reset select styles
+            document.querySelectorAll('select').forEach(select => {
+                select.classList.remove('correct', 'incorrect');
+            });
+
+            // Reset question styles
+            document.querySelectorAll('.question').forEach(question => {
+                question.classList.remove('correct', 'incorrect');
+            });
 
             // Reset options (c)
             const optionsC = document.querySelectorAll('#question-c .option');
@@ -583,46 +1029,183 @@
 
             // Hide results
             document.getElementById('results').classList.remove('show');
+
+            // Enable submit button
+            const submitBtn = document.getElementById('submit-btn');
+            submitBtn.disabled = false;
+            submitBtn.style.opacity = '1';
+            submitBtn.style.cursor = 'pointer';
+        }
+
+        // 记录每套题目的得分历史
+        let quizHistory = [];
+
+        // 更新历史记录显示
+        function updateHistoryDisplay() {
+            if (quizHistory.length > 0) {
+                let iconsHtml = '';
+                quizHistory.forEach((result, index) => {
+                    const scoreRatio = `${result.score}/${result.total}`;
+                    if (result.score === result.total) {
+                        iconsHtml += `<div class="result-icon-wrapper" title="第${index + 1}套：${scoreRatio}">
+                            <span class="result-score-label">${scoreRatio}</span>
+                            <div class="result-icon correct">✓</div>
+                        </div>`;
+                    } else {
+                        iconsHtml += `<div class="result-icon-wrapper" title="第${index + 1}套：${scoreRatio}">
+                            <span class="result-score-label">${scoreRatio}</span>
+                            <div class="result-icon incorrect">✗</div>
+                        </div>`;
+                    }
+                });
+                document.getElementById('result-icons').innerHTML = iconsHtml;
+                document.getElementById('score-container').classList.add('show');
+            } else {
+                document.getElementById('score-container').classList.remove('show');
+            }
         }
 
         document.addEventListener('DOMContentLoaded', function() {
-            // Initialize
-            initializeQuestion();
-
             // Get DOM elements
             const submitBtn = document.getElementById('submit-btn');
-            const resetBtn = document.getElementById('reset-btn');
-            const refreshBtn = document.getElementById('refresh-btn');
+            const nextBtn = document.getElementById('next-btn');
             const resultsDiv = document.getElementById('results');
             const scoreSpan = document.getElementById('score');
             const optionsC = document.querySelectorAll('#question-c .option');
 
-            // Correct answers (operators are fixed, values are always 'a' for mu)
-            const correctAnswers = {
-                a: {
-                    h0Operator: 'd', // 大于或等于
-                    h0Value: 'a',    // mu value
-                    h1Operator: 'a', // 小于
-                    h1Value: 'a'     // mu value
-                },
-                b: {
-                    action: 'a',                 // 拒绝
-                    hypothesisOperator: 'd',     // 大于或等于
-                    hypothesisValue: 'a',        // mu value
-                    truthOperator: 'd',          // 大于或等于
-                    truthValue: 'a'              // mu value
-                },
-                c: 'a' // 第一类错误
-            };
+            // Get correct answers based on test type and error type
+            function getCorrectAnswers(testType, errorType) {
+                const isType2 = errorType === 'type2';
+                const answers = {
+                    a: { h0Operator: '', h0Value: 'a', h1Operator: '', h1Value: 'a' },
+                    b: { action: isType2 ? 'b' : 'a', hypothesisOperator: '', hypothesisValue: 'a', truthOperator: '', truthValue: 'a' },
+                    c: isType2 ? 'b' : 'a' // 第二类错误选B，第一类错误选A
+                };
 
-            // Refresh button
-            refreshBtn.addEventListener('click', function() {
+                if (testType === 'left') {
+                    // 左侧检验: H₀: μ ≥ mu, H₁: μ < mu
+                    answers.a.h0Operator = 'd'; // 大于或等于
+                    answers.a.h1Operator = 'a'; // 小于
+                    if (isType2) {
+                        // 第二类错误：未能拒绝 H₀ (μ ≥ mu)，而事实上 μ < mu
+                        answers.b.hypothesisOperator = 'd'; // 大于或等于
+                        answers.b.truthOperator = 'a'; // 小于
+                    } else {
+                        // 第一类错误：拒绝 H₀ (μ ≥ mu)，而事实上 μ ≥ mu
+                        answers.b.hypothesisOperator = 'd'; // 大于或等于
+                        answers.b.truthOperator = 'd'; // 大于或等于
+                    }
+                } else if (testType === 'right') {
+                    // 右侧检验: H₀: μ ≤ mu, H₁: μ > mu
+                    answers.a.h0Operator = 'b'; // 小于或等于
+                    answers.a.h1Operator = 'c'; // 大于
+                    if (isType2) {
+                        // 第二类错误：未能拒绝 H₀ (μ ≤ mu)，而事实上 μ > mu
+                        answers.b.hypothesisOperator = 'b'; // 小于或等于
+                        answers.b.truthOperator = 'c'; // 大于
+                    } else {
+                        // 第一类错误：拒绝 H₀ (μ ≤ mu)，而事实上 μ ≤ mu
+                        answers.b.hypothesisOperator = 'b'; // 小于或等于
+                        answers.b.truthOperator = 'b'; // 小于或等于
+                    }
+                } else {
+                    // 双侧检验: H₀: μ = mu, H₁: μ ≠ mu
+                    answers.a.h0Operator = 'f'; // 等于
+                    answers.a.h1Operator = 'e'; // 不等于
+                    if (isType2) {
+                        // 第二类错误：未能拒绝 H₀ (μ = mu)，而事实上 μ ≠ mu
+                        answers.b.hypothesisOperator = 'f'; // 等于
+                        answers.b.truthOperator = 'e'; // 不等于
+                    } else {
+                        // 第一类错误：拒绝 H₀ (μ = mu)，而事实上 μ = mu
+                        answers.b.hypothesisOperator = 'f'; // 等于
+                        answers.b.truthOperator = 'f'; // 等于
+                    }
+                }
+
+                return answers;
+            }
+
+            let correctAnswers = getCorrectAnswers(currentParams.testType, currentParams.errorType);
+
+            // Initialize
+            initializeQuestion();
+
+            // Update explanation text based on test type and error type
+            function updateExplanations() {
+                const mu = currentParams.mu;
+                const unit = currentParams.scenario === '网页加载' ? '秒' : '分钟';
+                const isType2 = currentParams.errorType === 'type2';
+                let answerAText, explanationAText, answerBText, explanationBText, answerCText, explanationCText;
+                let h0Text, h1Text, comparisonText;
+
+                if (currentParams.testType === 'left') {
+                    h0Text = `大于或等于 ${mu}`;
+                    h1Text = `小于 ${mu}`;
+                    comparisonText = '小于';
+                    answerAText = `H₀: μ ${h0Text}, H₁: μ ${h1Text}`;
+                    explanationAText = `${currentParams.scenario}场景中，被检验的陈述是 μ 不${comparisonText} ${mu} ${unit}。在进行检验时，统计顾问将暂时假设 μ 不${comparisonText} ${mu} ${unit}，然后她会检查样本证据，看这个假设是否可以被拒绝。因此,原假设是 μ ${h0Text}，备择假设是 μ ${h1Text}。`;
+                    if (isType2) {
+                        answerBText = `第二类错误是未能拒绝假设 μ 是 ${h0Text}，而事实上 μ 是 ${h1Text}。`;
+                        explanationBText = `一般来说,第二类错误是当原假设为假时未能拒绝它。在此假设检验中，因为原假设是 H₀: μ ${h0Text}，备择假设是 H₁: μ ${h1Text}，所以第二类错误是未能拒绝 μ ${h0Text}的假设，而事实上 μ ${h1Text}。`;
+                    } else {
+                        answerBText = `第一类错误是拒绝假设 μ 是 ${h0Text}，而事实上 μ 是 ${h0Text}。`;
+                        explanationBText = `一般来说,第一类错误是当原假设为真时拒绝了它。在此假设检验中，因为原假设是 H₀: μ ${h0Text}，所以第一类错误是拒绝了 μ ${h0Text}的假设,而事实上 μ ${h0Text}。`;
+                    }
+                } else if (currentParams.testType === 'right') {
+                    h0Text = `小于或等于 ${mu}`;
+                    h1Text = `大于 ${mu}`;
+                    comparisonText = '大于';
+                    answerAText = `H₀: μ ${h0Text}, H₁: μ ${h1Text}`;
+                    explanationAText = `${currentParams.scenario}场景中，被检验的陈述是 μ 不${comparisonText} ${mu} ${unit}。在进行检验时,统计顾问将暂时假设 μ 不${comparisonText} ${mu} ${unit}，然后她会检查样本证据,看这个假设是否可以被拒绝。因此,原假设是 μ ${h0Text}。备择假设是 μ ${h1Text}。`;
+                    if (isType2) {
+                        answerBText = `第二类错误是未能拒绝假设 μ 是 ${h0Text}，而事实上 μ 是 ${h1Text}.`;
+                        explanationBText = `一般来说,第二类错误是当原假设为假时未能拒绝它。在此假设检验中,因为原假设是 H₀: μ ${h0Text}，备择假设是 H₁: μ ${h1Text}，所以第二类错误是未能拒绝 μ ${h0Text}的假设,而事实上 μ ${h1Text}.`;
+                    } else {
+                        answerBText = `第一类错误是拒绝假设 μ 是 ${h0Text}，而事实上 μ 是 ${h0Text}.`;
+                        explanationBText = `一般来说,第一类错误是当原假设为真时拒绝了它。在此假设检验中,因为原假设是 H₀: μ ${h0Text}，所以第一类错误是拒绝了 μ ${h0Text}的假设,而事实上 μ ${h0Text}.`;
+                    }
+                } else {
+                    h0Text = `等于 ${mu}`;
+                    h1Text = `不等于 ${mu}`;
+                    comparisonText = '不等于';
+                    answerAText = `H₀: μ ${h0Text}, H₁: μ ${h1Text}`;
+                    explanationAText = `${currentParams.scenario}场景中,被检验的陈述是 μ 等于 ${mu} ${unit}。在进行检验时,统计顾问将暂时假设 μ 等于 ${mu} {unit}，然后她会检查样本证据,看这个假设是否可以被拒绝.因此,原假设是 μ ${h0Text}。备择假设是 μ ${h1Text}.`;
+                    if (isType2) {
+                        answerBText = `第二类错误是未能拒绝假设 μ 是 ${h0Text}，而事实上 μ 是 ${h1Text}.`;
+                        explanationBText = `一般来说,第二类错误是当原假设为假时未能拒绝它。在此假设检验中,因为原假设是 H₀: μ ${h0Text}，备择假设是 H₁: μ ${h1Text}，所以第二类错误是未能拒绝 μ ${h0Text}的假设,而事实上 μ ${h1Text}.`;
+                    } else {
+                        answerBText = `第一类错误是拒绝假设 μ 是 ${h0Text}，而事实上 μ 是 ${h0Text}.`;
+                        explanationBText = `一般来说,第一类错误是当原假设为真时拒绝了它。在此假设检验中,因为原假设是 H₀: μ ${h0Text}，所以第一类错误是拒绝了 μ ${h0Text}的假设,而事实上 μ ${h0Text}.`;
+                    }
+                }
+
+                // Update question (c) explanation
+                answerCText = isType2 ? '第二类错误' : '第一类错误';
+                if (isType2) {
+                    explanationCText = '当原假设未能被拒绝时,只可能发生一种类型的错误：错误地未能拒绝原假设,即当原假设为假时未能拒绝它。因此,顾问可能犯的是第二类错误。';
+                } else {
+                    explanationCText = '当原假设被拒绝时,只可能发生一种类型的错误：错误地拒绝原假设,即当原假设为真时拒绝了它。因此,顾问可能犯的是第一类错误。';
+                }
+
+                document.getElementById('answer-a').textContent = answerAText;
+                document.getElementById('explanation-a-text').textContent = explanationAText;
+                document.getElementById('answer-b').textContent = answerBText;
+                document.getElementById('explanation-b-text').textContent = explanationBText;
+                document.getElementById('answer-c').textContent = answerCText;
+                document.getElementById('explanation-c-text').textContent = explanationCText;
+            }
+
+            // Next button
+            nextBtn.addEventListener('click', function() {
                 let newParams;
                 do {
                     newParams = parameterSets[Math.floor(Math.random() * parameterSets.length)];
                 } while (newParams === currentParams && parameterSets.length > 1);
 
                 currentParams = newParams;
+                // Update correct answers based on new test type
+                correctAnswers = getCorrectAnswers(currentParams.testType);
                 initializeQuestion();
             });
 
@@ -636,42 +1219,88 @@
 
             // Submit answer
             submitBtn.addEventListener('click', function() {
-                let score = 0;
-
-                // Check question (a)
+                // Check if all questions are answered
                 const h0Operator = document.getElementById('h0-operator').value;
                 const h0Value = document.getElementById('h0-value').value;
                 const h1Operator = document.getElementById('h1-operator').value;
                 const h1Value = document.getElementById('h1-value').value;
 
-                if (h0Operator === correctAnswers.a.h0Operator &&
-                    h0Value === correctAnswers.a.h0Value &&
-                    h1Operator === correctAnswers.a.h1Operator &&
-                    h1Value === correctAnswers.a.h1Value) {
-                    score++;
-                }
-
-                // Check question (b)
                 const type1Action = document.getElementById('type1-action').value;
                 const type1HypothesisOperator = document.getElementById('type1-hypothesis-operator').value;
                 const type1HypothesisValue = document.getElementById('type1-hypothesis-value').value;
                 const type1TruthOperator = document.getElementById('type1-truth-operator').value;
                 const type1TruthValue = document.getElementById('type1-truth-value').value;
 
-                if (type1Action === correctAnswers.b.action &&
-                    type1HypothesisOperator === correctAnswers.b.hypothesisOperator &&
-                    type1HypothesisValue === correctAnswers.b.hypothesisValue &&
-                    type1TruthOperator === correctAnswers.b.truthOperator &&
-                    type1TruthValue === correctAnswers.b.truthValue) {
+                const selectedOptionC = document.querySelector('#question-c .option.selected');
+
+                // Validate all questions are answered
+                if (!h0Operator || !h0Value || !h1Operator || !h1Value ||
+                    !type1Action || !type1HypothesisOperator || !type1HypothesisValue ||
+                    !type1TruthOperator || !type1TruthValue || !selectedOptionC) {
+                    alert('请完成所有题目后再提交答案！');
+                    return;
+                }
+
+                // Update explanations based on current test type
+                updateExplanations();
+
+                let score = 0;
+                const totalQuestions = 3;
+
+                // Helper function to mark select as correct/incorrect
+                function markSelect(selectId, isCorrect) {
+                    const select = document.getElementById(selectId);
+                    select.classList.remove('correct', 'incorrect');
+                    select.classList.add(isCorrect ? 'correct' : 'incorrect');
+                }
+
+                // Check question (a)
+                const questionA = document.getElementById('question-a');
+                const aH0OperatorCorrect = h0Operator === correctAnswers.a.h0Operator;
+                const aH0ValueCorrect = h0Value === correctAnswers.a.h0Value;
+                const aH1OperatorCorrect = h1Operator === correctAnswers.a.h1Operator;
+                const aH1ValueCorrect = h1Value === correctAnswers.a.h1Value;
+                const aAllCorrect = aH0OperatorCorrect && aH0ValueCorrect && aH1OperatorCorrect && aH1ValueCorrect;
+
+                markSelect('h0-operator', aH0OperatorCorrect);
+                markSelect('h0-value', aH0ValueCorrect);
+                markSelect('h1-operator', aH1OperatorCorrect);
+                markSelect('h1-value', aH1ValueCorrect);
+
+                questionA.classList.remove('correct', 'incorrect');
+                questionA.classList.add(aAllCorrect ? 'correct' : 'incorrect');
+
+                if (aAllCorrect) {
+                    score++;
+                }
+
+                // Check question (b)
+                const questionB = document.getElementById('question-b');
+                const bActionCorrect = type1Action === correctAnswers.b.action;
+                const bHypothesisOperatorCorrect = type1HypothesisOperator === correctAnswers.b.hypothesisOperator;
+                const bHypothesisValueCorrect = type1HypothesisValue === correctAnswers.b.hypothesisValue;
+                const bTruthOperatorCorrect = type1TruthOperator === correctAnswers.b.truthOperator;
+                const bTruthValueCorrect = type1TruthValue === correctAnswers.b.truthValue;
+                const bAllCorrect = bActionCorrect && bHypothesisOperatorCorrect && bHypothesisValueCorrect && bTruthOperatorCorrect && bTruthValueCorrect;
+
+                markSelect('type1-action', bActionCorrect);
+                markSelect('type1-hypothesis-operator', bHypothesisOperatorCorrect);
+                markSelect('type1-hypothesis-value', bHypothesisValueCorrect);
+                markSelect('type1-truth-operator', bTruthOperatorCorrect);
+                markSelect('type1-truth-value', bTruthValueCorrect);
+
+                questionB.classList.remove('correct', 'incorrect');
+                questionB.classList.add(bAllCorrect ? 'correct' : 'incorrect');
+
+                if (bAllCorrect) {
                     score++;
                 }
 
                 // Check question (c)
-                const selectedOptionC = document.querySelector('#question-c .option.selected');
-                if (selectedOptionC && selectedOptionC.getAttribute('data-value') === correctAnswers.c) {
+                if (selectedOptionC.getAttribute('data-value') === correctAnswers.c) {
                     score++;
                     selectedOptionC.classList.add('correct');
-                } else if (selectedOptionC) {
+                } else {
                     selectedOptionC.classList.add('incorrect');
                     optionsC.forEach(opt => {
                         if (opt.getAttribute('data-value') === correctAnswers.c) {
@@ -684,14 +1313,30 @@
                 scoreSpan.textContent = score;
                 resultsDiv.classList.add('show');
 
+                // Record this quiz result to history
+                const isAllCorrect = (score === totalQuestions);
+                quizHistory.push({ score: score, total: totalQuestions });
+
+                // Update history display
+                updateHistoryDisplay();
+
+                // Update score text
+                document.getElementById('score-value').textContent = `${score}/${totalQuestions}`;
+                let message = '';
+                if (isAllCorrect) {
+                    message = '太棒了！这套题全对了！';
+                } else {
+                    message = `这套题答对了 ${score}/${totalQuestions} 道，继续加油！`;
+                }
+                document.getElementById('score-text').textContent = message;
+
+                // Disable submit button
+                this.disabled = true;
+                this.style.opacity = '0.6';
+                this.style.cursor = 'not-allowed';
+
                 // Scroll to results
                 resultsDiv.scrollIntoView({ behavior: 'smooth' });
-            });
-
-            // Reset
-            resetBtn.addEventListener('click', function() {
-                initializeQuestion();
-                window.scrollTo({ top: 0, behavior: 'smooth' });
             });
         });
     </script>

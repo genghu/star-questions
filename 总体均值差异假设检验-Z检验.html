@@ -4,366 +4,499 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>总体均值差异假设检验 Z检验 - 交互式答题</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            background-color: #f0f7ff;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             color: #333;
-            line-height: 1.6;
-            padding: 20px;
-            max-width: 1200px;
+            line-height: 1.4;
+            padding: 10px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
             margin: 0 auto;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            padding: 15px;
         }
 
         header {
             text-align: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 2px solid #4a90e2;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #eaeaea;
         }
 
         h1 {
             color: #2c3e50;
-            margin-bottom: 10px;
-            font-size: 2.2rem;
+            font-size: 1.4rem;
+            margin-bottom: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        h1 i {
+            color: #3498db;
         }
 
         .subtitle {
             color: #7f8c8d;
-            font-size: 1.1rem;
+            font-size: 0.85rem;
         }
 
         .info-box {
-            background-color: #e8f4fc;
-            border-left: 5px solid #4a90e2;
-            padding: 15px;
-            margin-bottom: 25px;
-            border-radius: 0 8px 8px 0;
-            font-size: 0.95rem;
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            padding: 10px 12px;
+            margin-bottom: 12px;
+            border-left: 4px solid #3498db;
+            font-size: 0.9rem;
+        }
+
+        .info-box p {
+            margin-bottom: 4px;
+        }
+
+        .highlight {
+            background-color: #e3f2fd;
+            padding: 1px 5px;
+            border-radius: 3px;
+            font-weight: 600;
+            color: #1565c0;
         }
 
         .question-container {
-            background-color: white;
-            border-radius: 12px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-            padding: 25px;
-            margin-bottom: 25px;
-            transition: transform 0.3s ease;
+            margin-bottom: 12px;
+            padding: 12px;
+            border-radius: 8px;
+            background-color: #f9fbfd;
+            border: 1px solid #e1e8ed;
+            transition: all 0.3s ease;
         }
 
         .question-container:hover {
-            transform: translateY(-3px);
+            box-shadow: 0 2px 8px rgba(52, 152, 219, 0.1);
         }
 
-        .question-number {
-            display: inline-block;
-            background-color: #4a90e2;
-            color: white;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            text-align: center;
-            line-height: 32px;
-            margin-right: 10px;
-            font-weight: bold;
-        }
-
-        .question-text {
-            font-size: 1.2rem;
-            margin-bottom: 20px;
+        .question-title {
             color: #2c3e50;
-            display: flex;
-            align-items: flex-start;
-        }
-
-        .question-content {
-            flex: 1;
-        }
-
-        .options-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 15px;
-            margin-top: 15px;
-        }
-
-        .option {
-            background-color: #f8fafd;
-            border: 2px solid #dbe6f0;
-            border-radius: 8px;
-            padding: 15px;
-            cursor: pointer;
-            transition: all 0.2s ease;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
             display: flex;
             align-items: center;
         }
 
-        .option:hover {
-            background-color: #eef5ff;
-            border-color: #a8c6f0;
-        }
-
-        .option.selected {
-            background-color: #e1f0ff;
-            border-color: #4a90e2;
-        }
-
-        .option.correct {
-            background-color: #e7f7e7;
-            border-color: #2ecc71;
-        }
-
-        .option.incorrect {
-            background-color: #fdeaea;
-            border-color: #e74c3c;
-        }
-
-        .option-letter {
-            display: inline-block;
-            background-color: #b8d4f5;
-            color: #2c3e50;
-            width: 28px;
-            height: 28px;
+        .question-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #3498db;
+            color: white;
+            width: 22px;
+            height: 22px;
             border-radius: 50%;
-            text-align: center;
-            line-height: 28px;
-            margin-right: 12px;
+            margin-right: 8px;
             font-weight: bold;
+            font-size: 0.8rem;
             flex-shrink: 0;
         }
 
-        .option-text {
-            flex: 1;
+        .question-text {
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            color: #2c3e50;
         }
 
-        .math {
-            font-family: 'Times New Roman', Times, serif;
-            font-style: italic;
-            margin: 0 2px;
+        .options-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
         }
 
-        .formula {
-            background-color: #f9f9f9;
-            padding: 15px;
+        .options-container-2col {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .option {
+            background-color: white;
+            border: 2px solid #e1e8ed;
             border-radius: 6px;
-            margin: 15px 0;
-            font-family: 'Courier New', monospace;
-            overflow-x: auto;
-            border-left: 3px solid #4a90e2;
+            padding: 8px 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
+        .option:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            border-color: #3498db;
         }
 
-        .data-table th, .data-table td {
-            border: 1px solid #d1d8e0;
-            padding: 10px;
-            text-align: center;
+        .option.selected {
+            border-color: #3498db;
+            background-color: #e3f2fd;
         }
 
-        .data-table th {
-            background-color: #e8f4fc;
+        .option.correct {
+            border-color: #2ecc71;
+            background-color: #d5f4e6;
+        }
+
+        .option.incorrect {
+            border-color: #e74c3c;
+            background-color: #fadbd8;
+        }
+
+        .option-letter {
+            background-color: #3498db;
+            color: white;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-weight: bold;
+            font-size: 0.75rem;
+            flex-shrink: 0;
         }
 
-        .data-table tr:nth-child(even) {
-            background-color: #f8fafd;
+        .option.correct .option-letter {
+            background-color: #2ecc71;
+        }
+
+        .option.incorrect .option-letter {
+            background-color: #e74c3c;
+        }
+
+        .option-text {
+            font-size: 0.85rem;
+        }
+
+        .fill-blank-input {
+            padding: 6px 10px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            width: 120px;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+        }
+
+        .fill-blank-input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.1);
+        }
+
+        .fill-blank-input.correct {
+            border-color: #2ecc71;
+            background-color: #d5f4e6;
+        }
+
+        .fill-blank-input.incorrect {
+            border-color: #e74c3c;
+            background-color: #fadbd8;
+        }
+
+        .feedback {
+            padding: 6px 10px;
+            border-radius: 4px;
+            margin-top: 8px;
+            display: none;
+            font-size: 0.85rem;
+        }
+
+        .feedback.correct {
+            background-color: #d5f4e6;
+            border-left: 3px solid #2ecc71;
+            color: #27ae60;
+        }
+
+        .feedback.incorrect {
+            background-color: #fadbd8;
+            border-left: 3px solid #e74c3c;
+            color: #c0392b;
+        }
+
+        .feedback.show {
+            display: block;
         }
 
         .controls {
             display: flex;
             justify-content: center;
-            gap: 20px;
-            margin-top: 30px;
-            margin-bottom: 20px;
-        }
-
-        button {
-            background-color: #4a90e2;
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: 600;
-            transition: background-color 0.3s;
-        }
-
-        button:hover {
-            background-color: #357ae8;
-        }
-
-        button#resetBtn {
-            background-color: #95a5a6;
-        }
-
-        button#resetBtn:hover {
-            background-color: #7f8c8d;
-        }
-
-        .refresh-btn {
-            background: linear-gradient(135deg, #27ae60, #2ecc71);
-            color: white;
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-size: 0.9em;
-            margin-left: 10px;
-            border: none;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .refresh-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
-        }
-
-        .results {
-            background-color: white;
-            border-radius: 12px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-            padding: 25px;
-            margin-top: 30px;
-            text-align: center;
-            display: none;
-        }
-
-        .results.show {
-            display: block;
-        }
-
-        .score {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: #4a90e2;
-            margin: 10px 0;
-        }
-
-        .feedback {
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 8px;
-            background-color: #f8fafd;
-        }
-
-        .correct-answer {
-            color: #2ecc71;
-            font-weight: bold;
-        }
-
-        .explanation {
-            margin-top: 15px;
-            text-align: left;
-            padding: 15px;
-            background-color: #f0f7ff;
-            border-radius: 8px;
-            border-left: 4px solid #4a90e2;
-        }
-
-        .explanation h4 {
-            color: #2c3e50;
+            gap: 10px;
+            margin-top: 12px;
             margin-bottom: 10px;
         }
 
+        button {
+            padding: 8px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        #submitBtn {
+            background-color: #3498db;
+            color: white;
+        }
+
+        #submitBtn:hover {
+            background-color: #2980b9;
+            transform: translateY(-1px);
+        }
+
+        #resetBtn {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+        }
+
+        #resetBtn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 3px 10px rgba(39, 174, 96, 0.3);
+        }
+
+        .toggle-explanation-btn {
+            display: none;
+            margin: 10px auto;
+            padding: 8px 20px;
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(155, 89, 182, 0.3);
+        }
+
+        .toggle-explanation-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 3px 12px rgba(155, 89, 182, 0.4);
+        }
+
+        .toggle-explanation-btn.show {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .score-container {
+            text-align: center;
+            background: linear-gradient(135deg, #3498db, #2c3e50);
+            color: white;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 12px;
+            display: none;
+        }
+
+        .score-container.show {
+            display: block;
+        }
+
+        .result-icons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 10px 0;
+        }
+
+        .result-icon {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: transform 0.3s ease;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+
+        .result-icon.correct {
+            background-color: #2ecc71;
+            color: white;
+        }
+
+        .result-icon.incorrect {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .result-icon:hover {
+            transform: scale(1.1);
+        }
+
+        .score-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 3px;
+        }
+
+        .score-text {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .explanation {
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            padding: 10px;
+            margin-top: 10px;
+            border-left: 4px solid #f39c12;
+            font-size: 0.85rem;
+            display: none;
+        }
+
+        .explanation.show {
+            display: block;
+        }
+
+        .explanation h4 {
+            color: #d35400;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.95rem;
+        }
+
+        .explanation h5 {
+            color: #2980b9;
+            margin-bottom: 4px;
+            font-size: 0.9rem;
+        }
+
+        .explanation p {
+            margin-bottom: 3px;
+        }
+
+        .formula {
+            background-color: #f1f8ff;
+            border-radius: 4px;
+            padding: 8px;
+            margin: 6px 0;
+            font-family: 'Cambria', 'Times New Roman', serif;
+            border-left: 3px solid #3498db;
+            font-size: 0.85rem;
+        }
+
+        .critical-value {
+            display: inline-block;
+            padding: 2px 6px;
+            background-color: #f1c40f;
+            border-radius: 3px;
+            margin: 0 2px;
+            font-weight: bold;
+            font-size: 0.85rem;
+        }
+
         @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 1.2rem;
+            }
+
             .options-container {
-                grid-template-columns: 1fr;
+                grid-template-columns: repeat(2, 1fr);
             }
 
             .controls {
                 flex-direction: column;
-                align-items: center;
             }
 
             button {
                 width: 100%;
-                max-width: 300px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 5px;
             }
 
-            h1 {
-                font-size: 1.8rem;
+            .container {
+                padding: 8px;
+            }
+
+            .options-container {
+                grid-template-columns: 1fr;
+            }
+
+            .fill-blank-input {
+                width: 100%;
             }
         }
     </style>
-
-    <style>
-    .show-explanation-btn {
-        display: none;
-        margin: 20px auto;
-        padding: 14px 28px;
-        background: linear-gradient(135deg, #9b59b6, #8e44ad);
-        color: white;
-        border: none;
-        border-radius: 10px;
-        cursor: pointer;
-        font-size: 1.1rem;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
-    }
-    .show-explanation-btn:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
-    }
-    .explanation-section {
-        display: none;
-        margin-top: 20px;
-    }
-    </style>
     </head>
 <body>
-    <header>
-        <h1>总体均值差异假设检验：Z检验</h1>
-        <p class="subtitle">交互式答题系统 - 根据题目内容选择正确答案</p>
-    </header>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-chart-bar"></i> 总体均值差异假设检验：Z检验</h1>
+            <p class="subtitle">交互式答题系统 - 根据题目内容选择正确答案</p>
+        </header>
 
-    <div class="info-box">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <div>
-                <p><strong>题目背景：</strong><span id="questionBackground"></span></p>
-                <p><strong>数据摘要：</strong></p>
-                <table class="data-table" id="dataTable">
-                </table>
-                <p><strong>显著性水平 <span id="alphaValue"></span>，执行<span id="testType"></span>检验。</p>
-            </div>
-            <button class="refresh-btn" onclick="refreshQuestion()">刷新参数</button>
-        </div>
-    </div>
-
-    <div id="questionsContainer">
-    </div>
-
-    <div class="controls">
-        <button id="submitBtn">提交答案</button>
-        <button id="resetBtn">重新作答</button>
-    </div>
-
-    <div id="resultsContainer" class="results">
-        <h2>答题结果</h2>
-        <div class="score">得分: <span id="scoreValue">0</span>/<span id="totalQuestions">6</span></div>
-        <p id="scoreMessage"></p>
-
-        <div class="feedback">
-            <h3>详细反馈：</h3>
-            <div id="questionFeedback"></div>
+        <div class="info-box" id="problemDescription">
         </div>
 
-        <button id="reviewBtn" style="margin-top: 20px;">查看解析</button>
+        <div id="questionsContainer"></div>
+
+        <div class="controls">
+            <button id="submitBtn"><i class="fas fa-paper-plane"></i> 提交答案</button>
+            <button id="resetBtn"><i class="fas fa-redo"></i> 下一题</button>
+        </div>
+
+        <button id="toggle-explanation-btn" class="toggle-explanation-btn">
+            <i class="fas fa-lightbulb"></i> 显示答案解析
+        </button>
+
+        <div class="explanation" id="combined-explanation">
+            <h4><i class="fas fa-calculator"></i> 答案解析</h4>
+            <div id="combined-explanation-content"></div>
+        </div>
+
+        <div class="score-container" id="score-container">
+            <div class="score-title">答题记录</div>
+            <div class="result-icons" id="result-icons"></div>
+            <div class="score-value" id="scoreValue">0/6</div>
+            <div class="score-text" id="scoreMessage"></div>
+        </div>
     </div>
 
     <script>
-        // Parameter sets with pre-computed answers
-        const parameterSets = [
+        document.addEventListener('DOMContentLoaded', function() {
+            // Parameter sets with pre-computed answers
+            const parameterSets = [
             {
                 n1: 60, xbar1: 112.9, s1: 12.9,
                 n2: 90, xbar2: 117.1, s2: 16.7,
@@ -393,7 +526,7 @@
                 n2: 120, xbar2: 43.2, s2: 7.8,
                 alpha: 0.05,
                 testDirection: "双尾",
-                zStatistic: 2.547,
+                zStatistic: 2.615,
                 criticalValue: 1.96,
                 rejectNull: "是",
                 background: "研究两个城市的居民月均支出是否存在差异。",
@@ -405,7 +538,7 @@
                 n2: 180, xbar2: 122.8, s2: 16.9,
                 alpha: 0.01,
                 testDirection: "双尾",
-                zStatistic: 1.502,
+                zStatistic: 1.546,
                 criticalValue: 2.576,
                 rejectNull: "否",
                 background: "比较两种减肥方法的效果是否存在显著差异。",
@@ -423,6 +556,234 @@
                 background: "某公司声称其新产品的满意度(μ₁)不低于竞争对手的产品满意度(μ₂)。",
                 group1Name: "新产品",
                 group2Name: "竞争产品"
+            },
+            {
+                n1: 100, xbar1: 85.2, s1: 12.5,
+                n2: 120, xbar2: 82.8, s2: 11.3,
+                alpha: 0.05,
+                testDirection: "双尾",
+                zStatistic: 1.506,
+                criticalValue: 1.96,
+                rejectNull: "否",
+                background: "比较两个品牌洗衣机的平均使用寿命是否存在差异。",
+                group1Name: "品牌A",
+                group2Name: "品牌B"
+            },
+            {
+                n1: 50, xbar1: 156.8, s1: 18.2,
+                n2: 60, xbar2: 162.3, s2: 15.6,
+                alpha: 0.05,
+                testDirection: "单尾",
+                zStatistic: -1.683,
+                criticalValue: 1.645,
+                rejectNull: "否",
+                background: "某营养师声称，采用新饮食计划的人群体重(μ₁)不高于传统饮食计划的人群体重(μ₂)。",
+                group1Name: "新饮食计划",
+                group2Name: "传统饮食计划"
+            },
+            {
+                n1: 200, xbar1: 58.6, s1: 8.4,
+                n2: 180, xbar2: 55.2, s2: 7.9,
+                alpha: 0.01,
+                testDirection: "双尾",
+                zStatistic: 4.012,
+                criticalValue: 2.576,
+                rejectNull: "是",
+                background: "研究两个省份的居民平均通勤时间是否存在显著差异。",
+                group1Name: "省份A",
+                group2Name: "省份B"
+            },
+            {
+                n1: 80, xbar1: 72.5, s1: 10.8,
+                n2: 95, xbar2: 75.3, s2: 9.6,
+                alpha: 0.1,
+                testDirection: "双尾",
+                zStatistic: -1.809,
+                criticalValue: 1.645,
+                rejectNull: "是",
+                background: "比较两种教学软件对学生数学成绩的影响是否存在差异。",
+                group1Name: "软件A",
+                group2Name: "软件B"
+            },
+            {
+                n1: 150, xbar1: 42800, s1: 5200,
+                n2: 130, xbar2: 41500, s2: 4800,
+                alpha: 0.05,
+                testDirection: "单尾",
+                zStatistic: 2.174,
+                criticalValue: 1.645,
+                rejectNull: "是",
+                background: "某招聘网站声称，IT行业的平均起薪(μ₁)高于金融行业的平均起薪(μ₂)。",
+                group1Name: "IT行业",
+                group2Name: "金融行业"
+            },
+            {
+                n1: 65, xbar1: 88.4, s1: 6.5,
+                n2: 70, xbar2: 86.9, s2: 7.2,
+                alpha: 0.1,
+                testDirection: "双尾",
+                zStatistic: 1.271,
+                criticalValue: 1.645,
+                rejectNull: "否",
+                background: "比较两家医院的患者满意度评分是否存在差异。",
+                group1Name: "医院A",
+                group2Name: "医院B"
+            },
+            {
+                n1: 180, xbar1: 32.5, s1: 5.8,
+                n2: 160, xbar2: 34.2, s2: 6.1,
+                alpha: 0.01,
+                testDirection: "单尾",
+                zStatistic: -2.625,
+                criticalValue: 2.326,
+                rejectNull: "否",
+                background: "某电商平台声称，新用户的平均购物时长(μ₁)不高于老用户的平均购物时长(μ₂)。",
+                group1Name: "新用户",
+                group2Name: "老用户"
+            },
+            {
+                n1: 90, xbar1: 125.8, s1: 15.4,
+                n2: 110, xbar2: 130.2, s2: 14.8,
+                alpha: 0.05,
+                testDirection: "双尾",
+                zStatistic: -2.069,
+                criticalValue: 1.96,
+                rejectNull: "是",
+                background: "研究两种不同工作模式下员工的平均血压是否存在显著差异。",
+                group1Name: "远程办公",
+                group2Name: "办公室工作"
+            },
+            {
+                n1: 250, xbar1: 42.6, s1: 8.2,
+                n2: 230, xbar2: 41.8, s2: 7.6,
+                alpha: 0.1,
+                testDirection: "双尾",
+                zStatistic: 1.073,
+                criticalValue: 1.645,
+                rejectNull: "否",
+                background: "比较两个年龄段人群的平均睡眠时间是否存在差异。",
+                group1Name: "20-30岁",
+                group2Name: "30-40岁"
+            },
+            {
+                n1: 70, xbar1: 95.6, s1: 11.2,
+                n2: 85, xbar2: 98.4, s2: 10.5,
+                alpha: 0.05,
+                testDirection: "单尾",
+                zStatistic: -1.612,
+                criticalValue: -1.645,
+                rejectNull: "否",
+                background: "某健身房声称，新会员的体脂率(μ₁)不低于老会员的体脂率(μ₂)。",
+                group1Name: "新会员",
+                group2Name: "老会员"
+            },
+            {
+                n1: 120, xbar1: 78.5, s1: 9.8,
+                n2: 100, xbar2: 82.3, s2: 10.2,
+                alpha: 0.01,
+                testDirection: "双尾",
+                zStatistic: -2.785,
+                criticalValue: 2.576,
+                rejectNull: "是",
+                background: "研究两种广告策略对消费者购买意愿的影响是否存在显著差异。",
+                group1Name: "策略A",
+                group2Name: "策略B"
+            },
+            {
+                n1: 55, xbar1: 68.2, s1: 7.5,
+                n2: 65, xbar2: 65.8, s2: 8.1,
+                alpha: 0.1,
+                testDirection: "单尾",
+                zStatistic: 1.682,
+                criticalValue: 1.282,
+                rejectNull: "是",
+                background: "某农业专家声称，新品种水稻的产量(μ₁)高于传统品种的产量(μ₂)。",
+                group1Name: "新品种",
+                group2Name: "传统品种"
+            },
+            {
+                n1: 140, xbar1: 52.3, s1: 6.8,
+                n2: 160, xbar2: 54.1, s2: 7.2,
+                alpha: 0.05,
+                testDirection: "双尾",
+                zStatistic: -2.239,
+                criticalValue: 1.96,
+                rejectNull: "是",
+                background: "比较两个班级学生的平均阅读速度是否存在显著差异。",
+                group1Name: "班级A",
+                group2Name: "班级B"
+            },
+            {
+                n1: 85, xbar1: 112.5, s1: 13.6,
+                n2: 75, xbar2: 108.2, s2: 12.4,
+                alpha: 0.1,
+                testDirection: "单尾",
+                zStatistic: 2.104,
+                criticalValue: 1.282,
+                rejectNull: "是",
+                background: "某运动品牌声称，新款跑鞋的耐用性评分(μ₁)高于旧款跑鞋(μ₂)。",
+                group1Name: "新款跑鞋",
+                group2Name: "旧款跑鞋"
+            },
+            {
+                n1: 110, xbar1: 38.6, s1: 5.4,
+                n2: 130, xbar2: 39.2, s2: 5.8,
+                alpha: 0.01,
+                testDirection: "双尾",
+                zStatistic: -0.796,
+                criticalValue: 2.576,
+                rejectNull: "否",
+                background: "研究男女员工的平均每周加班时长是否存在显著差异。",
+                group1Name: "男性员工",
+                group2Name: "女性员工"
+            },
+            {
+                n1: 95, xbar1: 86.4, s1: 9.2,
+                n2: 105, xbar2: 89.1, s2: 8.8,
+                alpha: 0.05,
+                testDirection: "单尾",
+                zStatistic: -2.102,
+                criticalValue: -1.645,
+                rejectNull: "是",
+                background: "某咖啡连锁店声称，其新配方的咖啡评分(μ₁)不低于原配方(μ₂)。",
+                group1Name: "新配方",
+                group2Name: "原配方"
+            },
+            {
+                n1: 175, xbar1: 62.8, s1: 11.5,
+                n2: 165, xbar2: 59.4, s2: 10.8,
+                alpha: 0.05,
+                testDirection: "双尾",
+                zStatistic: 2.806,
+                criticalValue: 1.96,
+                rejectNull: "是",
+                background: "比较两种培训方式下员工的平均绩效得分是否存在显著差异。",
+                group1Name: "线上培训",
+                group2Name: "线下培训"
+            },
+            {
+                n1: 60, xbar1: 145.2, s1: 16.8,
+                n2: 55, xbar2: 148.6, s2: 15.2,
+                alpha: 0.1,
+                testDirection: "双尾",
+                zStatistic: -1.127,
+                criticalValue: 1.645,
+                rejectNull: "否",
+                background: "研究两种运动方式对降低胆固醇的效果是否存在显著差异。",
+                group1Name: "有氧运动",
+                group2Name: "力量训练"
+            },
+            {
+                n1: 130, xbar1: 72.8, s1: 8.6,
+                n2: 145, xbar2: 70.5, s2: 9.2,
+                alpha: 0.01,
+                testDirection: "单尾",
+                zStatistic: 2.109,
+                criticalValue: 2.326,
+                rejectNull: "否",
+                background: "某制药公司声称，新药的治疗效果评分(μ₁)高于安慰剂组(μ₂)。",
+                group1Name: "新药组",
+                group2Name: "安慰剂组"
             }
         ];
 
@@ -450,31 +811,10 @@
             const randomIndex = Math.floor(Math.random() * parameterSets.length);
             currentParams = parameterSets[randomIndex];
 
-            // Update info box
-            document.getElementById('questionBackground').textContent = currentParams.background;
-            document.getElementById('alphaValue').textContent = `α = ${currentParams.alpha}`;
-            document.getElementById('testType').textContent = currentParams.testDirection;
-
-            // Update data table
-            document.getElementById('dataTable').innerHTML = `
-                <tr>
-                    <th>组别</th>
-                    <th>样本量 (n)</th>
-                    <th>样本均值 (x̄)</th>
-                    <th>样本标准差 (s)</th>
-                </tr>
-                <tr>
-                    <td>${currentParams.group1Name}</td>
-                    <td>${currentParams.n1}</td>
-                    <td>${currentParams.xbar1}</td>
-                    <td>${currentParams.s1}</td>
-                </tr>
-                <tr>
-                    <td>${currentParams.group2Name}</td>
-                    <td>${currentParams.n2}</td>
-                    <td>${currentParams.xbar2}</td>
-                    <td>${currentParams.s2}</td>
-                </tr>
+            // Update problem description
+            document.getElementById('problemDescription').innerHTML = `
+                <p>${currentParams.background} ${currentParams.group1Name}有 <span class="highlight">${currentParams.n1}</span> 个样本，平均值为 <span class="highlight">${currentParams.xbar1}</span>，标准差为 <span class="highlight">${currentParams.s1}</span>。${currentParams.group2Name}有 <span class="highlight">${currentParams.n2}</span> 个样本，平均值为 <span class="highlight">${currentParams.xbar2}</span>，标准差为 <span class="highlight">${currentParams.s2}</span>。假设由于用于计算样本标准差的样本量较大，两组数据的总体标准差可以用样本标准差来估计。在 <span class="highlight">${currentParams.alpha}</span> 的显著性水平下，是否有足够的证据拒绝该说法？执行<span class="highlight">${currentParams.testDirection}</span>检验，然后回答下面的问题。</p>
+                <p style="margin-top: 8px; color: #666; font-size: 0.9rem;">中间计算请至少保留三位小数，并按照题目要求对答案进行四舍五入。</p>
             `;
 
             // Generate questions
@@ -620,8 +960,224 @@
             });
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
-            refreshQuestion();
+            // 记录每套题目的正误历史
+            let quizHistory = [];
+
+            // Fisher-Yates 洗牌算法
+            function shuffleArray(array) {
+                const arr = [...array];
+                for (let i = arr.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [arr[i], arr[j]] = [arr[j], arr[i]];
+                }
+                return arr;
+            }
+
+            function refreshQuestion() {
+                // Reset state
+                userAnswers = {};
+                submitted = false;
+
+                // Select random parameter set
+                const randomIndex = Math.floor(Math.random() * parameterSets.length);
+                currentParams = parameterSets[randomIndex];
+
+                // Update problem description
+                document.getElementById('problemDescription').innerHTML = `
+                    <p>${currentParams.background} ${currentParams.group1Name}有 <span class="highlight">${currentParams.n1}</span> 个样本，平均值为 <span class="highlight">${currentParams.xbar1}</span>，标准差为 <span class="highlight">${currentParams.s1}</span>。${currentParams.group2Name}有 <span class="highlight">${currentParams.n2}</span> 个样本，平均值为 <span class="highlight">${currentParams.xbar2}</span>，标准差为 <span class="highlight">${currentParams.s2}</span>。假设由于用于计算样本标准差的样本量较大，两组数据的总体标准差可以用样本标准差来估计。在 <span class="highlight">${currentParams.alpha}</span> 的显著性水平下，是否有足够的证据拒绝该说法？执行<span class="highlight">${currentParams.testDirection}</span>检验，然后回答下面的问题。</p>
+                    <p style="margin-top: 8px; color: #666; font-size: 0.9rem;">中间计算请至少保留三位小数，并按照题目要求对答案进行四舍五入。</p>
+                `;
+
+                // Generate questions
+                renderQuestions();
+
+                // 隐藏解析
+                document.getElementById('combined-explanation').classList.remove('show');
+                document.getElementById('toggle-explanation-btn').classList.remove('show');
+
+                // 更新历史记录显示
+                updateHistoryDisplay();
+            }
+
+            function renderQuestions() {
+                const container = document.getElementById('questionsContainer');
+                const isOneTailed = currentParams.testDirection === "单尾";
+
+                const questions = [
+                    {
+                        number: 1,
+                        title: "原假设 H₀",
+                        correctAnswer: isOneTailed ? "H₀: μ₁ - μ₂ ≥ 0" : "H₀: μ₁ - μ₂ = 0",
+                        options: isOneTailed ? [
+                            { value: "H₀: μ₁ - μ₂ ≥ 0" },
+                            { value: "H₀: μ₁ - μ₂ ≤ 0" },
+                            { value: "H₀: μ₁ - μ₂ = 0" },
+                            { value: "H₀: μ₁ ≥ μ₂" }
+                        ] : [
+                            { value: "H₀: μ₁ - μ₂ = 0" },
+                            { value: "H₀: μ₁ - μ₂ ≥ 0" },
+                            { value: "H₀: μ₁ - μ₂ ≤ 0" },
+                            { value: "H₀: μ₁ ≠ μ₂" }
+                        ],
+                        explanation: `原假设反映声称内容。${isOneTailed ? '单尾检验中，原假设为μ₁ ≥ μ₂或等价的μ₁ - μ₂ ≥ 0。' : '双尾检验中，原假设为μ₁ = μ₂或等价的μ₁ - μ₂ = 0。'}`
+                    },
+                    {
+                        number: 2,
+                        title: "备择假设 H₁",
+                        correctAnswer: isOneTailed ? "H₁: μ₁ - μ₂ < 0" : "H₁: μ₁ - μ₂ ≠ 0",
+                        options: isOneTailed ? [
+                            { value: "H₁: μ₁ - μ₂ < 0" },
+                            { value: "H₁: μ₁ - μ₂ > 0" },
+                            { value: "H₁: μ₁ - μ₂ ≠ 0" },
+                            { value: "H₁: μ₁ < μ₂" }
+                        ] : [
+                            { value: "H₁: μ₁ - μ₂ ≠ 0" },
+                            { value: "H₁: μ₁ - μ₂ > 0" },
+                            { value: "H₁: μ₁ - μ₂ < 0" },
+                            { value: "H₁: μ₁ ≠ μ₂" }
+                        ],
+                        explanation: `备择假设与原假设对立。${isOneTailed ? '单尾检验中，备择假设为μ₁ < μ₂或等价的μ₁ - μ₂ < 0。' : '双尾检验中，备择假设为μ₁ ≠ μ₂或等价的μ₁ - μ₂ ≠ 0。'}`
+                    },
+                    {
+                        number: 3,
+                        title: "检验统计量的类型",
+                        correctAnswer: "Z",
+                        options: [
+                            { value: "Z" },
+                            { value: "t" },
+                            { value: "卡方" },
+                            { value: "F" }
+                        ],
+                        explanation: `由于样本量较大(n₁=${currentParams.n1}≥30，n₂=${currentParams.n2}≥30)，且总体标准差用样本标准差估计，因此使用Z检验统计量。`
+                    },
+                    {
+                        number: 4,
+                        title: "检验统计量的值（至少四舍五入到三位小数）",
+                        correctAnswer: currentParams.zStatistic,
+                        isNumerical: true,
+                        tolerance: 0.01,
+                        explanation: `z = (${currentParams.xbar1} - ${currentParams.xbar2}) / √(${currentParams.s1}²/${currentParams.n1} + ${currentParams.s2}²/${currentParams.n2}) ≈ ${currentParams.zStatistic}`
+                    },
+                    {
+                        number: 5,
+                        title: `在 α = ${currentParams.alpha} 显著性水平下的临界值（至少四舍五入到三位小数）`,
+                        correctAnswer: currentParams.criticalValue,
+                        isNumerical: true,
+                        tolerance: 0.01,
+                        explanation: `${isOneTailed ? '这是单尾检验' : '这是双尾检验'}，显著性水平α=${currentParams.alpha}。临界值 = ${currentParams.criticalValue}`
+                    },
+                    {
+                        number: 6,
+                        title: `我们能否拒绝原假设？`,
+                        correctAnswer: currentParams.rejectNull,
+                        options: [
+                            { value: "是" },
+                            { value: "否" }
+                        ],
+                        explanation: `检验统计量 z = ${currentParams.zStatistic}，临界值 = ${currentParams.criticalValue}。${currentParams.rejectNull === "是" ? `因为检验统计量落在拒绝域内，拒绝原假设。` : `因为检验统计量不在拒绝域内，不能拒绝原假设。`}`
+                    }
+                ];
+
+                container.innerHTML = questions.map(q => {
+                    const shuffledOptions = q.options ? shuffleArray(q.options.map((opt, i) => ({...opt, letter: String.fromCharCode(65 + i)}))) : [];
+
+                    return `
+                    <div class="question-container" data-correct="${q.isNumerical ? q.correctAnswer : q.correctAnswer}" data-question="${q.number}" data-is-numerical="${q.isNumerical || false}" data-tolerance="${q.tolerance || 0}">
+                        <div class="question-title">
+                            <span class="question-number">${q.number}</span>
+                            <span>${q.title}</span>
+                        </div>
+                        ${q.isNumerical ? `
+                            <div style="margin-top: 8px;">
+                                <input type="number" step="0.001" class="fill-blank-input" data-question="${q.number}">
+                            </div>
+                            <div class="feedback" id="feedback${q.number}"></div>
+                        ` : `
+                            <div class="options-container ${q.number === 6 ? 'options-container-2col' : ''}">
+                                ${shuffledOptions.map(opt => `
+                                    <div class="option" data-value="${opt.value}" data-correct="${opt.value === q.correctAnswer}">
+                                        <div class="option-letter">${opt.letter}</div>
+                                        <div class="option-text">${opt.value}</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                            <div class="feedback" id="feedback${q.number}"></div>
+                        `}
+                    </div>
+                `}).join('');
+
+                // 渲染合并的解析
+                renderCombinedExplanation();
+
+                // Add click events to options
+                document.querySelectorAll('.option').forEach(option => {
+                    option.addEventListener('click', function() {
+                        const questionContainer = this.closest('.question-container');
+                        const allOptions = questionContainer.querySelectorAll('.option');
+
+                        allOptions.forEach(opt => {
+                            opt.classList.remove('selected');
+                        });
+
+                        this.classList.add('selected');
+                        userAnswers[questionContainer.dataset.question] = this.dataset.value;
+
+                        // 隐藏反馈
+                        const feedback = questionContainer.querySelector('.feedback');
+                        if (feedback) feedback.classList.remove('show', 'correct', 'incorrect');
+                    });
+                });
+
+                // Add input events for numerical inputs
+                document.querySelectorAll('.fill-blank-input').forEach(input => {
+                    input.addEventListener('input', function() {
+                        const questionContainer = this.closest('.question-container');
+                        const questionNum = questionContainer.dataset.question;
+                        userAnswers[questionNum] = this.value.trim();
+
+                        // 隐藏反馈
+                        const feedback = questionContainer.querySelector('.feedback');
+                        if (feedback) feedback.classList.remove('show', 'correct', 'incorrect');
+                        this.classList.remove('correct', 'incorrect');
+                    });
+                });
+            }
+
+            function renderCombinedExplanation() {
+                const isOneTailed = currentParams.testDirection === "单尾";
+                const questions = [
+                    { num: 1, title: "原假设 H₀", explanation: isOneTailed ? '单尾检验中，原假设为 μ₁ ≥ μ₂ 或等价的 μ₁ - μ₂ ≥ 0。' : '双尾检验中，原假设为 μ₁ = μ₂ 或等价的 μ₁ - μ₂ = 0。' },
+                    { num: 2, title: "备择假设 H₁", explanation: isOneTailed ? '单尾检验中，备择假设为 μ₁ < μ₂ 或等价的 μ₁ - μ₂ < 0。' : '双尾检验中，备择假设为 μ₁ ≠ μ₂ 或等价的 μ₁ - μ₂ ≠ 0。' },
+                    { num: 3, title: "检验统计量类型", explanation: `由于样本量较大(n₁=${currentParams.n1}≥30，n₂=${currentParams.n2}≥30)，使用Z检验统计量。` },
+                    { num: 4, title: "检验统计量的值", explanation: `<div class="formula">z = (x̄₁ - x̄₂) / √(s₁²/n₁ + s₂²/n₂)<br>z = (${currentParams.xbar1} - ${currentParams.xbar2}) / √(${currentParams.s1}²/${currentParams.n1} + ${currentParams.s2}²/${currentParams.n2})<br>z ≈ <strong>${currentParams.zStatistic}</strong></div>` },
+                    { num: 5, title: "临界值", explanation: `${isOneTailed ? '单尾检验' : '双尾检验'}，显著性水平 α = ${currentParams.alpha}。<div class="formula">临界值 = <span class="critical-value">${currentParams.criticalValue}</span></div>` },
+                    { num: 6, title: "结论", explanation: `检验统计量 z = ${currentParams.zStatistic}，临界值 = ${currentParams.criticalValue}。<div class="formula">${currentParams.rejectNull === "是" ? '因为检验统计量落在拒绝域内，<strong>拒绝</strong>原假设。' : '因为检验统计量不在拒绝域内，<strong>不能拒绝</strong>原假设。'}</div>` }
+                ];
+
+                document.getElementById('combined-explanation-content').innerHTML = questions.map(q => `
+                    <div style="margin-bottom: 12px;">
+                        <h5>${q.num}. ${q.title}</h5>
+                        <p>${q.explanation}</p>
+                    </div>
+                `).join('');
+            }
+
+            function updateHistoryDisplay() {
+                if (quizHistory.length > 0) {
+                    let iconsHtml = '';
+                    quizHistory.forEach((result, index) => {
+                        if (result) {
+                            iconsHtml += `<div class="result-icon correct" title="第${index + 1}套：全对"><i class="fas fa-check"></i></div>`;
+                        } else {
+                            iconsHtml += `<div class="result-icon incorrect" title="第${index + 1}套：有错"><i class="fas fa-times"></i></div>`;
+                        }
+                    });
+                    document.getElementById('result-icons').innerHTML = iconsHtml;
+                    document.getElementById('score-container').classList.add('show');
+                } else {
+                    document.getElementById('score-container').classList.remove('show');
+                }
+            }
 
             // Submit button
             document.getElementById('submitBtn').addEventListener('click', function() {
@@ -629,89 +1185,79 @@
                 submitted = true;
 
                 let score = 0;
-                let totalQuestions = document.querySelectorAll('.question-container').length;
-                let feedbackHTML = '';
+                const totalQuestions = 6;
 
-                document.querySelectorAll('.question-container').forEach((question, index) => {
+                document.querySelectorAll('.question-container').forEach((question) => {
                     const correctAnswer = question.dataset.correct;
                     const isNumerical = question.dataset.isNumerical === 'true';
                     const tolerance = parseFloat(question.dataset.tolerance) || 0.01;
+                    const questionNum = question.dataset.question;
+                    const feedback = document.getElementById(`feedback${questionNum}`);
 
                     if (isNumerical) {
-                        // Handle numerical input
-                        const numericalInput = question.querySelector('.numerical-answer');
-                        const inputContainer = question.querySelector('.numerical-input-container');
+                        const input = question.querySelector('.fill-blank-input');
+                        const userAnswer = parseFloat(input.value);
 
-                        if (numericalInput && numericalInput.value.trim() !== '') {
-                            const userAnswer = parseFloat(numericalInput.value);
-                            const correctValue = parseFloat(correctAnswer);
-                            const isCorrect = Math.abs(userAnswer - correctValue) <= tolerance;
+                        input.classList.remove('correct', 'incorrect');
 
+                        if (!isNaN(userAnswer)) {
+                            const isCorrect = Math.abs(userAnswer - parseFloat(correctAnswer)) <= tolerance;
                             if (isCorrect) {
                                 score++;
-                                numericalInput.style.borderColor = '#2ecc71';
-                                numericalInput.style.backgroundColor = '#e7f7e7';
-                                feedbackHTML += `<p><strong>问题 ${index + 1}:</strong> <span class="correct-answer">正确</span> (你的答案: ${userAnswer}, 正确答案: ${correctValue})</p>`;
+                                input.classList.add('correct');
+                                feedback.textContent = '正确！';
+                                feedback.className = 'feedback correct show';
                             } else {
-                                numericalInput.style.borderColor = '#e74c3c';
-                                numericalInput.style.backgroundColor = '#fdeaea';
-                                feedbackHTML += `<p><strong>问题 ${index + 1}:</strong> <span style="color: #e74c3c;">错误</span> (你的答案: ${userAnswer}, 正确答案: ${correctValue})</p>`;
+                                input.classList.add('incorrect');
+                                feedback.textContent = `不正确。正确答案是 ${correctAnswer}。`;
+                                feedback.className = 'feedback incorrect show';
                             }
                         } else {
-                            feedbackHTML += `<p><strong>问题 ${index + 1}:</strong> <span style="color: #f39c12;">未作答</span> (正确答案: ${correctAnswer})</p>`;
+                            feedback.textContent = `请输入答案。正确答案是 ${correctAnswer}。`;
+                            feedback.className = 'feedback incorrect show';
                         }
                     } else {
-                        // Handle multiple choice
                         const selectedOption = question.querySelector('.option.selected');
+                        const correctOption = question.querySelector('.option[data-correct="true"]');
 
-                        const allOptions = question.querySelectorAll('.option');
-                        allOptions.forEach(opt => {
+                        question.querySelectorAll('.option').forEach(opt => {
                             opt.classList.remove('correct', 'incorrect');
                         });
 
                         if (selectedOption) {
-                            const userAnswer = selectedOption.dataset.value;
-
-                            if (userAnswer === correctAnswer) {
+                            const isCorrect = selectedOption.dataset.correct === 'true';
+                            if (isCorrect) {
                                 score++;
                                 selectedOption.classList.add('correct');
-                                feedbackHTML += `<p><strong>问题 ${index + 1}:</strong> <span class="correct-answer">正确</span></p>`;
+                                feedback.textContent = '正确！';
+                                feedback.className = 'feedback correct show';
                             } else {
                                 selectedOption.classList.add('incorrect');
-                                feedbackHTML += `<p><strong>问题 ${index + 1}:</strong> <span style="color: #e74c3c;">错误</span></p>`;
+                                if (correctOption) correctOption.classList.add('correct');
+                                feedback.textContent = '不正确。';
+                                feedback.className = 'feedback incorrect show';
                             }
                         } else {
-                            feedbackHTML += `<p><strong>问题 ${index + 1}:</strong> <span style="color: #f39c12;">未作答</span></p>`;
+                            if (correctOption) correctOption.classList.add('correct');
+                            feedback.textContent = '请先选择一个答案！';
+                            feedback.className = 'feedback incorrect show';
                         }
-                    }
-
-                    // Show explanation button
-                    const showBtn = question.querySelector('.show-explanation-btn');
-                    if (showBtn) {
-                        showBtn.style.display = 'inline-block';
                     }
                 });
 
-                document.getElementById('scoreValue').textContent = score;
-                document.getElementById('totalQuestions').textContent = totalQuestions;
-                document.getElementById('questionFeedback').innerHTML = feedbackHTML;
+                // 记录历史
+                const isAllCorrect = score === totalQuestions;
+                quizHistory.push(isAllCorrect);
 
-                const scoreMessage = document.getElementById('scoreMessage');
-                const percentage = (score / totalQuestions * 100).toFixed(1);
+                // 更新分数显示
+                document.getElementById('scoreValue').textContent = `${score}/${totalQuestions}`;
+                document.getElementById('scoreMessage').textContent = isAllCorrect ? '太棒了！这套题全对了！' : `这套题答对了 ${score}/${totalQuestions} 道，继续加油！`;
 
-                if (score === totalQuestions) {
-                    scoreMessage.textContent = `完美！你答对了所有问题 (${percentage}%)`;
-                    scoreMessage.style.color = '#2ecc71';
-                } else if (score >= totalQuestions * 0.7) {
-                    scoreMessage.textContent = `不错！你答对了 ${score}/${totalQuestions} 题 (${percentage}%)`;
-                    scoreMessage.style.color = '#3498db';
-                } else {
-                    scoreMessage.textContent = `继续努力！你答对了 ${score}/${totalQuestions} 题 (${percentage}%)`;
-                    scoreMessage.style.color = '#f39c12';
-                }
+                // 显示答案解析按钮
+                document.getElementById('toggle-explanation-btn').classList.add('show');
 
-                document.getElementById('resultsContainer').classList.add('show');
-                document.getElementById('resultsContainer').scrollIntoView({ behavior: 'smooth' });
+                // 更新历史记录显示
+                updateHistoryDisplay();
             });
 
             // Reset button
@@ -720,48 +1266,20 @@
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             });
 
-        // Function to reset all inputs (options and numerical)
-        function resetAllInputs() {
-            // Reset all options
-            document.querySelectorAll('.option').forEach(opt => {
-                opt.classList.remove('selected', 'correct', 'incorrect');
-            });
-
-            // Reset all numerical inputs
-            document.querySelectorAll('.numerical-answer').forEach(input => {
-                input.value = '';
-                input.style.borderColor = '#d1e3f0';
-                input.style.backgroundColor = '';
-            });
-        }
-
-            // Review button
-            document.getElementById('reviewBtn').addEventListener('click', function() {
-                const explanations = document.querySelectorAll('.explanation');
-                const allVisible = Array.from(explanations).every(exp => exp.style.display === 'block');
-
-                explanations.forEach(exp => {
-                    exp.style.display = allVisible ? 'none' : 'block';
-                });
-
-                this.textContent = allVisible ? '查看解析' : '隐藏解析';
-            });
-
-            // Explanation buttons
-            document.addEventListener('click', function(e) {
-                if (e.target.classList.contains('show-explanation-btn')) {
-                    const explanation = e.target.nextElementSibling;
-                    if (explanation) {
-                        if (explanation.style.display === 'block') {
-                            explanation.style.display = 'none';
-                            e.target.textContent = '查看答案解析';
-                        } else {
-                            explanation.style.display = 'block';
-                            e.target.textContent = '隐藏答案解析';
-                        }
-                    }
+            // 显示/隐藏答案解析按钮
+            document.getElementById('toggle-explanation-btn').addEventListener('click', function() {
+                const explanation = document.getElementById('combined-explanation');
+                if (explanation.classList.contains('show')) {
+                    explanation.classList.remove('show');
+                    this.innerHTML = '<i class="fas fa-lightbulb"></i> 显示答案解析';
+                } else {
+                    explanation.classList.add('show');
+                    this.innerHTML = '<i class="fas fa-lightbulb"></i> 隐藏答案解析';
                 }
             });
+
+            // 初始化
+            refreshQuestion();
         });
     </script>
 </body>

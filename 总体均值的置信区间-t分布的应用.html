@@ -4,139 +4,374 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>总体均值的置信区间 t分布的应用</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            background-color: #f0f8ff;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             color: #333;
-            line-height: 1.6;
-            padding: 20px;
-            max-width: 1200px;
+            line-height: 1.5;
+            padding: 15px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
             margin: 0 auto;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            padding: 20px;
         }
 
         header {
             text-align: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
-            border-bottom: 2px solid #4a90e2;
+            margin-bottom: 15px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #eaeaea;
         }
 
         h1 {
             color: #2c3e50;
-            font-size: 1.8rem;
-            margin-bottom: 10px;
+            font-size: 1.6rem;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        h1 i {
+            color: #3498db;
         }
 
         .subtitle {
             color: #7f8c8d;
-            font-size: 1rem;
+            font-size: 0.9rem;
         }
 
-        .content-container {
-            display: flex;
-            flex-direction: column;
-            gap: 30px;
+        .problem-info {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid #3498db;
         }
 
-        /* Single column layout */
-
-        .section {
-            background-color: white;
-            border-radius: 12px;
-            padding: 25px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            margin-bottom: 20px;
+        .problem-info p {
+            margin-bottom: 8px;
+            font-size: 0.95rem;
         }
 
-        .section-title {
-            color: #3498db;
-            border-left: 5px solid #3498db;
-            padding-left: 15px;
-            margin-bottom: 20px;
-            font-size: 1.4rem;
-        }
-
-        .question-text {
-            margin-bottom: 25px;
-            font-size: 1.1rem;
-            color: #2c3e50;
-            line-height: 1.8;
+        .highlight {
+            background-color: #e3f2fd;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
         }
 
         .data-sample {
-            background-color: #f8f9fa;
-            border-left: 4px solid #3498db;
-            padding: 15px;
-            margin: 20px 0;
-            font-family: monospace;
-            font-size: 1.1rem;
+            background-color: #f1f8ff;
+            border-radius: 6px;
+            padding: 12px;
+            margin: 12px 0;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9rem;
+            border-left: 3px solid #3498db;
+            overflow-x: auto;
         }
 
-        .formula {
-            background-color: #e8f4fc;
+        .question-container {
+            margin-bottom: 20px;
             padding: 15px;
-            border-radius: 8px;
-            margin: 20px 0;
-            text-align: center;
-            font-size: 1.2rem;
-            overflow-x: auto;
+            border-radius: 10px;
+            background-color: #f9fbfd;
+            border: 1px solid #e1e8ed;
+            transition: all 0.3s ease;
+        }
+
+        .question-container:hover {
+            box-shadow: 0 3px 10px rgba(52, 152, 219, 0.1);
+        }
+
+        .question-title {
+            color: #2c3e50;
+            margin-bottom: 12px;
+            font-size: 1.05rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .question-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #3498db;
+            color: white;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            margin-right: 10px;
+            font-weight: bold;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+
+        .question-text {
+            font-size: 0.95rem;
+            margin-bottom: 12px;
+            color: #2c3e50;
         }
 
         .answer-inputs {
             display: flex;
             flex-wrap: wrap;
-            gap: 20px;
-            margin-top: 25px;
+            gap: 15px;
+            margin-top: 15px;
         }
 
         .input-group {
             flex: 1;
-            min-width: 200px;
+            min-width: 180px;
         }
 
         .input-group label {
             display: block;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             font-weight: 600;
             color: #2c3e50;
+            font-size: 0.9rem;
         }
 
         .input-group input {
             width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #ddd;
+            padding: 10px 12px;
+            border: 2px solid #e1e8ed;
             border-radius: 8px;
-            font-size: 1.1rem;
-            transition: border-color 0.3s;
+            font-size: 1rem;
+            transition: all 0.2s ease;
         }
 
         .input-group input:focus {
             outline: none;
             border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
         }
 
-        .button-container {
+        .input-group input.correct {
+            border-color: #2ecc71;
+            background-color: #d5f4e6;
+        }
+
+        .input-group input.incorrect {
+            border-color: #e74c3c;
+            background-color: #fadbd8;
+        }
+
+        .feedback {
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 10px;
+            display: none;
+            font-size: 0.9rem;
+        }
+
+        .feedback.correct {
+            background-color: #d5f4e6;
+            border-left: 4px solid #2ecc71;
+            color: #27ae60;
+        }
+
+        .feedback.incorrect {
+            background-color: #fadbd8;
+            border-left: 4px solid #e74c3c;
+            color: #c0392b;
+        }
+
+        .feedback.show {
+            display: block;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-top: 20px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            position: relative;
+        }
+
+        .controls-left {
+            position: absolute;
+            left: 0;
+        }
+
+        .controls-center {
             display: flex;
             gap: 15px;
-            margin-top: 30px;
-            flex-wrap: wrap;
+        }
+
+        .btn-table {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-table:hover {
+            filter: brightness(1.1);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        /* 弹窗样式 */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            max-width: 700px;
+            width: 90%;
+            max-height: 85vh;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: modalIn 0.3s ease;
+        }
+
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 5px;
+            line-height: 1;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+
+        .modal-close:hover {
+            opacity: 1;
+        }
+
+        .modal-body {
+            padding: 15px;
+            overflow-y: auto;
+            max-height: calc(85vh - 60px);
+        }
+
+        /* t分布表样式 */
+        .t-dist-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+
+        .t-dist-table th, .t-dist-table td {
+            padding: 8px 10px;
+            text-align: center;
+            border: 1px solid #dee2e6;
+        }
+
+        .t-dist-table th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+        }
+
+        .t-dist-table th:first-child {
+            background: #495057;
+        }
+
+        .t-dist-table td:first-child {
+            background: #f8f9fa;
+            font-weight: 600;
+        }
+
+        .t-dist-table tr:nth-child(even) td {
+            background: #f8f9fa;
+        }
+
+        .t-dist-table tr:nth-child(even) td:first-child {
+            background: #e9ecef;
+        }
+
+        .t-dist-table tr:hover td {
+            background: #e8f4f8;
+        }
+
+        .table-note {
+            font-size: 0.8rem;
+            color: #6c757d;
+            margin-top: 10px;
+            text-align: center;
         }
 
         button {
-            padding: 14px 28px;
+            padding: 10px 24px;
             border: none;
             border-radius: 8px;
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
         #submitBtn {
@@ -144,355 +379,745 @@
             color: white;
         }
 
-        #submitBtn:hover {
+        #submitBtn:hover:not(:disabled) {
             background-color: #2980b9;
             transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(52, 152, 219, 0.3);
         }
 
-        #resetBtn {
-            background-color: #95a5a6;
+        #submitBtn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .refresh-params-btn {
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
             color: white;
         }
 
-        #resetBtn:hover {
-            background-color: #7f8c8d;
+        .refresh-params-btn:hover {
             transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.4);
         }
 
-        .feedback {
-            margin-top: 25px;
-            padding: 20px;
-            border-radius: 8px;
+        .toggle-explanation-btn {
             display: none;
-        }
-
-        .feedback.correct {
-            background-color: #d5f4e6;
-            border-left: 5px solid #2ecc71;
-            color: #27ae60;
-        }
-
-        .feedback.incorrect {
-            background-color: #fdeaea;
-            border-left: 5px solid #e74c3c;
-            color: #c0392b;
-        }
-
-        .feedback-title {
-            font-weight: 700;
-            margin-bottom: 10px;
-            font-size: 1.2rem;
-        }
-
-        .stats {
-            background-color: #e8f4fc;
-            padding: 20px;
+            margin: 15px auto;
+            padding: 10px 24px;
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            color: white;
             border-radius: 8px;
-            margin-top: 25px;
-            display: none;
-        }
-
-        .stats h3 {
-            color: #3498db;
-            margin-bottom: 15px;
-        }
-
-        .stats p {
-            margin-bottom: 10px;
-            font-size: 1.1rem;
-        }
-
-        .highlight {
-            background-color: #fffacd;
-            padding: 2px 5px;
-            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.95rem;
             font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 10px rgba(155, 89, 182, 0.3);
         }
 
-        .calculation-steps {
-            background-color: #f9f9f9;
-            padding: 20px;
+        .toggle-explanation-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(155, 89, 182, 0.4);
+        }
+
+        .toggle-explanation-btn.show {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .explanation {
+            background-color: #f8f9fa;
             border-radius: 8px;
-            margin-top: 25px;
-            border-left: 4px solid #9b59b6;
+            padding: 15px;
+            margin-top: 15px;
+            border-left: 4px solid #f39c12;
+            font-size: 0.9rem;
+            display: none;
         }
 
-        .calculation-steps h4 {
-            color: #9b59b6;
+        .explanation.show {
+            display: block;
+        }
+
+        .explanation h4 {
+            color: #d35400;
             margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1rem;
+        }
+
+        .explanation h5 {
+            color: #2980b9;
+            margin-bottom: 6px;
+            font-size: 0.95rem;
+        }
+
+        .explanation p {
+            margin-bottom: 5px;
         }
 
         .step {
-            margin-bottom: 15px;
+            margin-bottom: 18px;
             padding-bottom: 15px;
             border-bottom: 1px dashed #ddd;
         }
 
         .step:last-child {
             border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
         }
 
         .step-title {
             font-weight: 600;
             color: #2c3e50;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
+        }
+
+        .formula {
+            background-color: #f1f8ff;
+            border-radius: 6px;
+            padding: 10px;
+            margin: 8px 0;
+            font-family: 'Cambria', 'Times New Roman', serif;
+            border-left: 3px solid #3498db;
+            font-size: 0.9rem;
         }
 
         .important-note {
             background-color: #fff8dc;
             border-left: 4px solid #f39c12;
-            padding: 15px;
-            margin-top: 20px;
-            font-size: 0.95rem;
+            padding: 12px;
+            margin-top: 15px;
+            font-size: 0.85rem;
+            border-radius: 6px;
         }
 
-    </style>
+        .important-note ol {
+            margin-left: 20px;
+            margin-top: 8px;
+        }
 
-    <style>
-    .show-explanation-btn {
-        display: none;
-        margin: 20px auto;
-        padding: 14px 28px;
-        background: linear-gradient(135deg, #9b59b6, #8e44ad);
-        color: white;
-        border: none;
-        border-radius: 10px;
-        cursor: pointer;
-        font-size: 1.1rem;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
-    }
-    .show-explanation-btn:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
-    }
-    .explanation-section {
-        display: none;
-        margin-top: 20px;
-    }
+        .score-container {
+            text-align: center;
+            background: linear-gradient(135deg, #3498db, #2c3e50);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .score-container.show {
+            display: block;
+        }
+
+        .result-icons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 15px 0;
+        }
+
+        .result-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            font-weight: bold;
+            transition: transform 0.3s ease;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+        }
+
+        .result-icon.correct {
+            background-color: #2ecc71;
+            color: white;
+        }
+
+        .result-icon.incorrect {
+            background-color: #e74c3c;
+            color: white;
+        }
+
+        .result-icon:hover {
+            transform: scale(1.15);
+        }
+
+        .score-text {
+            margin-bottom: 5px;
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 1.3rem;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
+            }
+
+            .answer-inputs {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 8px;
+            }
+
+            .container {
+                padding: 12px;
+            }
+
+            .question-container {
+                padding: 12px;
+            }
+        }
     </style>
-    </head>
+</head>
 <body>
-    <header>
-        <h1>总体均值的置信区间：t分布的应用
-            <button id="refresh-btn" style="margin-left: 15px; padding: 8px 16px; background: linear-gradient(135deg, #34a853, #2ecc71); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(52, 168, 83, 0.3);">刷新参数</button>
-        </h1>
-        <p class="subtitle">置信区间与假设检验 · 交互式答题练习</p>
-    </header>
+    <div class="container">
+        <header>
+            <h1>
+                <i class="fas fa-chart-line"></i>
+                总体均值的置信区间：t分布的应用
+            </h1>
+          
+        </header>
 
-    <div class="content-container">
-        <div class="question-section">
-            <div class="section">
-                <h2 class="section-title">题目内容</h2>
-                <div class="question-text">
-                    <p>随机抽取了14个健康维护组织（HMO）。记录每个HMO的医生门诊共付额（美元）。结果如下：</p>
-                    <div class="data-sample">11, 8, 11, 12, 10, 10, 9, 8, 7, 12, 5, 7, 6, 8</div>
-                    <p>假设共付额金额服从正态分布，求总体平均共付额金额（美元）的90%置信区间。</p>
-                    <p>中间计算至少保留三位小数。答案四舍五入到一位小数。</p>
+        <div class="problem-info" id="problem-info">
+            <!-- 动态生成 -->
+        </div>
+
+        <div class="question-container">
+            <div class="question-title">
+                <span class="question-number">1</span>
+                <span>计算置信区间</span>
+            </div>
+            <div class="question-text" id="question-text">
+                <p>根据题目背景，计算总体均值的置信区间。中间计算至少保留三位小数，答案四舍五入到一位小数。</p>
+            </div>
+            <div class="answer-inputs">
+                <div class="input-group">
+                    <label for="lowerBound">置信区间的下限：</label>
+                    <input type="number" id="lowerBound" step="0.1">
                 </div>
-
-                <div class="answer-inputs">
-                    <div class="input-group">
-                        <label for="lowerBound">置信区间的下限：</label>
-                        <input type="number" id="lowerBound" step="0.1">
-                    </div>
-                    <div class="input-group">
-                        <label for="upperBound">置信区间的上限：</label>
-                        <input type="number" id="upperBound" step="0.1">
-                    </div>
-                </div>
-
-                <div class="button-container">
-                    <button id="submitBtn">提交答案</button>
-                    <button id="resetBtn">重新作答</button>
-                </div>
-
-                <div id="feedback" class="feedback">
-                    <div class="feedback-title" id="feedbackTitle"></div>
-                    <p id="feedbackText"></p>
-                </div>
-
-                <div id="stats" class="stats">
-                    <h3>答题统计</h3>
-                    <p>尝试次数: <span id="attemptCount">0</span></p>
-                    <p>正确率: <span id="accuracyRate">0%</span></p>
-                    <p>状态: <span id="statusText">未完成</span></p>
+                <div class="input-group">
+                    <label for="upperBound">置信区间的上限：</label>
+                    <input type="number" id="upperBound" step="0.1">
                 </div>
             </div>
+            <div id="feedback" class="feedback"></div>
+        </div>
 
-            <div class="calculation-steps">
-                <h4>计算步骤与解析</h4>
-                <div class="step">
-                    <div class="step-title">步骤 1: 计算样本均值 (x̄)</div>
-                    <p>样本数据: 11, 8, 11, 12, 10, 10, 9, 8, 7, 12, 5, 7, 6, 8</p>
-                    <p>总和 = 124, 样本量 n = 14</p>
-                    <p>x̄ = 124 / 14 = <span class="highlight">8.857</span> (保留三位小数)</p>
-                </div>
-                <div class="step">
-                    <div class="step-title">步骤 2: 计算样本标准差 (s)</div>
-                    <p>使用样本标准差公式计算:</p>
-                    <p>s = <span class="highlight">2.214</span> (保留三位小数)</p>
-                </div>
-                <div class="step">
-                    <div class="step-title">步骤 3: 确定 t 临界值 (t<sub>α/2</sub>)</div>
-                    <p>置信水平 = 90%，显著性水平 α = 0.10</p>
-                    <p>自由度 df = n - 1 = 14 - 1 = 13</p>
-                    <p>t<sub>0.05, 13</sub> = <span class="highlight">1.771</span> (查t分布表)</p>
-                </div>
-                <div class="step">
-                    <div class="step-title">步骤 4: 计算标准误差</div>
-                    <p>标准误差 = s / √n = 2.214 / √14</p>
-                    <p>√14 ≈ 3.742, 所以标准误差 ≈ 2.214 / 3.742 = <span class="highlight">0.592</span></p>
-                </div>
-                <div class="step">
-                    <div class="step-title">步骤 5: 计算置信区间</div>
-                    <p>边际误差 = t<sub>α/2</sub> × (s / √n) = 1.771 × 0.592 = <span class="highlight">1.048</span></p>
-                    <p>下限 = x̄ - 边际误差 = 8.857 - 1.048 = <span class="highlight">7.809</span></p>
-                    <p>上限 = x̄ + 边际误差 = 8.857 + 1.048 = <span class="highlight">9.905</span></p>
-                    <p>四舍五入到一位小数: <span class="highlight">(7.8, 9.9)</span></p>
-                </div>
+        <div class="controls">
+            <div class="controls-left">
+                <button class="btn-table" id="showTableBtn">
+                    <i class="fas fa-table"></i> t分布表
+                </button>
+            </div>
+            <div class="controls-center">
+                <button id="submitBtn">
+                    <i class="fas fa-paper-plane"></i> 提交答案
+                </button>
+                <button id="next-btn" class="refresh-params-btn">
+                    下一题 <i class="fas fa-arrow-right"></i>
+                </button>
             </div>
         </div>
 
-        <div class="interaction-section">
-            <div class="section">
-                <h2 class="section-title">t分布与置信区间原理</h2>
-                <div class="question-text">
-                    <p>我们感兴趣的是估计总体均值 μ。根据随机样本，我们对 μ 值的估计是样本均值 x̄。当然，这只是一个估计，它可能接近也可能不接近 μ 的真实值。为了了解估计值 x̄ 的精确度，我们可以基于 x̄ 构造一个数值区间，通过一种方法使得该区间有约90%的概率包含 μ。这称为 μ 的置信区间。</p>
-                    
-                    <div class="formula">
-                        t = (x̄ - μ) / (s / √n)
-                    </div>
-                    
-                    <p>由于总体标准差未知，我们不能使用标准正态分布。统计量 t 服从自由度为 n-1 的 t 分布。</p>
-                    
-                    <p>对于我们的样本，n = 14，因此我们使用自由度为 13 的 t 分布。该分布密度曲线下约90%的面积位于 t ≈ -1.771 和 t ≈ 1.771 之间。</p>
-                    
-                    <div class="formula">
-                        x̄ - t<sub>α/2</sub> × (s / √n) ≤ μ ≤ x̄ + t<sub>α/2</sub> × (s / √n)
-                    </div>
-                    
-                    <p>总体均值 μ 的 (1-α)100% 置信区间由下式给出：</p>
-                    
-                    <div class="formula">
-                        ( x̄ - t<sub>α/2</sub> × (s / √n) , x̄ + t<sub>α/2</sub> × (s / √n) )
-                    </div>
-                    
-                    <p>该区间也写作：x̄ ± t<sub>α/2</sub> × (s / √n)</p>
-                </div>
-                
-                <div class="important-note">
-                    <p><strong>重要提示：</strong>使用t分布构造置信区间的前提条件是：</p>
-                    <ol>
-                        <li>总体服从正态分布，或样本量足够大（中心极限定理）</li>
-                        <li>总体标准差未知，使用样本标准差估计</li>
-                        <li>样本是随机抽取的</li>
-                    </ol>
-                </div>
+        <!-- 显示/隐藏答案解析按钮 -->
+        <button id="toggle-explanation-btn" class="toggle-explanation-btn">
+            <i class="fas fa-lightbulb"></i> 显示答案解析
+        </button>
+
+        <!-- 答案解析区域 -->
+        <div class="explanation" id="combined-explanation">
+            <h4><i class="fas fa-calculator"></i> 计算步骤与解析</h4>
+            <div id="explanation-content">
+                <!-- 动态生成 -->
             </div>
-            
-            <div class="section">
-                <h2 class="section-title">答案参考</h2>
-                <div class="question-text">
-                    <p>根据计算，90%置信区间为：</p>
-                    <div class="formula" style="background-color: #e8f4fc; text-align: center; padding: 20px;">
-                        (7.8, 9.9)
-                    </div>
-                    <p>这意味着我们有90%的把握认为，总体平均共付额金额在7.8美元到9.9美元之间。</p>
-                    <p>注意：这是一个区间估计，而不是点估计。它反映了估计的不确定性程度。</p>
-                </div>
+        </div>
+
+        <div class="score-container" id="score-container">
+            <div class="score-title">答题记录</div>
+            <div class="result-icons" id="result-icons">
+                <!-- 动态生成历史图标 -->
+            </div>
+            <div class="score-text" id="score-text"></div>
+        </div>
+    </div>
+
+    <!-- t分布表弹窗 -->
+    <div class="modal-overlay" id="tableModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-table"></i> t分布临界值表（右尾概率）</h2>
+                <button class="modal-close" id="closeModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <table class="t-dist-table">
+                    <thead>
+                        <tr>
+                            <th>df</th>
+                            <th>α=0.10</th>
+                            <th>α=0.05</th>
+                            <th>α=0.025</th>
+                            <th>α=0.01</th>
+                            <th>α=0.005</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>1</td><td>3.078</td><td>6.314</td><td>12.706</td><td>31.821</td><td>63.657</td></tr>
+                        <tr><td>2</td><td>1.886</td><td>2.920</td><td>4.303</td><td>6.965</td><td>9.925</td></tr>
+                        <tr><td>3</td><td>1.638</td><td>2.353</td><td>3.182</td><td>4.541</td><td>5.841</td></tr>
+                        <tr><td>4</td><td>1.533</td><td>2.132</td><td>2.776</td><td>3.747</td><td>4.604</td></tr>
+                        <tr><td>5</td><td>1.476</td><td>2.015</td><td>2.571</td><td>3.365</td><td>4.032</td></tr>
+                        <tr><td>6</td><td>1.440</td><td>1.943</td><td>2.447</td><td>3.143</td><td>3.707</td></tr>
+                        <tr><td>7</td><td>1.415</td><td>1.895</td><td>2.365</td><td>2.998</td><td>3.499</td></tr>
+                        <tr><td>8</td><td>1.397</td><td>1.860</td><td>2.306</td><td>2.896</td><td>3.355</td></tr>
+                        <tr><td>9</td><td>1.383</td><td>1.833</td><td>2.262</td><td>2.821</td><td>3.250</td></tr>
+                        <tr><td>10</td><td>1.372</td><td>1.812</td><td>2.228</td><td>2.764</td><td>3.169</td></tr>
+                        <tr><td>11</td><td>1.363</td><td>1.796</td><td>2.201</td><td>2.718</td><td>3.106</td></tr>
+                        <tr><td>12</td><td>1.356</td><td>1.782</td><td>2.179</td><td>2.681</td><td>3.055</td></tr>
+                        <tr><td>13</td><td>1.350</td><td>1.771</td><td>2.160</td><td>2.650</td><td>3.012</td></tr>
+                        <tr><td>14</td><td>1.345</td><td>1.761</td><td>2.145</td><td>2.624</td><td>2.977</td></tr>
+                        <tr><td>15</td><td>1.341</td><td>1.753</td><td>2.131</td><td>2.602</td><td>2.947</td></tr>
+                        <tr><td>16</td><td>1.337</td><td>1.746</td><td>2.120</td><td>2.583</td><td>2.921</td></tr>
+                        <tr><td>17</td><td>1.333</td><td>1.740</td><td>2.110</td><td>2.567</td><td>2.898</td></tr>
+                        <tr><td>18</td><td>1.330</td><td>1.734</td><td>2.101</td><td>2.552</td><td>2.878</td></tr>
+                        <tr><td>19</td><td>1.328</td><td>1.729</td><td>2.093</td><td>2.539</td><td>2.861</td></tr>
+                        <tr><td>20</td><td>1.325</td><td>1.725</td><td>2.086</td><td>2.528</td><td>2.845</td></tr>
+                        <tr><td>21</td><td>1.323</td><td>1.721</td><td>2.080</td><td>2.518</td><td>2.831</td></tr>
+                        <tr><td>22</td><td>1.321</td><td>1.717</td><td>2.074</td><td>2.508</td><td>2.819</td></tr>
+                        <tr><td>23</td><td>1.319</td><td>1.714</td><td>2.069</td><td>2.500</td><td>2.807</td></tr>
+                        <tr><td>24</td><td>1.318</td><td>1.711</td><td>2.064</td><td>2.492</td><td>2.797</td></tr>
+                        <tr><td>25</td><td>1.316</td><td>1.708</td><td>2.060</td><td>2.485</td><td>2.787</td></tr>
+                        <tr><td>26</td><td>1.315</td><td>1.706</td><td>2.056</td><td>2.479</td><td>2.779</td></tr>
+                        <tr><td>27</td><td>1.314</td><td>1.703</td><td>2.052</td><td>2.473</td><td>2.771</td></tr>
+                        <tr><td>28</td><td>1.313</td><td>1.701</td><td>2.048</td><td>2.467</td><td>2.763</td></tr>
+                        <tr><td>29</td><td>1.311</td><td>1.699</td><td>2.045</td><td>2.462</td><td>2.756</td></tr>
+                        <tr><td>30</td><td>1.310</td><td>1.697</td><td>2.042</td><td>2.457</td><td>2.750</td></tr>
+                        <tr><td>40</td><td>1.303</td><td>1.684</td><td>2.021</td><td>2.423</td><td>2.704</td></tr>
+                        <tr><td>50</td><td>1.299</td><td>1.676</td><td>2.009</td><td>2.403</td><td>2.678</td></tr>
+                        <tr><td>60</td><td>1.296</td><td>1.671</td><td>2.000</td><td>2.390</td><td>2.660</td></tr>
+                        <tr><td>80</td><td>1.292</td><td>1.664</td><td>1.990</td><td>2.374</td><td>2.639</td></tr>
+                        <tr><td>100</td><td>1.290</td><td>1.660</td><td>1.984</td><td>2.364</td><td>2.626</td></tr>
+                        <tr><td>120</td><td>1.289</td><td>1.658</td><td>1.980</td><td>2.358</td><td>2.617</td></tr>
+                        <tr><td>∞</td><td>1.282</td><td>1.645</td><td>1.960</td><td>2.326</td><td>2.576</td></tr>
+                    </tbody>
+                </table>
+                <div class="table-note">注：表中数值为右尾临界值 t<sub>α</sub>，即 P(t > t<sub>α</sub>) = α</div>
             </div>
         </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // ==================== 参数化数据集 ====================
+            const questionSets = [
+                {
+                    id: 1,
+                    context: "健康维护组织（HMO）医生门诊共付额",
+                    unit: "美元",
+                    description: "随机抽取了14个健康维护组织（HMO）。记录每个HMO的医生门诊共付额。",
+                    data: [11, 8, 11, 12, 10, 10, 9, 8, 7, 12, 5, 7, 6, 8],
+                    confidenceLevel: 90
+                },
+                {
+                    id: 2,
+                    context: "大学食堂午餐价格",
+                    unit: "元",
+                    description: "随机调查了12所大学的食堂午餐价格。",
+                    data: [15, 18, 12, 16, 14, 17, 13, 19, 15, 16, 14, 18],
+                    confidenceLevel: 95
+                },
+                {
+                    id: 3,
+                    context: "咖啡店每日咖啡销售量",
+                    unit: "杯",
+                    description: "随机抽取了16天的咖啡店销售记录，统计每日咖啡销售量。",
+                    data: [85, 92, 78, 88, 95, 82, 90, 86, 79, 91, 84, 87, 93, 80, 89, 83],
+                    confidenceLevel: 90
+                },
+                {
+                    id: 4,
+                    context: "大学生每周学习时间",
+                    unit: "小时",
+                    description: "随机调查了18名大学生每周的课外学习时间。",
+                    data: [12, 15, 10, 18, 14, 16, 11, 13, 17, 15, 12, 19, 14, 16, 13, 15, 11, 14],
+                    confidenceLevel: 95
+                },
+                {
+                    id: 5,
+                    context: "公司员工通勤时间",
+                    unit: "分钟",
+                    description: "随机调查了15名公司员工的每日通勤时间。",
+                    data: [35, 42, 28, 45, 38, 32, 40, 36, 30, 44, 37, 33, 41, 39, 34],
+                    confidenceLevel: 90
+                },
+                {
+                    id: 6,
+                    context: "超市牛奶价格",
+                    unit: "元/升",
+                    description: "随机调查了20家超市的牛奶价格。",
+                    data: [12.5, 13.2, 11.8, 12.9, 13.5, 11.5, 12.8, 13.1, 12.2, 13.0, 11.9, 12.7, 13.3, 12.4, 11.7, 12.6, 13.4, 12.1, 12.3, 11.6],
+                    confidenceLevel: 95
+                },
+                {
+                    id: 7,
+                    context: "汽车油耗",
+                    unit: "升/百公里",
+                    description: "随机测试了14辆同型号汽车的综合油耗。",
+                    data: [7.2, 7.8, 6.9, 7.5, 7.1, 7.6, 6.8, 7.4, 7.3, 7.0, 7.7, 6.7, 7.9, 7.2],
+                    confidenceLevel: 90
+                },
+                {
+                    id: 8,
+                    context: "餐厅顾客等待时间",
+                    unit: "分钟",
+                    description: "随机记录了16位顾客在餐厅的等待时间。",
+                    data: [18, 22, 15, 25, 20, 17, 23, 19, 16, 24, 21, 18, 22, 20, 17, 23],
+                    confidenceLevel: 95
+                },
+                {
+                    id: 9,
+                    context: "降压药疗效",
+                    unit: "mmHg",
+                    description: "随机选取了13名高血压患者服用某降压药后的血压下降值。",
+                    data: [12, 15, 10, 18, 14, 16, 11, 13, 17, 15, 12, 19, 14],
+                    confidenceLevel: 90
+                },
+                {
+                    id: 10,
+                    context: "植物生长高度",
+                    unit: "厘米",
+                    description: "随机选取了17株同种植物在一个月内的生长高度。",
+                    data: [5.2, 6.1, 4.8, 5.9, 5.5, 6.3, 4.9, 5.7, 5.3, 6.0, 5.1, 5.8, 5.4, 6.2, 5.0, 5.6, 5.4],
+                    confidenceLevel: 95
+                },
+                {
+                    id: 11,
+                    context: "学生数学考试成绩",
+                    unit: "分",
+                    description: "随机抽取了15名学生的数学期末考试成绩。",
+                    data: [78, 85, 72, 88, 80, 82, 75, 86, 79, 84, 76, 87, 81, 83, 77],
+                    confidenceLevel: 90
+                },
+                {
+                    id: 12,
+                    context: "快递配送时间",
+                    unit: "小时",
+                    description: "随机记录了19个同城快递的配送时间。",
+                    data: [2.5, 3.2, 2.1, 3.8, 2.8, 3.5, 2.3, 3.1, 2.6, 3.4, 2.2, 3.6, 2.9, 3.3, 2.4, 3.0, 2.7, 3.7, 2.5],
+                    confidenceLevel: 95
+                },
+                {
+                    id: 13,
+                    context: "手机电池续航时间",
+                    unit: "小时",
+                    description: "随机测试了14部同型号手机的电池续航时间。",
+                    data: [18, 21, 16, 23, 19, 22, 17, 20, 18, 24, 19, 21, 17, 20],
+                    confidenceLevel: 90
+                },
+                {
+                    id: 14,
+                    context: "饮料瓶装容量",
+                    unit: "毫升",
+                    description: "随机抽检了18瓶标称500ml饮料的实际容量。",
+                    data: [498, 502, 496, 504, 499, 501, 497, 503, 498, 500, 495, 505, 499, 502, 497, 501, 498, 500],
+                    confidenceLevel: 95
+                },
+                {
+                    id: 15,
+                    context: "工厂产品重量",
+                    unit: "克",
+                    description: "随机抽取了16个产品进行重量检测。",
+                    data: [52.3, 53.1, 51.8, 52.9, 52.5, 53.3, 51.9, 52.7, 52.1, 53.0, 52.4, 52.8, 52.2, 53.2, 52.0, 52.6],
+                    confidenceLevel: 90
+                },
+                {
+                    id: 16,
+                    context: "图书馆每日借书量",
+                    unit: "本",
+                    description: "随机记录了15天某图书馆的每日借书数量。",
+                    data: [125, 138, 118, 142, 130, 135, 122, 140, 128, 132, 120, 136, 126, 139, 124],
+                    confidenceLevel: 95
+                },
+                {
+                    id: 17,
+                    context: "网页加载时间",
+                    unit: "秒",
+                    description: "随机测试了17次某网站的页面加载时间。",
+                    data: [2.3, 2.8, 2.1, 3.0, 2.5, 2.7, 2.2, 2.9, 2.4, 2.6, 2.0, 3.1, 2.3, 2.8, 2.2, 2.7, 2.4],
+                    confidenceLevel: 90
+                },
+                {
+                    id: 18,
+                    context: "马拉松选手完赛时间",
+                    unit: "小时",
+                    description: "随机选取了13名业余马拉松选手的完赛时间。",
+                    data: [4.2, 4.8, 3.9, 5.1, 4.4, 4.6, 4.0, 4.9, 4.3, 4.7, 4.1, 5.0, 4.5],
+                    confidenceLevel: 95
+                },
+                {
+                    id: 19,
+                    context: "酒店房价",
+                    unit: "元/晚",
+                    description: "随机调查了16家三星级酒店的标准间价格。",
+                    data: [280, 320, 260, 340, 290, 310, 270, 330, 285, 315, 275, 335, 295, 305, 280, 320],
+                    confidenceLevel: 90
+                },
+                {
+                    id: 20,
+                    context: "面包店日销售额",
+                    unit: "元",
+                    description: "随机记录了14天某面包店的日销售额。",
+                    data: [1250, 1380, 1180, 1420, 1300, 1350, 1220, 1400, 1280, 1320, 1200, 1360, 1260, 1390],
+                    confidenceLevel: 95
+                }
+            ];
 
-            // 显示答案解析按钮点击事件
-            document.querySelectorAll('.show-explanation-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    var questionId = this.getAttribute('data-question') || this.id;
-                    var explanation;
-                    if (questionId) {
-                        explanation = this.nextElementSibling;
-                    }
-                    if (explanation) {
-                        if (explanation.classList.contains('show')) {
-                            explanation.classList.remove('show');
-                            this.textContent = '查看答案解析';
+            // t分布临界值表 (双侧)
+            const tCriticalValues = {
+                90: { 11: 1.796, 12: 1.782, 13: 1.771, 14: 1.761, 15: 1.753, 16: 1.746, 17: 1.740, 18: 1.734, 19: 1.729 },
+                95: { 11: 2.201, 12: 2.179, 13: 2.160, 14: 2.145, 15: 2.131, 16: 2.120, 17: 2.110, 18: 2.101, 19: 2.093 }
+            };
+
+            // 计算统计量
+            function calculateStats(data) {
+                const n = data.length;
+                const sum = data.reduce((a, b) => a + b, 0);
+                const mean = sum / n;
+                const squaredDiffs = data.map(x => Math.pow(x - mean, 2));
+                const variance = squaredDiffs.reduce((a, b) => a + b, 0) / (n - 1);
+                const stdDev = Math.sqrt(variance);
+                return { n, sum, mean, stdDev };
+            }
+
+            // 计算置信区间
+            function calculateConfidenceInterval(data, confidenceLevel) {
+                const stats = calculateStats(data);
+                const df = stats.n - 1;
+                const alpha = 1 - confidenceLevel / 100;
+                const tValue = tCriticalValues[confidenceLevel][df];
+                const standardError = stats.stdDev / Math.sqrt(stats.n);
+                const marginOfError = tValue * standardError;
+                const lower = stats.mean - marginOfError;
+                const upper = stats.mean + marginOfError;
+                return {
+                    ...stats,
+                    df,
+                    alpha,
+                    tValue,
+                    standardError,
+                    marginOfError,
+                    lower,
+                    upper,
+                    lowerRounded: Math.round(lower * 10) / 10,
+                    upperRounded: Math.round(upper * 10) / 10
+                };
+            }
+
+            let currentQuestionIndex = 0;
+            let currentCI = null;
+            let quizHistory = [];
+            let isAnswered = false;
+
+            // 加载题目
+            function loadQuestion(index) {
+                const q = questionSets[index];
+                currentCI = calculateConfidenceInterval(q.data, q.confidenceLevel);
+
+                // 更新题目背景
+                document.getElementById('problem-info').innerHTML = `
+                    <p><strong>题目背景：</strong>${q.description}结果如下：</p>
+                    <div class="data-sample">${q.data.join(', ')}</div>
+                    <p>假设数据服从正态分布，求总体平均${q.context}（<span class="highlight">${q.unit}</span>）的<span class="highlight">${q.confidenceLevel}%</span>置信区间。</p>
+                    <p><strong>要求：</strong>中间计算至少保留三位小数。答案四舍五入到一位小数。</p>
+                `;
+
+                // 更新解析内容
+                updateExplanation(q, currentCI);
+
+                // 重置状态
+                resetQuestionState();
+
+                return currentCI;
+            }
+
+            function updateExplanation(q, ci) {
+                document.getElementById('explanation-content').innerHTML = `
+                    <div class="step">
+                        <h5>步骤 1: 计算样本均值 (x̄)</h5>
+                        <p>样本数据: ${q.data.join(', ')}</p>
+                        <p>总和 = ${ci.sum.toFixed(0)}, 样本量 n = ${ci.n}</p>
+                        <div class="formula">x̄ = ${ci.sum.toFixed(0)} / ${ci.n} = <strong>${ci.mean.toFixed(3)}</strong></div>
+                    </div>
+
+                    <div class="step">
+                        <h5>步骤 2: 计算样本标准差 (s)</h5>
+                        <p>使用样本标准差公式计算:</p>
+                        <div class="formula">s = <strong>${ci.stdDev.toFixed(3)}</strong></div>
+                    </div>
+
+                    <div class="step">
+                        <h5>步骤 3: 确定 t 临界值 (t<sub>α/2</sub>)</h5>
+                        <p>置信水平 = ${q.confidenceLevel}%，显著性水平 α = ${ci.alpha.toFixed(2)}</p>
+                        <p>自由度 df = n - 1 = ${ci.n} - 1 = ${ci.df}</p>
+                        <div class="formula">t<sub>${(ci.alpha/2).toFixed(2)}, ${ci.df}</sub> = <strong>${ci.tValue.toFixed(3)}</strong> (查t分布表)</div>
+                    </div>
+
+                    <div class="step">
+                        <h5>步骤 4: 计算标准误差</h5>
+                        <p>标准误差 = s / √n = ${ci.stdDev.toFixed(3)} / √${ci.n}</p>
+                        <div class="formula">√${ci.n} ≈ ${Math.sqrt(ci.n).toFixed(3)}, 标准误差 ≈ <strong>${ci.standardError.toFixed(3)}</strong></div>
+                    </div>
+
+                    <div class="step">
+                        <h5>步骤 5: 计算置信区间</h5>
+                        <p>边际误差 = t<sub>α/2</sub> × (s / √n) = ${ci.tValue.toFixed(3)} × ${ci.standardError.toFixed(3)} = <strong>${ci.marginOfError.toFixed(3)}</strong></p>
+                        <div class="formula">
+                            下限 = x̄ - 边际误差 = ${ci.mean.toFixed(3)} - ${ci.marginOfError.toFixed(3)} = <strong>${ci.lower.toFixed(3)}</strong><br>
+                            上限 = x̄ + 边际误差 = ${ci.mean.toFixed(3)} + ${ci.marginOfError.toFixed(3)} = <strong>${ci.upper.toFixed(3)}</strong>
+                        </div>
+                        <p>四舍五入到一位小数: <strong>(${ci.lowerRounded}, ${ci.upperRounded})</strong></p>
+                    </div>
+
+                    <div class="step">
+                        <h5>t分布与置信区间原理</h5>
+                        <p>我们感兴趣的是估计总体均值 μ。根据随机样本，我们对 μ 值的估计是样本均值 x̄。当然，这只是一个估计，它可能接近也可能不接近 μ 的真实值。为了了解估计值 x̄ 的精确度，我们可以基于 x̄ 构造一个数值区间，通过一种方法使得该区间有约${q.confidenceLevel}%的概率包含 μ。这称为 μ 的置信区间。</p>
+                        <div class="formula">t = (x̄ - μ) / (s / √n)</div>
+                        <p>由于总体标准差未知，我们不能使用标准正态分布。统计量 t 服从自由度为 n-1 的 t 分布。</p>
+                        <div class="formula">x̄ - t<sub>α/2</sub> × (s / √n) ≤ μ ≤ x̄ + t<sub>α/2</sub> × (s / √n)</div>
+                        <p>总体均值 μ 的 (1-α)100% 置信区间由下式给出：</p>
+                        <div class="formula">( x̄ - t<sub>α/2</sub> × (s / √n) , x̄ + t<sub>α/2</sub> × (s / √n) )</div>
+                        <p>该区间也写作：x̄ ± t<sub>α/2</sub> × (s / √n)</p>
+                        <div class="important-note">
+                            <p><strong><i class="fas fa-exclamation-triangle"></i> 重要提示：</strong>使用t分布构造置信区间的前提条件是：</p>
+                            <ol>
+                                <li>总体服从正态分布，或样本量足够大（中心极限定理）</li>
+                                <li>总体标准差未知，使用样本标准差估计</li>
+                                <li>样本是随机抽取的</li>
+                            </ol>
+                        </div>
+                    </div>
+                `;
+            }
+
+            function resetQuestionState() {
+                const lowerInput = document.getElementById('lowerBound');
+                const upperInput = document.getElementById('upperBound');
+
+                lowerInput.value = '';
+                upperInput.value = '';
+                lowerInput.disabled = false;
+                upperInput.disabled = false;
+                lowerInput.classList.remove('correct', 'incorrect');
+                upperInput.classList.remove('correct', 'incorrect');
+
+                const feedback = document.getElementById('feedback');
+                feedback.classList.remove('show', 'correct', 'incorrect');
+                feedback.textContent = '';
+
+                document.getElementById('combined-explanation').classList.remove('show');
+
+                const toggleBtn = document.getElementById('toggle-explanation-btn');
+                toggleBtn.classList.remove('show');
+                toggleBtn.innerHTML = '<i class="fas fa-lightbulb"></i> 显示答案解析';
+
+                const submitBtn = document.getElementById('submitBtn');
+                submitBtn.disabled = false;
+                submitBtn.style.opacity = '1';
+                submitBtn.style.cursor = 'pointer';
+
+                isAnswered = false;
+            }
+
+            function updateHistoryDisplay() {
+                if (quizHistory.length > 0) {
+                    let iconsHtml = '';
+                    quizHistory.forEach((result, index) => {
+                        if (result) {
+                            iconsHtml += `<div class="result-icon correct" title="第${index + 1}题：正确"><i class="fas fa-check"></i></div>`;
                         } else {
-                            explanation.classList.add('show');
-                            this.textContent = '隐藏答案解析';
+                            iconsHtml += `<div class="result-icon incorrect" title="第${index + 1}题：错误"><i class="fas fa-times"></i></div>`;
                         }
-                    }
-                });
-            });
+                    });
+                    document.getElementById('result-icons').innerHTML = iconsHtml;
+                    document.getElementById('score-container').classList.add('show');
+                } else {
+                    document.getElementById('score-container').classList.remove('show');
+                }
+            }
 
-            // 正确答案
-            const correctLower = 7.8;
-            const correctUpper = 9.9;
-            const tolerance = 0.1; // 允许的误差范围
-            
-            // 获取DOM元素
+            // 事件绑定
             const lowerInput = document.getElementById('lowerBound');
             const upperInput = document.getElementById('upperBound');
             const submitBtn = document.getElementById('submitBtn');
-            const resetBtn = document.getElementById('resetBtn');
+            const nextBtn = document.getElementById('next-btn');
+            const toggleExplanationBtn = document.getElementById('toggle-explanation-btn');
             const feedback = document.getElementById('feedback');
-            const feedbackTitle = document.getElementById('feedbackTitle');
-            const feedbackText = document.getElementById('feedbackText');
-            const stats = document.getElementById('stats');
-            const attemptCountEl = document.getElementById('attemptCount');
-            const accuracyRateEl = document.getElementById('accuracyRate');
-            const statusTextEl = document.getElementById('statusText');
-            
-            // 统计变量
-            let attempts = 0;
-            let correctAttempts = 0;
-            let isAnswered = false;
-            
-            // 更新统计信息
-            function updateStats() {
-                attemptCountEl.textContent = attempts;
-                const accuracy = attempts > 0 ? Math.round((correctAttempts / attempts) * 100) : 0;
-                accuracyRateEl.textContent = accuracy + '%';
-                statusTextEl.textContent = isAnswered ? '已完成' : '未完成';
-            }
-            
+            // 输入框事件
+            lowerInput.addEventListener('input', function() {
+                this.classList.remove('correct', 'incorrect');
+                feedback.classList.remove('show');
+            });
+
+            upperInput.addEventListener('input', function() {
+                this.classList.remove('correct', 'incorrect');
+                feedback.classList.remove('show');
+            });
+
             // 提交答案
             submitBtn.addEventListener('click', function() {
                 const lowerVal = parseFloat(lowerInput.value);
                 const upperVal = parseFloat(upperInput.value);
-                
-                // 验证输入
-                if (isNaN(lowerVal) || isNaN(upperVal)) {
-                    alert('请输入有效的数值！');
-                    return;
-                }
-                
-                if (upperVal <= lowerVal) {
-                    alert('上限必须大于下限！');
-                    return;
-                }
-                
-                attempts++;
-                
-                // 检查答案
-                const lowerCorrect = Math.abs(lowerVal - correctLower) <= tolerance;
-                const upperCorrect = Math.abs(upperVal - correctUpper) <= tolerance;
-                const isCorrect = lowerCorrect && upperCorrect;
-                
-                if (isCorrect) {
-                    correctAttempts++;
-                    feedback.className = 'feedback correct';
-                    feedbackTitle.textContent = '回答正确！';
-                    feedbackText.textContent = `您输入的置信区间 (${lowerVal}, ${upperVal}) 是正确的。`;
-                } else {
-                    feedback.className = 'feedback incorrect';
-                    feedbackTitle.textContent = '回答不正确';
+                const tolerance = 0.1;
 
-                    let errorMsg = '您输入的置信区间不正确。';
+                if (isNaN(lowerVal) || isNaN(upperVal)) {
+                    feedback.textContent = '请输入有效的数值！';
+                    feedback.className = 'feedback incorrect show';
+                    return;
+                }
+
+                if (upperVal <= lowerVal) {
+                    feedback.textContent = '上限必须大于下限！';
+                    feedback.className = 'feedback incorrect show';
+                    return;
+                }
+
+                const lowerCorrect = Math.abs(lowerVal - currentCI.lowerRounded) <= tolerance;
+                const upperCorrect = Math.abs(upperVal - currentCI.upperRounded) <= tolerance;
+                const isCorrect = lowerCorrect && upperCorrect;
+
+                if (isCorrect) {
+                    lowerInput.classList.add('correct');
+                    upperInput.classList.add('correct');
+                    feedback.textContent = `正确！${currentCI.confidenceLevel}%置信区间为 (${currentCI.lowerRounded}, ${currentCI.upperRounded})。`;
+                    feedback.className = 'feedback correct show';
+                } else {
+                    lowerInput.classList.add('incorrect');
+                    upperInput.classList.add('incorrect');
+
+                    let errorMsg = '答案不正确。';
                     if (!lowerCorrect && !upperCorrect) {
                         errorMsg += ' 下限和上限都不正确。';
                     } else if (!lowerCorrect) {
@@ -500,49 +1125,89 @@
                     } else {
                         errorMsg += ' 上限不正确。';
                     }
-                    errorMsg += ' 请参考计算步骤。';
-                    feedbackText.textContent = errorMsg;
+                    errorMsg += ` 正确答案是 (${currentCI.lowerRounded}, ${currentCI.upperRounded})。`;
+                    feedback.textContent = errorMsg;
+                    feedback.className = 'feedback incorrect show';
                 }
-                
-                isAnswered = true;
-                feedback.style.display = 'block';
 
-                stats.style.display = 'block';
-                updateStats();
-                
+                // 记录历史
+                quizHistory.push(isCorrect);
+                updateHistoryDisplay();
+
+                if (isCorrect) {
+                    document.getElementById('score-text').textContent = `太棒了！第${currentQuestionIndex + 1}题回答正确！`;
+                } else {
+                    document.getElementById('score-text').textContent = `第${currentQuestionIndex + 1}题回答错误，继续加油！`;
+                }
+
+                // 显示解析按钮
+                toggleExplanationBtn.classList.add('show');
+
                 // 禁用输入
                 lowerInput.disabled = true;
                 upperInput.disabled = true;
+                submitBtn.disabled = true;
+                submitBtn.style.opacity = '0.6';
+                submitBtn.style.cursor = 'not-allowed';
+
+                isAnswered = true;
+
+                document.getElementById('score-container').scrollIntoView({ behavior: 'smooth' });
             });
-            
-            // 重置答案
-            resetBtn.addEventListener('click', function() {
-                lowerInput.value = '';
-                upperInput.value = '';
-                lowerInput.disabled = false;
-                upperInput.disabled = false;
-                feedback.style.display = 'none';
-                isAnswered = false;
-                updateStats();
+
+            // 下一题
+            nextBtn.addEventListener('click', function() {
+                currentQuestionIndex = (currentQuestionIndex + 1) % questionSets.length;
+                loadQuestion(currentQuestionIndex);
             });
-            
-            // 初始更新统计
-            updateStats();
-            
-            // 添加键盘支持
+
+            // 显示/隐藏解析
+            toggleExplanationBtn.addEventListener('click', function() {
+                const explanation = document.getElementById('combined-explanation');
+                if (explanation.classList.contains('show')) {
+                    explanation.classList.remove('show');
+                    this.innerHTML = '<i class="fas fa-lightbulb"></i> 显示答案解析';
+                } else {
+                    explanation.classList.add('show');
+                    this.innerHTML = '<i class="fas fa-lightbulb"></i> 隐藏答案解析';
+                }
+            });
+
+            // 键盘支持
             document.addEventListener('keydown', function(event) {
                 if (event.key === 'Enter' && !isAnswered) {
                     submitBtn.click();
                 }
-                if (event.key === 'Escape') {
-                    resetBtn.click();
+            });
+
+            // ==================== t分布表弹窗控制 ====================
+            const showTableBtn = document.getElementById('showTableBtn');
+            const tableModal = document.getElementById('tableModal');
+            const closeModal = document.getElementById('closeModal');
+
+            showTableBtn.addEventListener('click', function() {
+                tableModal.classList.add('show');
+            });
+
+            closeModal.addEventListener('click', function() {
+                tableModal.classList.remove('show');
+            });
+
+            tableModal.addEventListener('click', function(e) {
+                if (e.target === tableModal) {
+                    tableModal.classList.remove('show');
                 }
             });
-            
-            // 示例数据填充（可选，用于演示）
-            // 取消注释以下代码可以预填示例答案
-            // lowerInput.value = "7.8";
-            // upperInput.value = "9.9";
+
+            // ESC键关闭弹窗
+            document.addEventListener('keydown', function(event) {
+                if (event.key === 'Escape' && tableModal.classList.contains('show')) {
+                    tableModal.classList.remove('show');
+                }
+            });
+
+            // 初始化
+            loadQuestion(currentQuestionIndex);
         });
     </script>
 </body>

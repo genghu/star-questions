@@ -4,284 +4,663 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>总体均值差异假设检验配对比较 - 交互式答题</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
+
         body {
-            margin: 0;
-            padding: 20px;
-            background-color: #f5f9ff;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             color: #333;
-            line-height: 1.6;
+            line-height: 1.5;
+            padding: 15px;
+            min-height: 100vh;
         }
+
         .container {
             max-width: 1000px;
             margin: 0 auto;
             background-color: white;
             border-radius: 15px;
-            box-shadow: 0 8px 25px rgba(0, 60, 150, 0.1);
-            padding: 30px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
             overflow: hidden;
+            padding: 20px;
         }
+
         header {
             text-align: center;
-            border-bottom: 2px solid #e1ecff;
-            padding-bottom: 20px;
-            margin-bottom: 30px;
+            margin-bottom: 15px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #eaeaea;
+        }
+
+        h1 {
+            color: #2c3e50;
+            font-size: 1.6rem;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        h1 i {
+            color: #3498db;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .problem-info {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 10px 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid #3498db;
+        }
+
+        .problem-info p {
+            margin-bottom: 5px;
+            font-size: 0.95rem;
+        }
+
+        .highlight {
+            background-color: #e3f2fd;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1565c0;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            background-color: white;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .data-table th, .data-table td {
+            border: 1px solid #e1e8ed;
+            padding: 6px 10px;
+            text-align: center;
+        }
+
+        .data-table th {
+            background-color: #e3f2fd;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        .data-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        .question-container {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            background-color: #f9fbfd;
+            border: 1px solid #e1e8ed;
+            transition: all 0.3s ease;
+        }
+
+        .question-container:hover {
+            box-shadow: 0 3px 10px rgba(52, 152, 219, 0.1);
+        }
+
+        .question-title {
+            color: #2c3e50;
+            margin-bottom: 12px;
+            font-size: 1.05rem;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .question-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #3498db;
+            color: white;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            margin-right: 10px;
+            font-weight: bold;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+
+        .question-text {
+            font-size: 0.95rem;
+            margin-bottom: 12px;
+            color: #2c3e50;
+        }
+
+        .options-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .options-container-2col {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .option {
+            background-color: white;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            padding: 10px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .option:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.05);
+            border-color: #3498db;
+        }
+
+        .option.selected {
+            border-color: #3498db;
+            background-color: #e3f2fd;
+        }
+
+        .option.correct {
+            border-color: #2ecc71;
+            background-color: #d5f4e6;
+        }
+
+        .option.incorrect {
+            border-color: #e74c3c;
+            background-color: #fadbd8;
+        }
+
+        .option-letter {
+            background-color: #3498db;
+            color: white;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+
+        .option.correct .option-letter {
+            background-color: #2ecc71;
+        }
+
+        .option.incorrect .option-letter {
+            background-color: #e74c3c;
+        }
+
+        .option-text {
+            font-size: 0.9rem;
+        }
+
+        .feedback {
+            padding: 10px;
+            border-radius: 6px;
+            margin-top: 10px;
+            display: none;
+            font-size: 0.9rem;
+        }
+
+        .feedback.correct {
+            background-color: #d5f4e6;
+            border-left: 4px solid #2ecc71;
+            color: #27ae60;
+        }
+
+        .feedback.incorrect {
+            background-color: #fadbd8;
+            border-left: 4px solid #e74c3c;
+            color: #c0392b;
+        }
+
+        .feedback.show {
+            display: block;
+        }
+
+        .explanation {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            border-left: 4px solid #f39c12;
+            font-size: 0.9rem;
+            display: none;
+        }
+
+        .explanation.show {
+            display: block;
+        }
+
+        .explanation h4 {
+            color: #d35400;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1rem;
+        }
+
+        .explanation h5 {
+            color: #2980b9;
+            margin-bottom: 6px;
+            font-size: 0.95rem;
+        }
+
+        .explanation p {
+            margin-bottom: 5px;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-top: 20px;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .controls-left {
+            position: absolute;
+            left: 0;
+        }
+
+        .controls-center {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn-table {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-table:hover {
+            filter: brightness(1.1);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Modal 弹窗样式 */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            max-width: 700px;
+            width: 90%;
+            max-height: 85vh;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: modalIn 0.3s ease;
+        }
+
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
         }
-        .header-text {
-            flex: 1;
-            min-width: 300px;
-        }
-        h1 {
-            color: #2c5aa0;
-            margin-top: 0;
-            font-size: 1.8rem;
-        }
-        .subtitle {
-            color: #666;
+
+        .modal-header h2 {
             font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.3rem;
+            cursor: pointer;
+            padding: 3px;
+            line-height: 1;
+            opacity: 0.8;
+            transition: opacity 0.3s;
+        }
+
+        .modal-close:hover {
+            opacity: 1;
+        }
+
+        .modal-body {
+            padding: 10px;
+            overflow-y: auto;
+            max-height: calc(85vh - 50px);
+        }
+
+        /* t分布表样式 */
+        .t-dist-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.8rem;
+        }
+
+        .t-dist-table th, .t-dist-table td {
+            padding: 4px 6px;
+            text-align: center;
+            border: 1px solid #dee2e6;
+        }
+
+        .t-dist-table th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+        }
+
+        .t-dist-table th:first-child {
+            background: #495057;
+        }
+
+        .t-dist-table td:first-child {
+            background: #f8f9fa;
+            font-weight: 600;
+        }
+
+        .t-dist-table tr:nth-child(even) td {
+            background: #f8f9fa;
+        }
+
+        .t-dist-table tr:nth-child(even) td:first-child {
+            background: #e9ecef;
+        }
+
+        .t-dist-table tr:hover td {
+            background: #e8f4f8;
+        }
+
+        .table-note {
+            font-size: 0.8rem;
+            color: #6c757d;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        button {
+            padding: 10px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        #submitBtn {
+            background-color: #3498db;
+            color: white;
+        }
+
+        #submitBtn:hover:not(:disabled) {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(52, 152, 219, 0.3);
+        }
+
+        #submitBtn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
         .refresh-params-btn {
-            padding: 10px 20px;
             background: linear-gradient(135deg, #27ae60, #2ecc71);
             color: white;
-            border: none;
+        }
+
+        .refresh-params-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.4);
+        }
+
+        .toggle-explanation-btn {
+            display: none;
+            margin: 15px auto;
+            padding: 10px 24px;
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            color: white;
             border-radius: 8px;
             cursor: pointer;
             font-size: 0.95rem;
             font-weight: 600;
             transition: all 0.3s ease;
+            box-shadow: 0 3px 10px rgba(155, 89, 182, 0.3);
+        }
+
+        .toggle-explanation-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(155, 89, 182, 0.4);
+        }
+
+        .toggle-explanation-btn.show {
             display: flex;
             align-items: center;
             gap: 8px;
         }
-        .refresh-params-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.4);
-        }
-        .question-section {
-            margin-bottom: 40px;
-            padding: 25px;
-            background-color: #f8fbff;
-            border-radius: 10px;
-            border-left: 5px solid #4a86e8;
-        }
-        .question-title {
-            font-weight: 600;
-            color: #2c5aa0;
-            margin-bottom: 15px;
-            font-size: 1.2rem;
-        }
-        .question-content {
-            margin-bottom: 20px;
-            white-space: pre-line;
-        }
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 20px 0;
-            background-color: white;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
-        }
-        .data-table th, .data-table td {
-            border: 1px solid #d1e0ff;
-            padding: 12px 15px;
+
+        .score-container {
             text-align: center;
-        }
-        .data-table th {
-            background-color: #e6f0ff;
-            color: #2c5aa0;
-            font-weight: 600;
-        }
-        .data-table tr:nth-child(even) {
-            background-color: #f8fbff;
-        }
-        .options-container {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-top: 20px;
-        }
-        .option {
-            padding: 15px 20px;
-            background-color: white;
-            border: 2px solid #d1e0ff;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-        }
-        .option:hover {
-            background-color: #eef5ff;
-            border-color: #a0c1ff;
-            transform: translateY(-2px);
-        }
-        .option.selected {
-            border-color: #4a86e8;
-            background-color: #e6f0ff;
-        }
-        .option.correct {
-            border-color: #2ecc71;
-            background-color: #e8f8ef;
-        }
-        .option.incorrect {
-            border-color: #e74c3c;
-            background-color: #fdedec;
-        }
-        .option-letter {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 30px;
-            height: 30px;
-            background-color: #e1ecff;
-            color: #2c5aa0;
-            border-radius: 50%;
-            margin-right: 15px;
-            font-weight: bold;
-            flex-shrink: 0;
-        }
-        .option-text {
-            flex-grow: 1;
-        }
-        .formula {
-            font-family: 'Cambria Math', serif;
-            background-color: #f0f7ff;
-            padding: 5px 10px;
-            border-radius: 5px;
-            display: inline-block;
-            margin: 5px 0;
-        }
-        .controls {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 40px;
-            flex-wrap: wrap;
-        }
-        button {
-            padding: 14px 30px;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        #submitBtn {
-            background-color: #4a86e8;
+            background: linear-gradient(135deg, #3498db, #2c3e50);
             color: white;
-        }
-        #submitBtn:hover {
-            background-color: #3a76d8;
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(74, 134, 232, 0.3);
-        }
-        #resetBtn {
-            background-color: #f0f0f0;
-            color: #555;
-        }
-        #resetBtn:hover {
-            background-color: #e0e0e0;
-            transform: translateY(-3px);
-        }
-        .results {
-            margin-top: 40px;
-            padding: 25px;
-            background-color: #f0f7ff;
-            border-radius: 10px;
-            display: none;
-        }
-        .results.show {
-            display: block;
-            animation: fadeIn 0.5s ease;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        .score {
-            font-size: 1.5rem;
-            color: #2c5aa0;
-            font-weight: bold;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .feedback {
-            margin-top: 15px;
             padding: 15px;
-            border-radius: 8px;
-            background-color: white;
-            border-left: 4px solid #4a86e8;
-        }
-        .feedback.correct {
-            border-left-color: #2ecc71;
-        }
-        .feedback.incorrect {
-            border-left-color: #e74c3c;
-        }
-        .answer-key {
-            font-weight: 600;
-            color: #2c5aa0;
-        }
-        .explanation {
-            margin-top: 10px;
-            color: #555;
-        }
-        .show-explanation-btn {
+            border-radius: 10px;
+            margin-top: 20px;
             display: none;
-            margin: 10px 0;
-            padding: 10px 20px;
-            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+        }
+
+        .score-container.show {
+            display: block;
+        }
+
+        .result-icons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 15px 0;
+        }
+
+        .result-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            font-weight: bold;
+            transition: transform 0.3s ease;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+        }
+
+        .result-icon.correct {
+            background-color: #2ecc71;
             color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
         }
-        .show-explanation-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
+
+        .result-icon.incorrect {
+            background-color: #e74c3c;
+            color: white;
         }
+
+        .result-icon:hover {
+            transform: scale(1.15);
+        }
+
+        .score-text {
+            margin-bottom: 5px;
+        }
+
+        .formula {
+            background-color: #f1f8ff;
+            border-radius: 6px;
+            padding: 10px;
+            margin: 8px 0;
+            font-family: 'Cambria', 'Times New Roman', serif;
+            border-left: 3px solid #3498db;
+            font-size: 0.9rem;
+        }
+
+        .fill-blank-input {
+            padding: 8px 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            width: 150px;
+            transition: all 0.2s ease;
+            font-size: 0.95rem;
+        }
+
+        .fill-blank-input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.1);
+        }
+
+        .fill-blank-input.correct {
+            border-color: #2ecc71;
+            background-color: #d5f4e6;
+        }
+
+        .fill-blank-input.incorrect {
+            border-color: #e74c3c;
+            background-color: #fadbd8;
+        }
+
+        .critical-value {
+            display: inline-block;
+            padding: 3px 8px;
+            background-color: #f1c40f;
+            border-radius: 4px;
+            margin: 0 3px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        /* 问题1和2有8个选项，使用4列布局 */
+        .options-container.cols-8 {
+            grid-template-columns: repeat(4, 1fr);
+        }
+
         @media (max-width: 768px) {
             .container {
-                padding: 20px;
-            }
-            h1 {
-                font-size: 1.5rem;
-            }
-            header {
-                flex-direction: column;
-                text-align: center;
-            }
-            .question-section {
                 padding: 15px;
             }
-            .data-table {
-                font-size: 0.9rem;
+
+            h1 {
+                font-size: 1.4rem;
             }
-            .data-table th, .data-table td {
-                padding: 8px 10px;
+
+            .options-container {
+                grid-template-columns: repeat(2, 1fr);
             }
+
+            .options-container.cols-8 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .options-container-2col {
+                grid-template-columns: 1fr;
+            }
+
             .controls {
                 flex-direction: column;
-                align-items: center;
             }
+
             button {
                 width: 100%;
-                max-width: 300px;
+            }
+
+            .data-table {
+                font-size: 0.85rem;
+            }
+
+            .data-table th, .data-table td {
+                padding: 8px 6px;
+            }
+
+            .fill-blank-input {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 8px;
+            }
+
+            .container {
+                padding: 12px;
+            }
+
+            .question-container {
+                padding: 12px;
+            }
+
+            .options-container {
+                grid-template-columns: 1fr;
+            }
+
+            .options-container.cols-8 {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -289,43 +668,221 @@
 <body>
     <div class="container">
         <header>
-            <div class="header-text">
-                <h1>总体均值差异假设检验配对比较</h1>
-                <div class="subtitle">交互式答题练习 - 请根据题目内容选择正确答案</div>
-            </div>
-            <button class="refresh-params-btn" id="refreshParamsBtn">
-                <span>↻</span> 刷新参数
-            </button>
+            <h1><i class="fas fa-balance-scale"></i> 总体均值差异假设检验：配对比较</h1>
+            <div class="subtitle">交互式答题练习 - 请根据题目内容选择正确答案</div>
         </header>
 
-        <div class="question-section" id="backgroundSection">
-            <div class="question-title">题目背景</div>
-            <div class="question-content" id="backgroundContent">
-                <!-- 动态生成 -->
-            </div>
-
-            <table class="data-table" id="dataTable">
-                <!-- 动态生成 -->
-            </table>
-
-            <div class="question-content" id="questionInstruction">
-                <!-- 动态生成 -->
-            </div>
-        </div>
-
-        <div id="questionsContainer">
+        <div class="problem-info" id="problem-info">
             <!-- 动态生成 -->
         </div>
 
-        <div class="controls">
-            <button id="submitBtn">提交答案</button>
-            <button id="resetBtn">重新作答</button>
+        <table class="data-table" id="dataTable">
+            <!-- 动态生成 -->
+        </table>
+
+        <div id="questionsContainer">
+            <!-- 问题 1 -->
+            <div class="question-container" id="q1">
+                <div class="question-title">
+                    <span class="question-number">1</span>
+                    <span>原假设：H₀</span>
+                </div>
+                <div class="question-text">
+                    <p>选择正确的原假设表达式：</p>
+                </div>
+                <div class="options-container" id="options-container-1">
+                    <!-- 动态生成 -->
+                </div>
+                <div class="feedback" id="feedback1"></div>
+            </div>
+
+            <!-- 问题 2 -->
+            <div class="question-container" id="q2">
+                <div class="question-title">
+                    <span class="question-number">2</span>
+                    <span>备择假设：H₁</span>
+                </div>
+                <div class="question-text">
+                    <p>选择正确的备择假设表达式：</p>
+                </div>
+                <div class="options-container" id="options-container-2">
+                    <!-- 动态生成 -->
+                </div>
+                <div class="feedback" id="feedback2"></div>
+            </div>
+
+            <!-- 问题 3 -->
+            <div class="question-container" id="q3">
+                <div class="question-title">
+                    <span class="question-number">3</span>
+                    <span>检验统计量的类型</span>
+                </div>
+                <div class="question-text">
+                    <p>选择正确的检验统计量类型：</p>
+                </div>
+                <div class="options-container" id="options-container-3">
+                    <!-- 动态生成 -->
+                </div>
+                <div class="feedback" id="feedback3"></div>
+            </div>
+
+            <!-- 问题 4 -->
+            <div class="question-container" id="q4">
+                <div class="question-title">
+                    <span class="question-number">4</span>
+                    <span>自由度</span>
+                </div>
+                <div class="question-text">
+                    <p>计算该检验的自由度：</p>
+                    <div style="display: flex; align-items: center; gap: 10px; margin-top: 12px;">
+                        <span>df = </span>
+                        <input type="text" id="answer-4" class="fill-blank-input">
+                    </div>
+                </div>
+                <div class="feedback" id="feedback4"></div>
+            </div>
+
+            <!-- 问题 5 -->
+            <div class="question-container" id="q5">
+                <div class="question-title">
+                    <span class="question-number">5</span>
+                    <span>检验统计量的值</span>
+                </div>
+                <div class="question-text">
+                    <p>计算检验统计量的值（至少四舍五入到三位小数）：</p>
+                    <div style="display: flex; align-items: center; gap: 10px; margin-top: 12px;">
+                        <input type="text" id="answer-5" class="fill-blank-input">
+                    </div>
+                </div>
+                <div class="feedback" id="feedback5"></div>
+            </div>
+
+            <!-- 问题 6 -->
+            <div class="question-container" id="q6">
+                <div class="question-title">
+                    <span class="question-number">6</span>
+                    <span>临界值</span>
+                </div>
+                <div class="question-text" id="q6-text">
+                    <!-- 动态生成 -->
+                </div>
+                <div class="feedback" id="feedback6"></div>
+            </div>
+
+            <!-- 问题 7 -->
+            <div class="question-container" id="q7">
+                <div class="question-title">
+                    <span class="question-number">7</span>
+                    <span>结论</span>
+                </div>
+                <div class="question-text" id="q7-text">
+                    <!-- 动态生成 -->
+                </div>
+                <div class="options-container options-container-2col" id="options-container-7">
+                    <!-- 动态生成 -->
+                </div>
+                <div class="feedback" id="feedback7"></div>
+            </div>
         </div>
 
-        <div id="results" class="results">
-            <div class="score">得分: <span id="scoreValue">0</span>/6</div>
-            <div id="feedbackContainer">
+        <div class="controls">
+            <div class="controls-left">
+                <button id="showTableBtn" class="btn-table">
+                    <i class="fas fa-table"></i> t分布表
+                </button>
+            </div>
+            <div class="controls-center">
+                <button id="submitBtn">
+                    <i class="fas fa-paper-plane"></i> 提交答案
+                </button>
+                <button id="nextBtn" class="refresh-params-btn">
+                    下一题 <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- 显示/隐藏答案解析按钮 -->
+        <button id="toggle-explanation-btn" class="toggle-explanation-btn">
+            <i class="fas fa-lightbulb"></i> 显示答案解析
+        </button>
+
+        <!-- 合并的答案解析区域 -->
+        <div class="explanation" id="combined-explanation">
+            <h4><i class="fas fa-calculator"></i> 答案解析</h4>
+            <div id="combined-explanation-content">
                 <!-- 动态生成 -->
+            </div>
+        </div>
+
+        <div class="score-container" id="score-container">
+            <div class="score-title">答题记录</div>
+            <div class="result-icons" id="result-icons">
+                <!-- 动态生成历史图标 -->
+            </div>
+            <div class="score-text" id="score-text"></div>
+        </div>
+    </div>
+
+    <!-- t分布表弹窗 -->
+    <div class="modal-overlay" id="tableModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-table"></i> t分布临界值表（右尾概率）</h2>
+                <button class="modal-close" id="closeModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <table class="t-dist-table">
+                    <thead>
+                        <tr>
+                            <th>df</th>
+                            <th>α=0.10</th>
+                            <th>α=0.05</th>
+                            <th>α=0.025</th>
+                            <th>α=0.01</th>
+                            <th>α=0.005</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>1</td><td>3.078</td><td>6.314</td><td>12.706</td><td>31.821</td><td>63.657</td></tr>
+                        <tr><td>2</td><td>1.886</td><td>2.920</td><td>4.303</td><td>6.965</td><td>9.925</td></tr>
+                        <tr><td>3</td><td>1.638</td><td>2.353</td><td>3.182</td><td>4.541</td><td>5.841</td></tr>
+                        <tr><td>4</td><td>1.533</td><td>2.132</td><td>2.776</td><td>3.747</td><td>4.604</td></tr>
+                        <tr><td>5</td><td>1.476</td><td>2.015</td><td>2.571</td><td>3.365</td><td>4.032</td></tr>
+                        <tr><td>6</td><td>1.440</td><td>1.943</td><td>2.447</td><td>3.143</td><td>3.707</td></tr>
+                        <tr><td>7</td><td>1.415</td><td>1.895</td><td>2.365</td><td>2.998</td><td>3.499</td></tr>
+                        <tr><td>8</td><td>1.397</td><td>1.860</td><td>2.306</td><td>2.896</td><td>3.355</td></tr>
+                        <tr><td>9</td><td>1.383</td><td>1.833</td><td>2.262</td><td>2.821</td><td>3.250</td></tr>
+                        <tr><td>10</td><td>1.372</td><td>1.812</td><td>2.228</td><td>2.764</td><td>3.169</td></tr>
+                        <tr><td>11</td><td>1.363</td><td>1.796</td><td>2.201</td><td>2.718</td><td>3.106</td></tr>
+                        <tr><td>12</td><td>1.356</td><td>1.782</td><td>2.179</td><td>2.681</td><td>3.055</td></tr>
+                        <tr><td>13</td><td>1.350</td><td>1.771</td><td>2.160</td><td>2.650</td><td>3.012</td></tr>
+                        <tr><td>14</td><td>1.345</td><td>1.761</td><td>2.145</td><td>2.624</td><td>2.977</td></tr>
+                        <tr><td>15</td><td>1.341</td><td>1.753</td><td>2.131</td><td>2.602</td><td>2.947</td></tr>
+                        <tr><td>16</td><td>1.337</td><td>1.746</td><td>2.120</td><td>2.583</td><td>2.921</td></tr>
+                        <tr><td>17</td><td>1.333</td><td>1.740</td><td>2.110</td><td>2.567</td><td>2.898</td></tr>
+                        <tr><td>18</td><td>1.330</td><td>1.734</td><td>2.101</td><td>2.552</td><td>2.878</td></tr>
+                        <tr><td>19</td><td>1.328</td><td>1.729</td><td>2.093</td><td>2.539</td><td>2.861</td></tr>
+                        <tr><td>20</td><td>1.325</td><td>1.725</td><td>2.086</td><td>2.528</td><td>2.845</td></tr>
+                        <tr><td>21</td><td>1.323</td><td>1.721</td><td>2.080</td><td>2.518</td><td>2.831</td></tr>
+                        <tr><td>22</td><td>1.321</td><td>1.717</td><td>2.074</td><td>2.508</td><td>2.819</td></tr>
+                        <tr><td>23</td><td>1.319</td><td>1.714</td><td>2.069</td><td>2.500</td><td>2.807</td></tr>
+                        <tr><td>24</td><td>1.318</td><td>1.711</td><td>2.064</td><td>2.492</td><td>2.797</td></tr>
+                        <tr><td>25</td><td>1.316</td><td>1.708</td><td>2.060</td><td>2.485</td><td>2.787</td></tr>
+                        <tr><td>26</td><td>1.315</td><td>1.706</td><td>2.056</td><td>2.479</td><td>2.779</td></tr>
+                        <tr><td>27</td><td>1.314</td><td>1.703</td><td>2.052</td><td>2.473</td><td>2.771</td></tr>
+                        <tr><td>28</td><td>1.313</td><td>1.701</td><td>2.048</td><td>2.467</td><td>2.763</td></tr>
+                        <tr><td>29</td><td>1.311</td><td>1.699</td><td>2.045</td><td>2.462</td><td>2.756</td></tr>
+                        <tr><td>30</td><td>1.310</td><td>1.697</td><td>2.042</td><td>2.457</td><td>2.750</td></tr>
+                        <tr><td>40</td><td>1.303</td><td>1.684</td><td>2.021</td><td>2.423</td><td>2.704</td></tr>
+                        <tr><td>50</td><td>1.299</td><td>1.676</td><td>2.009</td><td>2.403</td><td>2.678</td></tr>
+                        <tr><td>60</td><td>1.296</td><td>1.671</td><td>2.000</td><td>2.390</td><td>2.660</td></tr>
+                        <tr><td>80</td><td>1.292</td><td>1.664</td><td>1.990</td><td>2.374</td><td>2.639</td></tr>
+                        <tr><td>100</td><td>1.290</td><td>1.660</td><td>1.984</td><td>2.364</td><td>2.626</td></tr>
+                        <tr><td>120</td><td>1.289</td><td>1.658</td><td>1.980</td><td>2.358</td><td>2.617</td></tr>
+                        <tr><td>∞</td><td>1.282</td><td>1.645</td><td>1.960</td><td>2.326</td><td>2.576</td></tr>
+                    </tbody>
+                </table>
+                <div class="table-note">注：表中数值为右尾临界值 t<sub>α</sub>，即 P(t > t<sub>α</sub>) = α</div>
             </div>
         </div>
     </div>
@@ -338,8 +895,14 @@
                     product: "轮胎",
                     brand1: "品牌1",
                     brand2: "品牌2",
+                    sampleUnit: "汽车",
+                    applicationPre: "将两个品牌安装在同一随机样本的",
+                    applicationPost: "上",
+                    variationExplanation: "磨损程度可能因汽车类型而有很大差异。",
+                    measurementName: "磨损量",
                     measureUnit: "英寸",
                     testCondition: "所有汽车在标准测试道路上行驶20,000英里后",
+                    designExplanation: "每辆汽车有两个前轮（左前轮和右前轮），两个前轮分别安装不同品牌。这样同一辆车的两个品牌直接对比，可以控制汽车个体差异对磨损的影响。此外，为了消除'左轮vs右轮'可能存在的位置效应（如道路倾斜、转弯习惯等），采用随机化设计：随机选择一半汽车在左前轮安装品牌1（右前轮安装品牌2），另一半汽车则相反（左前轮安装品牌2，右前轮安装品牌1）。",
                     n: 10,
                     data: [
                         { car: 1, b1: 0.241, b2: 0.112, diff: 0.129 },
@@ -358,14 +921,21 @@
                     tValue: 3.858,
                     df: 9,
                     criticalValue: 2.262,
+                    testType: "two-tailed",
                     conclusion: "yes"
                 },
                 {
                     product: "机油",
                     brand1: "品牌A",
                     brand2: "品牌B",
+                    sampleUnit: "汽车",
+                    applicationPre: "在同一随机样本的",
+                    applicationPost: "上测试两个品牌",
+                    variationExplanation: "机油消耗量可能因发动机状况和驾驶习惯而有很大差异。",
+                    measurementName: "消耗量",
                     measureUnit: "毫升",
                     testCondition: "所有汽车在标准测试条件下运行5,000公里后",
+                    designExplanation: "该小组采用交叉设计：每辆车先后使用两种机油进行测试，第一次测试使用一种品牌，清洗油路后第二次测试使用另一种品牌。测试顺序随机分配，一半车辆先使用品牌A后使用品牌B，另一半则相反。这样同一辆车的两个品牌直接对比，可以控制发动机个体差异对机油消耗的影响。",
                     n: 8,
                     data: [
                         { car: 1, b1: 0.85, b2: 0.92, diff: -0.07 },
@@ -382,14 +952,21 @@
                     tValue: -6.928,
                     df: 7,
                     criticalValue: 2.365,
+                    testType: "two-tailed",
                     conclusion: "yes"
                 },
                 {
                     product: "刹车片",
                     brand1: "品牌X",
                     brand2: "品牌Y",
+                    sampleUnit: "汽车",
+                    applicationPre: "将两个品牌安装在同一随机样本的",
+                    applicationPost: "上",
+                    variationExplanation: "磨损程度可能因汽车类型和制动习惯而有很大差异。",
+                    measurementName: "磨损量",
                     measureUnit: "毫米",
                     testCondition: "所有汽车在标准测试条件下进行100次紧急制动后",
+                    designExplanation: "每辆汽车有两个前刹车片（左侧和右侧），分别安装不同品牌。这样同一辆车的两个品牌直接对比，可以控制汽车个体差异（如车重、制动系统状况等）对磨损的影响。此外，为了消除'左侧vs右侧'可能存在的位置效应（如道路倾斜、转弯习惯等），采用随机化设计：随机选择一半汽车在左侧安装品牌X（右侧安装品牌Y），另一半汽车则相反。",
                     n: 12,
                     data: [
                         { car: 1, b1: 1.2, b2: 1.1, diff: 0.1 },
@@ -405,19 +982,26 @@
                         { car: 11, b1: 1.3, b2: 1.2, diff: 0.1 },
                         { car: 12, b1: 1.1, b2: 1.1, diff: 0.0 }
                     ],
-                    meanDiff: 0.075,
-                    stdDiff: 0.087,
-                    tValue: 2.986,
+                    meanDiff: 0.058,
+                    stdDiff: 0.079,
+                    tValue: 2.548,
                     df: 11,
                     criticalValue: 2.201,
+                    testType: "two-tailed",
                     conclusion: "yes"
                 },
                 {
                     product: "空气滤清器",
                     brand1: "品牌M",
                     brand2: "品牌N",
+                    sampleUnit: "汽车",
+                    applicationPre: "在同一随机样本的",
+                    applicationPost: "上测试两个品牌",
+                    variationExplanation: "过滤效果可能因使用环境和驾驶条件而有很大差异。",
+                    measurementName: "过滤杂质重量",
                     measureUnit: "克",
                     testCondition: "所有汽车在标准测试条件下运行10,000公里后",
+                    designExplanation: "该小组采用交叉设计：每辆车先后安装两种品牌的空气滤清器进行测试，第一次测试使用一种品牌，第二次测试使用另一种品牌。测试顺序随机分配，一半车辆先使用品牌M后使用品牌N，另一半则相反。这样同一辆车的两个品牌直接对比，可以控制使用环境差异对过滤效果的影响。",
                     n: 9,
                     data: [
                         { car: 1, b1: 15.2, b2: 14.8, diff: 0.4 },
@@ -431,18 +1015,25 @@
                         { car: 9, b1: 15.1, b2: 14.9, diff: 0.2 }
                     ],
                     meanDiff: 0.189,
-                    stdDiff: 0.423,
-                    tValue: 1.340,
+                    stdDiff: 0.443,
+                    tValue: 1.280,
                     df: 8,
                     criticalValue: 2.306,
+                    testType: "two-tailed",
                     conclusion: "no"
                 },
                 {
                     product: "火花塞",
                     brand1: "品牌P",
                     brand2: "品牌Q",
+                    sampleUnit: "汽车",
+                    applicationPre: "将两个品牌安装在同一随机样本的",
+                    applicationPost: "上",
+                    variationExplanation: "磨损程度可能因气缸位置和发动机工况而有很大差异。",
+                    measurementName: "磨损量",
                     measureUnit: "毫米",
                     testCondition: "所有汽车在标准测试条件下运行15,000公里后",
+                    designExplanation: "火花塞磨损可能因气缸位置和发动机工况而有差异。对于四缸发动机，该小组将两种品牌的火花塞安装在同一发动机的不同气缸上：随机选择两个气缸安装品牌P，另外两个气缸安装品牌Q。这样同一发动机的两个品牌直接对比，可以控制发动机个体差异对火花塞磨损的影响，同时平衡气缸位置效应。",
                     n: 7,
                     data: [
                         { car: 1, b1: 0.85, b2: 0.82, diff: 0.03 },
@@ -454,31 +1045,557 @@
                         { car: 7, b1: 0.86, b2: 0.88, diff: -0.02 }
                     ],
                     meanDiff: 0.013,
-                    stdDiff: 0.023,
-                    tValue: 1.496,
+                    stdDiff: 0.024,
+                    tValue: 1.400,
                     df: 6,
                     criticalValue: 2.447,
+                    testType: "two-tailed",
                     conclusion: "no"
+                },
+                // ==================== 新增15组参数 ====================
+                {
+                    product: "化肥",
+                    brand1: "品牌绿源",
+                    brand2: "品牌丰产",
+                    sampleUnit: "试验田",
+                    applicationPre: "将两个品牌施用于同一随机样本的",
+                    applicationPost: "中",
+                    variationExplanation: "作物产量可能因土壤条件、气候和管理方式而有很大差异。",
+                    measurementName: "番茄产量",
+                    measureUnit: "公斤",
+                    testCondition: "所有试验田在相同生长周期后收获",
+                    designExplanation: "该小组采用配对小区设计：在每块试验田中划分两个相邻的小区，分别施用不同品牌的化肥。两个小区的土壤条件、灌溉和日照基本相同。这样同一块田中的两个品牌直接对比，可以控制土壤和微气候差异对作物产量的影响。",
+                    n: 12,
+                    data: [
+                        { car: 1, b1: 45.2, b2: 44.8, diff: 0.4 },
+                        { car: 2, b1: 43.8, b2: 44.2, diff: -0.4 },
+                        { car: 3, b1: 46.5, b2: 45.9, diff: 0.6 },
+                        { car: 4, b1: 44.1, b2: 44.5, diff: -0.4 },
+                        { car: 5, b1: 45.8, b2: 45.2, diff: 0.6 },
+                        { car: 6, b1: 43.2, b2: 43.8, diff: -0.6 },
+                        { car: 7, b1: 46.0, b2: 45.5, diff: 0.5 },
+                        { car: 8, b1: 44.5, b2: 44.9, diff: -0.4 },
+                        { car: 9, b1: 45.5, b2: 45.0, diff: 0.5 },
+                        { car: 10, b1: 43.5, b2: 44.0, diff: -0.5 },
+                        { car: 11, b1: 46.2, b2: 45.7, diff: 0.5 },
+                        { car: 12, b1: 44.0, b2: 44.4, diff: -0.4 }
+                    ],
+                    meanDiff: 0.033,
+                    stdDiff: 0.510,
+                    tValue: 0.226,
+                    df: 11,
+                    criticalValue: 2.201,
+                    testType: "two-tailed",
+                    conclusion: "no"
+                },
+                {
+                    product: "洗发水",
+                    brand1: "品牌丝滑",
+                    brand2: "品牌清爽",
+                    sampleUnit: "受试者",
+                    applicationPre: "让同一随机样本的",
+                    applicationPost: "使用两个品牌",
+                    variationExplanation: "头发柔顺度可能因发质、头皮油脂分泌和生活习惯而有很大差异。",
+                    measurementName: "柔顺度评分",
+                    measureUnit: "分",
+                    testCondition: "所有受试者连续使用2周后",
+                    designExplanation: "该小组采用交叉设计：每位受试者先后使用两种品牌的洗发水各2周，中间间隔1周清洗期。为了消除顺序效应，一半受试者先用品牌丝滑后用品牌清爽，另一半则相反。测试期间受试者不使用其他护发产品。这样同一位受试者对两种洗发水的效果直接对比，可以控制个体发质差异对柔顺度的影响。",
+                    n: 9,
+                    data: [
+                        { car: 1, b1: 8.5, b2: 7.8, diff: 0.7 },
+                        { car: 2, b1: 7.9, b2: 7.2, diff: 0.7 },
+                        { car: 3, b1: 8.2, b2: 7.5, diff: 0.7 },
+                        { car: 4, b1: 8.0, b2: 7.4, diff: 0.6 },
+                        { car: 5, b1: 8.3, b2: 7.6, diff: 0.7 },
+                        { car: 6, b1: 7.8, b2: 7.1, diff: 0.7 },
+                        { car: 7, b1: 8.1, b2: 7.3, diff: 0.8 },
+                        { car: 8, b1: 8.4, b2: 7.7, diff: 0.7 },
+                        { car: 9, b1: 7.7, b2: 7.0, diff: 0.7 }
+                    ],
+                    meanDiff: 0.700,
+                    stdDiff: 0.050,
+                    tValue: 42.000,
+                    df: 8,
+                    criticalValue: 2.306,
+                    testType: "two-tailed",
+                    conclusion: "yes"
+                },
+                {
+                    product: "眼药水",
+                    brand1: "品牌明眸",
+                    brand2: "品牌清目",
+                    sampleUnit: "受试者",
+                    applicationPre: "让同一随机样本的",
+                    applicationPost: "使用两个品牌",
+                    variationExplanation: "眼睛疲劳缓解效果可能因用眼习惯、工作环境和个体敏感度而有很大差异。",
+                    measurementName: "疲劳缓解时间",
+                    measureUnit: "分钟",
+                    testCondition: "所有受试者在标准用眼疲劳测试后使用",
+                    designExplanation: "该小组采用配对设计：每位受试者的左右眼分别使用不同品牌的眼药水。为了消除左右眼可能存在的差异，采用随机化设计：随机选择一半受试者左眼使用品牌明眸（右眼使用品牌清目），另一半则相反。这样同一受试者的两只眼睛直接对比，可以控制个体差异对疲劳缓解效果的影响。研究假设品牌明眸的缓解时间更短。",
+                    n: 10,
+                    data: [
+                        { car: 1, b1: 3.2, b2: 4.1, diff: -0.9 },
+                        { car: 2, b1: 2.8, b2: 3.8, diff: -1.0 },
+                        { car: 3, b1: 3.5, b2: 4.3, diff: -0.8 },
+                        { car: 4, b1: 3.0, b2: 4.0, diff: -1.0 },
+                        { car: 5, b1: 3.3, b2: 4.2, diff: -0.9 },
+                        { car: 6, b1: 2.9, b2: 3.9, diff: -1.0 },
+                        { car: 7, b1: 3.4, b2: 4.4, diff: -1.0 },
+                        { car: 8, b1: 3.1, b2: 4.1, diff: -1.0 },
+                        { car: 9, b1: 2.7, b2: 3.7, diff: -1.0 },
+                        { car: 10, b1: 3.6, b2: 4.5, diff: -0.9 }
+                    ],
+                    meanDiff: -0.950,
+                    stdDiff: 0.071,
+                    tValue: -42.485,
+                    df: 9,
+                    criticalValue: 1.833,
+                    testType: "left-tailed",
+                    conclusion: "yes"
+                },
+                {
+                    product: "牙膏",
+                    brand1: "品牌皓白",
+                    brand2: "品牌洁亮",
+                    sampleUnit: "受试者",
+                    applicationPre: "让同一随机样本的",
+                    applicationPost: "使用两个品牌",
+                    variationExplanation: "牙齿美白效果可能因饮食习惯、刷牙方式和牙齿初始状态而有很大差异。",
+                    measurementName: "色度改善值",
+                    measureUnit: "级",
+                    testCondition: "所有受试者连续使用4周后",
+                    designExplanation: "该小组采用交叉设计：每位受试者先后使用两种品牌的牙膏各4周，中间间隔2周清洗期。为了消除顺序效应，一半受试者先用品牌皓白后用品牌洁亮，另一半则相反。测试期间受试者保持正常饮食习惯，不使用其他美白产品。研究假设品牌皓白的美白效果更好。",
+                    n: 8,
+                    data: [
+                        { car: 1, b1: 2.8, b2: 2.2, diff: 0.6 },
+                        { car: 2, b1: 2.5, b2: 2.0, diff: 0.5 },
+                        { car: 3, b1: 3.0, b2: 2.4, diff: 0.6 },
+                        { car: 4, b1: 2.6, b2: 2.1, diff: 0.5 },
+                        { car: 5, b1: 2.9, b2: 2.3, diff: 0.6 },
+                        { car: 6, b1: 2.4, b2: 1.9, diff: 0.5 },
+                        { car: 7, b1: 2.7, b2: 2.2, diff: 0.5 },
+                        { car: 8, b1: 3.1, b2: 2.5, diff: 0.6 }
+                    ],
+                    meanDiff: 0.550,
+                    stdDiff: 0.054,
+                    tValue: 29.103,
+                    df: 7,
+                    criticalValue: 1.895,
+                    testType: "right-tailed",
+                    conclusion: "yes"
+                },
+                {
+                    product: "护肤霜",
+                    brand1: "品牌润泽",
+                    brand2: "品牌保湿",
+                    sampleUnit: "受试者",
+                    applicationPre: "让同一随机样本的",
+                    applicationPost: "使用两个品牌",
+                    variationExplanation: "皮肤保湿效果可能因肤质、环境湿度和生活习惯而有很大差异。",
+                    measurementName: "皮肤水分增加量",
+                    measureUnit: "%",
+                    testCondition: "所有受试者连续使用2周后",
+                    designExplanation: "该小组采用半脸对照设计：每位受试者左右脸分别使用不同品牌的护肤霜。为了消除左右脸可能存在的差异，采用随机化设计：随机选择一半受试者左脸使用品牌润泽（右脸使用品牌保湿），另一半则相反。测试期间受试者不使用其他护肤产品。研究假设品牌润泽的保湿效果更好。",
+                    n: 11,
+                    data: [
+                        { car: 1, b1: 15.2, b2: 13.8, diff: 1.4 },
+                        { car: 2, b1: 14.8, b2: 13.5, diff: 1.3 },
+                        { car: 3, b1: 15.5, b2: 14.1, diff: 1.4 },
+                        { car: 4, b1: 14.5, b2: 13.2, diff: 1.3 },
+                        { car: 5, b1: 15.8, b2: 14.4, diff: 1.4 },
+                        { car: 6, b1: 14.2, b2: 12.9, diff: 1.3 },
+                        { car: 7, b1: 15.0, b2: 13.6, diff: 1.4 },
+                        { car: 8, b1: 15.3, b2: 14.0, diff: 1.3 },
+                        { car: 9, b1: 14.9, b2: 13.5, diff: 1.4 },
+                        { car: 10, b1: 15.6, b2: 14.2, diff: 1.4 },
+                        { car: 11, b1: 14.6, b2: 13.3, diff: 1.3 }
+                    ],
+                    meanDiff: 1.355,
+                    stdDiff: 0.052,
+                    tValue: 86.025,
+                    df: 10,
+                    criticalValue: 1.812,
+                    testType: "right-tailed",
+                    conclusion: "yes"
+                },
+                {
+                    product: "花肥",
+                    brand1: "品牌花语",
+                    brand2: "品牌绽放",
+                    sampleUnit: "盆栽",
+                    applicationPre: "将两个品牌施用于同一随机样本的",
+                    applicationPost: "中",
+                    variationExplanation: "花卉生长可能因光照条件、浇水频率和花盆位置而有很大差异。",
+                    measurementName: "花朵直径",
+                    measureUnit: "厘米",
+                    testCondition: "所有盆栽在相同生长周期后测量",
+                    designExplanation: "该小组采用配对盆栽设计：将同一种花的两株幼苗分别种植在两个相邻的花盆中，施用不同品牌的肥料。两个花盆放置在同一阳台上，接受相同的光照和浇水。研究假设品牌花语的花朵更大。",
+                    n: 9,
+                    data: [
+                        { car: 1, b1: 8.2, b2: 8.0, diff: 0.2 },
+                        { car: 2, b1: 7.8, b2: 7.9, diff: -0.1 },
+                        { car: 3, b1: 8.5, b2: 8.3, diff: 0.2 },
+                        { car: 4, b1: 7.6, b2: 7.7, diff: -0.1 },
+                        { car: 5, b1: 8.0, b2: 8.1, diff: -0.1 },
+                        { car: 6, b1: 8.3, b2: 8.2, diff: 0.1 },
+                        { car: 7, b1: 7.9, b2: 8.0, diff: -0.1 },
+                        { car: 8, b1: 8.1, b2: 8.0, diff: 0.1 },
+                        { car: 9, b1: 7.7, b2: 7.8, diff: -0.1 }
+                    ],
+                    meanDiff: 0.011,
+                    stdDiff: 0.133,
+                    tValue: 0.248,
+                    df: 8,
+                    criticalValue: 1.860,
+                    testType: "right-tailed",
+                    conclusion: "no"
+                },
+                {
+                    product: "奶牛饲料",
+                    brand1: "品牌优乳",
+                    brand2: "品牌高产",
+                    sampleUnit: "奶牛",
+                    applicationPre: "用两个品牌喂养同一随机样本的",
+                    applicationPost: "",
+                    variationExplanation: "产奶量可能因奶牛品种、年龄和健康状况而有很大差异。",
+                    measurementName: "日产奶量",
+                    measureUnit: "升",
+                    testCondition: "所有奶牛连续喂养4周后",
+                    designExplanation: "该小组采用交叉设计：每头奶牛先后食用两种品牌的饲料各4周，中间间隔2周过渡期。为了消除顺序效应，一半奶牛先食用品牌优乳后食用品牌高产，另一半则相反。测试期间保持相同的饲养管理条件。研究假设品牌优乳能提高产奶量。",
+                    n: 12,
+                    data: [
+                        { car: 1, b1: 28.5, b2: 27.8, diff: 0.7 },
+                        { car: 2, b1: 26.8, b2: 26.2, diff: 0.6 },
+                        { car: 3, b1: 29.2, b2: 28.5, diff: 0.7 },
+                        { car: 4, b1: 25.5, b2: 25.0, diff: 0.5 },
+                        { car: 5, b1: 27.3, b2: 26.7, diff: 0.6 },
+                        { car: 6, b1: 28.0, b2: 27.4, diff: 0.6 },
+                        { car: 7, b1: 26.2, b2: 25.7, diff: 0.5 },
+                        { car: 8, b1: 29.8, b2: 29.1, diff: 0.7 },
+                        { car: 9, b1: 27.0, b2: 26.4, diff: 0.6 },
+                        { car: 10, b1: 28.3, b2: 27.7, diff: 0.6 },
+                        { car: 11, b1: 25.8, b2: 25.3, diff: 0.5 },
+                        { car: 12, b1: 27.5, b2: 26.9, diff: 0.6 }
+                    ],
+                    meanDiff: 0.600,
+                    stdDiff: 0.074,
+                    tValue: 28.142,
+                    df: 11,
+                    criticalValue: 1.796,
+                    testType: "right-tailed",
+                    conclusion: "yes"
+                },
+                {
+                    product: "运动饮料",
+                    brand1: "品牌劲能",
+                    brand2: "品牌活力",
+                    sampleUnit: "运动员",
+                    applicationPre: "让同一随机样本的",
+                    applicationPost: "饮用两个品牌",
+                    variationExplanation: "运动后恢复速度可能因体质、运动强度和出汗量而有很大差异。",
+                    measurementName: "心率恢复时间",
+                    measureUnit: "秒",
+                    testCondition: "所有运动员在标准高强度运动后饮用",
+                    designExplanation: "该小组采用交叉设计：每位运动员在两次分开的测试中分别饮用两种品牌的运动饮料。为了消除学习和适应效应，两次测试间隔一周，且测试顺序随机分配。研究假设品牌劲能的恢复时间更短。",
+                    n: 10,
+                    data: [
+                        { car: 1, b1: 125, b2: 138, diff: -13 },
+                        { car: 2, b1: 118, b2: 130, diff: -12 },
+                        { car: 3, b1: 132, b2: 145, diff: -13 },
+                        { car: 4, b1: 120, b2: 132, diff: -12 },
+                        { car: 5, b1: 128, b2: 140, diff: -12 },
+                        { car: 6, b1: 115, b2: 127, diff: -12 },
+                        { car: 7, b1: 130, b2: 143, diff: -13 },
+                        { car: 8, b1: 122, b2: 134, diff: -12 },
+                        { car: 9, b1: 135, b2: 148, diff: -13 },
+                        { car: 10, b1: 119, b2: 131, diff: -12 }
+                    ],
+                    meanDiff: -12.4,
+                    stdDiff: 0.516,
+                    tValue: -75.96,
+                    df: 9,
+                    criticalValue: 1.833,
+                    testType: "left-tailed",
+                    conclusion: "yes"
+                },
+                {
+                    product: "减肥茶",
+                    brand1: "品牌轻盈",
+                    brand2: "品牌纤体",
+                    sampleUnit: "受试者",
+                    applicationPre: "让同一随机样本的",
+                    applicationPost: "饮用两个品牌",
+                    variationExplanation: "减肥效果可能因基础代谢率、饮食习惯和运动量而有很大差异。",
+                    measurementName: "体重减少量",
+                    measureUnit: "公斤",
+                    testCondition: "所有受试者连续饮用8周后",
+                    designExplanation: "该小组采用交叉设计：每位受试者先后饮用两种品牌的减肥茶各8周，中间间隔4周清洗期。为了消除顺序效应，一半受试者先用品牌轻盈后用品牌纤体，另一半则相反。测试期间受试者保持正常饮食和运动习惯。研究假设品牌轻盈的减肥效果更好。",
+                    n: 8,
+                    data: [
+                        { car: 1, b1: 3.2, b2: 2.5, diff: 0.7 },
+                        { car: 2, b1: 2.8, b2: 2.2, diff: 0.6 },
+                        { car: 3, b1: 3.5, b2: 2.8, diff: 0.7 },
+                        { car: 4, b1: 2.6, b2: 2.0, diff: 0.6 },
+                        { car: 5, b1: 3.0, b2: 2.4, diff: 0.6 },
+                        { car: 6, b1: 2.4, b2: 1.8, diff: 0.6 },
+                        { car: 7, b1: 3.3, b2: 2.6, diff: 0.7 },
+                        { car: 8, b1: 2.9, b2: 2.3, diff: 0.6 }
+                    ],
+                    meanDiff: 0.638,
+                    stdDiff: 0.052,
+                    tValue: 34.840,
+                    df: 7,
+                    criticalValue: 1.895,
+                    testType: "right-tailed",
+                    conclusion: "yes"
+                },
+                {
+                    product: "助眠茶",
+                    brand1: "品牌安宁",
+                    brand2: "品牌好梦",
+                    sampleUnit: "受试者",
+                    applicationPre: "让同一随机样本的",
+                    applicationPost: "饮用两个品牌",
+                    variationExplanation: "睡眠改善效果可能因生活压力、作息习惯和睡眠环境而有很大差异。",
+                    measurementName: "入睡时间",
+                    measureUnit: "分钟",
+                    testCondition: "所有受试者连续饮用2周后",
+                    designExplanation: "该小组采用交叉设计：每位受试者先后饮用两种品牌的助眠茶各2周，中间间隔1周清洗期。为了消除顺序效应，一半受试者先用品牌安宁后用品牌好梦，另一半则相反。测试期间受试者保持正常作息。研究假设品牌安宁能缩短入睡时间。",
+                    n: 9,
+                    data: [
+                        { car: 1, b1: 18, b2: 20, diff: -2 },
+                        { car: 2, b1: 22, b2: 25, diff: -3 },
+                        { car: 3, b1: 15, b2: 17, diff: -2 },
+                        { car: 4, b1: 25, b2: 28, diff: -3 },
+                        { car: 5, b1: 20, b2: 22, diff: -2 },
+                        { car: 6, b1: 28, b2: 32, diff: -4 },
+                        { car: 7, b1: 17, b2: 19, diff: -2 },
+                        { car: 8, b1: 23, b2: 26, diff: -3 },
+                        { car: 9, b1: 19, b2: 21, diff: -2 }
+                    ],
+                    meanDiff: -2.556,
+                    stdDiff: 0.727,
+                    tValue: -10.56,
+                    df: 8,
+                    criticalValue: 1.860,
+                    testType: "left-tailed",
+                    conclusion: "yes"
+                },
+                {
+                    product: "番茄种子",
+                    brand1: "品牌红宝",
+                    brand2: "品牌金果",
+                    sampleUnit: "试验田",
+                    applicationPre: "在同一随机样本的",
+                    applicationPost: "中种植两个品牌",
+                    variationExplanation: "番茄产量可能因土壤肥力、灌溉条件和种植技术而有很大差异。",
+                    measurementName: "单株产量",
+                    measureUnit: "公斤",
+                    testCondition: "所有植株在相同生长周期后收获",
+                    designExplanation: "该小组采用配对种植设计：在每块试验田中，相邻种植两种品牌的番茄。两株番茄接受相同的土壤、灌溉和管理条件。研究假设品牌红宝的产量更低（用于测试新品种是否更优）。",
+                    n: 10,
+                    data: [
+                        { car: 1, b1: 4.0, b2: 4.1, diff: -0.1 },
+                        { car: 2, b1: 3.7, b2: 3.9, diff: -0.2 },
+                        { car: 3, b1: 4.2, b2: 4.4, diff: -0.2 },
+                        { car: 4, b1: 3.5, b2: 3.7, diff: -0.2 },
+                        { car: 5, b1: 3.9, b2: 4.1, diff: -0.2 },
+                        { car: 6, b1: 4.1, b2: 4.3, diff: -0.2 },
+                        { car: 7, b1: 3.6, b2: 3.8, diff: -0.2 },
+                        { car: 8, b1: 4.0, b2: 4.2, diff: -0.2 },
+                        { car: 9, b1: 3.8, b2: 4.0, diff: -0.2 },
+                        { car: 10, b1: 4.3, b2: 4.5, diff: -0.2 }
+                    ],
+                    meanDiff: -0.190,
+                    stdDiff: 0.032,
+                    tValue: -19.000,
+                    df: 9,
+                    criticalValue: 1.833,
+                    testType: "left-tailed",
+                    conclusion: "yes"
+                },
+                {
+                    product: "蛋鸡饲料",
+                    brand1: "品牌蛋优",
+                    brand2: "品牌产多",
+                    sampleUnit: "蛋鸡对",
+                    applicationPre: "用两个品牌喂养同一随机样本的",
+                    applicationPost: "",
+                    variationExplanation: "产蛋量可能因鸡的品种、年龄和鸡舍环境而有很大差异。",
+                    measurementName: "周产蛋量",
+                    measureUnit: "枚",
+                    testCondition: "所有蛋鸡连续喂养6周后",
+                    designExplanation: "该小组采用配对笼养设计：将同批次、体重相近的两只蛋鸡分别喂养不同品牌的饲料，两只鸡笼相邻放置，接受相同的光照和温度条件。研究假设品牌蛋优的产蛋量低于品牌产多（用于验证新配方是否更优）。",
+                    n: 11,
+                    data: [
+                        { car: 1, b1: 5.8, b2: 6.2, diff: -0.4 },
+                        { car: 2, b1: 5.6, b2: 5.9, diff: -0.3 },
+                        { car: 3, b1: 6.0, b2: 6.4, diff: -0.4 },
+                        { car: 4, b1: 5.4, b2: 5.7, diff: -0.3 },
+                        { car: 5, b1: 5.7, b2: 6.1, diff: -0.4 },
+                        { car: 6, b1: 5.9, b2: 6.3, diff: -0.4 },
+                        { car: 7, b1: 5.5, b2: 5.8, diff: -0.3 },
+                        { car: 8, b1: 5.6, b2: 6.0, diff: -0.4 },
+                        { car: 9, b1: 5.3, b2: 5.6, diff: -0.3 },
+                        { car: 10, b1: 6.1, b2: 6.5, diff: -0.4 },
+                        { car: 11, b1: 5.5, b2: 5.9, diff: -0.4 }
+                    ],
+                    meanDiff: -0.364,
+                    stdDiff: 0.051,
+                    tValue: -23.89,
+                    df: 10,
+                    criticalValue: 1.812,
+                    testType: "left-tailed",
+                    conclusion: "yes"
+                },
+                {
+                    product: "止痛贴",
+                    brand1: "品牌舒痛",
+                    brand2: "品牌安贴",
+                    sampleUnit: "受试者",
+                    applicationPre: "让同一随机样本的",
+                    applicationPost: "使用两个品牌",
+                    variationExplanation: "止痛效果可能因疼痛类型、疼痛程度和个体敏感度而有很大差异。",
+                    measurementName: "疼痛缓解时间",
+                    measureUnit: "分钟",
+                    testCondition: "所有受试者在标准疼痛刺激后使用",
+                    designExplanation: "该小组采用配对部位设计：每位受试者在身体对称的两个疼痛部位（如左右肩）分别使用不同品牌的止痛贴。为了消除左右侧可能存在的差异，采用随机化设计：随机选择一半受试者左侧用品牌舒痛（右侧用品牌安贴），另一半则相反。研究假设品牌舒痛起效更快。",
+                    n: 12,
+                    data: [
+                        { car: 1, b1: 15, b2: 18, diff: -3 },
+                        { car: 2, b1: 12, b2: 15, diff: -3 },
+                        { car: 3, b1: 18, b2: 22, diff: -4 },
+                        { car: 4, b1: 14, b2: 17, diff: -3 },
+                        { car: 5, b1: 16, b2: 20, diff: -4 },
+                        { car: 6, b1: 13, b2: 16, diff: -3 },
+                        { car: 7, b1: 17, b2: 21, diff: -4 },
+                        { car: 8, b1: 11, b2: 14, diff: -3 },
+                        { car: 9, b1: 19, b2: 23, diff: -4 },
+                        { car: 10, b1: 14, b2: 17, diff: -3 },
+                        { car: 11, b1: 16, b2: 19, diff: -3 },
+                        { car: 12, b1: 13, b2: 16, diff: -3 }
+                    ],
+                    meanDiff: -3.333,
+                    stdDiff: 0.492,
+                    tValue: -23.452,
+                    df: 11,
+                    criticalValue: 1.796,
+                    testType: "left-tailed",
+                    conclusion: "yes"
+                },
+                {
+                    product: "充电电池",
+                    brand1: "品牌耐能",
+                    brand2: "品牌长力",
+                    sampleUnit: "设备对",
+                    applicationPre: "在同一随机样本的",
+                    applicationPost: "上测试两个品牌",
+                    variationExplanation: "电池续航可能因设备功耗、使用环境温度和使用模式而有很大差异。",
+                    measurementName: "连续使用时间",
+                    measureUnit: "小时",
+                    testCondition: "所有电池在标准设备上连续使用至耗尽",
+                    designExplanation: "该小组采用配对设备设计：同一型号的两台设备分别使用不同品牌的电池，在相同条件下连续运行。为了消除设备个体差异，每次测试后交换电池品牌再测一次，取平均值。研究假设品牌耐能续航更长。",
+                    n: 10,
+                    data: [
+                        { car: 1, b1: 8.5, b2: 8.3, diff: 0.2 },
+                        { car: 2, b1: 8.2, b2: 8.1, diff: 0.1 },
+                        { car: 3, b1: 8.8, b2: 8.6, diff: 0.2 },
+                        { car: 4, b1: 8.0, b2: 7.9, diff: 0.1 },
+                        { car: 5, b1: 8.4, b2: 8.2, diff: 0.2 },
+                        { car: 6, b1: 8.1, b2: 8.0, diff: 0.1 },
+                        { car: 7, b1: 8.6, b2: 8.4, diff: 0.2 },
+                        { car: 8, b1: 7.9, b2: 7.8, diff: 0.1 },
+                        { car: 9, b1: 8.3, b2: 8.1, diff: 0.2 },
+                        { car: 10, b1: 8.7, b2: 8.5, diff: 0.2 }
+                    ],
+                    meanDiff: 0.160,
+                    stdDiff: 0.052,
+                    tValue: 9.798,
+                    df: 9,
+                    criticalValue: 1.833,
+                    testType: "right-tailed",
+                    conclusion: "yes"
+                },
+                {
+                    product: "宠物食品",
+                    brand1: "品牌宠乐",
+                    brand2: "品牌爱宠",
+                    sampleUnit: "宠物对",
+                    applicationPre: "用两个品牌喂养同一随机样本的",
+                    applicationPost: "",
+                    variationExplanation: "宠物体重变化可能因宠物品种、活动量和代谢率而有很大差异。",
+                    measurementName: "体重增加量",
+                    measureUnit: "公斤",
+                    testCondition: "所有宠物连续喂养8周后",
+                    designExplanation: "该小组采用配对设计：同窝出生的两只相似体重的宠物分别喂养不同品牌的食品。两只宠物生活在相同的环境中，接受相同的运动量。研究假设品牌宠乐更能促进健康增重。",
+                    n: 10,
+                    data: [
+                        { car: 1, b1: 1.2, b2: 1.0, diff: 0.2 },
+                        { car: 2, b1: 1.0, b2: 0.9, diff: 0.1 },
+                        { car: 3, b1: 1.3, b2: 1.1, diff: 0.2 },
+                        { car: 4, b1: 0.9, b2: 0.8, diff: 0.1 },
+                        { car: 5, b1: 1.1, b2: 0.9, diff: 0.2 },
+                        { car: 6, b1: 0.8, b2: 0.7, diff: 0.1 },
+                        { car: 7, b1: 1.2, b2: 1.0, diff: 0.2 },
+                        { car: 8, b1: 0.9, b2: 0.8, diff: 0.1 },
+                        { car: 9, b1: 1.1, b2: 0.9, diff: 0.2 },
+                        { car: 10, b1: 1.0, b2: 0.9, diff: 0.1 }
+                    ],
+                    meanDiff: 0.150,
+                    stdDiff: 0.053,
+                    tValue: 9.000,
+                    df: 9,
+                    criticalValue: 1.833,
+                    testType: "right-tailed",
+                    conclusion: "yes"
                 }
             ];
 
             let currentParamIndex = 0;
             let userAnswers = {};
+            let correctAnswers = {};
+
+            // 记录每套题目的正误历史
+            let quizHistory = [];
+
+            // Fisher-Yates 洗牌算法
+            function shuffleArray(array) {
+                const arr = [...array];
+                for (let i = arr.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [arr[i], arr[j]] = [arr[j], arr[i]];
+                }
+                return arr;
+            }
 
             // ==================== 渲染函数 ====================
 
             function renderQuestion() {
                 const params = questionParams[currentParamIndex];
 
+                // 根据检验类型生成要求文字
+                let requirementText = '';
+                if (params.testType === 'two-tailed') {
+                    requirementText = `基于这些数据，该消费者小组能否在<span class="highlight">0.05</span>的显著性水平下，得出两个品牌的平均${params.measurementName}存在差异的结论？执行<span class="highlight">双尾检验</span>。`;
+                } else if (params.testType === 'left-tailed') {
+                    requirementText = `基于这些数据，该消费者小组能否在<span class="highlight">0.05</span>的显著性水平下，得出${params.brand1}的平均${params.measurementName}低于${params.brand2}的结论？执行<span class="highlight">左尾检验</span>。`;
+                } else if (params.testType === 'right-tailed') {
+                    requirementText = `基于这些数据，该消费者小组能否在<span class="highlight">0.05</span>的显著性水平下，得出${params.brand1}的平均${params.measurementName}高于${params.brand2}的结论？执行<span class="highlight">右尾检验</span>。`;
+                }
+
                 // 渲染背景
-                document.getElementById('backgroundContent').innerHTML = `
-一个消费品测试小组正在评估两个相互竞争的${params.product}品牌：${params.brand1}和${params.brand2}。磨损程度可能因汽车类型而有很大差异，该小组试图通过将两个品牌安装在同一随机样本的${params.n}辆汽车上来消除这种影响。具体来说，每辆汽车的前轮各装有一个品牌，其中一半随机选择的汽车在左前轮安装${params.brand1}，其余的在左前轮安装${params.brand2}。${params.testCondition}，记录磨损量（以${params.measureUnit}为单位），如表1所示。`;
+                document.getElementById('problem-info').innerHTML = `
+                    <p><strong>题目背景：</strong>一个消费品测试小组正在评估两个相互竞争的${params.product}品牌：${params.brand1}和${params.brand2}。${params.variationExplanation}该小组试图通过${params.applicationPre}<span class="highlight">${params.n}${params.sampleUnit}</span>${params.applicationPost}来消除这种影响。</p>
+                    <p><strong>配对设计说明：</strong>${params.designExplanation}</p>
+                    <p>${params.testCondition}，记录${params.measurementName}（以${params.measureUnit}为单位），如表1所示。</p>
+                    <p><strong>要求：</strong>${requirementText}将中间计算至少保留三位小数，并按照问题要求四舍五入你的答案。</p>
+                `;
 
                 // 渲染数据表
                 let tableHtml = `
                     <thead>
                         <tr>
-                            <th>汽车</th>
+                            <th>${params.sampleUnit}</th>
                             <th>${params.brand1}</th>
                             <th>${params.brand2}</th>
                             <th>差值 (${params.brand1} - ${params.brand2})</th>
@@ -492,220 +1609,450 @@
                 tableHtml += '</tbody>';
                 document.getElementById('dataTable').innerHTML = tableHtml;
 
-                // 渲染问题说明
-                document.getElementById('questionInstruction').innerHTML = `
-基于这些数据，该消费者小组能否在0.05的显著性水平下，得出两个品牌的平均磨损存在差异的结论？通过执行关于μ<sub>d</sub>（即带下标字母"d"的μ）的假设检验来回答此问题，μ<sub>d</sub>是两个品牌磨损的总体均值差。假设该差异总体服从正态分布。
-执行双尾检验。然后回答以下问题。将中间计算至少保留三位小数，并按照问题要求四舍五入你的答案。`;
+                // 渲染问题1选项
+                renderHypothesisOptions(1, 'H₀', params);
+                document.getElementById('options-container-1').classList.add('cols-8');
 
-                // 渲染问题
-                const questionsHtml = `
-                    <div class="question-section">
-                        <div class="question-title">1. 原假设：</div>
-                        <div class="question-content">H<sub>0</sub>:</div>
-                        <div class="options-container">
-                            <div class="option" data-question="1" data-option="a">
-                                <div class="option-letter">A</div>
-                                <div class="option-text">μ<sub>d</sub> = 0</div>
-                            </div>
-                            <div class="option" data-question="1" data-option="b">
-                                <div class="option-letter">B</div>
-                                <div class="option-text">μ<sub>d</sub> ≠ 0</div>
-                            </div>
-                        </div>
-                    </div>
+                // 渲染问题2选项
+                renderHypothesisOptions(2, 'H₁', params);
+                document.getElementById('options-container-2').classList.add('cols-8');
 
-                    <div class="question-section">
-                        <div class="question-title">2. 备择假设：</div>
-                        <div class="question-content">H<sub>1</sub>:</div>
-                        <div class="options-container">
-                            <div class="option" data-question="2" data-option="a">
-                                <div class="option-letter">A</div>
-                                <div class="option-text">μ<sub>d</sub> = 0</div>
-                            </div>
-                            <div class="option" data-question="2" data-option="b">
-                                <div class="option-letter">B</div>
-                                <div class="option-text">μ<sub>d</sub> ≠ 0</div>
-                            </div>
-                        </div>
-                    </div>
+                // 渲染问题3选项
+                renderStatisticOptions(3);
 
-                    <div class="question-section">
-                        <div class="question-title">3. 检验统计量的类型：</div>
-                        <div class="options-container">
-                            <div class="option" data-question="3" data-option="a">
-                                <div class="option-letter">A</div>
-                                <div class="option-text">Z</div>
-                            </div>
-                            <div class="option" data-question="3" data-option="b">
-                                <div class="option-letter">B</div>
-                                <div class="option-text">t</div>
-                            </div>
-                        </div>
-                        <div class="question-content" style="margin-top: 20px;">自由度（如适用）：</div>
-                        <div class="options-container">
-                            <div class="option" data-question="3b" data-option="a">
-                                <div class="option-letter">A</div>
-                                <div class="option-text">${params.n - 2}</div>
-                            </div>
-                            <div class="option" data-question="3b" data-option="b">
-                                <div class="option-letter">B</div>
-                                <div class="option-text">${params.df}</div>
-                            </div>
-                            <div class="option" data-question="3b" data-option="c">
-                                <div class="option-letter">C</div>
-                                <div class="option-text">${params.n}</div>
-                            </div>
-                        </div>
-                    </div>
+                // 渲染问题7
+                renderConclusionOptions(7, params.conclusion === 'yes');
 
-                    <div class="question-section">
-                        <div class="question-title">4. 检验统计量的值：</div>
-                        <div class="question-content">（四舍五入到至少三位小数。）</div>
-                        <div class="options-container">
-                            <div class="option" data-question="4" data-option="a">
-                                <div class="option-letter">A</div>
-                                <div class="option-text">${(Math.abs(params.tValue) * 0.6).toFixed(3)}</div>
-                            </div>
-                            <div class="option" data-question="4" data-option="b">
-                                <div class="option-letter">B</div>
-                                <div class="option-text">${Math.abs(params.tValue).toFixed(3)}</div>
-                            </div>
-                            <div class="option" data-question="4" data-option="c">
-                                <div class="option-letter">C</div>
-                                <div class="option-text">${(Math.abs(params.tValue) * 1.2).toFixed(3)}</div>
-                            </div>
-                        </div>
-                    </div>
+                // 根据检验类型动态更新问题6的文字
+                let q6Text = '';
+                if (params.testType === 'two-tailed') {
+                    q6Text = `<p>在 <span class="highlight">0.05</span> 显著性水平下的临界值（至少四舍五入到三位小数）。如果有两个临界值，用空格隔开：</p>
+                    <div style="display: flex; align-items: center; gap: 10px; margin-top: 12px;">
+                        <span>临界值：</span>
+                        <input type="text" id="answer-6" class="fill-blank-input" style="width: 200px;">
+                    </div>`;
+                } else if (params.testType === 'left-tailed') {
+                    q6Text = `<p>在 <span class="highlight">0.05</span> 显著性水平下的临界值（至少四舍五入到三位小数）：</p>
+                    <div style="display: flex; align-items: center; gap: 10px; margin-top: 12px;">
+                        <span>临界值：</span>
+                        <input type="text" id="answer-6" class="fill-blank-input" style="width: 200px;">
+                    </div>`;
+                } else if (params.testType === 'right-tailed') {
+                    q6Text = `<p>在 <span class="highlight">0.05</span> 显著性水平下的临界值（至少四舍五入到三位小数）：</p>
+                    <div style="display: flex; align-items: center; gap: 10px; margin-top: 12px;">
+                        <span>临界值：</span>
+                        <input type="text" id="answer-6" class="fill-blank-input" style="width: 200px;">
+                    </div>`;
+                }
+                document.getElementById('q6-text').innerHTML = q6Text;
 
-                    <div class="question-section">
-                        <div class="question-title">5. 在0.05显著性水平下的两个临界值：</div>
-                        <div class="question-content">（四舍五入到至少三位小位。）</div>
-                        <div class="options-container">
-                            <div class="option" data-question="5" data-option="a">
-                                <div class="option-letter">A</div>
-                                <div class="option-text">-${(params.criticalValue * 0.9).toFixed(3)} 和 ${(params.criticalValue * 0.9).toFixed(3)}</div>
-                            </div>
-                            <div class="option" data-question="5" data-option="b">
-                                <div class="option-letter">B</div>
-                                <div class="option-text">-${params.criticalValue.toFixed(3)} 和 ${params.criticalValue.toFixed(3)}</div>
-                            </div>
-                            <div class="option" data-question="5" data-option="c">
-                                <div class="option-letter">C</div>
-                                <div class="option-text">-${(params.criticalValue * 1.1).toFixed(3)} 和 ${(params.criticalValue * 1.1).toFixed(3)}</div>
-                            </div>
-                        </div>
-                    </div>
+                // 根据检验类型动态更新问题7的文字
+                let q7Text = '';
+                if (params.testType === 'two-tailed') {
+                    q7Text = `<p>在0.05水平下，能否得出两个品牌的平均${params.measurementName}存在差异的结论？</p>`;
+                } else if (params.testType === 'left-tailed') {
+                    q7Text = `<p>在0.05水平下，能否得出${params.brand1}的平均${params.measurementName}低于${params.brand2}的结论？</p>`;
+                } else if (params.testType === 'right-tailed') {
+                    q7Text = `<p>在0.05水平下，能否得出${params.brand1}的平均${params.measurementName}高于${params.brand2}的结论？</p>`;
+                }
+                document.getElementById('q7-text').innerHTML = q7Text;
 
-                    <div class="question-section">
-                        <div class="question-title">6. 在0.05水平下，消费者小组能否得出两个品牌的平均磨损存在差异的结论？</div>
-                        <div class="options-container">
-                            <div class="option" data-question="6" data-option="a">
-                                <div class="option-letter">A</div>
-                                <div class="option-text">是</div>
-                            </div>
-                            <div class="option" data-question="6" data-option="b">
-                                <div class="option-letter">B</div>
-                                <div class="option-text">否</div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                document.getElementById('questionsContainer').innerHTML = questionsHtml;
+                // 根据检验类型设置临界值正确答案
+                let criticalValueAnswer;
+                if (params.testType === 'two-tailed') {
+                    criticalValueAnswer = `-${params.criticalValue.toFixed(3)} ${params.criticalValue.toFixed(3)}`;
+                } else if (params.testType === 'left-tailed') {
+                    criticalValueAnswer = `-${params.criticalValue.toFixed(3)}`;
+                } else if (params.testType === 'right-tailed') {
+                    criticalValueAnswer = `${params.criticalValue.toFixed(3)}`;
+                }
 
-                // 渲染反馈
-                const feedbackHtml = `
-                    <div class="feedback" id="feedback1">
-                        <div class="answer-key">1. 原假设：</div>
-                        <button class="show-explanation-btn" style="display:none;">查看答案解析</button>
-                        <div class="explanation" style="display:none;">正确答案是 A: μ<sub>d</sub> = 0。原假设通常假设没有差异或没有效应，因此对于配对均值差异检验，原假设是总体均值差为0。</div>
-                    </div>
-                    <div class="feedback" id="feedback2">
-                        <div class="answer-key">2. 备择假设：</div>
-                        <button class="show-explanation-btn" style="display:none;">查看答案解析</button>
-                        <div class="explanation" style="display:none;">正确答案是 B: μ<sub>d</sub> ≠ 0。题目要求检验"两个品牌的平均磨损存在差异"，这是一个双尾检验，所以备择假设是均值差不为0。</div>
-                    </div>
-                    <div class="feedback" id="feedback3">
-                        <div class="answer-key">3. 检验统计量的类型：</div>
-                        <button class="show-explanation-btn" style="display:none;">查看答案解析</button>
-                        <div class="explanation" style="display:none;">正确答案是 B: t。由于总体标准差未知，且样本量较小(n=${params.n})，应使用t检验。自由度是 n-1 = ${params.df}。</div>
-                    </div>
-                    <div class="feedback" id="feedback4">
-                        <div class="answer-key">4. 检验统计量的值：</div>
-                        <button class="show-explanation-btn" style="display:none;">查看答案解析</button>
-                        <div class="explanation" style="display:none;">正确答案是 B: ${Math.abs(params.tValue).toFixed(3)}。根据题目提供的计算：t = (${params.meanDiff} - 0) / (${params.stdDiff} / √${params.n}) ≈ ${Math.abs(params.tValue).toFixed(3)}。</div>
-                    </div>
-                    <div class="feedback" id="feedback5">
-                        <div class="answer-key">5. 在0.05显著性水平下的两个临界值：</div>
-                        <button class="show-explanation-btn" style="display:none;">查看答案解析</button>
-                        <div class="explanation" style="display:none;">正确答案是 B: -${params.criticalValue.toFixed(3)} 和 ${params.criticalValue.toFixed(3)}。对于双尾t检验，自由度为${params.df}，显著性水平α=0.05，临界值为±t<sub>0.025,${params.df}</sub> = ±${params.criticalValue.toFixed(3)}。</div>
-                    </div>
-                    <div class="feedback" id="feedback6">
-                        <div class="answer-key">6. 在0.05水平下，消费者小组能否得出两个品牌的平均磨损存在差异的结论？</div>
-                        <button class="show-explanation-btn" style="display:none;">查看答案解析</button>
-                        <div class="explanation" style="display:none;">正确答案是 ${params.conclusion === 'yes' ? 'A' : 'B'}: ${params.conclusion === 'yes' ? '是' : '否'}。因为检验统计量|t|=${Math.abs(params.tValue).toFixed(3)} ${params.conclusion === 'yes' ? '>' : '<'} ${params.criticalValue.toFixed(3)}，${params.conclusion === 'yes' ? '落在拒绝域内，所以拒绝原假设，可以认为两个品牌的平均磨损存在差异' : '未落在拒绝域内，所以不能拒绝原假设，不能认为两个品牌的平均磨损存在显著差异'}。</div>
-                    </div>
-                    <div class="feedback" style="margin-top: 25px; background-color: #e6f0ff;">
-                        <div class="answer-key">总结：</div>
-                        <button class="show-explanation-btn" style="display:none;">查看答案解析</button>
-                        <div class="explanation" style="display:none;">这是一个配对样本t检验的典型案例。通过在同一组汽车上测试两个品牌，消除了汽车类型对磨损的影响。检验结果显示，在0.05显著性水平下，${params.conclusion === 'yes' ? '两个品牌的平均磨损存在显著差异' : '不能认为两个品牌的平均磨损存在显著差异'}。</div>
-                    </div>
-                `;
-                document.getElementById('feedbackContainer').innerHTML = feedbackHtml;
+                // 设置正确答案
+                correctAnswers = {
+                    1: 0,
+                    2: 0,
+                    3: 't',
+                    4: params.df,
+                    5: Math.abs(params.tValue).toFixed(3),
+                    6: criticalValueAnswer,
+                    7: params.conclusion === 'yes' ? '是' : '否'
+                };
 
-                // 重新初始化用户答案
-                userAnswers = { 1: null, 2: null, 3: null, '3b': null, 4: null, 5: null, 6: null };
+                // 渲染解析
+                renderExplanations(params);
 
-                // 重新绑定选项点击事件
-                bindOptionEvents();
+                // 重置用户答案
+                userAnswers = {
+                    1: null,
+                    2: null,
+                    3: null,
+                    4: '',
+                    5: '',
+                    6: '',
+                    7: null
+                };
 
-                // 重新绑定解析按钮事件
-                bindExplanationEvents();
+                // 清除反馈
+                for (let i = 1; i <= 7; i++) {
+                    const feedback = document.getElementById(`feedback${i}`);
+                    if (feedback) {
+                        feedback.classList.remove('show', 'correct', 'incorrect');
+                    }
+                }
+
+                // 清除选项状态
+                document.querySelectorAll('.option').forEach(opt => {
+                    opt.classList.remove('selected', 'correct', 'incorrect');
+                });
+
+                // 清除输入框
+                document.querySelectorAll('.fill-blank-input').forEach(input => {
+                    input.value = '';
+                    input.classList.remove('correct', 'incorrect');
+                });
+
+                // 隐藏合并的解析区域
+                document.getElementById('combined-explanation').classList.remove('show');
+
+                // 隐藏答案解析按钮
+                const toggleBtn = document.getElementById('toggle-explanation-btn');
+                toggleBtn.classList.remove('show');
+                toggleBtn.innerHTML = '<i class="fas fa-lightbulb"></i> 显示答案解析';
+
+                // 更新历史记录显示
+                updateHistoryDisplay();
+
+                // 启用提交按钮
+                const submitBtn = document.getElementById('submitBtn');
+                submitBtn.disabled = false;
+                submitBtn.style.opacity = '1';
+                submitBtn.style.cursor = 'pointer';
+
+                // 绑定事件
+                bindEvents();
             }
 
-            function bindOptionEvents() {
+            function renderHypothesisOptions(questionNum, symbol, params) {
+                // 根据检验类型生成假设选项
+                let options;
+                const testType = params.testType || 'two-tailed';
+
+                if (symbol === 'H₀') {
+                    // 原假设H₀的选项
+                    if (testType === 'two-tailed') {
+                        options = [
+                            { value: 'eq0', text: symbol + ': μ<sub>d</sub> = 0', isCorrect: true },
+                            { value: 'mu_eq_mu1mu2', text: symbol + ': μ<sub>d</sub> = μ₁ - μ₂', isCorrect: false },
+                            { value: 'dbar_eq_0', text: symbol + ': d̄ = 0', isCorrect: false },
+                            { value: 'mu_ge_0', text: symbol + ': μ<sub>d</sub> ≥ 0', isCorrect: false },
+                            { value: 'mu_le_0', text: symbol + ': μ<sub>d</sub> ≤ 0', isCorrect: false },
+                            { value: 'mu_eq_mean', text: symbol + ': μ<sub>d</sub> = ' + params.meanDiff.toFixed(3), isCorrect: false },
+                            { value: 'mu1_eq_mu2', text: symbol + ': μ₁ = μ₂', isCorrect: false },
+                            { value: 'dbar_eq_mean', text: symbol + ': d̄ = ' + params.meanDiff.toFixed(3), isCorrect: false }
+                        ];
+                    } else if (testType === 'left-tailed') {
+                        // 左尾检验：H0: μd ≥ 0
+                        options = [
+                            { value: 'ge0', text: symbol + ': μ<sub>d</sub> ≥ 0', isCorrect: true },
+                            { value: 'eq0', text: symbol + ': μ<sub>d</sub> = 0', isCorrect: false },
+                            { value: 'le0', text: symbol + ': μ<sub>d</sub> ≤ 0', isCorrect: false },
+                            { value: 'mu_gt_0', text: symbol + ': μ<sub>d</sub> > 0', isCorrect: false },
+                            { value: 'mu_lt_0', text: symbol + ': μ<sub>d</sub> < 0', isCorrect: false },
+                            { value: 'neq0', text: symbol + ': μ<sub>d</sub> ≠ 0', isCorrect: false },
+                            { value: 'mu1_ge_mu2', text: symbol + ': μ₁ ≥ μ₂', isCorrect: false },
+                            { value: 'mu1_le_mu2', text: symbol + ': μ₁ ≤ μ₂', isCorrect: false }
+                        ];
+                    } else if (testType === 'right-tailed') {
+                        // 右尾检验：H0: μd ≤ 0
+                        options = [
+                            { value: 'le0', text: symbol + ': μ<sub>d</sub> ≤ 0', isCorrect: true },
+                            { value: 'eq0', text: symbol + ': μ<sub>d</sub> = 0', isCorrect: false },
+                            { value: 'ge0', text: symbol + ': μ<sub>d</sub> ≥ 0', isCorrect: false },
+                            { value: 'mu_gt_0', text: symbol + ': μ<sub>d</sub> > 0', isCorrect: false },
+                            { value: 'mu_lt_0', text: symbol + ': μ<sub>d</sub> < 0', isCorrect: false },
+                            { value: 'neq0', text: symbol + ': μ<sub>d</sub> ≠ 0', isCorrect: false },
+                            { value: 'mu1_le_mu2', text: symbol + ': μ₁ ≤ μ₂', isCorrect: false },
+                            { value: 'mu1_ge_mu2', text: symbol + ': μ₁ ≥ μ₂', isCorrect: false }
+                        ];
+                    }
+                } else {
+                    // 备择假设H₁的选项
+                    if (testType === 'two-tailed') {
+                        options = [
+                            { value: 'neq0', text: symbol + ': μ<sub>d</sub> ≠ 0', isCorrect: true },
+                            { value: 'mu_gt_0', text: symbol + ': μ<sub>d</sub> > 0', isCorrect: false },
+                            { value: 'mu_lt_0', text: symbol + ': μ<sub>d</sub> < 0', isCorrect: false },
+                            { value: 'dbar_neq_0', text: symbol + ': d̄ ≠ 0', isCorrect: false },
+                            { value: 'mu1_neq_mu2', text: symbol + ': μ₁ ≠ μ₂', isCorrect: false },
+                            { value: 'mu_neq_mean', text: symbol + ': μ<sub>d</sub> ≠ ' + params.meanDiff.toFixed(3), isCorrect: false },
+                            { value: 'dbar_neq_mean', text: symbol + ': d̄ ≠ ' + params.meanDiff.toFixed(3), isCorrect: false },
+                            { value: 'mu_eq_0', text: symbol + ': μ<sub>d</sub> = 0', isCorrect: false }
+                        ];
+                    } else if (testType === 'left-tailed') {
+                        // 左尾检验：H1: μd < 0
+                        options = [
+                            { value: 'lt0', text: symbol + ': μ<sub>d</sub> < 0', isCorrect: true },
+                            { value: 'neq0', text: symbol + ': μ<sub>d</sub> ≠ 0', isCorrect: false },
+                            { value: 'gt0', text: symbol + ': μ<sub>d</sub> > 0', isCorrect: false },
+                            { value: 'le0', text: symbol + ': μ<sub>d</sub> ≤ 0', isCorrect: false },
+                            { value: 'ge0', text: symbol + ': μ<sub>d</sub> ≥ 0', isCorrect: false },
+                            { value: 'mu1_lt_mu2', text: symbol + ': μ₁ < μ₂', isCorrect: false },
+                            { value: 'mu1_gt_mu2', text: symbol + ': μ₁ > μ₂', isCorrect: false },
+                            { value: 'mu1_neq_mu2', text: symbol + ': μ₁ ≠ μ₂', isCorrect: false }
+                        ];
+                    } else if (testType === 'right-tailed') {
+                        // 右尾检验：H1: μd > 0
+                        options = [
+                            { value: 'gt0', text: symbol + ': μ<sub>d</sub> > 0', isCorrect: true },
+                            { value: 'neq0', text: symbol + ': μ<sub>d</sub> ≠ 0', isCorrect: false },
+                            { value: 'lt0', text: symbol + ': μ<sub>d</sub> < 0', isCorrect: false },
+                            { value: 'ge0', text: symbol + ': μ<sub>d</sub> ≥ 0', isCorrect: false },
+                            { value: 'le0', text: symbol + ': μ<sub>d</sub> ≤ 0', isCorrect: false },
+                            { value: 'mu1_gt_mu2', text: symbol + ': μ₁ > μ₂', isCorrect: false },
+                            { value: 'mu1_lt_mu2', text: symbol + ': μ₁ < μ₂', isCorrect: false },
+                            { value: 'mu1_neq_mu2', text: symbol + ': μ₁ ≠ μ₂', isCorrect: false }
+                        ];
+                    }
+                }
+
+                const shuffledOptions = shuffleArray(options);
+
+                const container = document.getElementById(`options-container-${questionNum}`);
+                container.innerHTML = shuffledOptions.map((opt, index) => `
+                    <div class="option" data-question="${questionNum}" data-value="${opt.value}" data-correct="${opt.isCorrect}" data-option="${String.fromCharCode(97 + index)}">
+                        <div class="option-letter">${String.fromCharCode(65 + index)}</div>
+                        <div class="option-text">${opt.text}</div>
+                    </div>
+                `).join('');
+            }
+
+            function renderStatisticOptions(questionNum) {
+                const params = questionParams[currentParamIndex];
+                const options = [
+                    { value: 'Z', text: 'Z', isCorrect: false },
+                    { value: 't', text: 't', isCorrect: true },
+                    { value: 'chi', text: '卡方 (χ²)', isCorrect: false },
+                    { value: 'F', text: 'F', isCorrect: false }
+                ];
+
+                const shuffledOptions = shuffleArray(options);
+
+                const container = document.getElementById(`options-container-${questionNum}`);
+                container.innerHTML = shuffledOptions.map((opt, index) => `
+                    <div class="option" data-question="${questionNum}" data-value="${opt.value}" data-correct="${opt.isCorrect}" data-option="${String.fromCharCode(97 + index)}">
+                        <div class="option-letter">${String.fromCharCode(65 + index)}</div>
+                        <div class="option-text">${opt.text}</div>
+                    </div>
+                `).join('');
+            }
+
+            function renderConclusionOptions(questionNum, reject) {
+                const options = [
+                    { value: '是', text: '是', isCorrect: reject },
+                    { value: '否', text: '否', isCorrect: !reject }
+                ];
+
+                const container = document.getElementById(`options-container-${questionNum}`);
+                container.innerHTML = options.map((opt, index) => `
+                    <div class="option" data-question="${questionNum}" data-value="${opt.value}" data-correct="${opt.isCorrect}" data-option="${String.fromCharCode(97 + index)}">
+                        <div class="option-letter">${String.fromCharCode(65 + index)}</div>
+                        <div class="option-text">${opt.text}</div>
+                    </div>
+                `).join('');
+            }
+
+            function renderExplanations(params) {
+                const testType = params.testType || 'two-tailed';
+
+                // 根据检验类型生成假设内容
+                let h0Text, h1Text, h0Formula, h1Formula;
+                let criticalValueText, conclusionText;
+
+                if (testType === 'two-tailed') {
+                    h0Text = '原假设通常假设没有差异或没有效应，因此对于配对均值差异检验，原假设是总体均值差为0。';
+                    h1Text = `题目要求检验"两个品牌的平均${params.measurementName}存在差异"，这是一个双尾检验，所以备择假设是均值差不为0。`;
+                    h0Formula = 'H₀: μ<sub>d</sub> = 0';
+                    h1Formula = 'H₁: μ<sub>d</sub> ≠ 0';
+                    criticalValueText = `对于双尾t检验，自由度为${params.df}，显著性水平α=0.05，两侧各为α/2=0.025。`;
+                    conclusionText = `检验统计量 |t| = ${Math.abs(params.tValue).toFixed(3)}，临界值为 ±${params.criticalValue.toFixed(3)}。`;
+                } else if (testType === 'left-tailed') {
+                    h0Text = '左尾检验的原假设是总体均值差大于或等于0（即第一种品牌不比第二种品牌差）。';
+                    h1Text = `题目要求检验"${params.brand1}的平均${params.measurementName}低于${params.brand2}"，这是一个左尾检验，所以备择假设是均值差小于0。`;
+                    h0Formula = 'H₀: μ<sub>d</sub> ≥ 0';
+                    h1Formula = 'H₁: μ<sub>d</sub> < 0';
+                    criticalValueText = `对于左尾t检验，自由度为${params.df}，显著性水平α=0.05，临界值在左侧。`;
+                    conclusionText = `检验统计量 t = ${params.tValue.toFixed(3)}，临界值为 -${params.criticalValue.toFixed(3)}。`;
+                } else if (testType === 'right-tailed') {
+                    h0Text = '右尾检验的原假设是总体均值差小于或等于0（即第一种品牌不比第二种品牌好）。';
+                    h1Text = `题目要求检验"${params.brand1}的平均${params.measurementName}高于${params.brand2}"，这是一个右尾检验，所以备择假设是均值差大于0。`;
+                    h0Formula = 'H₀: μ<sub>d</sub> ≤ 0';
+                    h1Formula = 'H₁: μ<sub>d</sub> > 0';
+                    criticalValueText = `对于右尾t检验，自由度为${params.df}，显著性水平α=0.05，临界值在右侧。`;
+                    conclusionText = `检验统计量 t = ${params.tValue.toFixed(3)}，临界值为 ${params.criticalValue.toFixed(3)}。`;
+                }
+
+                // 生成临界值显示
+                let criticalValueDisplay;
+                if (testType === 'two-tailed') {
+                    criticalValueDisplay = `临界值为 <strong>-${params.criticalValue.toFixed(3)}</strong> 和 <strong>${params.criticalValue.toFixed(3)}</strong>`;
+                } else if (testType === 'left-tailed') {
+                    criticalValueDisplay = `临界值为 <strong>-${params.criticalValue.toFixed(3)}</strong>`;
+                } else {
+                    criticalValueDisplay = `临界值为 <strong>${params.criticalValue.toFixed(3)}</strong>`;
+                }
+
+                // 生成结论判断
+                let conclusionJudgment;
+                if (testType === 'two-tailed') {
+                    conclusionJudgment = params.conclusion === 'yes'
+                        ? `由于 |t| = ${Math.abs(params.tValue).toFixed(3)} > ${params.criticalValue.toFixed(3)}，检验统计量落在拒绝域内，因此我们<strong>拒绝</strong>原假设。`
+                        : `由于 |t| = ${Math.abs(params.tValue).toFixed(3)} < ${params.criticalValue.toFixed(3)}，检验统计量不在拒绝域内，因此我们<strong>不能拒绝</strong>原假设。`;
+                } else if (testType === 'left-tailed') {
+                    conclusionJudgment = params.conclusion === 'yes'
+                        ? `由于 t = ${params.tValue.toFixed(3)} < -${params.criticalValue.toFixed(3)}，检验统计量落在拒绝域内，因此我们<strong>拒绝</strong>原假设。`
+                        : `由于 t = ${params.tValue.toFixed(3)} > -${params.criticalValue.toFixed(3)}，检验统计量不在拒绝域内，因此我们<strong>不能拒绝</strong>原假设。`;
+                } else {
+                    conclusionJudgment = params.conclusion === 'yes'
+                        ? `由于 t = ${params.tValue.toFixed(3)} > ${params.criticalValue.toFixed(3)}，检验统计量落在拒绝域内，因此我们<strong>拒绝</strong>原假设。`
+                        : `由于 t = ${params.tValue.toFixed(3)} < ${params.criticalValue.toFixed(3)}，检验统计量不在拒绝域内，因此我们<strong>不能拒绝</strong>原假设。`;
+                }
+
+                // 生成结论说明
+                let conclusionMeaning;
+                if (testType === 'two-tailed') {
+                    conclusionMeaning = params.conclusion === 'yes'
+                        ? `有足够的证据在0.05的显著性水平下认为两个品牌的平均${params.measurementName}存在显著差异。`
+                        : `没有足够的证据在0.05的显著性水平下认为两个品牌的平均${params.measurementName}存在显著差异。`;
+                } else if (testType === 'left-tailed') {
+                    conclusionMeaning = params.conclusion === 'yes'
+                        ? `有足够的证据在0.05的显著性水平下认为${params.brand1}的平均${params.measurementName}显著低于${params.brand2}。`
+                        : `没有足够的证据在0.05的显著性水平下认为${params.brand1}的平均${params.measurementName}显著低于${params.brand2}。`;
+                } else {
+                    conclusionMeaning = params.conclusion === 'yes'
+                        ? `有足够的证据在0.05的显著性水平下认为${params.brand1}的平均${params.measurementName}显著高于${params.brand2}。`
+                        : `没有足够的证据在0.05的显著性水平下认为${params.brand1}的平均${params.measurementName}显著高于${params.brand2}。`;
+                }
+
+                document.getElementById('combined-explanation-content').innerHTML = `
+                    <div style="margin-bottom: 18px;">
+                        <h5>1. 原假设 H₀</h5>
+                        <p>${h0Text}</p>
+                        <div class="formula"><strong>${h0Formula}</strong></div>
+                    </div>
+
+                    <div style="margin-bottom: 18px;">
+                        <h5>2. 备择假设 H₁</h5>
+                        <p>${h1Text}</p>
+                        <div class="formula"><strong>${h1Formula}</strong></div>
+                    </div>
+
+                    <div style="margin-bottom: 18px;">
+                        <h5>3. 检验统计量类型</h5>
+                        <p>由于总体标准差未知，且样本量较小(n=${params.n})，应使用<strong>t检验</strong>。</p>
+                    </div>
+
+                    <div style="margin-bottom: 18px;">
+                        <h5>4. 自由度</h5>
+                        <p>自由度计算：df = n - 1 = ${params.n} - 1 = <strong>${params.df}</strong></p>
+                    </div>
+
+                    <div style="margin-bottom: 18px;">
+                        <h5>5. 检验统计量的值</h5>
+                        <p>计算过程：</p>
+                        <div class="formula">
+                            t = (d̄ - 0) / (s<sub>d</sub> / √n)<br>
+                            t = (${params.meanDiff} - 0) / (${params.stdDiff} / √${params.n})<br>
+                            t = ${params.meanDiff} / ${(params.stdDiff / Math.sqrt(params.n)).toFixed(4)}<br>
+                            ${testType === 'two-tailed' ? '|t|' : 't'} ≈ <strong>${testType === 'two-tailed' ? Math.abs(params.tValue).toFixed(3) : params.tValue.toFixed(3)}</strong>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 18px;">
+                        <h5>6. 临界值</h5>
+                        <p>${criticalValueText}</p>
+                        <div class="formula">${criticalValueDisplay}</div>
+                    </div>
+
+                    <div>
+                        <h5>7. 结论</h5>
+                        <p>${conclusionText}</p>
+                        <div class="formula">${conclusionJudgment}</div>
+                        <p>结论：${conclusionMeaning}</p>
+                    </div>
+                `;
+            }
+
+            function bindEvents() {
+                // 选项点击事件
                 document.querySelectorAll('.option').forEach(option => {
                     option.addEventListener('click', function() {
-                        const questionId = this.getAttribute('data-question');
-                        const optionValue = this.getAttribute('data-option');
+                        const questionNum = this.getAttribute('data-question');
+                        const answerValue = this.getAttribute('data-value');
 
-                        document.querySelectorAll(`.option[data-question="${questionId}"]`).forEach(opt => {
+                        // 清除同一问题的其他选项的选择状态
+                        document.querySelectorAll(`.option[data-question="${questionNum}"]`).forEach(opt => {
                             opt.classList.remove('selected');
                         });
 
+                        // 设置当前选项为选中状态
                         this.classList.add('selected');
-                        userAnswers[questionId] = optionValue;
-                    });
-                });
-            }
 
-            function bindExplanationEvents() {
-                document.querySelectorAll('.show-explanation-btn').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        var explanation = this.nextElementSibling;
-                        if (explanation) {
-                            if (explanation.style.display === 'none' || explanation.style.display === '') {
-                                explanation.style.display = 'block';
-                                this.textContent = '隐藏答案解析';
-                            } else {
-                                explanation.style.display = 'none';
-                                this.textContent = '查看答案解析';
-                            }
+                        // 保存用户答案
+                        userAnswers[questionNum] = answerValue;
+
+                        // 隐藏之前的反馈
+                        const feedback = document.getElementById(`feedback${questionNum}`);
+                        if (feedback) {
+                            feedback.classList.remove('show', 'correct', 'incorrect');
                         }
                     });
                 });
+
+                // 输入框事件
+                const answer4 = document.getElementById('answer-4');
+                const answer5 = document.getElementById('answer-5');
+                const answer6 = document.getElementById('answer-6');
+
+                if (answer4) {
+                    answer4.addEventListener('input', function() {
+                        userAnswers[4] = this.value.trim();
+                        this.classList.remove('correct', 'incorrect');
+                        document.getElementById('feedback4').classList.remove('show', 'correct', 'incorrect');
+                    });
+                }
+
+                if (answer5) {
+                    answer5.addEventListener('input', function() {
+                        userAnswers[5] = this.value.trim();
+                        this.classList.remove('correct', 'incorrect');
+                        document.getElementById('feedback5').classList.remove('show', 'correct', 'incorrect');
+                    });
+                }
+
+                if (answer6) {
+                    answer6.addEventListener('input', function() {
+                        userAnswers[6] = this.value.trim();
+                        this.classList.remove('correct', 'incorrect');
+                        document.getElementById('feedback6').classList.remove('show', 'correct', 'incorrect');
+                    });
+                }
             }
 
-            function getCorrectAnswers() {
-                const params = questionParams[currentParamIndex];
-                return {
-                    1: 'a',
-                    2: 'b',
-                    3: 'b',
-                    '3b': 'b',
-                    4: 'b',
-                    5: 'b',
-                    6: params.conclusion === 'yes' ? 'a' : 'b'
-                };
+            function updateHistoryDisplay() {
+                if (quizHistory.length > 0) {
+                    let iconsHtml = '';
+                    quizHistory.forEach((result, index) => {
+                        if (result) {
+                            iconsHtml += `<div class="result-icon correct" title="第${index + 1}套：全对"><i class="fas fa-check"></i></div>`;
+                        } else {
+                            iconsHtml += `<div class="result-icon incorrect" title="第${index + 1}套：有错"><i class="fas fa-times"></i></div>`;
+                        }
+                    });
+                    document.getElementById('result-icons').innerHTML = iconsHtml;
+                    document.getElementById('score-container').classList.add('show');
+                } else {
+                    document.getElementById('score-container').classList.remove('show');
+                }
             }
 
             function refreshParams() {
@@ -715,120 +2062,248 @@
                 } while (newIndex === currentParamIndex && questionParams.length > 1);
 
                 currentParamIndex = newIndex;
-                userAnswers = { 1: null, 2: null, 3: null, '3b': null, 4: null, 5: null, 6: null };
-
-                // 隐藏结果区域
-                document.getElementById('results').classList.remove('show');
-
-                // 隐藏解析按钮和解析内容
-                document.querySelectorAll('.show-explanation-btn').forEach(btn => {
-                    btn.style.display = 'none';
-                    btn.textContent = '查看答案解析';
-                });
-                document.querySelectorAll('.explanation').forEach(exp => {
-                    exp.style.display = 'none';
-                });
-
-                // 清除反馈样式
-                document.querySelectorAll('.feedback').forEach(feedback => {
-                    feedback.classList.remove('correct', 'incorrect');
-                });
-
-                // 启用提交按钮
-                const submitBtn = document.getElementById('submitBtn');
-                submitBtn.disabled = false;
-                submitBtn.textContent = '提交答案';
-                submitBtn.style.backgroundColor = '#4a86e8';
-
-                // 重新渲染
                 renderQuestion();
             }
 
             // ==================== 事件处理 ====================
 
-            // 刷新参数按钮
-            document.getElementById('refreshParamsBtn').addEventListener('click', function() {
-                refreshParams();
+            // 下一题按钮
+            document.getElementById('nextBtn').addEventListener('click', refreshParams);
+
+            // 显示/隐藏答案解析按钮
+            document.getElementById('toggle-explanation-btn').addEventListener('click', function() {
+                const explanation = document.getElementById('combined-explanation');
+                if (explanation.classList.contains('show')) {
+                    explanation.classList.remove('show');
+                    this.innerHTML = '<i class="fas fa-lightbulb"></i> 显示答案解析';
+                } else {
+                    explanation.classList.add('show');
+                    this.innerHTML = '<i class="fas fa-lightbulb"></i> 隐藏答案解析';
+                }
             });
 
             // 提交按钮事件
             document.getElementById('submitBtn').addEventListener('click', function() {
-                const correctAnswers = getCorrectAnswers();
+                const params = questionParams[currentParamIndex];
                 let score = 0;
-                const totalQuestions = Object.keys(correctAnswers).length;
+                const totalQuestions = 7;
+                const questionResults = {};
 
-                for (const [questionId, correctAnswer] of Object.entries(correctAnswers)) {
-                    const userAnswer = userAnswers[questionId];
-                    const options = document.querySelectorAll(`.option[data-question="${questionId}"]`);
+                // 检查第1-3题和第7题（选择题）
+                for (let i = 1; i <= 7; i++) {
+                    if (i === 4 || i === 5 || i === 6) continue;
 
-                    if (userAnswer) {
-                        const userOption = document.querySelector(`.option[data-question="${questionId}"][data-option="${userAnswer}"]`);
-                        if (userOption) {
-                            if (userAnswer === correctAnswer) {
-                                score++;
-                                userOption.classList.add('correct');
-                            } else {
-                                userOption.classList.add('incorrect');
-                            }
-                        }
-                    }
+                    const options = document.querySelectorAll(`.option[data-question="${i}"]`);
+                    const feedbackEl = document.getElementById(`feedback${i}`);
+                    const correctOption = document.querySelector(`.option[data-question="${i}"][data-correct="true"]`);
+                    const selectedOption = document.querySelector(`.option[data-question="${i}"].selected`);
 
-                    const feedbackElement = document.getElementById(`feedback${questionId.replace('3b', '3')}`);
-                    if (feedbackElement) {
-                        if (userAnswer === correctAnswer) {
-                            feedbackElement.classList.add('correct');
+                    // 清除之前的正确/错误状态
+                    options.forEach(opt => {
+                        opt.classList.remove('correct', 'incorrect');
+                    });
+
+                    if (selectedOption) {
+                        const isCorrect = selectedOption.getAttribute('data-correct') === 'true';
+                        if (isCorrect) {
+                            score++;
+                            questionResults[i] = true;
+                            selectedOption.classList.add('correct');
+                            feedbackEl.textContent = '正确！';
+                            feedbackEl.className = 'feedback correct';
                         } else {
-                            feedbackElement.classList.add('incorrect');
+                            questionResults[i] = false;
+                            selectedOption.classList.add('incorrect');
+                            if (correctOption) correctOption.classList.add('correct');
+                            feedbackEl.textContent = '不正确。';
+                            feedbackEl.className = 'feedback incorrect';
                         }
+                    } else {
+                        questionResults[i] = false;
+                        if (correctOption) correctOption.classList.add('correct');
+                        feedbackEl.textContent = '请先选择一个答案！';
+                        feedbackEl.className = 'feedback incorrect';
                     }
+                    feedbackEl.classList.add('show');
                 }
 
-                document.getElementById('scoreValue').textContent = score;
-                document.getElementById('results').classList.add('show');
+                // 检查第4题（自由度）
+                const feedback4 = document.getElementById('feedback4');
+                const input4 = document.getElementById('answer-4');
+                const userAnswer4 = parseInt(userAnswers[4]);
+                const correctAnswer4 = params.df;
 
-                document.querySelectorAll('.show-explanation-btn').forEach(btn => {
-                    btn.style.display = 'inline-block';
-                });
+                input4.classList.remove('correct', 'incorrect');
 
-                document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+                if (userAnswers[4] && !isNaN(userAnswer4)) {
+                    if (userAnswer4 === correctAnswer4) {
+                        score++;
+                        questionResults[4] = true;
+                        input4.classList.add('correct');
+                        feedback4.textContent = '正确！';
+                        feedback4.className = 'feedback correct';
+                    } else {
+                        questionResults[4] = false;
+                        input4.classList.add('incorrect');
+                        feedback4.textContent = `不正确。正确答案是 ${correctAnswer4}。`;
+                        feedback4.className = 'feedback incorrect';
+                    }
+                } else {
+                    questionResults[4] = false;
+                    feedback4.textContent = `请输入答案。正确答案是 ${correctAnswer4}。`;
+                    feedback4.className = 'feedback incorrect';
+                }
+                feedback4.classList.add('show');
 
+                // 检查第5题（t值）
+                const feedback5 = document.getElementById('feedback5');
+                const input5 = document.getElementById('answer-5');
+                const userAnswer5 = parseFloat(userAnswers[5]);
+                const correctAnswer5 = Math.abs(params.tValue).toFixed(3);
+                const tolerance5 = 0.01;
+
+                input5.classList.remove('correct', 'incorrect');
+
+                if (userAnswers[5] && !isNaN(userAnswer5)) {
+                    if (Math.abs(userAnswer5 - parseFloat(correctAnswer5)) <= tolerance5) {
+                        score++;
+                        questionResults[5] = true;
+                        input5.classList.add('correct');
+                        feedback5.textContent = '正确！';
+                        feedback5.className = 'feedback correct';
+                    } else {
+                        questionResults[5] = false;
+                        input5.classList.add('incorrect');
+                        feedback5.textContent = `不正确。正确答案是 ${correctAnswer5}。`;
+                        feedback5.className = 'feedback incorrect';
+                    }
+                } else {
+                    questionResults[5] = false;
+                    feedback5.textContent = `请输入答案。正确答案是 ${correctAnswer5}。`;
+                    feedback5.className = 'feedback incorrect';
+                }
+                feedback5.classList.add('show');
+
+                // 检查第6题（临界值）
+                const feedback6 = document.getElementById('feedback6');
+                const input6 = document.getElementById('answer-6');
+                const userAnswer6 = userAnswers[6];
+                const tolerance6 = 0.01;
+                const testType = params.testType || 'two-tailed';
+
+                input6.classList.remove('correct', 'incorrect');
+
+                if (userAnswer6) {
+                    let isCorrect6 = false;
+                    let correctAnswer6 = '';
+
+                    if (testType === 'two-tailed') {
+                        // 双尾检验：验证两个临界值（用空格分隔）
+                        const values = userAnswer6.split(/\s+/).map(v => parseFloat(v.trim()));
+                        const correctValues = [-params.criticalValue, params.criticalValue];
+                        correctAnswer6 = `-${params.criticalValue.toFixed(3)} ${params.criticalValue.toFixed(3)}`;
+
+                        if (values.length === 2 &&
+                            Math.abs(values[0] - correctValues[0]) <= tolerance6 &&
+                            Math.abs(values[1] - correctValues[1]) <= tolerance6) {
+                            isCorrect6 = true;
+                        }
+                    } else if (testType === 'left-tailed') {
+                        // 左尾检验：验证单个负临界值
+                        const value = parseFloat(userAnswer6.trim());
+                        correctAnswer6 = `-${params.criticalValue.toFixed(3)}`;
+
+                        if (!isNaN(value) && Math.abs(value - (-params.criticalValue)) <= tolerance6) {
+                            isCorrect6 = true;
+                        }
+                    } else if (testType === 'right-tailed') {
+                        // 右尾检验：验证单个正临界值
+                        const value = parseFloat(userAnswer6.trim());
+                        correctAnswer6 = `${params.criticalValue.toFixed(3)}`;
+
+                        if (!isNaN(value) && Math.abs(value - params.criticalValue) <= tolerance6) {
+                            isCorrect6 = true;
+                        }
+                    }
+
+                    if (isCorrect6) {
+                        score++;
+                        questionResults[6] = true;
+                        input6.classList.add('correct');
+                        feedback6.textContent = '正确！';
+                        feedback6.className = 'feedback correct';
+                    } else {
+                        questionResults[6] = false;
+                        input6.classList.add('incorrect');
+                        feedback6.textContent = `不正确。正确答案是 ${correctAnswer6}。`;
+                        feedback6.className = 'feedback incorrect';
+                    }
+                } else {
+                    questionResults[6] = false;
+                    let correctAnswer6;
+                    if (testType === 'two-tailed') {
+                        correctAnswer6 = `-${params.criticalValue.toFixed(3)} ${params.criticalValue.toFixed(3)}`;
+                    } else if (testType === 'left-tailed') {
+                        correctAnswer6 = `-${params.criticalValue.toFixed(3)}`;
+                    } else {
+                        correctAnswer6 = `${params.criticalValue.toFixed(3)}`;
+                    }
+                    feedback6.textContent = `请输入答案。正确答案是 ${correctAnswer6}。`;
+                    feedback6.className = 'feedback incorrect';
+                }
+                feedback6.classList.add('show');
+
+                // 显示答案解析按钮
+                const toggleBtn = document.getElementById('toggle-explanation-btn');
+                toggleBtn.classList.add('show');
+                toggleBtn.innerHTML = '<i class="fas fa-lightbulb"></i> 显示答案解析';
+                document.getElementById('combined-explanation').classList.remove('show');
+
+                // 记录这套题目的结果到历史
+                const isAllCorrect = (score === totalQuestions);
+                quizHistory.push(isAllCorrect);
+
+                // 更新历史记录显示
+                updateHistoryDisplay();
+
+                // 更新分数文本
+                let message = '';
+                if (isAllCorrect) {
+                    message = '太棒了！这套题全对了！';
+                } else {
+                    message = `这套题答对了 ${score}/${totalQuestions} 道，继续加油！`;
+                }
+                document.getElementById('score-text').textContent = message;
+
+                // 禁用提交按钮
                 this.disabled = true;
-                this.textContent = '已提交';
-                this.style.backgroundColor = '#aaa';
-            });
+                this.style.opacity = '0.6';
+                this.style.cursor = 'not-allowed';
 
-            // 重新作答按钮事件
-            document.getElementById('resetBtn').addEventListener('click', function() {
-                userAnswers = { 1: null, 2: null, 3: null, '3b': null, 4: null, 5: null, 6: null };
-
-                document.querySelectorAll('.option').forEach(option => {
-                    option.classList.remove('selected', 'correct', 'incorrect');
-                });
-
-                document.getElementById('results').classList.remove('show');
-
-                document.querySelectorAll('.show-explanation-btn').forEach(btn => {
-                    btn.style.display = 'none';
-                    btn.textContent = '查看答案解析';
-                });
-                document.querySelectorAll('.explanation').forEach(exp => {
-                    exp.style.display = 'none';
-                });
-
-                document.querySelectorAll('.feedback').forEach(feedback => {
-                    feedback.classList.remove('correct', 'incorrect');
-                });
-
-                const submitBtn = document.getElementById('submitBtn');
-                submitBtn.disabled = false;
-                submitBtn.textContent = '提交答案';
-                submitBtn.style.backgroundColor = '#4a86e8';
-
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                document.getElementById('score-container').scrollIntoView({ behavior: 'smooth' });
             });
 
             // ==================== 初始化 ====================
             renderQuestion();
+
+            // ==================== t分布表弹窗控制 ====================
+            const showTableBtn = document.getElementById('showTableBtn');
+            const tableModal = document.getElementById('tableModal');
+            const closeModal = document.getElementById('closeModal');
+
+            showTableBtn.addEventListener('click', function() {
+                tableModal.classList.add('show');
+            });
+
+            closeModal.addEventListener('click', function() {
+                tableModal.classList.remove('show');
+            });
+
+            tableModal.addEventListener('click', function(e) {
+                if (e.target === tableModal) {
+                    tableModal.classList.remove('show');
+                }
+            });
         });
     </script>
 </body>

@@ -8,502 +8,927 @@
         * {
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        body {
             margin: 0;
-            padding: 20px;
-            background-color: #f0f8ff;
+            padding: 0;
+        }
+
+        body {
+            background-color: #f0f7ff;
             color: #333;
             line-height: 1.6;
+            padding: 20px;
+            min-height: 100vh;
         }
+
         .container {
             max-width: 900px;
             margin: 0 auto;
             background-color: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 82, 155, 0.1);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 82, 204, 0.1);
             padding: 30px;
-            margin-bottom: 30px;
+            overflow: hidden;
         }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e6f0ff;
+        }
+
         h1 {
-            color: #0052a3;
-            text-align: center;
-            margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #e6f2ff;
+            color: #0052cc;
+            font-size: 2.2rem;
+            margin-bottom: 10px;
         }
+
         .subtitle {
-            text-align: center;
-            color: #6699cc;
-            font-style: italic;
+            color: #6699ff;
+            font-size: 1.1rem;
+            font-weight: normal;
+        }
+
+        .question-container {
             margin-bottom: 30px;
         }
-        .question-section {
-            background-color: #f8fbff;
-            border-left: 5px solid #4d94ff;
-            padding: 20px;
-            border-radius: 0 10px 10px 0;
-            margin-bottom: 30px;
-        }
-        .question-title {
-            color: #0052a3;
-            font-weight: 600;
-            margin-top: 0;
-            font-size: 1.2em;
-        }
-        .question-content {
-            white-space: pre-line;
-            background-color: white;
-            padding: 15px;
-            border-radius: 8px;
-            border: 1px solid #e1ecff;
-            font-size: 1em;
-            overflow-x: auto;
-        }
-        .formula {
-            font-family: 'Cambria Math', 'Times New Roman', serif;
-            background-color: #f0f7ff;
-            padding: 10px 15px;
-            border-radius: 8px;
-            margin: 15px 0;
-            text-align: center;
-            font-size: 1.1em;
-            border: 1px dashed #99ccff;
-        }
-        .answer-input-section {
+
+        .question-header {
             display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            margin: 25px 0;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
         }
+
+        .question-text {
+            font-size: 1.1rem;
+            margin-bottom: 25px;
+            padding: 20px;
+            background-color: #f8fbff;
+            border-radius: 12px;
+            border-left: 5px solid #4d94ff;
+            white-space: pre-line;
+        }
+
+        .question-icon {
+            font-size: 1.5em;
+            margin-right: 8px;
+        }
+
+        .math {
+            font-family: 'Cambria Math', serif;
+            font-weight: bold;
+            color: #0052cc;
+        }
+
+        .answer-input-container {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #f8fafc;
+            border-radius: 12px;
+            border: 2px solid #e0e7ff;
+        }
+
+        .answer-label {
+            font-size: 1.1rem;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            display: block;
+            font-weight: 600;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
         .input-group {
             flex: 1;
             min-width: 200px;
         }
-        .input-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: #0052a3;
-            font-weight: 600;
-        }
-        .input-group input {
+
+        .answer-input {
             width: 100%;
-            padding: 12px 15px;
-            border: 2px solid #cce0ff;
-            border-radius: 8px;
-            font-size: 1.1em;
-            transition: border 0.3s;
-        }
-        .input-group input:focus {
+            max-width: 200px;
+            padding: 14px 18px;
+            font-size: 1.2rem;
+            border: 2px solid #e0e7ff;
+            border-radius: 10px;
+            transition: all 0.3s;
             outline: none;
-            border-color: #4d94ff;
-            box-shadow: 0 0 0 3px rgba(77, 148, 255, 0.2);
         }
-        .button-container {
+
+        .answer-input:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 10px rgba(52, 152, 219, 0.2);
+        }
+
+        .answer-input.correct {
+            border-color: #2ecc71;
+            background-color: #e8f8ef;
+        }
+
+        .answer-input.incorrect {
+            border-color: #e74c3c;
+            background-color: #fdedec;
+        }
+
+        .tolerance-hint {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-top: 8px;
+        }
+
+        .feedback-inline {
+            margin-top: 10px;
+            padding: 10px 15px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            display: none;
+        }
+
+        .feedback-inline.correct {
+            background-color: #e8f8ef;
+            color: #27ae60;
+            display: block;
+        }
+
+        .feedback-inline.incorrect {
+            background-color: #fdedec;
+            color: #e74c3c;
+            display: block;
+        }
+
+        .controls {
             display: flex;
             justify-content: center;
-            gap: 15px;
-            margin-top: 30px;
+            gap: 20px;
+            margin-bottom: 30px;
             flex-wrap: wrap;
         }
+
         button {
             padding: 14px 28px;
             border: none;
-            border-radius: 8px;
-            font-size: 1em;
+            border-radius: 10px;
+            font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
         }
-        #submitBtn {
-            background-color: #4d94ff;
+
+        #submit-btn {
+            background-color: #0052cc;
             color: white;
         }
-        #submitBtn:hover {
-            background-color: #2673ff;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(77, 148, 255, 0.4);
+
+        #submit-btn:hover {
+            background-color: #0047b3;
+            transform: scale(1.05);
         }
-        #resetBtn {
-            background-color: #f0f7ff;
-            color: #4d94ff;
-            border: 2px solid #4d94ff;
-        }
-        #resetBtn:hover {
-            background-color: #e6f2ff;
-            transform: translateY(-2px);
-        }
-        .feedback {
-            margin-top: 25px;
-            padding: 20px;
-            border-radius: 10px;
-            display: none;
-        }
-        .feedback.correct {
-            background-color: #f0fff4;
-            border: 2px solid #52c41a;
-            color: #237804;
-        }
-        .feedback.incorrect {
-            background-color: #fff2f0;
-            border: 2px solid #ff4d4f;
-            color: #a8071a;
-        }
-        .feedback-title {
-            font-weight: 700;
-            font-size: 1.2em;
-            margin-top: 0;
-            margin-bottom: 10px;
-        }
-        .score-display {
-            text-align: center;
-            font-size: 1.3em;
-            color: #0052a3;
-            margin: 20px 0;
-            padding: 15px;
-            background-color: #e6f2ff;
-            border-radius: 10px;
-            font-weight: 600;
-        }
-        .calculation-steps {
-            background-color: #f8fbff;
-            padding: 20px;
-            border-radius: 10px;
-            margin-top: 20px;
-            border: 1px solid #e1ecff;
-        }
-        .steps-title {
-            color: #0052a3;
-            margin-top: 0;
-        }
-        .step {
-            margin-bottom: 15px;
-        }
-        .math {
-            font-family: 'Cambria Math', 'Times New Roman', serif;
-        }
-        .refresh-btn {
+
+        #next-btn {
             background: linear-gradient(135deg, #27ae60, #2ecc71);
             color: white;
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-size: 0.9em;
-            margin-left: 10px;
-            border: none;
-            cursor: pointer;
-            transition: all 0.3s ease;
         }
-        .refresh-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+
+        #next-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.4);
         }
-        .param-header {
-            display: flex;
-            align-items: center;
+
+        .feedback-container {
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            display: none;
+        }
+
+        .feedback-container.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .correct-feedback {
+            background-color: #e6ffe6;
+            border-left: 5px solid #00cc66;
+        }
+
+        .incorrect-feedback {
+            background-color: #ffe6e6;
+            border-left: 5px solid #ff6666;
+        }
+
+        .feedback-title {
+            font-size: 1.3rem;
             margin-bottom: 15px;
         }
+
+        .explanation {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.7);
+            border-radius: 8px;
+        }
+
+        .stats {
+            background-color: #e6f0ff;
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+        }
+
+        .stats-title {
+            font-size: 1rem;
+            color: #0052cc;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .results-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            min-height: 40px;
+            align-items: center;
+        }
+
+        .result-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+            animation: popIn 0.3s ease;
+        }
+
+        .result-icon.correct {
+            background-color: #27ae60;
+        }
+
+        .result-icon.correct::after {
+            content: '✓';
+        }
+
+        .result-icon.incorrect {
+            background-color: #e74c3c;
+        }
+
+        .result-icon.incorrect::after {
+            content: '✗';
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0); }
+            70% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .no-results {
+            color: #999;
+            font-size: 0.9rem;
+        }
+
+        .show-explanation-btn {
+            display: none;
+            margin: 20px auto;
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
+        }
+        .show-explanation-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
+        }
+
+        .explanation-section {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #f8fbff;
+            border-radius: 12px;
+            border: 2px solid #e0e7ff;
+        }
+
+        .explanation-section.show {
+            display: block;
+        }
+
+        .explanation-step {
+            padding: 15px;
+            background-color: white;
+            border-radius: 8px;
+            border-left: 4px solid #4d94ff;
+            margin-bottom: 15px;
+        }
+
+        .step-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #0052cc;
+        }
+
+        .formula {
+            background-color: #f1f5f9;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Cambria Math', 'Times New Roman', serif;
+            text-align: center;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+
+        .note {
+            background-color: #fef3c7;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #f59e0b;
+            margin-top: 10px;
+        }
+
         @media (max-width: 768px) {
             .container {
                 padding: 20px;
+                border-radius: 15px;
             }
+
             h1 {
-                font-size: 1.5em;
+                font-size: 1.8rem;
             }
-            .answer-input-section {
+
+            .controls {
                 flex-direction: column;
+                align-items: center;
             }
-            .input-group {
-                min-width: 100%;
+
+            button {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .input-row {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .answer-input {
+                max-width: 100%;
             }
         }
     </style>
-
-    <style>
-    .show-explanation-btn {
-        display: none;
-        margin: 20px auto;
-        padding: 14px 28px;
-        background: linear-gradient(135deg, #9b59b6, #8e44ad);
-        color: white;
-        border: none;
-        border-radius: 10px;
-        cursor: pointer;
-        font-size: 1.1rem;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
-    }
-    .show-explanation-btn:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
-    }
-    .explanation-section {
-        display: none;
-        margin-top: 20px;
-    }
-    </style>
-    </head>
+</head>
 <body>
     <div class="container">
-        <h1>总体均值差异的置信区间</h1>
-        <div class="subtitle">标准正态分布应用 - 交互式答题</div>
+        <header>
+            <h1>总体均值差异的置信区间</h1>
+            <div class="subtitle">标准正态分布应用 - 交互式答题</div>
+        </header>
 
-        <div class="question-section">
-            <div class="param-header">
-                <h3 class="question-title" style="margin: 0;">题目描述</h3>
-                <button class="refresh-btn" onclick="refreshQuestion()">刷新参数</button>
+        <div class="question-container">
+            <div class="question-header">
+                <span>问题</span>
             </div>
-            <div class="question-content" id="questionContent">
-            </div>
-
-            <div class="formula">
-                ( (x̄₁ - x̄₂) - z<sub>α/2</sub> × √(σ₁²/n₁ + σ₂²/n₂) , (x̄₁ - x̄₂) + z<sub>α/2</sub> × √(σ₁²/n₁ + σ₂²/n₂) )
+            <div class="question-text" id="question-text">
+                <!-- 动态生成 -->
             </div>
 
-            <div class="calculation-steps">
-                <h4 class="steps-title">已知条件</h4>
-                <div id="knownConditions"></div>
-            </div>
-        </div>
-
-        <div class="answer-input-section">
-            <div class="input-group">
-                <label for="lowerBound" id="lowerLabel">置信区间的下限是多少？</label>
-                <input type="number" id="lowerBound" step="0.01">
-            </div>
-            <div class="input-group">
-                <label for="upperBound" id="upperLabel">置信区间的上限是多少？</label>
-                <input type="number" id="upperBound" step="0.01">
+            <div class="answer-input-container">
+                <div class="input-row">
+                    <div class="input-group">
+                        <label class="answer-label" id="lowerLabel">置信区间的下限：</label>
+                        <input type="number" step="0.01" class="answer-input" id="lower-input">
+                    </div>
+                    <div class="input-group">
+                        <label class="answer-label" id="upperLabel">置信区间的上限：</label>
+                        <input type="number" step="0.01" class="answer-input" id="upper-input">
+                    </div>
+                </div>
+                <div class="tolerance-hint">容差：±0.05（四舍五入至两位小数）</div>
+                <div class="feedback-inline" id="feedback-inline"></div>
             </div>
         </div>
 
-        <div class="button-container">
-            <button id="submitBtn">提交答案</button>
-            <button id="resetBtn">重新作答</button>
+        <div class="controls">
+            <button id="submit-btn">提交答案</button>
+            <button id="next-btn">下一题 ⏩</button>
         </div>
 
-        <div class="score-display" id="scoreDisplay">
-            请填写答案并提交
+        <div class="feedback-container" id="feedback">
+            <div class="feedback-title" id="feedback-title-text"></div>
+            <p id="feedback-text"></p>
+            <button class="show-explanation-btn" id="show-explanation-btn">查看答案解析</button>
+            <div class="explanation-section" id="explanation">
+                <!-- 动态生成 -->
+            </div>
         </div>
 
-        <div class="feedback" id="feedback">
-            <h4 class="feedback-title" id="feedbackTitle">反馈标题</h4>
-            <div id="feedbackContent">反馈内容</div>
+        <div class="stats">
+            <div class="stats-title">答题记录</div>
+            <div class="results-container" id="results-container">
+                <span class="no-results">尚未开始答题</span>
+            </div>
         </div>
     </div>
 
     <script>
-        // Parameter sets with pre-computed answers
-        const parameterSets = [
-            {
-                n1: 280, xbar1: 17.60, sigma1: 4.40,
-                n2: 205, xbar2: 18.40, sigma2: 3.60,
-                confidenceLevel: 99,
-                zValue: 2.576,
-                correctLower: -1.74,
-                correctUpper: 0.14,
-                description: "某制药公司研究部门进行了一项研究，随机抽取了 280 名个体，要求他们报告每年在处方过敏缓解药物上的花费金额。样本均值计算为 17.60 美元，标准差为 4.40 美元。独立于第一个样本，随机抽取了 205 名个体。这些个体报告了他们在非处方过敏缓解药物上的年度花费。第二个样本的均值计算为 18.40 美元，标准差为 3.60 美元。由于样本量相当大，可以假设处方和非处方过敏缓解药物花费的各自总体标准差可以用上面给出的各自样本标准差值来估计。",
-                questionContext: "处方过敏缓解药物的平均花费 (μ₁) 与非处方过敏缓解药物的平均花费 (μ₂) 之间的差值 μ₁ - μ₂"
-            },
-            {
-                n1: 150, xbar1: 85.20, sigma1: 12.50,
-                n2: 180, xbar2: 82.40, sigma2: 11.80,
-                confidenceLevel: 95,
-                zValue: 1.96,
-                correctLower: 0.30,
-                correctUpper: 5.30,
-                description: "某教育研究机构进行了一项研究，随机抽取了 150 名使用新教学法的学生，他们的平均考试成绩为 85.20 分，标准差为 12.50 分。独立地，随机抽取了 180 名使用传统教学法的学生，他们的平均成绩为 82.40 分，标准差为 11.80 分。由于样本量较大，可以用样本标准差估计总体标准差。",
-                questionContext: "新教学法学生的平均成绩 (μ₁) 与传统教学法学生的平均成绩 (μ₂) 之间的差值 μ₁ - μ₂"
-            },
-            {
-                n1: 200, xbar1: 45.80, sigma1: 8.60,
-                n2: 175, xbar2: 52.30, sigma2: 9.20,
-                confidenceLevel: 95,
-                zValue: 1.96,
-                correctLower: -8.54,
-                correctUpper: -4.66,
-                description: "某市场研究公司调查了两个城市的居民生活成本。第一个城市随机抽取了 200 名居民，月均生活支出为 45.80 百元，标准差为 8.60 百元。第二个城市随机抽取了 175 名居民，月均生活支出为 52.30 百元，标准差为 9.20 百元。由于样本量较大，可以用样本标准差估计总体标准差。",
-                questionContext: "第一个城市居民的平均月支出 (μ₁) 与第二个城市居民的平均月支出 (μ₂) 之间的差值 μ₁ - μ₂"
-            },
-            {
-                n1: 320, xbar1: 125.50, sigma1: 18.40,
-                n2: 280, xbar2: 118.60, sigma2: 16.90,
-                confidenceLevel: 99,
-                zValue: 2.576,
-                correctLower: 3.93,
-                correctUpper: 9.87,
-                description: "某健康研究机构比较两种减肥方法的效果。第一种方法有 320 名参与者，平均减重 125.50 百克，标准差为 18.40 百克。第二种方法有 280 名参与者，平均减重 118.60 百克，标准差为 16.90 百克。由于样本量较大，可以用样本标准差估计总体标准差。",
-                questionContext: "第一种方法参与者的平均减重量 (μ₁) 与第二种方法参与者的平均减重量 (μ₂) 之间的差值 μ₁ - μ₂"
-            },
-            {
-                n1: 250, xbar1: 68.40, sigma1: 10.20,
-                n2: 300, xbar2: 72.80, sigma2: 11.50,
-                confidenceLevel: 90,
-                zValue: 1.645,
-                correctLower: -6.39,
-                correctUpper: -2.41,
-                description: "某消费研究机构调查两种品牌手机的用户满意度评分。品牌A随机调查了 250 名用户，平均满意度评分为 68.40 分，标准差为 10.20 分。品牌B随机调查了 300 名用户，平均满意度评分为 72.80 分，标准差为 11.50 分。由于样本量较大，可以用样本标准差估计总体标准差。",
-                questionContext: "品牌A用户的平均满意度 (μ₁) 与品牌B用户的平均满意度 (μ₂) 之间的差值 μ₁ - μ₂"
-            }
-        ];
+        document.addEventListener('DOMContentLoaded', function() {
+            // ==================== 参数化数据集 ====================
+            const parameterSets = [
+                {
+                    icon: "💊",
+                    n1: 280, xbar1: 17.60, sigma1: 4.40,
+                    n2: 205, xbar2: 18.40, sigma2: 3.60,
+                    confidenceLevel: 99,
+                    zValue: 2.576,
+                    correctLower: -1.74,
+                    correctUpper: 0.14,
+                    description: "某制药公司研究部门进行了一项研究，随机抽取了 280 名个体，要求他们报告每年在处方过敏缓解药物上的花费金额。样本均值计算为 17.60 美元，标准差为 4.40 美元。独立于第一个样本，随机抽取了 205 名个体。这些个体报告了他们在非处方过敏缓解药物上的年度花费。第二个样本的均值计算为 18.40 美元，标准差为 3.60 美元。由于样本量相当大，可以假设处方和非处方过敏缓解药物花费的各自总体标准差可以用上面给出的各自样本标准差值来估计。",
+                    questionContext: "处方过敏缓解药物的平均花费 (μ₁) 与非处方过敏缓解药物的平均花费 (μ₂) 之间的差值 μ₁ - μ₂"
+                },
+                {
+                    icon: "📚",
+                    n1: 150, xbar1: 85.20, sigma1: 12.50,
+                    n2: 180, xbar2: 82.40, sigma2: 11.80,
+                    confidenceLevel: 95,
+                    zValue: 1.96,
+                    correctLower: 0.16,
+                    correctUpper: 5.44,
+                    description: "某教育研究机构进行了一项研究，随机抽取了 150 名使用新教学法的学生，他们的平均考试成绩为 85.20 分，标准差为 12.50 分。独立地，随机抽取了 180 名使用传统教学法的学生，他们的平均成绩为 82.40 分，标准差为 11.80 分。由于样本量较大，可以用样本标准差估计总体标准差。",
+                    questionContext: "新教学法学生的平均成绩 (μ₁) 与传统教学法学生的平均成绩 (μ₂) 之间的差值 μ₁ - μ₂"
+                },
+                {
+                    icon: "🏙️",
+                    n1: 200, xbar1: 45.80, sigma1: 8.60,
+                    n2: 175, xbar2: 52.30, sigma2: 9.20,
+                    confidenceLevel: 95,
+                    zValue: 1.96,
+                    correctLower: -8.31,
+                    correctUpper: -4.69,
+                    description: "某市场研究公司调查了两个城市的居民生活成本。第一个城市随机抽取了 200 名居民，月均生活支出为 45.80 百元，标准差为 8.60 百元。第二个城市随机抽取了 175 名居民，月均生活支出为 52.30 百元，标准差为 9.20 百元。由于样本量较大，可以用样本标准差估计总体标准差。",
+                    questionContext: "第一个城市居民的平均月支出 (μ₁) 与第二个城市居民的平均月支出 (μ₂) 之间的差值 μ₁ - μ₂"
+                },
+                {
+                    icon: "⚖️",
+                    n1: 320, xbar1: 125.50, sigma1: 18.40,
+                    n2: 280, xbar2: 118.60, sigma2: 16.90,
+                    confidenceLevel: 99,
+                    zValue: 2.576,
+                    correctLower: 3.19,
+                    correctUpper: 10.61,
+                    description: "某健康研究机构比较两种减肥方法的效果。第一种方法有 320 名参与者，平均减重 125.50 百克，标准差为 18.40 百克。第二种方法有 280 名参与者，平均减重 118.60 百克，标准差为 16.90 百克。由于样本量较大，可以用样本标准差估计总体标准差。",
+                    questionContext: "第一种方法参与者的平均减重量 (μ₁) 与第二种方法参与者的平均减重量 (μ₂) 之间的差值 μ₁ - μ₂"
+                },
+                {
+                    icon: "📱",
+                    n1: 250, xbar1: 68.40, sigma1: 10.20,
+                    n2: 300, xbar2: 72.80, sigma2: 11.50,
+                    confidenceLevel: 90,
+                    zValue: 1.645,
+                    correctLower: -5.92,
+                    correctUpper: -2.88,
+                    description: "某消费研究机构调查两种品牌手机的用户满意度评分。品牌A随机调查了 250 名用户，平均满意度评分为 68.40 分，标准差为 10.20 分。品牌B随机调查了 300 名用户，平均满意度评分为 72.80 分，标准差为 11.50 分。由于样本量较大，可以用样本标准差估计总体标准差。",
+                    questionContext: "品牌A用户的平均满意度 (μ₁) 与品牌B用户的平均满意度 (μ₂) 之间的差值 μ₁ - μ₂"
+                },
+                {
+                    icon: "🌾",
+                    n1: 180, xbar1: 6.85, sigma1: 0.92,
+                    n2: 165, xbar2: 5.92, sigma2: 0.85,
+                    confidenceLevel: 95,
+                    zValue: 1.96,
+                    correctLower: 0.74,
+                    correctUpper: 1.12,
+                    description: "某农业研究所比较两种肥料对玉米产量的影响。第一种肥料在 180 块试验田中使用，平均亩产量为 6.85 吨，标准差为 0.92 吨。第二种肥料在 165 块试验田中使用，平均亩产量为 5.92 吨，标准差为 0.85 吨。由于样本量较大，可以用样本标准差估计总体标准差。",
+                    questionContext: "第一种肥料的平均产量 (μ₁) 与第二种肥料的平均产量 (μ₂) 之间的差值 μ₁ - μ₂"
+                },
+                {
+                    icon: "😴",
+                    n1: 420, xbar1: 6.50, sigma1: 1.15,
+                    n2: 385, xbar2: 7.20, sigma2: 1.08,
+                    confidenceLevel: 95,
+                    zValue: 1.96,
+                    correctLower: -0.85,
+                    correctUpper: -0.55,
+                    description: "某睡眠研究中心调查城市与农村居民的睡眠质量。随机抽取了 420 名城市居民，平均每晚睡眠时间为 6.50 小时，标准差为 1.15 小时。独立地，随机抽取了 385 名农村居民，平均每晚睡眠时间为 7.20 小时，标准差为 1.08 小时。由于样本量较大，可以用样本标准差估计总体标准差。",
+                    questionContext: "城市居民的平均睡眠时间 (μ₁) 与农村居民的平均睡眠时间 (μ₂) 之间的差值 μ₁ - μ₂"
+                },
+                {
+                    icon: "🏭",
+                    n1: 150, xbar1: 28.50, sigma1: 5.20,
+                    n2: 175, xbar2: 32.40, sigma2: 4.80,
+                    confidenceLevel: 95,
+                    zValue: 1.96,
+                    correctLower: -5.05,
+                    correctUpper: -2.75,
+                    description: "某制造业公司比较两种装配方法所需时间。第一种方法测试了 150 名工人，平均装配时间为 28.50 分钟，标准差为 5.20 分钟。第二种方法测试了 175 名工人，平均装配时间为 32.40 分钟，标准差为 4.80 分钟。由于样本量较大，可以用样本标准差估计总体标准差。",
+                    questionContext: "第一种方法的平均装配时间 (μ₁) 与第二种方法的平均装配时间 (μ₂) 之间的差值 μ₁ - μ₂"
+                },
+                {
+                    icon: "🛒",
+                    n1: 340, xbar1: 125.80, sigma1: 32.50,
+                    n2: 290, xbar2: 118.50, sigma2: 28.40,
+                    confidenceLevel: 95,
+                    zValue: 1.96,
+                    correctLower: 2.51,
+                    correctUpper: 12.09,
+                    description: "某电商平台比较两个促销活动期间的用户平均消费金额。活动A期间随机抽取了 340 笔订单，平均消费金额为 125.80 元，标准差为 32.50 元。活动B期间随机抽取了 290 笔订单，平均消费金额为 118.50 元，标准差为 28.40 元。由于样本量较大，可以用样本标准差估计总体标准差。",
+                    questionContext: "活动A期间的平均消费金额 (μ₁) 与活动B期间的平均消费金额 (μ₂) 之间的差值 μ₁ - μ₂"
+                },
+                {
+                    icon: "💪",
+                    n1: 195, xbar1: 5.80, sigma1: 2.10,
+                    n2: 210, xbar2: 4.20, sigma2: 1.85,
+                    confidenceLevel: 90,
+                    zValue: 1.645,
+                    correctLower: 1.28,
+                    correctUpper: 1.92,
+                    description: "某健身中心比较两种训练课程对会员体重减轻的效果（单位：公斤）。第一种课程有 195 名学员参与，平均减重 5.80 公斤，标准差为 2.10 公斤。第二种课程有 210 名学员参与，平均减重 4.20 公斤，标准差为 1.85 公斤。由于样本量较大，可以用样本标准差估计总体标准差。",
+                    questionContext: "第一种课程学员的平均减重量 (μ₁) 与第二种课程学员的平均减重量 (μ₂) 之间的差值 μ₁ - μ₂"
+                },
+                {
+                    icon: "💉",
+                    n1: 240, xbar1: 15.50, sigma1: 6.20,
+                    n2: 260, xbar2: 12.30, sigma2: 5.80,
+                    confidenceLevel: 99,
+                    zValue: 2.576,
+                    correctLower: 1.85,
+                    correctUpper: 4.55,
+                    description: "某医学研究中心比较两种降压药物的疗效（舒张压降低值，单位：mmHg）。第一种药物有 240 名患者使用，平均降压 15.50 mmHg，标准差为 6.20 mmHg。第二种药物有 260 名患者使用，平均降压 12.30 mmHg，标准差为 5.80 mmHg。由于样本量较大，可以用样本标准差估计总体标准差。",
+                    questionContext: "第一种药物的平均降压效果 (μ₁) 与第二种药物的平均降压效果 (μ₂) 之间的差值 μ₁ - μ₂"
+                },
+                {
+                    icon: "📖",
+                    n1: 165, xbar1: 245.00, sigma1: 35.00,
+                    n2: 180, xbar2: 228.00, sigma2: 32.00,
+                    confidenceLevel: 95,
+                    zValue: 1.96,
+                    correctLower: 9.96,
+                    correctUpper: 24.04,
+                    description: "某教育机构研究两种阅读训练方法对学生阅读速度（字/分钟）的影响。第一种方法训练了 165 名学生，平均阅读速度为 245 字/分钟，标准差为 35 字/分钟。第二种方法训练了 180 名学生，平均阅读速度为 228 字/分钟，标准差为 32 字/分钟。由于样本量较大，可以用样本标准差估计总体标准差。",
+                    questionContext: "第一种方法学生的平均阅读速度 (μ₁) 与第二种方法学生的平均阅读速度 (μ₂) 之间的差值 μ₁ - μ₂"
+                },
+                {
+                    icon: "👔",
+                    n1: 280, xbar1: 42.50, sigma1: 15.60,
+                    n2: 260, xbar2: 38.80, sigma2: 14.20,
+                    confidenceLevel: 90,
+                    zValue: 1.645,
+                    correctLower: 1.62,
+                    correctUpper: 5.78,
+                    description: "某人力资源咨询公司比较两个行业的员工每周工作时长（小时）。行业A随机调查了 280 名员工，平均每周工作 42.50 小时，标准差为 15.60 小时。行业B随机调查了 260 名员工，平均每周工作 38.80 小时，标准差为 14.20 小时。由于样本量较大，可以用样本标准差估计总体标准差。",
+                    questionContext: "行业A员工的平均工作时长 (μ₁) 与行业B员工的平均工作时长 (μ₂) 之间的差值 μ₁ - μ₂"
+                },
+                {
+                    icon: "⭐",
+                    n1: 310, xbar1: 4.20, sigma1: 0.65,
+                    n2: 285, xbar2: 3.85, sigma2: 0.72,
+                    confidenceLevel: 99,
+                    zValue: 2.576,
+                    correctLower: 0.21,
+                    correctUpper: 0.49,
+                    description: "某服务行业比较两家公司的客户满意度评分（1-5分）。公司A随机调查了 310 名客户，平均满意度评分为 4.20 分，标准差为 0.65 分。公司B随机调查了 285 名客户，平均满意度评分为 3.85 分，标准差为 0.72 分。由于样本量较大，可以用样本标准差估计总体标准差。",
+                    questionContext: "公司A客户的平均满意度 (μ₁) 与公司B客户的平均满意度 (μ₂) 之间的差值 μ₁ - μ₂"
+                },
+                {
+                    icon: "🏠",
+                    n1: 225, xbar1: 3500.00, sigma1: 450.00,
+                    n2: 240, xbar2: 4200.00, sigma2: 520.00,
+                    confidenceLevel: 95,
+                    zValue: 1.96,
+                    correctLower: -788.24,
+                    correctUpper: -611.76,
+                    description: "某房地产研究机构比较两个城市的一居室公寓月租金（元）。城市A随机调查了 225 套公寓，平均月租金为 3500 元，标准差为 450 元。城市B随机调查了 240 套公寓，平均月租金为 4200 元，标准差为 520 元。由于样本量较大，可以用样本标准差估计总体标准差。",
+                    questionContext: "城市A公寓的平均月租金 (μ₁) 与城市B公寓的平均月租金 (μ₂) 之间的差值 μ₁ - μ₂"
+                },
+                {
+                    icon: "🏃",
+                    n1: 140, xbar1: 0.42, sigma1: 0.08,
+                    n2: 135, xbar2: 0.38, sigma2: 0.07,
+                    confidenceLevel: 95,
+                    zValue: 1.96,
+                    correctLower: 0.02,
+                    correctUpper: 0.06,
+                    description: "某体育科学研究两种训练方法对运动员反应时间（秒）的影响。第一种方法训练了 140 名运动员，平均反应时间为 0.42 秒，标准差为 0.08 秒。第二种方法训练了 135 名运动员，平均反应时间为 0.38 秒，标准差为 0.07 秒。由于样本量较大，可以用样本标准差估计总体标准差。",
+                    questionContext: "第一种方法运动员的平均反应时间 (μ₁) 与第二种方法运动员的平均反应时间 (μ₂) 之间的差值 μ₁ - μ₂"
+                },
+                {
+                    icon: "🎓",
+                    n1: 200, xbar1: 320.50, sigma1: 45.80,
+                    n2: 185, xbar2: 285.30, sigma2: 42.60,
+                    confidenceLevel: 99,
+                    zValue: 2.576,
+                    correctLower: 23.59,
+                    correctUpper: 46.81,
+                    description: "某语言培训机构比较两种英语课程对学员托福成绩的影响。第一种课程有 200 名学员，平均托福成绩为 320.50 分，标准差为 45.80 分。第二种课程有 185 名学员，平均托福成绩为 285.30 分，标准差为 42.60 分。由于样本量较大，可以用样本标准差估计总体标准差。",
+                    questionContext: "第一种课程学员的平均托福成绩 (μ₁) 与第二种课程学员的平均托福成绩 (μ₂) 之间的差值 μ₁ - μ₂"
+                },
+                {
+                    icon: "🌍",
+                    n1: 350, xbar1: 28.60, sigma1: 5.40,
+                    n2: 320, xbar2: 32.50, sigma2: 6.10,
+                    confidenceLevel: 95,
+                    zValue: 1.96,
+                    correctLower: -4.78,
+                    correctUpper: -3.02,
+                    description: "某环境保护机构比较两个城市的PM2.5日均浓度（μg/m³）。城市A监测了 350 天，平均浓度为 28.60 μg/m³，标准差为 5.40 μg/m³。城市B监测了 320 天，平均浓度为 32.50 μg/m³，标准差为 6.10 μg/m³。由于样本量较大，可以用样本标准差估计总体标准差。",
+                    questionContext: "城市A的平均PM2.5浓度 (μ₁) 与城市B的平均PM2.5浓度 (μ₂) 之间的差值 μ₁ - μ₂"
+                },
+                {
+                    icon: "💳",
+                    n1: 190, xbar1: 680.00, sigma1: 95.00,
+                    n2: 210, xbar2: 620.00, sigma2: 88.00,
+                    confidenceLevel: 90,
+                    zValue: 1.645,
+                    correctLower: 44.89,
+                    correctUpper: 75.11,
+                    description: "某银行比较两种信用卡用户的月均消费金额（元）。第一种信用卡随机抽取了 190 名用户，月均消费 680 元，标准差为 95 元。第二种信用卡随机抽取了 210 名用户，月均消费 620 元，标准差为 88 元。由于样本量较大，可以用样本标准差估计总体标准差。",
+                    questionContext: "第一种信用卡用户的平均月消费 (μ₁) 与第二种信用卡用户的平均月消费 (μ₂) 之间的差值 μ₁ - μ₂"
+                },
+                {
+                    icon: "☕",
+                    n1: 275, xbar1: 58.40, sigma1: 12.80,
+                    n2: 290, xbar2: 52.60, sigma2: 11.50,
+                    confidenceLevel: 95,
+                    zValue: 1.96,
+                    correctLower: 3.79,
+                    correctUpper: 7.81,
+                    description: "某食品研究机构比较两种饮料的咖啡因含量（mg/100mL）。第一种饮料检测了 275 个样本，平均咖啡因含量为 58.40 mg，标准差为 12.80 mg。第二种饮料检测了 290 个样本，平均咖啡因含量为 52.60 mg，标准差为 11.50 mg。由于样本量较大，可以用样本标准差估计总体标准差。",
+                    questionContext: "第一种饮料的平均咖啡因含量 (μ₁) 与第二种饮料的平均咖啡因含量 (μ₂) 之间的差值 μ₁ - μ₂"
+                }
+            ];
 
-        let currentParams = null;
+            // 当前参数索引
+            let currentParamIndex = 0;
 
-        function refreshQuestion() {
-            // Reset the form first
-            resetForm();
+            // ==================== 渲染函数 ====================
+            function renderQuestion() {
+                const params = parameterSets[currentParamIndex];
+                const questionText = document.getElementById('question-text');
+                const explanation = document.getElementById('explanation');
 
-            // Select random parameter set
-            const randomIndex = Math.floor(Math.random() * parameterSets.length);
-            currentParams = parameterSets[randomIndex];
+                // 计算中间值
+                const meanDiff = (params.xbar1 - params.xbar2).toFixed(2);
+                const variance1 = (Math.pow(params.sigma1, 2) / params.n1).toFixed(6);
+                const variance2 = (Math.pow(params.sigma2, 2) / params.n2).toFixed(6);
+                const totalVariance = (parseFloat(variance1) + parseFloat(variance2)).toFixed(6);
+                const stdError = Math.sqrt(parseFloat(totalVariance)).toFixed(4);
+                const marginError = (params.zValue * parseFloat(stdError)).toFixed(4);
 
-            // Update question content
-            const questionText = `${currentParams.description}
+                // 渲染题目
+                questionText.innerHTML = `<span class="question-icon">${params.icon}</span>${params.description}
 
-构建一个 ${currentParams.confidenceLevel}% 的置信区间，用于估计${currentParams.questionContext}。
+构建一个 <span class="math">${params.confidenceLevel}%</span> 的置信区间，用于估计${params.questionContext}。
 
 中间计算至少保留三位小数。答案至少保留两位小数。`;
 
-            document.getElementById('questionContent').textContent = questionText;
+                document.getElementById('lowerLabel').textContent = `${params.confidenceLevel}% 置信区间的下限：`;
+                document.getElementById('upperLabel').textContent = `${params.confidenceLevel}% 置信区间的上限：`;
 
-            // Update labels
-            document.getElementById('lowerLabel').textContent = `${currentParams.confidenceLevel}% 置信区间的下限是多少？`;
-            document.getElementById('upperLabel').textContent = `${currentParams.confidenceLevel}% 置信区间的上限是多少？`;
+                // 渲染解析
+                explanation.innerHTML = `
+                    <div class="explanation-step">
+                        <div class="step-title">步骤 1: 理解问题与已知条件</div>
+                        <p>我们需要构建两个总体均值差异 <span class="math">μ₁ - μ₂</span> 的 ${params.confidenceLevel}% 置信区间。</p>
+                        <ul>
+                            <li>样本1: <span class="math">n₁ = ${params.n1}, x̄₁ = ${params.xbar1}, σ₁ = ${params.sigma1}</span></li>
+                            <li>样本2: <span class="math">n₂ = ${params.n2}, x̄₂ = ${params.xbar2}, σ₂ = ${params.sigma2}</span></li>
+                            <li>置信水平: ${params.confidenceLevel}%</li>
+                        </ul>
+                    </div>
 
-            // Update known conditions
-            const meanDiff = (currentParams.xbar1 - currentParams.xbar2).toFixed(2);
-            const variance1 = (Math.pow(currentParams.sigma1, 2) / currentParams.n1).toFixed(6);
-            const variance2 = (Math.pow(currentParams.sigma2, 2) / currentParams.n2).toFixed(6);
-            const totalVariance = (parseFloat(variance1) + parseFloat(variance2)).toFixed(6);
-            const stdError = Math.sqrt(parseFloat(totalVariance)).toFixed(4);
-            const marginError = (currentParams.zValue * parseFloat(stdError)).toFixed(4);
+                    <div class="explanation-step">
+                        <div class="step-title">步骤 2: 确定临界值</div>
+                        <p>由于两个样本容量都较大，根据中心极限定理，样本均值差的抽样分布近似服从正态分布。</p>
+                        <p>对于 ${params.confidenceLevel}% 置信区间，对应的临界值为 <span class="math">z_{α/2} = ${params.zValue}</span>。</p>
+                    </div>
 
-            document.getElementById('knownConditions').innerHTML = `
-                <div class="step">样本1: n₁ = ${currentParams.n1}, x̄₁ = ${currentParams.xbar1}, σ₁ = ${currentParams.sigma1}</div>
-                <div class="step">样本2: n₂ = ${currentParams.n2}, x̄₂ = ${currentParams.xbar2}, σ₂ = ${currentParams.sigma2}</div>
-                <div class="step">置信水平: ${currentParams.confidenceLevel}% → z<sub>α/2</sub> = ${currentParams.zValue}</div>
-                <div class="step">样本均值差: x̄₁ - x̄₂ = ${currentParams.xbar1} - ${currentParams.xbar2} = ${meanDiff}</div>
-                <div class="step">标准误: √(σ₁²/n₁ + σ₂²/n₂) = √(${variance1} + ${variance2}) ≈ √${totalVariance} ≈ ${stdError}</div>
-                <div class="step">误差范围: z<sub>α/2</sub> × 标准误 = ${currentParams.zValue} × ${stdError} ≈ ${marginError}</div>
-            `;
-        }
+                    <div class="explanation-step">
+                        <div class="step-title">步骤 3: 计算样本均值差</div>
+                        <div class="formula">
+                            x̄₁ - x̄₂ = ${params.xbar1} - ${params.xbar2} = ${meanDiff}
+                        </div>
+                    </div>
 
-        function resetForm() {
-            document.getElementById('lowerBound').value = '';
-            document.getElementById('upperBound').value = '';
-            document.getElementById('feedback').style.display = 'none';
-            document.getElementById('scoreDisplay').textContent = '请填写答案并提交';
-            document.getElementById('scoreDisplay').style.color = '#0052a3';
-        }
+                    <div class="explanation-step">
+                        <div class="step-title">步骤 4: 计算标准误差</div>
+                        <p>两个独立样本均值差的标准误差为:</p>
+                        <div class="formula">
+                            SE = √(σ₁²/n₁ + σ₂²/n₂) = √(${params.sigma1}²/${params.n1} + ${params.sigma2}²/${params.n2})<br>
+                            = √(${variance1} + ${variance2}) ≈ √${totalVariance} ≈ ${stdError}
+                        </div>
+                    </div>
 
-        document.addEventListener('DOMContentLoaded', function() {
-            // Initialize with first random parameter set
-            refreshQuestion();
+                    <div class="explanation-step">
+                        <div class="step-title">步骤 5: 计算边际误差</div>
+                        <p>边际误差 (Margin of Error) 为:</p>
+                        <div class="formula">
+                            ME = z_{α/2} × SE = ${params.zValue} × ${stdError} ≈ ${marginError}
+                        </div>
+                    </div>
 
-            const lowerBoundInput = document.getElementById('lowerBound');
-            const upperBoundInput = document.getElementById('upperBound');
-            const submitBtn = document.getElementById('submitBtn');
-            const resetBtn = document.getElementById('resetBtn');
+                    <div class="explanation-step">
+                        <div class="step-title">步骤 6: 构建置信区间</div>
+                        <p>${params.confidenceLevel}% 置信区间的公式为:</p>
+                        <div class="formula">
+                            ( (x̄₁ - x̄₂) - z_{α/2} × √(σ₁²/n₁ + σ₂²/n₂) , (x̄₁ - x̄₂) + z_{α/2} × √(σ₁²/n₁ + σ₂²/n₂) )
+                        </div>
+                        <p>代入数值:</p>
+                        <div class="formula">
+                            下限: ${meanDiff} - ${marginError} = ${(parseFloat(meanDiff) - parseFloat(marginError)).toFixed(2)} ≈ <strong>${params.correctLower}</strong><br>
+                            上限: ${meanDiff} + ${marginError} = ${(parseFloat(meanDiff) + parseFloat(marginError)).toFixed(2)} ≈ <strong>${params.correctUpper}</strong>
+                        </div>
+                    </div>
+
+                    <div class="explanation-step">
+                        <div class="step-title">步骤 7: 解释结果</div>
+                        <p>我们有 ${params.confidenceLevel}% 的置信度认为，${params.questionContext}位于区间 (<strong>${params.correctLower}</strong>, <strong>${params.correctUpper}</strong>) 内。</p>
+                    </div>
+
+                    <div class="note">
+                        <strong>注意:</strong> 当从两个独立总体中各抽取一个大随机样本时，总体均值差异 μ₁ - μ₂ 的 (1-α)100% 置信区间由下式给出:
+                        <div class="formula">
+                            ( (x̄₁ - x̄₂) - z_{α/2} × √(σ₁²/n₁ + σ₂²/n₂) , (x̄₁ - x̄₂) + z_{α/2} × √(σ₁²/n₁ + σ₂²/n₂) )
+                        </div>
+                    </div>
+                `;
+            }
+
+            function refreshParams() {
+                let newIndex;
+                do {
+                    newIndex = Math.floor(Math.random() * parameterSets.length);
+                } while (newIndex === currentParamIndex && parameterSets.length > 1);
+
+                currentParamIndex = newIndex;
+                renderQuestion();
+
+                // 清除输入和反馈
+                lowerInput.value = '';
+                upperInput.value = '';
+                lowerInput.classList.remove('correct', 'incorrect');
+                upperInput.classList.remove('correct', 'incorrect');
+                lowerInput.disabled = false;
+                upperInput.disabled = false;
+
+                feedbackInline.className = 'feedback-inline';
+                feedbackInline.textContent = '';
+
+                // 隐藏反馈和解析
+                feedback.classList.remove('show');
+                explanation.classList.remove('show');
+                showExpBtn.style.display = 'none';
+                showExpBtn.textContent = '查看答案解析';
+
+                isSubmitted = false;
+            }
+
+            // ==================== 事件处理 ====================
+
+            let isSubmitted = false;
+            let answerResults = []; // 记录答题结果
+
+            // 获取DOM元素
+            const submitBtn = document.getElementById('submit-btn');
+            const nextBtn = document.getElementById('next-btn');
             const feedback = document.getElementById('feedback');
-            const feedbackTitle = document.getElementById('feedbackTitle');
-            const feedbackContent = document.getElementById('feedbackContent');
-            const scoreDisplay = document.getElementById('scoreDisplay');
+            const feedbackTitle = document.getElementById('feedback-title-text');
+            const feedbackText = document.getElementById('feedback-text');
+            const resultsContainer = document.getElementById('results-container');
+            const showExpBtn = document.getElementById('show-explanation-btn');
+            const explanation = document.getElementById('explanation');
+            const lowerInput = document.getElementById('lower-input');
+            const upperInput = document.getElementById('upper-input');
+            const feedbackInline = document.getElementById('feedback-inline');
 
-            const tolerance = 0.05; // 允许的误差范围
+            // 下一题按钮
+            nextBtn.addEventListener('click', refreshParams);
+
+            // 显示答案解析按钮点击事件
+            showExpBtn.addEventListener('click', function() {
+                if (explanation.classList.contains('show')) {
+                    explanation.classList.remove('show');
+                    this.textContent = '查看答案解析';
+                } else {
+                    explanation.classList.add('show');
+                    this.textContent = '隐藏答案解析';
+                }
+            });
+
+            // 添加结果图标
+            function addResultIcon(isCorrect) {
+                answerResults.push(isCorrect);
+
+                // 清除"尚未开始答题"提示
+                if (answerResults.length === 1) {
+                    resultsContainer.innerHTML = '';
+                }
+
+                // 创建图标
+                const icon = document.createElement('div');
+                icon.className = `result-icon ${isCorrect ? 'correct' : 'incorrect'}`;
+                resultsContainer.appendChild(icon);
+            }
 
             // 提交答案
             submitBtn.addEventListener('click', function() {
-                const userLower = parseFloat(lowerBoundInput.value);
-                const userUpper = parseFloat(upperBoundInput.value);
+                const lowerVal = parseFloat(lowerInput.value);
+                const upperVal = parseFloat(upperInput.value);
 
-                // 验证输入
-                if (isNaN(userLower) || isNaN(userUpper)) {
-                    alert('请输入有效的数字！');
+                if (isNaN(lowerVal) || isNaN(upperVal)) {
+                    alert('请先输入有效的数字！');
                     return;
                 }
 
-                // 检查答案
-                const lowerCorrect = Math.abs(userLower - currentParams.correctLower) <= tolerance;
-                const upperCorrect = Math.abs(userUpper - currentParams.correctUpper) <= tolerance;
-                const allCorrect = lowerCorrect && upperCorrect;
+                if (isSubmitted) return;
 
-                const meanDiff = (currentParams.xbar1 - currentParams.xbar2).toFixed(2);
-                const variance1 = (Math.pow(currentParams.sigma1, 2) / currentParams.n1).toFixed(6);
-                const variance2 = (Math.pow(currentParams.sigma2, 2) / currentParams.n2).toFixed(6);
-                const totalVariance = (parseFloat(variance1) + parseFloat(variance2)).toFixed(6);
-                const stdError = Math.sqrt(parseFloat(totalVariance)).toFixed(4);
-                const marginError = (currentParams.zValue * parseFloat(stdError)).toFixed(4);
+                isSubmitted = true;
+                const params = parameterSets[currentParamIndex];
+                const tolerance = 0.05;
 
-                // 显示反馈
-                if (allCorrect) {
-                    feedback.className = 'feedback correct';
-                    feedbackTitle.textContent = '回答正确！';
-                    feedbackContent.innerHTML = `
-                        <p>恭喜！您的答案完全正确。</p>
-                        <p>计算过程：</p>
-                        <ul>
-                            <li>样本均值差: ${currentParams.xbar1} - ${currentParams.xbar2} = ${meanDiff}</li>
-                            <li>标准误: √(${currentParams.sigma1}²/${currentParams.n1} + ${currentParams.sigma2}²/${currentParams.n2}) ≈ ${stdError}</li>
-                            <li>误差范围: ${currentParams.zValue} × ${stdError} ≈ ${marginError}</li>
-                            <li>下限: ${meanDiff} - ${marginError} ≈ <strong>${currentParams.correctLower}</strong></li>
-                            <li>上限: ${meanDiff} + ${marginError} ≈ <strong>${currentParams.correctUpper}</strong></li>
-                        </ul>
-                    `;
-                    scoreDisplay.textContent = '得分: 2/2 - 优秀！';
-                    scoreDisplay.style.color = '#52c41a';
+                const lowerCorrect = Math.abs(lowerVal - params.correctLower) <= tolerance;
+                const upperCorrect = Math.abs(upperVal - params.correctUpper) <= tolerance;
+                const isCorrect = lowerCorrect && upperCorrect;
+
+                // 添加结果图标
+                addResultIcon(isCorrect);
+
+                // 更新输入框样式
+                if (lowerCorrect) {
+                    lowerInput.classList.add('correct');
                 } else {
-                    feedback.className = 'feedback incorrect';
-                    feedbackTitle.textContent = '回答不完全正确';
-
-                    let message = `<p>您的答案: (${userLower.toFixed(2)}, ${userUpper.toFixed(2)})</p>`;
-
-                    if (!lowerCorrect && !upperCorrect) {
-                        message += '<p>下限和上限都不正确。</p>';
-                    } else if (!lowerCorrect) {
-                        message += '<p>下限不正确。</p>';
-                    } else {
-                        message += '<p>上限不正确。</p>';
-                    }
-
-                    message += `
-                        <p><strong>详细计算:</strong></p>
-                        <p>置信区间公式: ( (x̄₁ - x̄₂) - z<sub>α/2</sub> × √(σ₁²/n₁ + σ₂²/n₂) , (x̄₁ - x̄₂) + z<sub>α/2</sub> × √(σ₁²/n₁ + σ₂²/n₂) )</p>
-                        <p>代入数值: ( (${currentParams.xbar1} - ${currentParams.xbar2}) - ${currentParams.zValue} × √(${currentParams.sigma1}²/${currentParams.n1} + ${currentParams.sigma2}²/${currentParams.n2}) , (${currentParams.xbar1} - ${currentParams.xbar2}) + ${currentParams.zValue} × √(${currentParams.sigma1}²/${currentParams.n1} + ${currentParams.sigma2}²/${currentParams.n2}) )</p>
-                        <p>计算结果: ( ${meanDiff} - ${marginError} , ${meanDiff} + ${marginError} ) ≈ ( ${currentParams.correctLower} , ${currentParams.correctUpper} )</p>
-                    `;
-
-                    feedbackContent.innerHTML = message;
-
-                    // 计算得分
-                    let score = 0;
-                    if (lowerCorrect) score++;
-                    if (upperCorrect) score++;
-                    scoreDisplay.textContent = `得分: ${score}/2 - 请再试一次！`;
-                    scoreDisplay.style.color = '#ff4d4f';
+                    lowerInput.classList.add('incorrect');
                 }
 
-                feedback.style.display = 'block';
+                if (upperCorrect) {
+                    upperInput.classList.add('correct');
+                } else {
+                    upperInput.classList.add('incorrect');
+                }
 
-                window.scrollTo({
-                    top: document.body.scrollHeight,
-                    behavior: 'smooth'
-                });
-            });
+                // 更新反馈
+                if (isCorrect) {
+                    feedbackInline.textContent = '正确!';
+                    feedbackInline.className = 'feedback-inline correct';
+                    feedbackTitle.textContent = "回答正确!";
+                    feedbackText.textContent = `你正确地计算出了置信区间的下限 (${lowerVal}) 和上限 (${upperVal})。`;
+                    feedback.classList.remove('incorrect-feedback');
+                    feedback.classList.add('correct-feedback');
+                } else {
+                    let msg = '';
+                    if (!lowerCorrect && !upperCorrect) {
+                        msg = `下限和上限都不正确。正确答案：下限 = ${params.correctLower}，上限 = ${params.correctUpper}`;
+                    } else if (!lowerCorrect) {
+                        msg = `下限不正确，上限正确。正确下限 = ${params.correctLower}`;
+                    } else {
+                        msg = `下限正确，上限不正确。正确上限 = ${params.correctUpper}`;
+                    }
+                    feedbackInline.textContent = msg;
+                    feedbackInline.className = 'feedback-inline incorrect';
+                    feedbackTitle.textContent = "回答错误!";
+                    feedbackText.textContent = `你的答案：下限 = ${lowerVal}，上限 = ${upperVal}。${msg}`;
+                    feedback.classList.remove('correct-feedback');
+                    feedback.classList.add('incorrect-feedback');
+                }
 
-            // 重置答案
-            resetBtn.addEventListener('click', function() {
-                resetForm();
-                lowerBoundInput.focus();
+                // 显示反馈
+                feedback.classList.add('show');
+                // 显示解析按钮
+                showExpBtn.style.display = 'inline-block';
+                // 禁用输入
+                lowerInput.disabled = true;
+                upperInput.disabled = true;
             });
 
             // 允许按Enter键提交
-            lowerBoundInput.addEventListener('keypress', function(e) {
+            lowerInput.addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') submitBtn.click();
             });
 
-            upperBoundInput.addEventListener('keypress', function(e) {
+            upperInput.addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') submitBtn.click();
             });
+
+            // ==================== 初始化 ====================
+            renderQuestion();
         });
     </script>
 </body>

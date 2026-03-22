@@ -19,7 +19,8 @@
       "mcp__zai-mcp-server__analyze_image",
       "mcp__zai-mcp-server__extract_text_from_screenshot",
       "mcp__web-reader__webReader",
-      "Bash(node -c \"正态分布求原始分数.html\")"
+      "Bash(node -c \"正态分布求原始分数.html\")",
+      "mcp__web-search-prime__web_search_prime"
     ]
   }
 }
