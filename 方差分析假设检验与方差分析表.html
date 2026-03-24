@@ -464,8 +464,9 @@
     </div>
 
     <script>
-        // 三组参数配置
+        // 参数配置（3-5组不等）
         const paramSets = [
+            // === 3组 ===
             {
                 name: '听者群体响度判断比较',
                 description: '基于30位听者的数据（10人听力正常，10人使用助听器，10人有听力损失但未使用助听器）',
@@ -474,82 +475,313 @@
                     { name: '使用助听器', n: 10, mean: 2.61, variance: 0.43 },
                     { name: '有听力损失', n: 10, mean: 2.29, variance: 0.15 }
                 ],
-                anova: {
-                    ssBetween: 1.28,
-                    ssError: 9,
-                    ssTotal: 10.28
-                },
-                answers: {
-                    dfBetween: 2,
-                    dfError: 27,
-                    dfTotal: 29,
-                    msBetween: 0.64,
-                    msError: 0.33,
-                    fStat: 1.94,
-                    criticalValue: 5.49,
-                    conclusion: 'no' // F < 临界值，不能拒绝原假设
-                },
+                anova: { ssBetween: 1.28, ssError: 9, ssTotal: 10.28 },
+                answers: { dfBetween: 2, dfError: 27, dfTotal: 29, msBetween: 0.64, msError: 0.33, fStat: 1.94, criticalValue: 5.49, conclusion: 'no' },
                 conclusionQuestion: '在0.01的显著性水平下，你是否得出结论认为，对于该纯音，三个听者群体的平均宋值存在差异？'
             },
+            // === 4组 ===
             {
-                name: '三种教学方法效果比较',
-                description: '基于24名学生的数据（每组8人，分别使用传统教学、多媒体教学、互动式教学）',
+                name: '四种教学方法效果比较',
+                description: '基于32名学生的数据（每组8人，分别使用传统讲授、多媒体教学、互动讨论、实践操作）',
                 groups: [
-                    { name: '传统教学', n: 8, mean: 72.5, variance: 45.2 },
+                    { name: '传统讲授', n: 8, mean: 72.5, variance: 45.2 },
                     { name: '多媒体教学', n: 8, mean: 78.3, variance: 52.1 },
-                    { name: '互动式教学', n: 8, mean: 85.6, variance: 48.7 }
+                    { name: '互动讨论', n: 8, mean: 85.6, variance: 48.7 },
+                    { name: '实践操作', n: 8, mean: 88.2, variance: 51.3 }
                 ],
-                anova: {
-                    ssBetween: 688.72,
-                    ssError: 1022,
-                    ssTotal: 1710.72
-                },
-                answers: {
-                    dfBetween: 2,
-                    dfError: 21,
-                    dfTotal: 23,
-                    msBetween: 344.36,
-                    msError: 48.67,
-                    fStat: 7.08,
-                    criticalValue: 5.78,
-                    conclusion: 'yes' // F > 临界值，拒绝原假设
-                },
-                conclusionQuestion: '在0.01的显著性水平下，你是否得出结论认为三种教学方法的学生成绩存在显著差异？'
+                anova: { ssBetween: 1245.72, ssError: 1459.2, ssTotal: 2704.92 },
+                answers: { dfBetween: 3, dfError: 28, dfTotal: 31, msBetween: 415.24, msError: 52.11, fStat: 7.97, criticalValue: 4.57, conclusion: 'yes' },
+                conclusionQuestion: '在0.01的显著性水平下，你是否得出结论认为四种教学方法的学生成绩存在显著差异？'
             },
+            // === 5组 ===
             {
-                name: '三种肥料对作物产量影响',
-                description: '基于27块试验田的数据（每种肥料9块田）',
+                name: '五种肥料对作物产量影响',
+                description: '基于40块试验田的数据（每种肥料8块田）',
                 groups: [
-                    { name: '肥料A', n: 9, mean: 45.2, variance: 12.5 },
-                    { name: '肥料B', n: 9, mean: 47.8, variance: 15.3 },
-                    { name: '肥料C', n: 9, mean: 46.5, variance: 11.8 }
+                    { name: '肥料A', n: 8, mean: 45.2, variance: 12.5 },
+                    { name: '肥料B', n: 8, mean: 52.8, variance: 15.3 },
+                    { name: '肥料C', n: 8, mean: 48.6, variance: 11.8 },
+                    { name: '肥料D', n: 8, mean: 55.3, variance: 14.2 },
+                    { name: '肥料E', n: 8, mean: 50.1, variance: 13.6 }
                 ],
-                anova: {
-                    ssBetween: 31.56,
-                    ssError: 312,
-                    ssTotal: 343.56
-                },
-                answers: {
-                    dfBetween: 2,
-                    dfError: 24,
-                    dfTotal: 26,
-                    msBetween: 15.78,
-                    msError: 13,
-                    fStat: 1.21,
-                    criticalValue: 5.61,
-                    conclusion: 'no' // F < 临界值，不能拒绝原假设
-                },
-                conclusionQuestion: '在0.01的显著性水平下，你是否得出结论认为三种肥料对作物产量的影响存在显著差异？'
+                anova: { ssBetween: 485.2, ssError: 494.4, ssTotal: 979.6 },
+                answers: { dfBetween: 4, dfError: 35, dfTotal: 39, msBetween: 121.3, msError: 14.13, fStat: 8.58, criticalValue: 3.91, conclusion: 'yes' },
+                conclusionQuestion: '在0.01的显著性水平下，你是否得出结论认为五种肥料对作物产量的影响存在显著差异？'
+            },
+            // === 3组 ===
+            {
+                name: '三种药物对血压降低效果',
+                description: '基于33名高血压患者的研究（每种药物11人）',
+                groups: [
+                    { name: '药物A', n: 11, mean: 12.5, variance: 8.2 },
+                    { name: '药物B', n: 11, mean: 15.8, variance: 9.1 },
+                    { name: '药物C', n: 11, mean: 18.2, variance: 7.6 }
+                ],
+                anova: { ssBetween: 168.54, ssError: 249, ssTotal: 417.54 },
+                answers: { dfBetween: 2, dfError: 30, dfTotal: 32, msBetween: 84.27, msError: 8.3, fStat: 10.15, criticalValue: 5.39, conclusion: 'yes' },
+                conclusionQuestion: '在0.01的显著性水平下，你是否得出结论认为三种药物降低血压的效果存在显著差异？'
+            },
+            // === 4组 ===
+            {
+                name: '四种广告方式对销售额影响',
+                description: '基于32个城市的调研（每种广告方式8个城市）',
+                groups: [
+                    { name: '电视广告', n: 8, mean: 125.3, variance: 156.2 },
+                    { name: '网络广告', n: 8, mean: 142.6, variance: 148.5 },
+                    { name: '报纸广告', n: 8, mean: 98.4, variance: 132.8 },
+                    { name: '户外广告', n: 8, mean: 108.5, variance: 145.6 }
+                ],
+                anova: { ssBetween: 8156.28, ssError: 4081.2, ssTotal: 12237.48 },
+                answers: { dfBetween: 3, dfError: 28, dfTotal: 31, msBetween: 2718.76, msError: 145.76, fStat: 18.65, criticalValue: 4.57, conclusion: 'yes' },
+                conclusionQuestion: '在0.01的显著性水平下，你是否得出结论认为四种广告方式对销售额的影响存在显著差异？'
+            },
+            // === 3组 ===
+            {
+                name: '三种咖啡豆烘焙程度比较',
+                description: '基于27杯咖啡的口感评分（每种烘焙程度9杯）',
+                groups: [
+                    { name: '浅烘焙', n: 9, mean: 7.2, variance: 0.45 },
+                    { name: '中烘焙', n: 9, mean: 7.8, variance: 0.52 },
+                    { name: '深烘焙', n: 9, mean: 7.5, variance: 0.38 }
+                ],
+                anova: { ssBetween: 1.62, ssError: 12.15, ssTotal: 13.77 },
+                answers: { dfBetween: 2, dfError: 24, dfTotal: 26, msBetween: 0.81, msError: 0.51, fStat: 1.59, criticalValue: 5.61, conclusion: 'no' },
+                conclusionQuestion: '在0.01的显著性水平下，你是否得出结论认为三种烘焙程度的咖啡口感评分存在显著差异？'
+            },
+            // === 4组 ===
+            {
+                name: '四种睡眠时长对认知能力影响',
+                description: '基于40名志愿者的认知测试（每组10人）',
+                groups: [
+                    { name: '少于5小时', n: 10, mean: 62.5, variance: 92.3 },
+                    { name: '5-6小时', n: 10, mean: 68.5, variance: 85.2 },
+                    { name: '6-8小时', n: 10, mean: 82.3, variance: 72.6 },
+                    { name: '多于8小时', n: 10, mean: 79.8, variance: 78.4 }
+                ],
+                anova: { ssBetween: 2412.28, ssError: 2956.5, ssTotal: 5368.78 },
+                answers: { dfBetween: 3, dfError: 36, dfTotal: 39, msBetween: 804.09, msError: 82.13, fStat: 9.79, criticalValue: 4.38, conclusion: 'yes' },
+                conclusionQuestion: '在0.01的显著性水平下，你是否得出结论认为四种睡眠时长对认知能力的影响存在显著差异？'
+            },
+            // === 5组 ===
+            {
+                name: '五种运动方式对体重减少效果',
+                description: '基于50名参与者12周训练（每种运动方式10人）',
+                groups: [
+                    { name: '跑步', n: 10, mean: 5.8, variance: 2.4 },
+                    { name: '游泳', n: 10, mean: 6.2, variance: 2.8 },
+                    { name: '瑜伽', n: 10, mean: 3.5, variance: 1.9 },
+                    { name: '力量训练', n: 10, mean: 4.8, variance: 2.2 },
+                    { name: '骑行', n: 10, mean: 5.2, variance: 2.5 }
+                ],
+                anova: { ssBetween: 48.3, ssError: 105.3, ssTotal: 153.6 },
+                answers: { dfBetween: 4, dfError: 45, dfTotal: 49, msBetween: 12.08, msError: 2.34, fStat: 5.16, criticalValue: 3.77, conclusion: 'yes' },
+                conclusionQuestion: '在0.01的显著性水平下，你是否得出结论认为五种运动方式对体重减少的效果存在显著差异？'
+            },
+            // === 3组 ===
+            {
+                name: '三种存储温度对食品保质期影响',
+                description: '基于27份食品样本（每种温度9份）',
+                groups: [
+                    { name: '冷藏4°C', n: 9, mean: 28.5, variance: 12.3 },
+                    { name: '室温25°C', n: 9, mean: 12.8, variance: 8.6 },
+                    { name: '高温35°C', n: 9, mean: 5.2, variance: 6.4 }
+                ],
+                anova: { ssBetween: 2361.02, ssError: 245.5, ssTotal: 2606.52 },
+                answers: { dfBetween: 2, dfError: 24, dfTotal: 26, msBetween: 1180.51, msError: 10.23, fStat: 115.4, criticalValue: 5.61, conclusion: 'yes' },
+                conclusionQuestion: '在0.01的显著性水平下，你是否得出结论认为三种存储温度对食品保质期的影响存在显著差异？'
+            },
+            // === 4组 ===
+            {
+                name: '四种土壤类型对植物生长影响',
+                description: '基于40株同种植物（每种土壤类型10株）',
+                groups: [
+                    { name: '沙土', n: 10, mean: 35.2, variance: 28.5 },
+                    { name: '壤土', n: 10, mean: 42.8, variance: 32.1 },
+                    { name: '黏土', n: 10, mean: 38.6, variance: 25.8 },
+                    { name: '腐殖土', n: 10, mean: 45.3, variance: 30.2 }
+                ],
+                anova: { ssBetween: 568.2, ssError: 1042.8, ssTotal: 1611 },
+                answers: { dfBetween: 3, dfError: 36, dfTotal: 39, msBetween: 189.4, msError: 28.97, fStat: 6.54, criticalValue: 4.38, conclusion: 'yes' },
+                conclusionQuestion: '在0.01的显著性水平下，你是否得出结论认为四种土壤类型对植物生长高度的影响存在显著差异？'
+            },
+            // === 3组 ===
+            {
+                name: '三种音乐类型对学习效率影响',
+                description: '基于27名学生的学习测试（每种音乐类型9人）',
+                groups: [
+                    { name: '古典音乐', n: 9, mean: 85.6, variance: 45.2 },
+                    { name: '流行音乐', n: 9, mean: 78.3, variance: 52.8 },
+                    { name: '安静环境', n: 9, mean: 82.5, variance: 48.6 }
+                ],
+                anova: { ssBetween: 240.78, ssError: 1319.4, ssTotal: 1560.18 },
+                answers: { dfBetween: 2, dfError: 24, dfTotal: 26, msBetween: 120.39, msError: 54.98, fStat: 2.19, criticalValue: 5.61, conclusion: 'no' },
+                conclusionQuestion: '在0.01的显著性水平下，你是否得出结论认为三种音乐类型对学习效率的影响存在显著差异？'
+            },
+            // === 4组 ===
+            {
+                name: '四种灌溉方式对水稻产量影响',
+                description: '基于36块水稻田（每种灌溉方式9块）',
+                groups: [
+                    { name: '漫灌', n: 9, mean: 6250, variance: 28500 },
+                    { name: '滴灌', n: 9, mean: 7120, variance: 32100 },
+                    { name: '喷灌', n: 9, mean: 6880, variance: 29800 },
+                    { name: '渗灌', n: 9, mean: 6950, variance: 30500 }
+                ],
+                anova: { ssBetween: 3742800, ssError: 1086300, ssTotal: 4829100 },
+                answers: { dfBetween: 3, dfError: 32, dfTotal: 35, msBetween: 1247600, msError: 33946.88, fStat: 36.74, criticalValue: 4.46, conclusion: 'yes' },
+                conclusionQuestion: '在0.01的显著性水平下，你是否得出结论认为四种灌溉方式对水稻产量的影响存在显著差异？'
+            },
+            // === 5组 ===
+            {
+                name: '五种包装设计对购买意愿影响',
+                description: '基于50名消费者的购买意愿评分（每种包装设计10人）',
+                groups: [
+                    { name: '简约风格', n: 10, mean: 6.8, variance: 1.25 },
+                    { name: '豪华风格', n: 10, mean: 7.5, variance: 1.42 },
+                    { name: '环保风格', n: 10, mean: 7.2, variance: 1.18 },
+                    { name: '复古风格', n: 10, mean: 6.5, variance: 1.35 },
+                    { name: '科技风格', n: 10, mean: 7.8, variance: 1.28 }
+                ],
+                anova: { ssBetween: 9.72, ssError: 57.6, ssTotal: 67.32 },
+                answers: { dfBetween: 4, dfError: 45, dfTotal: 49, msBetween: 2.43, msError: 1.28, fStat: 1.90, criticalValue: 3.77, conclusion: 'no' },
+                conclusionQuestion: '在0.01的显著性水平下，你是否得出结论认为五种包装设计对消费者购买意愿的影响存在显著差异？'
+            },
+            // === 3组 ===
+            {
+                name: '三种光源对植物开花时间影响',
+                description: '基于27株植物的开花天数（每种光源9株）',
+                groups: [
+                    { name: 'LED灯', n: 9, mean: 45.2, variance: 18.5 },
+                    { name: '荧光灯', n: 9, mean: 52.8, variance: 22.3 },
+                    { name: '白炽灯', n: 9, mean: 58.6, variance: 25.8 }
+                ],
+                anova: { ssBetween: 724.52, ssError: 472.8, ssTotal: 1197.32 },
+                answers: { dfBetween: 2, dfError: 24, dfTotal: 26, msBetween: 362.26, msError: 19.7, fStat: 18.39, criticalValue: 5.61, conclusion: 'yes' },
+                conclusionQuestion: '在0.01的显著性水平下，你是否得出结论认为三种光源对植物开花时间的影响存在显著差异？'
+            },
+            // === 4组 ===
+            {
+                name: '四种培训方式对技能掌握影响',
+                description: '基于40名新员工（每种培训方式10人）',
+                groups: [
+                    { name: '线上自学', n: 10, mean: 72.5, variance: 125.6 },
+                    { name: '面授课程', n: 10, mean: 85.2, variance: 98.4 },
+                    { name: '混合模式', n: 10, mean: 88.6, variance: 102.3 },
+                    { name: '导师带教', n: 10, mean: 90.2, variance: 95.8 }
+                ],
+                anova: { ssBetween: 1812.68, ssError: 3879.3, ssTotal: 5691.98 },
+                answers: { dfBetween: 3, dfError: 36, dfTotal: 39, msBetween: 604.23, msError: 107.76, fStat: 5.61, criticalValue: 4.38, conclusion: 'yes' },
+                conclusionQuestion: '在0.01的显著性水平下，你是否得出结论认为四种培训方式对技能掌握程度的影响存在显著差异？'
+            },
+            // === 3组 ===
+            {
+                name: '三种饲料对蛋鸡产蛋量影响',
+                description: '基于27只蛋鸡30天产蛋数（每种饲料9只）',
+                groups: [
+                    { name: '普通饲料', n: 9, mean: 24.5, variance: 8.2 },
+                    { name: '营养强化', n: 9, mean: 26.8, variance: 7.5 },
+                    { name: '有机饲料', n: 9, mean: 25.2, variance: 9.1 }
+                ],
+                anova: { ssBetween: 24.18, ssError: 222.4, ssTotal: 246.58 },
+                answers: { dfBetween: 2, dfError: 24, dfTotal: 26, msBetween: 12.09, msError: 9.27, fStat: 1.30, criticalValue: 5.61, conclusion: 'no' },
+                conclusionQuestion: '在0.01的显著性水平下，你是否得出结论认为三种饲料对蛋鸡产蛋量的影响存在显著差异？'
+            },
+            // === 4组 ===
+            {
+                name: '四种阅读媒介对理解能力影响',
+                description: '基于40名读者的理解测试（每种媒介10人）',
+                groups: [
+                    { name: '纸质书', n: 10, mean: 82.5, variance: 68.4 },
+                    { name: '电子书', n: 10, mean: 78.6, variance: 72.8 },
+                    { name: '有声书', n: 10, mean: 75.2, variance: 85.6 },
+                    { name: '视频课程', n: 10, mean: 80.8, variance: 76.2 }
+                ],
+                anova: { ssBetween: 287.48, ssError: 2737.2, ssTotal: 3024.68 },
+                answers: { dfBetween: 3, dfError: 36, dfTotal: 39, msBetween: 95.83, msError: 76.03, fStat: 1.26, criticalValue: 4.38, conclusion: 'no' },
+                conclusionQuestion: '在0.01的显著性水平下，你是否得出结论认为四种阅读媒介对理解能力的影响存在显著差异？'
+            },
+            // === 5组 ===
+            {
+                name: '五种催化剂对反应速率影响',
+                description: '基于50次化学实验（每种催化剂10次）',
+                groups: [
+                    { name: '催化剂A', n: 10, mean: 45.8, variance: 5.2 },
+                    { name: '催化剂B', n: 10, mean: 62.3, variance: 6.8 },
+                    { name: '催化剂C', n: 10, mean: 58.6, variance: 5.9 },
+                    { name: '催化剂D', n: 10, mean: 55.2, variance: 6.2 },
+                    { name: '催化剂E', n: 10, mean: 48.5, variance: 5.5 }
+                ],
+                anova: { ssBetween: 1836.2, ssError: 288, ssTotal: 2124.2 },
+                answers: { dfBetween: 4, dfError: 45, dfTotal: 49, msBetween: 459.05, msError: 6.4, fStat: 71.73, criticalValue: 3.77, conclusion: 'yes' },
+                conclusionQuestion: '在0.01的显著性水平下，你是否得出结论认为五种催化剂对反应速率的影响存在显著差异？'
+            },
+            // === 3组 ===
+            {
+                name: '三种工作模式对员工满意度影响',
+                description: '基于30名员工满意度调查（每种工作模式10人）',
+                groups: [
+                    { name: '办公室办公', n: 10, mean: 6.8, variance: 1.85 },
+                    { name: '居家办公', n: 10, mean: 7.6, variance: 2.12 },
+                    { name: '混合办公', n: 10, mean: 8.2, variance: 1.95 }
+                ],
+                anova: { ssBetween: 9.87, ssError: 53.28, ssTotal: 63.15 },
+                answers: { dfBetween: 2, dfError: 27, dfTotal: 29, msBetween: 4.93, msError: 1.97, fStat: 2.50, criticalValue: 5.49, conclusion: 'no' },
+                conclusionQuestion: '在0.01的显著性水平下，你是否得出结论认为三种工作模式对员工满意度的影响存在显著差异？'
+            },
+            // === 4组 ===
+            {
+                name: '四种交通方式通勤时间比较',
+                description: '基于40天通勤记录（每种交通方式10天）',
+                groups: [
+                    { name: '地铁', n: 10, mean: 35.2, variance: 28.5 },
+                    { name: '公交', n: 10, mean: 52.8, variance: 45.2 },
+                    { name: '自驾', n: 10, mean: 42.6, variance: 85.6 },
+                    { name: '骑行', n: 10, mean: 48.5, variance: 35.8 }
+                ],
+                anova: { ssBetween: 1612.68, ssError: 1755.9, ssTotal: 3368.58 },
+                answers: { dfBetween: 3, dfError: 36, dfTotal: 39, msBetween: 537.56, msError: 48.78, fStat: 11.02, criticalValue: 4.38, conclusion: 'yes' },
+                conclusionQuestion: '在0.01的显著性水平下，你是否得出结论认为四种交通方式的通勤时间存在显著差异？'
+            },
+            // === 3组 ===
+            {
+                name: '三种教学方法对学生参与度影响',
+                description: '基于27名课堂观察评分（每种教学方法9次）',
+                groups: [
+                    { name: '讲授式', n: 9, mean: 6.2, variance: 1.45 },
+                    { name: '讨论式', n: 9, mean: 7.8, variance: 1.82 },
+                    { name: '实践式', n: 9, mean: 8.5, variance: 1.68 }
+                ],
+                anova: { ssBetween: 22.62, ssError: 44.1, ssTotal: 66.72 },
+                answers: { dfBetween: 2, dfError: 24, dfTotal: 26, msBetween: 11.31, msError: 1.84, fStat: 6.15, criticalValue: 5.61, conclusion: 'yes' },
+                conclusionQuestion: '在0.01的显著性水平下，你是否得出结论认为三种教学方法对学生参与度的影响存在显著差异？'
+            },
+            // === 5组 ===
+            {
+                name: '五种保湿霜对皮肤水分影响',
+                description: '基于50名志愿者测试（每种保湿霜10人）',
+                groups: [
+                    { name: '品牌A', n: 10, mean: 35.8, variance: 15.2 },
+                    { name: '品牌B', n: 10, mean: 38.2, variance: 12.8 },
+                    { name: '品牌C', n: 10, mean: 36.5, variance: 14.6 },
+                    { name: '品牌D', n: 10, mean: 37.8, variance: 13.5 },
+                    { name: '品牌E', n: 10, mean: 34.2, variance: 16.2 }
+                ],
+                anova: { ssBetween: 85.2, ssError: 650.4, ssTotal: 735.6 },
+                answers: { dfBetween: 4, dfError: 45, dfTotal: 49, msBetween: 21.3, msError: 14.45, fStat: 1.47, criticalValue: 3.77, conclusion: 'no' },
+                conclusionQuestion: '在0.01的显著性水平下，你是否得出结论认为五种保湿霜对皮肤水分含量的影响存在显著差异？'
             }
         ];
 
         let currentParamIndex = 0;
 
         function updatePageContent(params) {
+            const k = params.groups.length;
+            const groupText = k === 3 ? '三个组' : (k === 4 ? '四个组' : '五个组');
+
             // 更新标题和描述
             document.querySelector('.subtitle').textContent = '单因素独立样本方差分析检验 - ' + params.name;
             document.querySelector('.question-section p').textContent =
-                params.description + '，进行单因素独立样本方差分析检验，比较三个组的均值。请完成方差分析表中的缺失值。';
+                params.description + '，进行单因素独立样本方差分析检验，比较' + groupText + '的均值。请完成方差分析表中的缺失值。';
 
             // 更新数据表
             const tbody = document.querySelector('.data-table tbody');
@@ -602,10 +834,13 @@
         }
 
         function updateExplanation(params) {
+            const k = params.groups.length;
+            const groupText = k === 3 ? '三个组' : (k === 4 ? '四个组' : '五个组');
+
             const explanationDiv = document.getElementById('explanation-section');
             const conclusionText = params.answers.conclusion === 'yes'
-                ? `由于F统计量值 <strong>${params.answers.fStat}</strong> 大于临界值 <strong>${params.answers.criticalValue}</strong>，因此在0.01的显著性水平下，<strong>拒绝原假设</strong>，即可以得出结论认为三个组的均值存在显著差异。`
-                : `由于F统计量值 <strong>${params.answers.fStat}</strong> 小于临界值 <strong>${params.answers.criticalValue}</strong>，因此在0.01的显著性水平下，<strong>不能拒绝原假设</strong>，即不能得出结论认为三个组的均值存在显著差异。`;
+                ? `由于F统计量值 <strong>${params.answers.fStat}</strong> 大于临界值 <strong>${params.answers.criticalValue}</strong>，因此在0.01的显著性水平下，<strong>拒绝原假设</strong>，即可以得出结论认为${groupText}的均值存在显著差异。`
+                : `由于F统计量值 <strong>${params.answers.fStat}</strong> 小于临界值 <strong>${params.answers.criticalValue}</strong>，因此在0.01的显著性水平下，<strong>不能拒绝原假设</strong>，即不能得出结论认为${groupText}的均值存在显著差异。`;
 
             const conclusionAnswer = params.answers.conclusion === 'yes' ? '是' : '否';
 
@@ -631,10 +866,10 @@
                 <p><strong>步骤1：确定自由度</strong></p>
                 <ul>
                     <li>样本测量值总数 N = ${params.groups.map(g => g.n).join(' + ')} = ${totalN}</li>
-                    <li>组数 k = 3</li>
+                    <li>组数 k = ${k}</li>
                     <li><strong>总自由度</strong> = N - 1 = ${totalN} - 1 = <strong>${params.answers.dfTotal}</strong></li>
-                    <li><strong>组间自由度</strong> = k - 1 = 3 - 1 = <strong>${params.answers.dfBetween}</strong></li>
-                    <li><strong>组内自由度（误差自由度）</strong> = N - k = ${totalN} - 3 = <strong>${params.answers.dfError}</strong></li>
+                    <li><strong>组间自由度</strong> = k - 1 = ${k} - 1 = <strong>${params.answers.dfBetween}</strong></li>
+                    <li><strong>组内自由度（误差自由度）</strong> = N - k = ${totalN} - ${k} = <strong>${params.answers.dfError}</strong></li>
                 </ul>
 
                 <p><strong>步骤2：计算均方</strong></p>
@@ -902,24 +1137,27 @@
                 // 检查结论选择
                 const selectedOption = document.querySelector('.option.selected');
                 const conclusionFeedback = document.getElementById('conclusion-feedback');
+                const currentParams = paramSets[currentParamIndex];
+                const k = currentParams.groups.length;
+                const groupText = k === 3 ? '三个组' : (k === 4 ? '四个组' : '五个组');
 
                 if (selectedOption) {
                     const userAnswer = selectedOption.getAttribute('data-value');
 
                     if (userAnswer === correctAnswers.conclusion) {
                         if (correctAnswers.conclusion === 'no') {
-                            conclusionFeedback.textContent = `正确！在0.01的显著性水平下，F统计量值${correctAnswers.fStat}小于临界值${correctAnswers.criticalValue}，因此不能拒绝原假设，不能得出结论认为三个组的均值存在显著差异。`;
+                            conclusionFeedback.textContent = `正确！在0.01的显著性水平下，F统计量值${correctAnswers.fStat}小于临界值${correctAnswers.criticalValue}，因此不能拒绝原假设，不能得出结论认为${groupText}的均值存在显著差异。`;
                         } else {
-                            conclusionFeedback.textContent = `正确！在0.01的显著性水平下，F统计量值${correctAnswers.fStat}大于临界值${correctAnswers.criticalValue}，因此拒绝原假设，可以得出结论认为三个组的均值存在显著差异。`;
+                            conclusionFeedback.textContent = `正确！在0.01的显著性水平下，F统计量值${correctAnswers.fStat}大于临界值${correctAnswers.criticalValue}，因此拒绝原假设，可以得出结论认为${groupText}的均值存在显著差异。`;
                         }
                         conclusionFeedback.className = 'feedback correct';
                         conclusionFeedback.style.display = 'block';
                         score += 1;
                     } else {
                         if (correctAnswers.conclusion === 'no') {
-                            conclusionFeedback.textContent = `错误。因为F统计量值${correctAnswers.fStat}小于临界值${correctAnswers.criticalValue}，所以在0.01的显著性水平下，不能拒绝原假设，即不能得出结论认为三个组的均值存在显著差异。`;
+                            conclusionFeedback.textContent = `错误。因为F统计量值${correctAnswers.fStat}小于临界值${correctAnswers.criticalValue}，所以在0.01的显著性水平下，不能拒绝原假设，即不能得出结论认为${groupText}的均值存在显著差异。`;
                         } else {
-                            conclusionFeedback.textContent = `错误。因为F统计量值${correctAnswers.fStat}大于临界值${correctAnswers.criticalValue}，所以在0.01的显著性水平下，拒绝原假设，即可以得出结论认为三个组的均值存在显著差异。`;
+                            conclusionFeedback.textContent = `错误。因为F统计量值${correctAnswers.fStat}大于临界值${correctAnswers.criticalValue}，所以在0.01的显著性水平下，拒绝原假设，即可以得出结论认为${groupText}的均值存在显著差异。`;
                         }
                         conclusionFeedback.className = 'feedback incorrect';
                         conclusionFeedback.style.display = 'block';

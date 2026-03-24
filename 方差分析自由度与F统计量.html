@@ -49,24 +49,15 @@
             font-size: 0.95rem;
         }
 
-        .refresh-params-btn {
-            padding: 10px 20px;
-            background: linear-gradient(135deg, #27ae60, #2ecc71);
+        #next-btn {
+            background-color: #27ae60;
             color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.95rem;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
         }
 
-        .refresh-params-btn:hover {
+        #next-btn:hover {
+            background-color: #219a52;
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(39, 174, 96, 0.4);
+            box-shadow: 0 4px 8px rgba(39, 174, 96, 0.3);
         }
 
         .info-box {
@@ -118,10 +109,18 @@
             display: flex;
             flex-direction: column;
             gap: 12px;
-            margin-top: 20px;
+            margin: 0;
+        }
+
+        .options-container.horizontal {
+            flex-direction: row;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin: 0;
         }
 
         .option {
+            padding: 16px 20px;
             padding: 16px 20px;
             border: 2px solid #cbd5e1;
             border-radius: 10px;
@@ -297,16 +296,32 @@
             margin-bottom: 15px;
         }
 
-        .score {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: #3b82f6;
-            margin: 15px 0;
+        .quiz-history {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 15px;
         }
 
-        .score-detail {
-            color: #64748b;
-            margin-top: 10px;
+        .result-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .result-icon.correct {
+            background-color: #10b981;
+        }
+
+        .result-icon.incorrect {
+            background-color: #ef4444;
         }
 
         .formula {
@@ -333,23 +348,14 @@
             margin-top: 5px;
         }
 
-        .show-explanation-btn {
-            display: none;
-            margin: 20px auto;
-            padding: 14px 28px;
+        #show-all-explanations-btn {
             background: linear-gradient(135deg, #9b59b6, #8e44ad);
             color: white;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 1.1rem;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
         }
-        .show-explanation-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
+        #show-all-explanations-btn:hover {
+            background: linear-gradient(135deg, #8e44ad, #7d3c98);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
         }
         .explanation-section {
             display: none;
@@ -392,11 +398,8 @@
     <div class="header">
         <div class="header-text">
             <h1>方差分析自由度与F统计量</h1>
-            <div class="subtitle">单因素独立样本方差分析检验 - 交互式答题练习</div>
+          
         </div>
-        <button class="refresh-params-btn" id="refreshParamsBtn">
-            <span>↻</span> 刷新参数
-        </button>
     </div>
 
     <div class="info-box" id="infoBox">
@@ -414,8 +417,7 @@
         <div class="options-container" id="q1-options">
             <!-- 动态生成 -->
         </div>
-        <button class="show-explanation-btn" data-question="1" style="display:none;">查看答案解析</button>
-        <div class="explanation" id="q1-explanation" style="display:none;">
+        <div class="explanation" id="q1-explanation">
             <!-- 动态生成 -->
         </div>
     </div>
@@ -431,8 +433,7 @@
         <div class="options-container" id="q2-options">
             <!-- 动态生成 -->
         </div>
-        <button class="show-explanation-btn" data-question="2" style="display:none;">查看答案解析</button>
-        <div class="explanation" id="q2-explanation" style="display:none;">
+        <div class="explanation" id="q2-explanation">
             <!-- 动态生成 -->
         </div>
     </div>
@@ -440,7 +441,7 @@
     <div class="question-container" id="q3-container">
         <div class="question-title">
             <div class="number">3</div>
-            <div id="q3-title">我们能否在 0.05 的显著性水平下得出结论，至少有一位销售人员的日均销售额与其他人的有显著差异？</div>
+            <div id="q3-title">我们能否在 0.05 的显著性水平下得出结论，至少有一位<span id="q3-role">销售人员</span>的<span id="q3-metric">日均销售额</span>与其他人的有显著差异？</div>
         </div>
         <div class="question-content" id="q3-content">
             <!-- 动态生成 -->
@@ -448,23 +449,23 @@
         <div class="options-container" id="q3-options">
             <!-- 动态生成 -->
         </div>
-        <button class="show-explanation-btn" data-question="3" style="display:none;">查看答案解析</button>
-        <div class="explanation" id="q3-explanation" style="display:none;">
+        <div class="explanation" id="q3-explanation">
             <!-- 动态生成 -->
         </div>
     </div>
 
     <div class="controls">
         <button id="submit-btn">提交答案</button>
-        <button id="reset-btn">重新作答</button>
+        <button id="next-btn">下一题</button>
+        <button id="show-all-explanations-btn" style="display: none; background: linear-gradient(135deg, #9b59b6, #8e44ad);">查看答案解析</button>
     </div>
 
     <div class="results" id="results">
-        <h3>答题结果</h3>
-        <div class="score" id="score">0/3</div>
-        <p id="score-message"></p>
-        <div class="score-detail">
-            <p>正确回答了 <span id="correct-count">0</span> 题，错误 <span id="incorrect-count">3</span> 题</p>
+        <h3>本次答题结果</h3>
+        <p id="current-result" style="font-size: 1.1rem; margin-bottom: 20px;"></p>
+        <h4 style="margin-top: 20px; margin-bottom: 10px; color: #475569;">答题历史记录</h4>
+        <div class="quiz-history" id="quiz-history">
+            <!-- 动态生成图标 -->
         </div>
     </div>
 
@@ -473,7 +474,22 @@
             // ==================== 参数化数据集 ====================
             const questionParams = [
                 {
-                    description: "Cris Turlock 在美国加利福尼亚州旧金山市经营一家餐车企业。她计划根据四名销售人员的日均销售额发放奖金。",
+                    description: `克里斯·特洛克在加利福尼亚州旧金山拥有并经营着一家小型企业。该企业通过在商业区的人行道上停放餐车，向该区域的人们提供早餐和早午餐。<br><br>作为一名经验丰富的商人，克里斯为四名销售员提供了激励措施。今年，她计划根据销售员的个人日均销售额向他们发放奖金。以下是克里斯掌握的信息汇总图表。（在图表中，"样本"是指过去一年中，某位销售员的一组日销售额数据，单位为美元。）
+                    <table style="border-collapse: collapse; margin: 15px 0; font-size: 0.9rem;">
+                        <tr style="background-color: #e2e8f0;">
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">组别</th>
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">样本量</th>
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">样本均值</th>
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">样本方差</th>
+                        </tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">销售员1</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">87</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">216.0</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">2060.4</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">销售员2</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">76</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">210.8</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">2112.0</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">销售员3</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">98</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">226.2</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">2812.8</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">销售员4</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">126</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">209.0</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">2395.8</td></tr>
+                    </table>
+                    克里斯的首要步骤是判断她的销售员之间的日均销售额是否存在显著差异。（如果不存在显著差异，她将把奖金平均分给四人。）为了做出这一决定，克里斯将进行单因素独立样本方差分析，检验总体均值是否相等。该检验使用的统计量为：<span class="formula">F = 组间变异 / 组内变异</span>`,
+                    role: "销售员",
+                    metric: "日均销售额",
                     k: 4,
                     df2: 383,
                     fValue: 2.57,
@@ -481,7 +497,23 @@
                     conclusion: "no"
                 },
                 {
-                    description: "张明在北京市经营一家连锁餐厅。他计划根据五名店长的月均营业额发放奖金。",
+                    description: `张明在北京市经营一家连锁餐厅，旗下拥有多家分店遍布城区各主要商业中心。<br><br>作为一名经验丰富的餐饮业者，张明为五名店长提供了激励措施。今年，他计划根据店长的日均营业额向他们发放奖金。以下是张明掌握的信息汇总图表。（在图表中，"样本"是指过去一年中，某位店长的一组日营业额数据，单位为万元。）
+                    <table style="border-collapse: collapse; margin: 15px 0; font-size: 0.9rem;">
+                        <tr style="background-color: #e2e8f0;">
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">组别</th>
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">样本量</th>
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">样本均值</th>
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">样本方差</th>
+                        </tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">店长1</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">52</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">3.56</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">1.245</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">店长2</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">48</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">3.23</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">0.982</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">店长3</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">50</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">3.82</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">1.568</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">店长4</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">45</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">3.38</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">1.123</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">店长5</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">55</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">3.69</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">1.347</td></tr>
+                    </table>
+                    张明的首要步骤是判断他的店长之间的日均营业额是否存在显著差异。（如果不存在显著差异，他将把奖金平均分给五人。）为了做出这一决定，张明将进行单因素独立样本方差分析，检验总体均值是否相等。该检验使用的统计量为：<span class="formula">F = 组间变异 / 组内变异</span>`,
+                    role: "店长",
+                    metric: "日均营业额",
                     k: 5,
                     df2: 245,
                     fValue: 3.12,
@@ -489,7 +521,24 @@
                     conclusion: "yes"
                 },
                 {
-                    description: "李华在上海经营一家电子商务公司。她计划根据六名区域经理的季度销售额发放奖金。",
+                    description: `李华在上海经营一家电子商务公司，主要通过线上平台销售各类电子产品和家居用品。<br><br>作为一名经验丰富的企业家，李华为六名区域经理提供了激励措施。今年，她计划根据区域经理的月销售额向他们发放奖金。以下是李华掌握的信息汇总图表。（在图表中，"样本"是指过去三年中，某位区域经理的一组月销售额数据，单位为万元。）
+                    <table style="border-collapse: collapse; margin: 15px 0; font-size: 0.9rem;">
+                        <tr style="background-color: #e2e8f0;">
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">组别</th>
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">样本量</th>
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">样本均值</th>
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">样本方差</th>
+                        </tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">区域经理1</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">32</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">52.3</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">89.25</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">区域经理2</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">35</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">49.4</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">75.63</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">区域经理3</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">30</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">54.2</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">102.48</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">区域经理4</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">38</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">48.5</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">68.72</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">区域经理5</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">33</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">53.0</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">94.56</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">区域经理6</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">32</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">50.8</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">82.34</td></tr>
+                    </table>
+                    李华的首要步骤是判断她的区域经理之间的月销售额是否存在显著差异。（如果不存在显著差异，她将把奖金平均分给六人。）为了做出这一决定，李华将进行单因素独立样本方差分析，检验总体均值是否相等。该检验使用的统计量为：<span class="formula">F = 组间变异 / 组内变异</span>`,
+                    role: "区域经理",
+                    metric: "月销售额",
                     k: 6,
                     df2: 194,
                     fValue: 2.15,
@@ -497,7 +546,22 @@
                     conclusion: "no"
                 },
                 {
-                    description: "王芳在广州经营一家零售连锁店。她计划根据四名采购员的采购效率发放奖金。",
+                    description: `王芳在广州经营一家零售连锁店，主要销售日用百货和食品杂货，门店分布在广州市各大社区。<br><br>作为一名经验丰富的零售业者，王芳为四名采购员提供了激励措施。今年，她计划根据采购员的采购效率向他们发放奖金。以下是王芳掌握的信息汇总图表。（在图表中，"样本"是指过去一年中，某位采购员的一组采购任务效率评分数据，单位为分。）
+                    <table style="border-collapse: collapse; margin: 15px 0; font-size: 0.9rem;">
+                        <tr style="background-color: #e2e8f0;">
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">组别</th>
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">样本量</th>
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">样本均值</th>
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">样本方差</th>
+                        </tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">采购员1</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">42</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">78.5</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">156.2</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">采购员2</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">38</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">85.2</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">142.8</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">采购员3</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">40</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">72.8</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">168.5</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">采购员4</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">40</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">81.6</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">134.6</td></tr>
+                    </table>
+                    王芳的首要步骤是判断她的采购员之间的采购效率是否存在显著差异。（如果不存在显著差异，她将把奖金平均分给四人。）为了做出这一决定，王芳将进行单因素独立样本方差分析，检验总体均值是否相等。该检验使用的统计量为：<span class="formula">F = 组间变异 / 组内变异</span>`,
+                    role: "采购员",
+                    metric: "采购效率",
                     k: 4,
                     df2: 156,
                     fValue: 4.25,
@@ -505,16 +569,392 @@
                     conclusion: "yes"
                 },
                 {
-                    description: "赵强在深圳经营一家科技公司。他计划根据五名产品经理的项目完成率发放奖金。",
+                    description: `赵强在深圳经营一家科技公司，专注于软件开发和信息技术服务，客户遍布全国各地。<br><br>作为一名经验丰富的科技业者，赵强为五名产品经理提供了激励措施。今年，他计划根据产品经理的项目完成率向他们发放奖金。以下是赵强掌握的信息汇总图表。（在图表中，"样本"是指过去两年中，某位产品经理负责的一组项目的完成率数据，单位为百分比。）
+                    <table style="border-collapse: collapse; margin: 15px 0; font-size: 0.9rem;">
+                        <tr style="background-color: #e2e8f0;">
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">组别</th>
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">样本量</th>
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">样本均值</th>
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">样本方差</th>
+                        </tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">产品经理1</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">28</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">85.6</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">78.5</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">产品经理2</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">25</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">78.2</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">92.3</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">产品经理3</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">26</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">82.5</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">85.6</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">产品经理4</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">24</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">88.9</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">68.4</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">产品经理5</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">22</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">81.3</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">76.8</td></tr>
+                    </table>
+                    赵强的首要步骤是判断他的产品经理之间的项目完成率是否存在显著差异。（如果不存在显著差异，他将把奖金平均分给五人。）为了做出这一决定，赵强将进行单因素独立样本方差分析，检验总体均值是否相等。该检验使用的统计量为：<span class="formula">F = 组间变异 / 组内变异</span>`,
+                    role: "产品经理",
+                    metric: "项目完成率",
                     k: 5,
                     df2: 120,
                     fValue: 2.85,
                     pValue: 0.026,
                     conclusion: "yes"
+                },
+                {
+                    description: `刘洋在成都市经营一家教育培训机构，主要提供中小学课外辅导和兴趣培训服务，在城区拥有多个教学点。<br><br>作为一名经验丰富的教育工作者，刘洋为四名教师提供了激励措施。今年，她计划根据教师的学生满意度评分向他们发放奖金。以下是刘洋掌握的信息汇总图表。（在图表中，"样本"是指过去一年中，某位教师的一组学生满意度评分数据，单位为分。）
+                    <table style="border-collapse: collapse; margin: 15px 0; font-size: 0.9rem;">
+                        <tr style="background-color: #e2e8f0;">
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">组别</th>
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">样本量</th>
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">样本均值</th>
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">样本方差</th>
+                        </tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">教师1</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">35</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">88.2</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">45.6</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">教师2</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">32</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">82.5</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">52.3</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">教师3</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">38</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">85.8</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">48.9</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">教师4</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">35</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">91.2</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">42.8</td></tr>
+                    </table>
+                    刘洋的首要步骤是判断她的教师之间的学生满意度是否存在显著差异。（如果不存在显著差异，她将把奖金平均分给四人。）为了做出这一决定，刘洋将进行单因素独立样本方差分析，检验总体均值是否相等。该检验使用的统计量为：<span class="formula">F = 组间变异 / 组内变异</span>`,
+                    role: "教师",
+                    metric: "学生满意度评分",
+                    k: 4,
+                    df2: 136,
+                    fValue: 3.45,
+                    pValue: 0.018,
+                    conclusion: "yes"
+                },
+                {
+                    description: `陈静在杭州市经营一家连锁医疗诊所，旗下拥有多家社区诊所遍布城区各主要居民区。<br><br>作为一名经验丰富的医疗管理者，陈静为五名科室主管提供了激励措施。今年，她计划根据科室的患者康复率向他们发放奖金。以下是陈静掌握的信息汇总图表。（在图表中，"样本"是指过去两年中，某科室的一组患者康复率数据，单位为百分比。）
+                    <table style="border-collapse: collapse; margin: 15px 0; font-size: 0.9rem;">
+                        <tr style="background-color: #e2e8f0;">
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">组别</th>
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">样本量</th>
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">样本均值</th>
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">样本方差</th>
+                        </tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">科室1</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">42</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">78.5</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">125.6</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">科室2</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">38</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">75.2</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">118.3</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">科室3</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">40</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">80.8</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">132.5</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">科室4</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">35</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">76.9</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">108.8</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">科室5</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">25</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">79.3</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">115.2</td></tr>
+                    </table>
+                    陈静的首要步骤是判断她的科室之间的患者康复率是否存在显著差异。（如果不存在显著差异，她将把奖金平均分给五人。）为了做出这一决定，陈静将进行单因素独立样本方差分析，检验总体均值是否相等。该检验使用的统计量为：<span class="formula">F = 组间变异 / 组内变异</span>`,
+                    role: "科室主管",
+                    metric: "患者康复率",
+                    k: 5,
+                    df2: 175,
+                    fValue: 1.89,
+                    pValue: 0.112,
+                    conclusion: "no"
+                },
+                {
+                    description: `周涛在武汉市经营一家物流快递公司，主要为电商企业提供配送服务，业务覆盖整个华中地区。<br><br>作为一名经验丰富的物流业者，周涛为六名配送站长提供了激励措施。今年，他计划根据站长的配送准时率向他们发放奖金。以下是周涛掌握的信息汇总图表。（在图表中，"样本"是指过去一年中，某站点的一组日配送准时率数据，单位为百分比。）
+                    <table style="border-collapse: collapse; margin: 15px 0; font-size: 0.9rem;">
+                        <tr style="background-color: #e2e8f0;">
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">组别</th>
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">样本量</th>
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">样本均值</th>
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">样本方差</th>
+                        </tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">站长1</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">42</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">92.5</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">28.6</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">站长2</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">38</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">85.2</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">35.8</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">站长3</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">40</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">88.8</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">32.5</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">站长4</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">36</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">94.6</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">25.2</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">站长5</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">30</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">86.3</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">38.4</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">站长6</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">28</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">90.5</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">30.1</td></tr>
+                    </table>
+                    周涛的首要步骤是判断他的站长之间的配送准时率是否存在显著差异。（如果不存在显著差异，他将把奖金平均分给六人。）为了做出这一决定，周涛将进行单因素独立样本方差分析，检验总体均值是否相等。该检验使用的统计量为：<span class="formula">F = 组间变异 / 组内变异</span>`,
+                    role: "配送站长",
+                    metric: "配送准时率",
+                    k: 6,
+                    df2: 208,
+                    fValue: 4.12,
+                    pValue: 0.001,
+                    conclusion: "yes"
+                },
+                {
+                    description: `吴敏在苏州市经营一家电子元器件制造工厂，主要为国内外知名企业提供精密电子元件，产品远销海内外。<br><br>作为一名经验丰富的制造业者，吴敏为四条生产线的负责人提供了激励措施。今年，她计划根据负责人的产品合格率向他们发放奖金。以下是吴敏掌握的信息汇总图表。（在图表中，"样本"是指过去一年中，某条生产线的一组日产品合格率数据，单位为百分比。）
+                    <table style="border-collapse: collapse; margin: 15px 0; font-size: 0.9rem;">
+                        <tr style="background-color: #e2e8f0;">
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">组别</th>
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">样本量</th>
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">样本均值</th>
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">样本方差</th>
+                        </tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">生产线1</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">28</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">96.2</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">8.5</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">生产线2</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">25</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">94.8</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">9.2</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">生产线3</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">24</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">95.5</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">7.8</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">生产线4</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">23</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">97.1</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">6.5</td></tr>
+                    </table>
+                    吴敏的首要步骤是判断她的生产线之间的产品合格率是否存在显著差异。（如果不存在显著差异，她将把奖金平均分给四人。）为了做出这一决定，吴敏将进行单因素独立样本方差分析，检验总体均值是否相等。该检验使用的统计量为：<span class="formula">F = 组间变异 / 组内变异</span>`,
+                    role: "生产线负责人",
+                    metric: "产品合格率",
+                    k: 4,
+                    df2: 96,
+                    fValue: 2.32,
+                    pValue: 0.078,
+                    conclusion: "no"
+                },
+                {
+                    description: `郑华在山东省寿光市经营一家现代化农业种植公司，主要种植各类蔬菜和水果，产品供应全国各大城市。<br><br>作为一名经验丰富的农业经营者，郑华为五个种植基地的负责人提供了激励措施。今年，他计划根据负责人的作物亩产量向他们发放奖金。以下是郑华掌握的信息汇总图表。（在图表中，"样本"是指过去三年中，某基地的一组季亩产量数据，单位为公斤。）
+                    <table style="border-collapse: collapse; margin: 15px 0; font-size: 0.9rem;">
+                        <tr style="background-color: #e2e8f0;">
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">组别</th>
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">样本量</th>
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">样本均值</th>
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">样本方差</th>
+                        </tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">基地1</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">20</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">2450</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">18500</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">基地2</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">18</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">2280</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">16200</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">基地3</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">19</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">2680</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">21000</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">基地4</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">17</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">2150</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">15800</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">基地5</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">20</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">2520</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">19500</td></tr>
+                    </table>
+                    郑华的首要步骤是判断他的种植基地之间的作物亩产量是否存在显著差异。（如果不存在显著差异，他将把奖金平均分给五人。）为了做出这一决定，郑华将进行单因素独立样本方差分析，检验总体均值是否相等。该检验使用的统计量为：<span class="formula">F = 组间变异 / 组内变异</span>`,
+                    role: "种植基地负责人",
+                    metric: "作物亩产量",
+                    k: 5,
+                    df2: 89,
+                    fValue: 5.67,
+                    pValue: 0.0004,
+                    conclusion: "yes"
+                },
+                {
+                    description: `孙丽在南京市经营一家连锁酒店集团，旗下拥有多家商务酒店和度假酒店，分布在长三角地区各大城市。<br><br>作为一名经验丰富的酒店管理者，孙丽为四名前台经理提供了激励措施。今年，她计划根据前台经理的客户满意度评分向他们发放奖金。以下是孙丽掌握的信息汇总图表。（在图表中，"样本"是指过去一年中，某位前台经理的一组客户满意度评分数据，单位为分。）
+                    <table style="border-collapse: collapse; margin: 15px 0; font-size: 0.9rem;">
+                        <tr style="background-color: #e2e8f0;">
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">组别</th>
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">样本量</th>
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">样本均值</th>
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">样本方差</th>
+                        </tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">前台经理1</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">30</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">86.5</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">58.2</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">前台经理2</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">28</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">82.3</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">62.5</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">前台经理3</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">32</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">88.8</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">55.8</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">前台经理4</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">26</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">84.2</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">60.3</td></tr>
+                    </table>
+                    孙丽的首要步骤是判断她的前台经理之间的客户满意度是否存在显著差异。（如果不存在显著差异，她将把奖金平均分给四人。）为了做出这一决定，孙丽将进行单因素独立样本方差分析，检验总体均值是否相等。该检验使用的统计量为：<span class="formula">F = 组间变异 / 组内变异</span>`,
+                    role: "前台经理",
+                    metric: "客户满意度评分",
+                    k: 4,
+                    df2: 112,
+                    fValue: 2.68,
+                    pValue: 0.049,
+                    conclusion: "yes"
+                },
+                {
+                    description: `黄伟在天津市经营一家城市商业银行，旗下拥有多家支行网点遍布城区各主要商业区和居民区。<br><br>作为一名经验丰富的银行管理者，黄伟为五名网点负责人提供了激励措施。今年，他计划根据网点负责人的日均业务办理量向他们发放奖金。以下是黄伟掌握的信息汇总图表。（在图表中，"样本"是指过去一年中，某网点的一组日业务办理量数据，单位为笔。）
+                    <table style="border-collapse: collapse; margin: 15px 0; font-size: 0.9rem;">
+                        <tr style="background-color: #e2e8f0;">
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">组别</th>
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">样本量</th>
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">样本均值</th>
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">样本方差</th>
+                        </tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">网点1</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">38</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">156.5</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">425.8</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">网点2</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">35</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">148.2</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">398.5</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">网点3</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">36</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">162.8</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">456.2</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">网点4</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">32</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">152.5</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">412.6</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">网点5</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">32</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">158.3</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">438.9</td></tr>
+                    </table>
+                    黄伟的首要步骤是判断他的网点负责人之间的日均业务办理量是否存在显著差异。（如果不存在显著差异，他将把奖金平均分给五人。）为了做出这一决定，黄伟将进行单因素独立样本方差分析，检验总体均值是否相等。该检验使用的统计量为：<span class="formula">F = 组间变异 / 组内变异</span>`,
+                    role: "网点负责人",
+                    metric: "日均业务办理量",
+                    k: 5,
+                    df2: 168,
+                    fValue: 1.52,
+                    pValue: 0.195,
+                    conclusion: "no"
+                },
+                {
+                    description: `林娜在厦门市经营一家传媒广告公司，主要为本地企业提供品牌推广和数字营销服务，客户遍布闽南地区。<br><br>作为一名经验丰富的传媒业者，林娜为六名广告销售代表提供了激励措施。今年，她计划根据销售代表的月度签约额向他们发放奖金。以下是林娜掌握的信息汇总图表。（在图表中，"样本"是指过去两年中，某位销售代表的一组月度签约额数据，单位为万元。）
+                    <table style="border-collapse: collapse; margin: 15px 0; font-size: 0.9rem;">
+                        <tr style="background-color: #e2e8f0;">
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">组别</th>
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">样本量</th>
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">样本均值</th>
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">样本方差</th>
+                        </tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">销售代表1</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">26</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">45.8</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">186.5</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">销售代表2</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">24</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">38.2</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">165.8</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">销售代表3</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">25</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">52.5</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">198.2</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">销售代表4</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">22</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">35.6</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">158.6</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">销售代表5</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">24</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">48.3</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">175.2</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">销售代表6</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">27</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">42.8</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">182.5</td></tr>
+                    </table>
+                    林娜的首要步骤是判断她的销售代表之间的月度签约额是否存在显著差异。（如果不存在显著差异，她将把奖金平均分给六人。）为了做出这一决定，林娜将进行单因素独立样本方差分析，检验总体均值是否相等。该检验使用的统计量为：<span class="formula">F = 组间变异 / 组内变异</span>`,
+                    role: "广告销售代表",
+                    metric: "月度签约额",
+                    k: 6,
+                    df2: 142,
+                    fValue: 3.89,
+                    pValue: 0.002,
+                    conclusion: "yes"
+                },
+                {
+                    description: `许磊在西安市经营一家连锁健身俱乐部，旗下拥有多家门店分布在城区各主要商圈和住宅区。<br><br>作为一名经验丰富的健身业者，许磊为四名健身教练提供了激励措施。今年，他计划根据教练的会员续费率向他们发放奖金。以下是许磊掌握的信息汇总图表。（在图表中，"样本"是指过去两年中，某位教练负责的一批会员的续费率数据，单位为百分比。）
+                    <table style="border-collapse: collapse; margin: 15px 0; font-size: 0.9rem;">
+                        <tr style="background-color: #e2e8f0;">
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">组别</th>
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">样本量</th>
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">样本均值</th>
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">样本方差</th>
+                        </tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">教练1</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">22</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">78.5</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">125.8</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">教练2</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">20</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">68.2</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">138.5</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">教练3</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">21</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">82.8</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">118.2</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">教练4</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">19</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">72.5</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">132.6</td></tr>
+                    </table>
+                    许磊的首要步骤是判断他的健身教练之间的会员续费率是否存在显著差异。（如果不存在显著差异，他将把奖金平均分给四人。）为了做出这一决定，许磊将进行单因素独立样本方差分析，检验总体均值是否相等。该检验使用的统计量为：<span class="formula">F = 组间变异 / 组内变异</span>`,
+                    role: "健身教练",
+                    metric: "会员续费率",
+                    k: 4,
+                    df2: 78,
+                    fValue: 4.56,
+                    pValue: 0.005,
+                    conclusion: "yes"
+                },
+                {
+                    description: `何静在昆明市经营一家旅行社，主要提供国内旅游和出境旅游服务，客户遍布全国各地。<br><br>作为一名经验丰富的旅游业者，何静为五名导游提供了激励措施。今年，她计划根据导游的游客满意度评分向他们发放奖金。以下是何静掌握的信息汇总图表。（在图表中，"样本"是指过去两年中，某位导游带领的一组旅游团的满意度评分数据，单位为分。）
+                    <table style="border-collapse: collapse; margin: 15px 0; font-size: 0.9rem;">
+                        <tr style="background-color: #e2e8f0;">
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">组别</th>
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">样本量</th>
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">样本均值</th>
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">样本方差</th>
+                        </tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">导游1</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">24</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">88.5</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">42.5</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">导游2</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">22</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">85.2</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">48.6</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">导游3</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">21</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">86.8</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">45.2</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">导游4</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">20</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">83.5</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">52.8</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">导游5</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">25</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">87.2</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">46.5</td></tr>
+                    </table>
+                    何静的首要步骤是判断她的导游之间的游客满意度是否存在显著差异。（如果不存在显著差异，她将把奖金平均分给五人。）为了做出这一决定，何静将进行单因素独立样本方差分析，检验总体均值是否相等。该检验使用的统计量为：<span class="formula">F = 组间变异 / 组内变异</span>`,
+                    role: "导游",
+                    metric: "游客满意度评分",
+                    k: 5,
+                    df2: 107,
+                    fValue: 1.95,
+                    pValue: 0.108,
+                    conclusion: "no"
+                },
+                {
+                    description: `张教授是某大学心理学系的认知心理学研究员，她正在研究不同记忆策略对大学生单词记忆效果的影响。<br><br>张教授招募了四组被试，每组使用一种不同的记忆策略来学习一组英文单词。30分钟后进行回忆测试，记录每位被试正确回忆的单词数量。以下是张教授掌握的信息汇总图表。（在图表中，"样本"是指使用某种记忆策略的一组被试的回忆测试成绩，单位为个。）
+                    <table style="border-collapse: collapse; margin: 15px 0; font-size: 0.9rem;">
+                        <tr style="background-color: #e2e8f0;">
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">组别</th>
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">样本量</th>
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">样本均值</th>
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">样本方差</th>
+                        </tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">联想记忆法</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">22</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">18.5</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">12.8</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">位置记忆法</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">20</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">15.2</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">15.5</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">重复记忆法</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">18</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">12.8</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">18.2</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">关键词法</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">20</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">20.2</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">11.5</td></tr>
+                    </table>
+                    张教授的首要步骤是判断不同记忆策略之间的记忆效果是否存在显著差异。为了做出这一决定，张教授将进行单因素独立样本方差分析，检验总体均值是否相等。该检验使用的统计量为：<span class="formula">F = 组间变异 / 组内变异</span>`,
+                    role: "记忆策略组",
+                    metric: "单词回忆数量",
+                    k: 4,
+                    df2: 76,
+                    fValue: 5.82,
+                    pValue: 0.001,
+                    conclusion: "yes"
+                },
+                {
+                    description: `李博士是某精神卫生中心的临床心理学研究员，他正在研究不同治疗方法对轻度抑郁症患者症状改善的效果。<br><br>李博士招募了五组轻度抑郁症患者，每组接受一种不同的治疗方法，持续12周。治疗结束后使用汉密尔顿抑郁量表（HAMD）评估症状改善程度（分数降低越多表示改善越明显）。以下是李博士掌握的信息汇总图表。（在图表中，"样本"是指接受某种治疗方法的一组患者的HAMD分数降低值，单位为分。）
+                    <table style="border-collapse: collapse; margin: 15px 0; font-size: 0.9rem;">
+                        <tr style="background-color: #e2e8f0;">
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">组别</th>
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">样本量</th>
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">样本均值</th>
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">样本方差</th>
+                        </tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">认知行为疗法</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">22</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">8.5</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">6.8</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">药物治疗</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">20</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">7.2</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">7.5</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">联合治疗</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">18</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">9.8</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">5.2</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">团体治疗</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">20</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">6.5</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">8.6</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">支持性治疗</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">20</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">7.8</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">6.5</td></tr>
+                    </table>
+                    李博士的首要步骤是判断不同治疗方法之间的症状改善效果是否存在显著差异。为了做出这一决定，李博士将进行单因素独立样本方差分析，检验总体均值是否相等。该检验使用的统计量为：<span class="formula">F = 组间变异 / 组内变异</span>`,
+                    role: "治疗组",
+                    metric: "HAMD分数降低值",
+                    k: 5,
+                    df2: 95,
+                    fValue: 2.15,
+                    pValue: 0.082,
+                    conclusion: "no"
+                },
+                {
+                    description: `王教授是某大学教育心理学系的研究员，她正在研究不同学习环境对高中生注意力集中的影响。<br><br>王教授招募了四组高中生，每组在一种不同的学习环境中完成相同的阅读理解任务，记录每位学生的注意力集中时长（通过眼动仪测量）。以下是王教授掌握的信息汇总图表。（在图表中，"样本"是指在某学习环境中的一组学生的注意力集中时长，单位为分钟。）
+                    <table style="border-collapse: collapse; margin: 15px 0; font-size: 0.9rem;">
+                        <tr style="background-color: #e2e8f0;">
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">组别</th>
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">样本量</th>
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">样本均值</th>
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">样本方差</th>
+                        </tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">安静图书馆</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">25</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">35.8</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">28.5</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">有背景音乐</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">22</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">28.5</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">35.2</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">小组讨论区</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">18</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">22.6</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">42.8</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">开放式教室</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">21</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">25.2</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">38.6</td></tr>
+                    </table>
+                    王教授的首要步骤是判断不同学习环境之间的注意力集中时长是否存在显著差异。为了做出这一决定，王教授将进行单因素独立样本方差分析，检验总体均值是否相等。该检验使用的统计量为：<span class="formula">F = 组间变异 / 组内变异</span>`,
+                    role: "学习环境组",
+                    metric: "注意力集中时长",
+                    k: 4,
+                    df2: 82,
+                    fValue: 4.68,
+                    pValue: 0.004,
+                    conclusion: "yes"
+                },
+                {
+                    description: `刘研究员是某心理研究所发展心理学方向的研究员，他正在研究不同年龄段儿童在空间推理能力上的发展差异。<br><br>刘研究员从五所小学和初中招募了五个年龄段的儿童，让他们完成一组标准化的空间推理测试题（如心理旋转、空间可视化等），记录每位儿童的测试得分。以下是刘研究员掌握的信息汇总图表。（在图表中，"样本"是指某年龄段的一组儿童的测试得分，单位为分。）
+                    <table style="border-collapse: collapse; margin: 15px 0; font-size: 0.9rem;">
+                        <tr style="background-color: #e2e8f0;">
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">组别</th>
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">样本量</th>
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">样本均值</th>
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">样本方差</th>
+                        </tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">6-7岁组</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">28</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">42.5</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">85.6</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">8-9岁组</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">25</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">52.8</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">92.5</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">10-11岁组</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">24</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">58.2</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">78.8</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">12-13岁组</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">22</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">65.5</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">68.2</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">14-15岁组</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">22</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">68.8</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">72.5</td></tr>
+                    </table>
+                    刘研究员的首要步骤是判断不同年龄段儿童之间的空间推理能力是否存在显著差异。为了做出这一决定，刘研究员将进行单因素独立样本方差分析，检验总体均值是否相等。该检验使用的统计量为：<span class="formula">F = 组间变异 / 组内变异</span>`,
+                    role: "年龄段组",
+                    metric: "空间推理测试得分",
+                    k: 5,
+                    df2: 116,
+                    fValue: 3.25,
+                    pValue: 0.013,
+                    conclusion: "yes"
+                },
+                {
+                    description: `陈教授是某大学心理学系社会心理学方向的研究员，她正在研究不同压力管理技巧对职场人士工作压力感知的影响。<br><br>陈教授招募了六组来自不同企业的职场人士，每组学习并实践一种压力管理技巧，持续8周。干预前后使用工作压力感知量表（PSS）评估压力水平，计算压力感知降低的分数。以下是陈教授掌握的信息汇总图表。（在图表中，"样本"是指使用某种压力管理技巧的一组职场人士的PSS分数降低值，单位为分。）
+                    <table style="border-collapse: collapse; margin: 15px 0; font-size: 0.9rem;">
+                        <tr style="background-color: #e2e8f0;">
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">组别</th>
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">样本量</th>
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">样本均值</th>
+                            <th style="border: 1px solid #cbd5e1; padding: 8px 12px;">样本方差</th>
+                        </tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">正念冥想</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">25</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">8.5</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">12.8</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">运动锻炼</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">22</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">6.8</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">15.2</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">时间管理</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">20</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">5.5</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">18.5</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">社交支持</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">23</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">7.2</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">14.6</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">休闲活动</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">21</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">6.2</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">16.8</td></tr>
+                        <tr><td style="border: 1px solid #cbd5e1; padding: 8px 12px;">认知重构</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">23</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">7.8</td><td style="border: 1px solid #cbd5e1; padding: 8px 12px; text-align: center;">13.5</td></tr>
+                    </table>
+                    陈教授的首要步骤是判断不同压力管理技巧之间的减压效果是否存在显著差异。为了做出这一决定，陈教授将进行单因素独立样本方差分析，检验总体均值是否相等。该检验使用的统计量为：<span class="formula">F = 组间变异 / 组内变异</span>`,
+                    role: "压力管理组",
+                    metric: "PSS分数降低值",
+                    k: 6,
+                    df2: 128,
+                    fValue: 1.75,
+                    pValue: 0.125,
+                    conclusion: "no"
                 }
             ];
 
             let currentParamIndex = 0;
+
+            // 答题历史记录
+            const quizHistory = [];
 
             // 用户选择的答案
             const userAnswers = {
@@ -536,15 +976,17 @@
                 const params = questionParams[currentParamIndex];
                 const df1 = params.k - 1;
 
+                // 动态更新第3问标题中的角色和指标
+                document.getElementById('q3-role').textContent = params.role;
+                document.getElementById('q3-metric').textContent = params.metric;
+
                 // 渲染信息框
                 document.getElementById('infoBox').innerHTML = `
-                    <p><strong>题目背景：</strong>${params.description}为了判断销售人员之间的业绩是否存在显著差异，她进行了单因素独立样本方差分析检验，得到 F ≈ ${params.fValue}。</p>
+                    <p><strong>题目背景：</strong>${params.description}为了判断${params.role}之间的业绩是否存在显著差异，进行了单因素独立样本方差分析检验，得到 F ≈ ${params.fValue}。</p>
                 `;
 
                 // 渲染问题1 - 填空题
                 document.getElementById('q1-content').innerHTML = `
-                    <p>在方差分析中，F 统计量的分子自由度计算公式为：<span class="formula">k - 1</span>，其中 <span class="highlight">k</span> 是总体（组）的数量。</p>
-                    <p class="note">本题有 ${params.k} 名销售人员，因此 k = ${params.k}。</p>
                     <div class="fill-blank-container">
                         <label>请输入分子自由度：</label>
                         <input type="number" class="fill-blank-input" id="q1-answer">
@@ -555,14 +997,12 @@
 
                 document.getElementById('q1-explanation').innerHTML = `
                     <h4>解析：</h4>
-                    <p>F 统计量的分子自由度对应组间变异，计算公式为 <span class="formula">df₁ = k - 1</span>，其中 k 是组数（销售人员数量）。</p>
-                    <p>本题中有 ${params.k} 名销售人员，所以 <span class="formula">df₁ = ${params.k} - 1 = ${df1}</span>。</p>
+                    <p>F 统计量的分子自由度对应组间变异，计算公式为 <span class="formula">df₁ = k - 1</span>，其中 k 是组数（${params.role}数量）。</p>
+                    <p>本题中有 ${params.k} 名${params.role}，所以 <span class="formula">df₁ = ${params.k} - 1 = ${df1}</span>。</p>
                 `;
 
                 // 渲染问题2 - 填空题
                 document.getElementById('q2-content').innerHTML = `
-                    <p>在方差分析中，F 统计量的分母自由度计算公式为：<span class="formula">N - k</span>，其中 <span class="highlight">N</span> 是样本测量值的总数，<span class="highlight">k</span> 是总体（组）的数量。</p>
-                    <p class="note">根据题目解析，分母自由度为 ${params.df2}。</p>
                     <div class="fill-blank-container">
                         <label>请输入分母自由度：</label>
                         <input type="number" class="fill-blank-input" id="q2-answer">
@@ -578,10 +1018,7 @@
                 `;
 
                 // 渲染问题3
-                document.getElementById('q3-content').innerHTML = `
-                    <p>在显著性水平 α = 0.05 下，我们需要比较 p 值与 α 的大小关系。</p>
-                    <p>根据题目解析，F ≈ ${params.fValue}，分子自由度 df₁ = ${df1}，分母自由度 df₂ = ${params.df2}，对应的 p 值约为 ${params.pValue}。</p>
-                `;
+                document.getElementById('q3-content').innerHTML = '';
 
                 const q3Options = `
                     <div class="option" data-value="yes">
@@ -593,14 +1030,16 @@
                         <div>否</div>
                     </div>
                 `;
-                document.getElementById('q3-options').innerHTML = q3Options;
+                const q3OptionsContainer = document.getElementById('q3-options');
+                q3OptionsContainer.innerHTML = q3Options;
+                q3OptionsContainer.className = 'options-container horizontal';
 
                 const conclusionText = params.conclusion === 'yes' ? '能' : '不能';
                 document.getElementById('q3-explanation').innerHTML = `
                     <h4>解析：</h4>
                     <p>决策规则：如果 p 值 ≤ 显著性水平 α (0.05)，则拒绝原假设（所有总体均值相等），得出结论至少有一个均值不同。</p>
                     <p>本题中，p 值 ≈ ${params.pValue}，而 α = 0.05，因此 <span class="formula">p 值 (${params.pValue}) ${params.pValue <= 0.05 ? '≤' : '>'} α (0.05)</span>。</p>
-                    <p>所以，我们${params.pValue <= 0.05 ? '可以' : '不能'}拒绝原假设，<span class="highlight">${conclusionText}</span> 得出结论说至少有一位销售人员的日均销售额与其他人的有显著差异。</p>
+                    <p>所以，我们${params.pValue <= 0.05 ? '可以' : '不能'}拒绝原假设，<span class="highlight">${conclusionText}</span> 得出结论说至少有一位${params.role}的${params.metric}与其他人的有显著差异。</p>
                 `;
 
                 // 重新绑定选项点击事件
@@ -658,6 +1097,25 @@
                 });
             }
 
+            // 更新答题历史图标显示
+            function updateQuizHistory() {
+                const historyContainer = document.getElementById('quiz-history');
+                if (!historyContainer) return;
+
+                let html = '';
+                quizHistory.forEach((record, index) => {
+                    const iconClass = record.allCorrect ? 'correct' : 'incorrect';
+                    const iconSymbol = record.allCorrect ? '✓' : '✗';
+                    const titleText = record.allCorrect
+                        ? `第${record.round}套题：全部答对 (${record.correctCount}/${record.totalQuestions})`
+                        : `第${record.round}套题：有错误 (${record.correctCount}/${record.totalQuestions})`;
+
+                    html += `<div class="result-icon ${iconClass}" title="${titleText}">${iconSymbol}</div>`;
+                });
+
+                historyContainer.innerHTML = html;
+            }
+
             function refreshParams() {
                 let newIndex;
                 do {
@@ -682,11 +1140,11 @@
                     option.classList.remove('selected', 'correct', 'incorrect');
                 });
 
-                // 隐藏答案解析按钮
-                document.querySelectorAll('.show-explanation-btn').forEach(btn => {
-                    btn.style.display = 'none';
-                    btn.textContent = '查看答案解析';
-                });
+                // 隐藏答案解析按钮并重置状态
+                const showAllBtn = document.getElementById('show-all-explanations-btn');
+                showAllBtn.style.display = 'none';
+                showAllBtn.textContent = '查看答案解析';
+                explanationsVisible = false;
 
                 // 隐藏解析
                 document.querySelectorAll('.explanation').forEach(explanation => {
@@ -709,26 +1167,30 @@
 
             // ==================== 事件处理 ====================
 
-            // 刷新参数按钮
-            document.getElementById('refreshParamsBtn').addEventListener('click', function() {
+            // 下一题按钮
+            document.getElementById('next-btn').addEventListener('click', function() {
                 refreshParams();
             });
 
-            // 显示答案解析按钮点击事件
-            document.querySelectorAll('.show-explanation-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    var questionId = this.getAttribute('data-question') || this.id;
-                    var explanation = document.getElementById(`q${questionId}-explanation`);
-                    if (explanation) {
-                        if (explanation.classList.contains('show')) {
-                            explanation.classList.remove('show');
-                            this.textContent = '查看答案解析';
-                        } else {
-                            explanation.classList.add('show');
-                            this.textContent = '隐藏答案解析';
-                        }
+            // 显示/隐藏所有答案解析按钮点击事件
+            const showAllExplanationsBtn = document.getElementById('show-all-explanations-btn');
+            let explanationsVisible = false;
+
+            showAllExplanationsBtn.addEventListener('click', function() {
+                const explanations = document.querySelectorAll('.explanation');
+                explanationsVisible = !explanationsVisible;
+
+                explanations.forEach(explanation => {
+                    if (explanationsVisible) {
+                        explanation.classList.add('show');
+                        explanation.style.display = 'block';
+                    } else {
+                        explanation.classList.remove('show');
+                        explanation.style.display = 'none';
                     }
                 });
+
+                this.textContent = explanationsVisible ? '隐藏答案解析' : '查看答案解析';
             });
 
             // 提交按钮事件
@@ -788,41 +1250,37 @@
                         }
                     }
 
-                    // 显示"查看答案解析"按钮
-                    const questionNum = questionId.charAt(1);
-                    const showBtn = document.querySelector(`.show-explanation-btn[data-question="${questionNum}"]`);
-                    if (showBtn) {
-                        showBtn.style.display = 'inline-block';
-                    }
-
                     // 统计正确数量
                     if (isCorrect) {
                         correctCount++;
                     }
                 }
 
+                // 显示"查看答案解析"按钮
+                document.getElementById('show-all-explanations-btn').style.display = 'inline-block';
+
                 // 显示结果
                 const resultsDiv = document.getElementById('results');
-                const scoreDiv = document.getElementById('score');
-                const scoreMessage = document.getElementById('score-message');
-                const correctCountSpan = document.getElementById('correct-count');
-                const incorrectCountSpan = document.getElementById('incorrect-count');
+                const currentResultEl = document.getElementById('current-result');
 
-                scoreDiv.textContent = `${correctCount}/${totalQuestions}`;
-                correctCountSpan.textContent = correctCount;
-                incorrectCountSpan.textContent = totalQuestions - correctCount;
+                // 记录本次答题结果到历史记录
+                const allCorrect = correctCount === totalQuestions;
+                quizHistory.push({
+                    round: quizHistory.length + 1,
+                    allCorrect: allCorrect,
+                    correctCount: correctCount,
+                    totalQuestions: totalQuestions
+                });
 
-                // 根据得分显示不同消息
-                if (correctCount === totalQuestions) {
-                    scoreMessage.textContent = "太棒了！您全部答对了！";
-                    scoreMessage.style.color = "#10b981";
-                } else if (correctCount >= totalQuestions / 2) {
-                    scoreMessage.textContent = "不错！继续努力！";
-                    scoreMessage.style.color = "#3b82f6";
+                // 显示本次答题结果文本
+                if (allCorrect) {
+                    currentResultEl.innerHTML = `<span style="color: #10b981; font-weight: bold;">🎉 太棒了！全部答对！</span> 得分：${correctCount}/${totalQuestions}`;
                 } else {
-                    scoreMessage.textContent = "请仔细阅读解析，再试一次！";
-                    scoreMessage.style.color = "#ef4444";
+                    currentResultEl.innerHTML = `<span style="color: #ef4444; font-weight: bold;">继续努力！</span> 得分：${correctCount}/${totalQuestions}，请查看解析后重试。`;
                 }
+
+                // 更新答题历史图标显示
+                updateQuizHistory();
 
                 resultsDiv.classList.add('show');
 
@@ -833,46 +1291,6 @@
                 this.disabled = true;
                 this.style.backgroundColor = "#94a3b8";
                 this.textContent = "已提交";
-            });
-
-            // 重新作答按钮事件
-            document.getElementById('reset-btn').addEventListener('click', function() {
-                // 重置用户答案
-                for (const questionId in userAnswers) {
-                    userAnswers[questionId] = null;
-                }
-
-                // 重置填空题输入框
-                document.querySelectorAll('.fill-blank-input').forEach(input => {
-                    input.value = '';
-                    input.classList.remove('correct', 'incorrect');
-                });
-
-                // 重置所有选项样式
-                document.querySelectorAll('.option').forEach(option => {
-                    option.classList.remove('selected', 'correct', 'incorrect');
-                });
-
-                // 隐藏答案解析按钮
-                document.querySelectorAll('.show-explanation-btn').forEach(btn => {
-                    btn.style.display = 'none';
-                    btn.textContent = '查看答案解析';
-                });
-
-                // 隐藏解析
-                document.querySelectorAll('.explanation').forEach(explanation => {
-                    explanation.style.display = 'none';
-                    explanation.classList.remove('show');
-                });
-
-                // 隐藏结果
-                document.getElementById('results').classList.remove('show');
-
-                // 启用提交按钮
-                const submitBtn = document.getElementById('submit-btn');
-                submitBtn.disabled = false;
-                submitBtn.style.backgroundColor = "#3b82f6";
-                submitBtn.textContent = "提交答案";
             });
 
             // ==================== 初始化 ====================

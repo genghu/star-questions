@@ -259,24 +259,87 @@
             color: #e74c3c;
         }
 
-        .score-container {
-            text-align: center;
+        .quiz-history-container {
             margin-top: 30px;
             padding: 20px;
-            background: linear-gradient(to right, #3498db, #2980b9);
-            color: white;
+            background-color: #f8f9fa;
             border-radius: 15px;
+            border: 2px solid #e0e0e0;
             display: none;
         }
 
-        .score-title {
+        .history-title {
             font-size: 1.3rem;
-            margin-bottom: 10px;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            text-align: center;
         }
 
-        .score-value {
-            font-size: 3rem;
-            font-weight: 700;
+        .history-title i {
+            margin-right: 10px;
+            color: #3498db;
+        }
+
+        .history-icons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            margin-bottom: 15px;
+            min-height: 50px;
+        }
+
+        .result-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: white;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+            transition: transform 0.2s;
+        }
+
+        .result-icon:hover {
+            transform: scale(1.1);
+        }
+
+        .result-icon.correct {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+        }
+
+        .result-icon.incorrect {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+        }
+
+        .history-stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            font-size: 1rem;
+            color: #555;
+            padding-top: 10px;
+            border-top: 1px solid #ddd;
+        }
+
+        .history-stats span {
+            padding: 5px 15px;
+            background-color: white;
+            border-radius: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        #correct-count {
+            color: #27ae60;
+            font-weight: 600;
+        }
+
+        #incorrect-count {
+            color: #c0392b;
+            font-weight: 600;
         }
 
         .example-solution {
@@ -375,15 +438,15 @@
 <body>
     <div class="container">
         <header>
-            <h1><i class="fas fa-chart-bar"></i> 离散概率分布基础 <button id="refresh-btn" style="margin-left: 15px; padding: 8px 16px; background: linear-gradient(135deg, #34a853, #2ecc71); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(52, 168, 83, 0.3);">刷新参数</button></h1>
+            <h1><i class="fas fa-chart-bar"></i> 离散概率分布基础</h1>
             <p class="subtitle">交互式概率分布练习 - 填写缺失的概率值</p>
         </header>
 
         <div class="question-container">
             <h2 class="question-title"><i class="fas fa-question-circle"></i> 题目</h2>
             <div class="question-text">
-                <p>在下表中填入数值，为离散随机变量 X 给出一个合法的概率分布，其可能取值为 2, 3, 4, 5, 6。</p>
-                
+                <p id="question-description">在下表中填入数值，为离散随机变量 X 给出一个合法的概率分布。</p>
+
                 <table class="probability-table">
                     <thead>
                         <tr>
@@ -391,100 +454,20 @@
                             <th>P(X = x)</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td>2</td>
-                            <td>0.17</td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>0.23</td>
-                        </tr>
-                        <tr>
-                            <td>4</td>
-                            <td class="input-cell">
-                                <input type="number" id="prob4" class="probability-input" min="0" max="1" step="0.01" value="0.08">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>5</td>
-                            <td>0.29</td>
-                        </tr>
-                        <tr>
-                            <td>6</td>
-                            <td class="input-cell">
-                                <input type="number" id="prob6" class="probability-input" min="0" max="1" step="0.01" value="0.23">
-                            </td>
-                        </tr>
+                    <tbody id="probability-table-body">
+                        <!-- 动态生成 -->
                     </tbody>
                 </table>
             </div>
-            
-            <div class="constraint-box">
-                <div class="constraint-title">
-                    <i class="fas fa-exclamation-circle"></i> 约束条件
-                </div>
-                <p>离散随机变量 X 的可能取值为 2, 3, 4, 5, 6。因此，必须满足：</p>
-                <div class="equation">
-                    P(X=2) + P(X=3) + P(X=4) + P(X=5) + P(X=6) = 1
-                </div>
-                <p>且对于 x = 2, 3, 4, 5, 6，有 0 ≤ P(X = x) ≤ 1。</p>
-                <p>根据所给信息，我们有：</p>
-                <div class="equation">
-                    0.17 + 0.23 + P(X=4) + 0.29 + P(X=6) = 1
-                </div>
-                <p>这意味着：</p>
-                <div class="equation">
-                    P(X=4) + P(X=6) = 1 - (0.17 + 0.23 + 0.29) = 0.31
-                </div>
-                <p>为了完成这个概率分布，我们必须选择 P(X=4) 和 P(X=6) 为 0 到 1 之间的任意数，使得 P(X=4) + P(X=6) = 0.31。</p>
-            </div>
-            
-            <div class="example-solution">
-                <div class="example-title">
-                    <i class="fas fa-lightbulb"></i> 示例解答
-                </div>
-                <p>例如，我们可以选择 P(X=4) = 0.08 且 P(X=6) = 0.23。</p>
-                <p>一个正确答案是：</p>
-                <table class="probability-table">
-                    <thead>
-                        <tr>
-                            <th>X 的取值 x</th>
-                            <th>P(X = x)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>2</td>
-                            <td>0.17</td>
-                        </tr>
-                        <tr>
-                            <td>3</td>
-                            <td>0.23</td>
-                        </tr>
-                        <tr>
-                            <td>4</td>
-                            <td>0.08</td>
-                        </tr>
-                        <tr>
-                            <td>5</td>
-                            <td>0.29</td>
-                        </tr>
-                        <tr>
-                            <td>6</td>
-                            <td>0.23</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+
         </div>
         
         <div class="controls">
             <button id="submitBtn" class="btn btn-submit">
                 <i class="fas fa-paper-plane"></i> 提交答案
             </button>
-            <button id="resetBtn" class="btn btn-reset">
-                <i class="fas fa-redo"></i> 重新作答
+            <button id="nextBtn" class="btn btn-reset" style="background: linear-gradient(to right, #3498db, #2980b9);">
+                <i class="fas fa-arrow-right"></i> 下一题
             </button>
         </div>
         
@@ -495,28 +478,187 @@
             </h3>
             <p id="feedbackDetail">您填写的概率分布满足所有约束条件。</p>
             <div class="equation" id="sumEquation">
-                0.17 + 0.23 + <span id="val4">0.08</span> + 0.29 + <span id="val6">0.23</span> = <span id="totalSum">1.00</span>
+                <!-- 动态生成 -->
             </div>
             <p id="constraintCheck"></p>
         </div>
-        
-        <div id="score" class="score-container">
-            <h3 class="score-title">您的得分</h3>
-            <div class="score-value">100</div>
-            <p>您成功创建了一个合法的概率分布！</p>
+
+        <div id="quiz-history" class="quiz-history-container">
+            <h3 class="history-title"><i class="fas fa-history"></i> 答题记录</h3>
+            <div id="history-icons" class="history-icons">
+                <!-- 动态生成答题结果图标 -->
+            </div>
+            <div class="history-stats">
+                <span id="correct-count">正确: 0</span>
+                <span id="incorrect-count">错误: 0</span>
+                <span id="total-count">总计: 0</span>
+            </div>
         </div>
 
         <button class="show-explanation-btn" id="show-explanation-btn" style="display:none;">查看答案解析</button>
         <div class="explanation-section" id="explanation-section" style="display:none;">
-            <h3>答案解析</h3>
-            <p>要创建一个合法的概率分布，所有概率值必须在0到1之间，且所有概率之和必须等于1。</p>
-            <p>根据给定的约束条件：P(X=4) + P(X=6) = 0.31</p>
-            <p>一个正确答案是：P(X=4) = 0.08, P(X=6) = 0.23</p>
+            <h3 style="font-size: 1.4rem; color: #2c3e50; margin-bottom: 20px; border-bottom: 2px solid #9b59b6; padding-bottom: 10px;"><i class="fas fa-book-open"></i> 答案解析</h3>
+
+            <div class="constraint-box">
+                <!-- 动态生成 -->
+            </div>
+
+            <div class="example-solution">
+                <!-- 动态生成 -->
+            </div>
         </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+
+            // 20组参数配置 - 每组有不同的X取值
+            // values: X的可能取值数组
+            // probs: 对应的概率值数组
+            // blanks: 需要填空的位置索引(0-based)，1个元素为单空格，2个元素为双空格
+            const parameterSets = [
+                // 单空格题目 (10组)
+                { values: [0, 1, 2, 3, 4], probs: [0.15, 0.25, 0.20, 0.18, 0.22], blanks: [2] },
+                { values: [1, 2, 3, 4, 5], probs: [0.12, 0.28, 0.15, 0.25, 0.20], blanks: [4] },
+                { values: [2, 3, 4, 5, 6], probs: [0.17, 0.23, 0.08, 0.29, 0.23], blanks: [1] },
+                { values: [3, 4, 5, 6, 7], probs: [0.22, 0.18, 0.10, 0.30, 0.20], blanks: [3] },
+                { values: [5, 10, 15, 20, 25], probs: [0.10, 0.25, 0.20, 0.15, 0.30], blanks: [2] },
+                { values: [0, 5, 10, 15, 20], probs: [0.19, 0.16, 0.24, 0.21, 0.20], blanks: [0] },
+                { values: [1, 3, 5, 7, 9], probs: [0.14, 0.21, 0.19, 0.26, 0.20], blanks: [4] },
+                { values: [2, 4, 6, 8, 10], probs: [0.25, 0.15, 0.18, 0.22, 0.20], blanks: [1] },
+                { values: [10, 20, 30, 40, 50], probs: [0.11, 0.24, 0.22, 0.19, 0.24], blanks: [3] },
+                { values: [100, 200, 300, 400, 500], probs: [0.20, 0.19, 0.16, 0.25, 0.20], blanks: [2] },
+                // 双空格题目 (10组)
+                { values: [0, 2, 4, 6, 8], probs: [0.16, 0.22, 0.12, 0.28, 0.22], blanks: [1, 3] },
+                { values: [1, 4, 7, 10, 13], probs: [0.13, 0.27, 0.21, 0.17, 0.22], blanks: [0, 2] },
+                { values: [5, 6, 7, 8, 9], probs: [0.23, 0.14, 0.26, 0.20, 0.17], blanks: [1, 4] },
+                { values: [0, 10, 20, 30, 40], probs: [0.18, 0.20, 0.14, 0.24, 0.24], blanks: [2, 3] },
+                { values: [2, 5, 8, 11, 14], probs: [0.09, 0.26, 0.23, 0.21, 0.21], blanks: [0, 1] },
+                { values: [3, 6, 9, 12, 15], probs: [0.21, 0.17, 0.20, 0.23, 0.19], blanks: [2, 4] },
+                { values: [4, 8, 12, 16, 20], probs: [0.15, 0.24, 0.11, 0.27, 0.23], blanks: [1, 3] },
+                { values: [0.5, 1.0, 1.5, 2.0, 2.5], probs: [0.12, 0.19, 0.28, 0.16, 0.25], blanks: [0, 4] },
+                { values: [1, 2, 4, 8, 16], probs: [0.24, 0.13, 0.17, 0.26, 0.20], blanks: [2, 3] },
+                { values: [10, 15, 20, 25, 30], probs: [0.17, 0.21, 0.25, 0.19, 0.18], blanks: [3, 4] }
+            ];
+
+            let currentParams = null;
+
+            // 获取表格元素
+            const tableBody = document.getElementById('probability-table-body');
+            const questionDesc = document.getElementById('question-description');
+
+            // 初始化参数
+            function initParameters() {
+                const randomIndex = Math.floor(Math.random() * parameterSets.length);
+                currentParams = parameterSets[randomIndex];
+                currentQuizAnswered = false; // 重置答题状态
+                updateQuestionDescription();
+                updateTable();
+                updateExplanation();
+            }
+
+            // 更新问题描述
+            function updateQuestionDescription() {
+                const valuesStr = currentParams.values.join(', ');
+                questionDesc.textContent = `在下表中填入数值，为离散随机变量 X 给出一个合法的概率分布，其可能取值为 ${valuesStr}。`;
+            }
+
+            // 更新表格显示
+            function updateTable() {
+                tableBody.innerHTML = '';
+
+                currentParams.values.forEach((x, index) => {
+                    const row = document.createElement('tr');
+                    const isBlank = currentParams.blanks.includes(index);
+
+                    row.innerHTML = `
+                        <td>${x}</td>
+                        <td class="${isBlank ? 'input-cell' : ''}">
+                            ${isBlank
+                                ? `<input type="number" id="prob${index}" class="probability-input" min="0" max="1" step="0.01" placeholder="输入概率">`
+                                : currentParams.probs[index].toFixed(2)
+                            }
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+
+                // 重新绑定输入事件
+                bindInputEvents();
+            }
+
+            // 绑定输入事件
+            function bindInputEvents() {
+                currentParams.blanks.forEach(index => {
+                    const input = document.getElementById(`prob${index}`);
+                    if (input) {
+                        input.addEventListener('input', validateInputs);
+                    }
+                });
+            }
+
+            // 更新答案解析内容
+            function updateExplanation() {
+                const blanks = currentParams.blanks;
+                const values = currentParams.values;
+                const probs = currentParams.probs;
+
+                // 计算需要填写的概率之和
+                const blankSum = blanks.reduce((sum, i) => sum + probs[i], 0);
+
+                // 计算已知概率之和
+                const knownSum = probs.reduce((sum, p, i) => {
+                    return blanks.includes(i) ? sum : sum + p;
+                }, 0);
+
+                // 更新约束条件说明
+                const constraintBox = document.querySelector('.explanation-section .constraint-box');
+                const valuesStr = values.join(', ');
+                const blankLabels = blanks.map(i => `P(X=${values[i]})`).join(' + ');
+                const knownLabels = probs.map((p, i) => blanks.includes(i) ? null : p.toFixed(2)).filter(x => x !== null).join(' + ');
+
+                constraintBox.innerHTML = `
+                    <div class="constraint-title">
+                        <i class="fas fa-exclamation-circle"></i> 约束条件
+                    </div>
+                    <p>离散随机变量 X 的可能取值为 ${valuesStr}。因此，必须满足：</p>
+                    <div class="equation">
+                        ${values.map(x => `P(X=${x})`).join(' + ')} = 1
+                    </div>
+                    <p>且对于所有取值，有 0 ≤ P(X = x) ≤ 1。</p>
+                    <p>根据所给信息，${blankLabels} 之和应等于：</p>
+                    <div class="equation">
+                        ${blankLabels} = 1 - (${knownLabels}) = ${blankSum.toFixed(2)}
+                    </div>
+                `;
+
+                // 更新示例解答
+                const exampleSolution = document.querySelector('.explanation-section .example-solution');
+
+                exampleSolution.innerHTML = `
+                    <div class="example-title">
+                        <i class="fas fa-lightbulb"></i> 示例解答
+                    </div>
+                    <p>一个正确答案是：${blanks.map(i => `P(X=${values[i]}) = ${probs[i].toFixed(2)}`).join('，')}。</p>
+                    <p>完整的概率分布表：</p>
+                    <table class="probability-table">
+                        <thead>
+                            <tr>
+                                <th>X 的取值 x</th>
+                                <th>P(X = x)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${values.map((x, i) => `
+                            <tr>
+                                <td>${x}</td>
+                                <td>${probs[i].toFixed(2)}</td>
+                            </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+            }
 
             // 显示答案解析按钮点击事件
             document.querySelectorAll('.show-explanation-btn').forEach(btn => {
@@ -534,80 +676,174 @@
                 });
             });
 
-            const prob4Input = document.getElementById('prob4');
-            const prob6Input = document.getElementById('prob6');
             const submitBtn = document.getElementById('submitBtn');
-            const resetBtn = document.getElementById('resetBtn');
+            const nextBtn = document.getElementById('nextBtn');
             const feedbackDiv = document.getElementById('feedback');
             const feedbackIcon = document.getElementById('feedbackIcon');
             const feedbackText = document.getElementById('feedbackText');
             const feedbackDetail = document.getElementById('feedbackDetail');
             const sumEquation = document.getElementById('sumEquation');
-            const val4Span = document.getElementById('val4');
-            const val6Span = document.getElementById('val6');
-            const totalSumSpan = document.getElementById('totalSum');
             const constraintCheck = document.getElementById('constraintCheck');
-            const scoreDiv = document.getElementById('score');
-            
-            // 初始示例值
-            const exampleProb4 = 0.08;
-            const exampleProb6 = 0.23;
-            
+            const quizHistoryDiv = document.getElementById('quiz-history');
+            const historyIconsDiv = document.getElementById('history-icons');
+            const correctCountSpan = document.getElementById('correct-count');
+            const incorrectCountSpan = document.getElementById('incorrect-count');
+            const totalCountSpan = document.getElementById('total-count');
+
+            // 答题历史记录
+            let quizHistory = [];
+            let currentQuizAnswered = false;
+
+            // 更新答题历史显示
+            function updateHistoryDisplay() {
+                if (quizHistory.length === 0) {
+                    quizHistoryDiv.style.display = 'none';
+                    return;
+                }
+
+                quizHistoryDiv.style.display = 'block';
+                historyIconsDiv.innerHTML = '';
+
+                let correctCount = 0;
+                let incorrectCount = 0;
+
+                quizHistory.forEach((result, index) => {
+                    const icon = document.createElement('div');
+                    icon.className = `result-icon ${result ? 'correct' : 'incorrect'}`;
+                    icon.innerHTML = result ? '<i class="fas fa-check"></i>' : '<i class="fas fa-times"></i>';
+                    icon.title = `第${index + 1}套题: ${result ? '正确' : '错误'}`;
+                    historyIconsDiv.appendChild(icon);
+
+                    if (result) correctCount++;
+                    else incorrectCount++;
+                });
+
+                correctCountSpan.textContent = `正确: ${correctCount}`;
+                incorrectCountSpan.textContent = `错误: ${incorrectCount}`;
+                totalCountSpan.textContent = `总计: ${quizHistory.length}`;
+            }
+
+            // 重置表单
+            function resetForm() {
+                feedbackDiv.style.display = 'none';
+                const explanationSection = document.getElementById('explanation-section');
+                const showBtn = document.getElementById('show-explanation-btn');
+                if (explanationSection) {
+                    explanationSection.style.display = 'none';
+                }
+                if (showBtn) {
+                    showBtn.style.display = 'none';
+                    showBtn.textContent = '查看答案解析';
+                }
+            }
+
             // 提交答案
             submitBtn.addEventListener('click', function() {
-                const prob4 = parseFloat(prob4Input.value) || 0;
-                const prob6 = parseFloat(prob6Input.value) || 0;
-                
+                const blanks = currentParams.blanks;
+                const values = currentParams.values;
+                const probs = currentParams.probs;
+                const userValues = {};
+                let allValid = true;
+
+                blanks.forEach(index => {
+                    const input = document.getElementById(`prob${index}`);
+                    userValues[index] = parseFloat(input.value);
+                    if (isNaN(userValues[index])) {
+                        allValid = false;
+                    }
+                });
+
+                if (!allValid) {
+                    alert('请填写所有空格！');
+                    return;
+                }
+
                 // 计算总和
-                const total = 0.17 + 0.23 + prob4 + 0.29 + prob6;
-                const sum45 = prob4 + prob6;
-                
+                let total = 0;
+                let userSum = 0;
+
+                probs.forEach((p, i) => {
+                    if (blanks.includes(i)) {
+                        total += userValues[i];
+                        userSum += userValues[i];
+                    } else {
+                        total += p;
+                    }
+                });
+
                 // 检查约束条件
-                const isSumValid = Math.abs(total - 1.0) < 0.001; // 允许浮点数误差
-                const isProb4Valid = prob4 >= 0 && prob4 <= 1;
-                const isProb6Valid = prob6 >= 0 && prob6 <= 1;
-                const isSum45Valid = Math.abs(sum45 - 0.31) < 0.001;
-                
-                // 更新方程显示
-                val4Span.textContent = prob4.toFixed(2);
-                val6Span.textContent = prob6.toFixed(2);
-                totalSumSpan.textContent = total.toFixed(2);
-                
+                const isSumValid = Math.abs(total - 1.0) <= 0.001;
+                const blankSum = blanks.reduce((sum, i) => sum + probs[i], 0);
+                const isUserSumValid = Math.abs(userSum - blankSum) <= 0.001;
+
+                let allInRange = true;
+                blanks.forEach(index => {
+                    if (userValues[index] < 0 || userValues[index] > 1) {
+                        allInRange = false;
+                    }
+                });
+
                 // 判断答案是否正确
-                const isCorrect = isSumValid && isProb4Valid && isProb6Valid && isSum45Valid;
-                
+                const isCorrect = isSumValid && isUserSumValid && allInRange;
+
+                // 更新方程显示
+                let equationParts = [];
+                probs.forEach((p, i) => {
+                    if (blanks.includes(i)) {
+                        equationParts.push(`<span style="color: #3498db; font-weight: bold;">${userValues[i].toFixed(2)}</span>`);
+                    } else {
+                        equationParts.push(p.toFixed(2));
+                    }
+                });
+                sumEquation.innerHTML = equationParts.join(' + ') + ` = <span id="totalSum">${total.toFixed(2)}</span>`;
+
                 // 显示反馈
                 if (isCorrect) {
                     feedbackDiv.className = 'feedback-container feedback-correct';
                     feedbackIcon.className = 'fas fa-check-circle correct-icon';
                     feedbackText.textContent = '恭喜！您的答案正确！';
                     feedbackDetail.textContent = '您填写的概率分布满足所有约束条件：';
-                    constraintCheck.innerHTML = `
-                        <p><i class="fas fa-check correct-icon"></i> P(X=4) = ${prob4.toFixed(2)} 在 [0, 1] 范围内</p>
-                        <p><i class="fas fa-check correct-icon"></i> P(X=6) = ${prob6.toFixed(2)} 在 [0, 1] 范围内</p>
-                        <p><i class="fas fa-check correct-icon"></i> P(X=4) + P(X=6) = ${sum45.toFixed(2)} = 0.31</p>
-                        <p><i class="fas fa-check correct-icon"></i> 所有概率之和 = ${total.toFixed(2)} = 1.00</p>
-                    `;
+
+                    let checkHtml = '';
+                    blanks.forEach(index => {
+                        checkHtml += `<p><i class="fas fa-check correct-icon"></i> P(X=${values[index]}) = ${userValues[index].toFixed(2)} 在 [0, 1] 范围内</p>`;
+                    });
+                    checkHtml += `<p><i class="fas fa-check correct-icon"></i> ${blanks.map(i => `P(X=${values[i]})`).join(' + ')} = ${userSum.toFixed(2)} = ${blankSum.toFixed(2)}</p>`;
+                    checkHtml += `<p><i class="fas fa-check correct-icon"></i> 所有概率之和 = ${total.toFixed(2)} = 1.00</p>`;
+                    constraintCheck.innerHTML = checkHtml;
                 } else {
                     feedbackDiv.className = 'feedback-container feedback-incorrect';
                     feedbackIcon.className = 'fas fa-times-circle incorrect-icon';
                     feedbackText.textContent = '需要调整您的答案';
                     feedbackDetail.textContent = '您填写的概率分布不满足所有约束条件：';
-                    
+
                     let issues = [];
-                    if (!isProb4Valid) issues.push(`P(X=4) = ${prob4.toFixed(2)} 不在 [0, 1] 范围内`);
-                    if (!isProb6Valid) issues.push(`P(X=6) = ${prob6.toFixed(2)} 不在 [0, 1] 范围内`);
-                    if (!isSum45Valid) issues.push(`P(X=4) + P(X=6) = ${sum45.toFixed(2)}，但应该等于 0.31`);
-                    if (!isSumValid) issues.push(`所有概率之和 = ${total.toFixed(2)}，但应该等于 1.00`);
-                    
-                    constraintCheck.innerHTML = issues.map(issue => 
+                    blanks.forEach(index => {
+                        if (userValues[index] < 0 || userValues[index] > 1) {
+                            issues.push(`P(X=${values[index]}) = ${userValues[index].toFixed(2)} 不在 [0, 1] 范围内`);
+                        }
+                    });
+                    if (!isUserSumValid) {
+                        issues.push(`${blanks.map(i => `P(X=${values[i]})`).join(' + ')} = ${userSum.toFixed(2)}，但应该等于 ${blankSum.toFixed(2)}`);
+                    }
+                    if (!isSumValid) {
+                        issues.push(`所有概率之和 = ${total.toFixed(2)}，但应该等于 1.00`);
+                    }
+
+                    constraintCheck.innerHTML = issues.map(issue =>
                         `<p><i class="fas fa-times incorrect-icon"></i> ${issue}</p>`
                     ).join('');
                 }
-                
-                // 显示反馈和得分
+
+                // 显示反馈
                 feedbackDiv.style.display = 'block';
-                scoreDiv.style.display = isCorrect ? 'block' : 'none';
+
+                // 记录答题结果（只在第一次提交时记录）
+                if (!currentQuizAnswered) {
+                    quizHistory.push(isCorrect);
+                    currentQuizAnswered = true;
+                    updateHistoryDisplay();
+                }
 
                 // 显示答案解析按钮
                 var showBtn = document.getElementById('show-explanation-btn');
@@ -618,39 +854,45 @@
                 // 滚动到反馈区域
                 feedbackDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             });
-            
-            // 重置答案
-            resetBtn.addEventListener('click', function() {
-                prob4Input.value = exampleProb4;
-                prob6Input.value = exampleProb6;
+
+            // 下一题按钮
+            nextBtn.addEventListener('click', function() {
+                // 初始化新参数（刷新所有题目）
+                initParameters();
+
+                // 隐藏反馈和答案解析
                 feedbackDiv.style.display = 'none';
-                scoreDiv.style.display = 'none';
-                
+                var explanationSection = document.getElementById('explanation-section');
+                var showBtn = document.getElementById('show-explanation-btn');
+                if (explanationSection) {
+                    explanationSection.style.display = 'none';
+                }
+                if (showBtn) {
+                    showBtn.style.display = 'none';
+                    showBtn.textContent = '查看答案解析';
+                }
+
                 // 滚动到顶部
                 document.querySelector('.question-title').scrollIntoView({ behavior: 'smooth' });
             });
-            
+
             // 实时验证输入
             function validateInputs() {
-                const prob4 = parseFloat(prob4Input.value) || 0;
-                const prob6 = parseFloat(prob6Input.value) || 0;
-                const sum45 = prob4 + prob6;
-                
-                // 更新输入框样式
-                prob4Input.style.borderColor = (prob4 >= 0 && prob4 <= 1) ? '#ddd' : '#e74c3c';
-                prob6Input.style.borderColor = (prob6 >= 0 && prob6 <= 1) ? '#ddd' : '#e74c3c';
-                
-                // 显示当前和
-                const total = 0.17 + 0.23 + prob4 + 0.29 + prob6;
-                document.querySelector('.constraint-box').querySelector('.equation:last-child').innerHTML = 
-                    `P(X=4) + P(X=6) = ${sum45.toFixed(2)} = 1 - (0.17 + 0.23 + 0.29) = 0.31`;
+                currentParams.blanks.forEach(index => {
+                    const input = document.getElementById(`prob${index}`);
+                    if (input) {
+                        const val = parseFloat(input.value);
+                        if (isNaN(val)) {
+                            input.style.borderColor = '#ddd';
+                        } else {
+                            input.style.borderColor = (val >= 0 && val <= 1) ? '#ddd' : '#e74c3c';
+                        }
+                    }
+                });
             }
-            
-            prob4Input.addEventListener('input', validateInputs);
-            prob6Input.addEventListener('input', validateInputs);
-            
-            // 初始验证
-            validateInputs();
+
+            // 初始化
+            initParameters();
         });
     </script>
 </body>

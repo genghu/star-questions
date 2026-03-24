@@ -178,12 +178,12 @@
             background-color: #2980b9;
             transform: scale(1.05);
         }
-        #reset-btn {
-            background-color: #95a5a6;
+        #next-btn {
+            background-color: #28a745;
             color: white;
         }
-        #reset-btn:hover {
-            background-color: #7f8c8d;
+        #next-btn:hover {
+            background-color: #218838;
             transform: scale(1.05);
         }
         button:disabled {
@@ -203,36 +203,56 @@
         .results.show {
             display: block;
         }
-        .score {
-            font-size: 3rem;
-            font-weight: bold;
-            color: #3498db;
-            margin: 15px 0;
-        }
-        .score-text {
-            font-size: 1.2rem;
-            color: #7f8c8d;
-            margin-bottom: 20px;
-        }
-        .stats {
+        .history-container {
             display: flex;
-            justify-content: space-around;
-            margin-top: 25px;
             flex-wrap: wrap;
+            justify-content: center;
             gap: 15px;
+            margin-top: 20px;
+            min-height: 50px;
         }
-        .stat-box {
-            flex: 1;
-            min-width: 150px;
-            padding: 15px;
-            border-radius: 10px;
-            background-color: #f8fafc;
+        .result-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: white;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+            position: relative;
         }
-        .stat-box.correct {
-            border-top: 4px solid #28a745;
+        .result-icon.correct {
+            background-color: #28a745;
         }
-        .stat-box.incorrect {
-            border-top: 4px solid #dc3545;
+        .result-icon.incorrect {
+            background-color: #dc3545;
+        }
+        .result-icon.correct::before {
+            content: '';
+            width: 12px;
+            height: 6px;
+            border-left: 3px solid white;
+            border-bottom: 3px solid white;
+            transform: rotate(-45deg);
+            margin-top: -2px;
+        }
+        .result-icon.incorrect::before,
+        .result-icon.incorrect::after {
+            content: '';
+            position: absolute;
+            width: 18px;
+            height: 3px;
+            background-color: white;
+            border-radius: 2px;
+        }
+        .result-icon.incorrect::before {
+            transform: rotate(45deg);
+        }
+        .result-icon.incorrect::after {
+            transform: rotate(-45deg);
         }
         .stat-value {
             font-size: 2rem;
@@ -313,14 +333,12 @@
 <body>
     <header>
         <h1>F分布</h1>
-        <p class="subtitle">概率统计练习题 - 交互式答题</p>
     </header>
 
     <main>
         <div class="question-container" id="question1">
             <div class="question-header">
                 <div class="question-title">问题 1</div>
-                <button class="refresh-btn" onclick="refreshQuestion(1)">刷新参数</button>
             </div>
             <div class="question-content" id="question-content-1">
                 <p>考虑一个分子自由度为 <span class="math" id="dfn1-1">47</span>，分母自由度为 <span class="math" id="dfd1-1">13</span> 的 F 分布。</p>
@@ -349,7 +367,6 @@
         <div class="question-container" id="question2">
             <div class="question-header">
                 <div class="question-title">问题 2</div>
-                <button class="refresh-btn" onclick="refreshQuestion(2)">刷新参数</button>
             </div>
             <div class="question-content" id="question-content-2">
                 <p>考虑一个分子自由度为 <span class="math" id="dfn1-2">30</span>，分母自由度为 <span class="math" id="dfd1-2">9</span> 的 F 分布。</p>
@@ -377,22 +394,13 @@
 
         <div class="controls">
             <button id="submit-btn">提交答案</button>
-            <button id="reset-btn">重新作答</button>
+            <button id="next-btn">下一题</button>
         </div>
 
         <div class="results" id="results">
-            <h2>答题结果</h2>
-            <div class="score" id="score">0/2</div>
-            <div class="score-text" id="score-text"></div>
-            <div class="stats">
-                <div class="stat-box correct">
-                    <div class="stat-value correct" id="correct-count">0</div>
-                    <div class="stat-label">正确</div>
-                </div>
-                <div class="stat-box incorrect">
-                    <div class="stat-value incorrect" id="incorrect-count">0</div>
-                    <div class="stat-label">错误</div>
-                </div>
+            <h2>答题记录</h2>
+            <div class="history-container" id="history-container">
+                <!-- 答题历史图标将在这里动态生成 -->
             </div>
         </div>
     </main>
@@ -405,14 +413,44 @@
                 { dfn1: 8, dfd1: 40, fval: 0.78, rightProb: 0.622622, result: 0.377 },
                 { dfn1: 3, dfd1: 25, fval: 0.92, rightProb: 0.445512, result: 0.554 },
                 { dfn1: 6, dfd1: 50, fval: 0.70, rightProb: 0.650839, result: 0.349 },
-                { dfn1: 4, dfd1: 35, fval: 0.88, rightProb: 0.485865, result: 0.514 }
+                { dfn1: 4, dfd1: 35, fval: 0.88, rightProb: 0.485865, result: 0.514 },
+                { dfn1: 7, dfd1: 28, fval: 0.95, rightProb: 0.485308, result: 0.515 },
+                { dfn1: 10, dfd1: 45, fval: 0.65, rightProb: 0.763142, result: 0.237 },
+                { dfn1: 2, dfd1: 20, fval: 1.05, rightProb: 0.368217, result: 0.632 },
+                { dfn1: 9, dfd1: 35, fval: 0.82, rightProb: 0.601819, result: 0.398 },
+                { dfn1: 5, dfd1: 55, fval: 0.75, rightProb: 0.589639, result: 0.410 },
+                { dfn1: 12, dfd1: 30, fval: 0.90, rightProb: 0.557299, result: 0.443 },
+                { dfn1: 3, dfd1: 40, fval: 0.68, rightProb: 0.569466, result: 0.431 },
+                { dfn1: 6, dfd1: 25, fval: 1.12, rightProb: 0.379203, result: 0.621 },
+                { dfn1: 8, dfd1: 60, fval: 0.72, rightProb: 0.673057, result: 0.327 },
+                { dfn1: 4, dfd1: 45, fval: 0.80, rightProb: 0.531595, result: 0.468 },
+                { dfn1: 11, dfd1: 35, fval: 0.88, rightProb: 0.567377, result: 0.433 },
+                { dfn1: 7, dfd1: 50, fval: 0.76, rightProb: 0.623087, result: 0.377 },
+                { dfn1: 2, dfd1: 30, fval: 0.98, rightProb: 0.387006, result: 0.613 },
+                { dfn1: 9, dfd1: 25, fval: 1.02, rightProb: 0.451240, result: 0.549 },
+                { dfn1: 5, dfd1: 42, fval: 0.85, rightProb: 0.522405, result: 0.478 }
             ],
             2: [
                 { dfn1: 3, dfd1: 20, alpha: 0.1, fval: 2.38 },
                 { dfn1: 5, dfd1: 30, alpha: 0.05, fval: 2.53 },
                 { dfn1: 4, dfd1: 25, alpha: 0.025, fval: 3.35 },
                 { dfn1: 6, dfd1: 40, alpha: 0.01, fval: 3.29 },
-                { dfn1: 2, dfd1: 50, alpha: 0.1, fval: 2.41 }
+                { dfn1: 2, dfd1: 50, alpha: 0.1, fval: 2.41 },
+                { dfn1: 8, dfd1: 35, alpha: 0.05, fval: 2.19 },
+                { dfn1: 4, dfd1: 45, alpha: 0.025, fval: 3.09 },
+                { dfn1: 7, dfd1: 25, alpha: 0.1, fval: 1.96 },
+                { dfn1: 5, dfd1: 55, alpha: 0.01, fval: 3.37 },
+                { dfn1: 3, dfd1: 40, alpha: 0.05, fval: 2.84 },
+                { dfn1: 6, dfd1: 30, alpha: 0.025, fval: 2.87 },
+                { dfn1: 9, dfd1: 50, alpha: 0.1, fval: 1.80 },
+                { dfn1: 4, dfd1: 35, alpha: 0.01, fval: 3.91 },
+                { dfn1: 8, dfd1: 45, alpha: 0.05, fval: 2.15 },
+                { dfn1: 2, dfd1: 25, alpha: 0.025, fval: 4.28 },
+                { dfn1: 7, dfd1: 60, alpha: 0.1, fval: 1.82 },
+                { dfn1: 5, dfd1: 20, alpha: 0.01, fval: 4.10 },
+                { dfn1: 3, dfd1: 55, alpha: 0.05, fval: 2.78 },
+                { dfn1: 6, dfd1: 35, alpha: 0.025, fval: 2.80 },
+                { dfn1: 10, dfd1: 40, alpha: 0.1, fval: 1.76 }
             ]
         };
 
@@ -421,6 +459,9 @@
         let correctAnswers = { 1: 0.474, 2: 2.38 };
         let tolerance = { 1: 0.01, 2: 0.05 };
         const userAnswers = { 1: null, 2: null };
+
+        // 答题历史记录 (true = 全对, false = 有错)
+        let answerHistory = [];
 
         // Helper function to normalize numeric answers
         function normalizeAnswer(answer) {
@@ -547,7 +588,7 @@
 
             // 提交答案
             document.getElementById('submit-btn').addEventListener('click', function() {
-                let correctCount = 0;
+                let allCorrect = true;
                 let totalQuestions = Object.keys(correctAnswers).length;
 
                 // 检查每个问题的答案
@@ -566,43 +607,26 @@
                     if (isCorrect) {
                         inputEl.style.borderColor = '#28a745';
                         inputEl.style.backgroundColor = '#d4edda';
-                        correctCount++;
                     } else {
                         inputEl.style.borderColor = '#dc3545';
                         inputEl.style.backgroundColor = '#f8d7da';
                         correctDisplayEl.style.display = 'block';
+                        allCorrect = false;
                     }
                 }
+
+                // 记录本次答题结果
+                answerHistory.push(allCorrect);
 
                 // 显示答案解析按钮
                 document.querySelectorAll('.show-explanation-btn').forEach(btn => {
                     btn.style.display = 'inline-block';
                 });
 
-                // 显示结果
+                // 显示结果并更新历史图标
                 const results = document.getElementById('results');
                 results.classList.add('show');
-
-                // 更新分数
-                const scoreElement = document.getElementById('score');
-                scoreElement.textContent = `${correctCount}/${totalQuestions}`;
-
-                // 更新分数文本
-                const scoreText = document.getElementById('score-text');
-                const percentage = (correctCount / totalQuestions) * 100;
-                if (percentage === 100) {
-                    scoreText.textContent = "完美！所有答案都正确！";
-                } else if (percentage >= 70) {
-                    scoreText.textContent = "做得不错！继续努力！";
-                } else if (percentage >= 50) {
-                    scoreText.textContent = "还可以，但需要更多练习。";
-                } else {
-                    scoreText.textContent = "需要加强学习，请查看解析。";
-                }
-
-                // 更新统计
-                document.getElementById('correct-count').textContent = correctCount;
-                document.getElementById('incorrect-count').textContent = totalQuestions - correctCount;
+                updateHistoryDisplay();
 
                 // 禁用提交按钮
                 this.disabled = true;
@@ -611,18 +635,25 @@
                 results.scrollIntoView({ behavior: 'smooth' });
             });
 
-            // 重新作答
-            document.getElementById('reset-btn').addEventListener('click', function() {
-                // Clear all inputs
-                for (let i = 1; i <= 2; i++) {
-                    const inputEl = document.getElementById(`answer-${i}`);
-                    inputEl.value = '';
-                    inputEl.style.borderColor = '#3498db';
-                    inputEl.style.backgroundColor = 'white';
-                    inputEl.disabled = false;
-                    userAnswers[i] = null;
+            // 更新历史记录显示
+            function updateHistoryDisplay() {
+                const container = document.getElementById('history-container');
+                container.innerHTML = '';
 
-                    document.getElementById(`correct-display-${i}`).style.display = 'none';
+                answerHistory.forEach((isCorrect, index) => {
+                    const icon = document.createElement('div');
+                    icon.className = `result-icon ${isCorrect ? 'correct' : 'incorrect'}`;
+                    icon.title = `第 ${index + 1} 套题: ${isCorrect ? '正确' : '错误'}`;
+                    container.appendChild(icon);
+                });
+            }
+
+            // 下一题 - 刷新所有问题参数
+            document.getElementById('next-btn').addEventListener('click', function() {
+                // 刷新所有问题参数并重置状态
+                for (let i = 1; i <= 2; i++) {
+                    // 刷新参数
+                    refreshQuestion(i);
                 }
 
                 // 隐藏所有解析

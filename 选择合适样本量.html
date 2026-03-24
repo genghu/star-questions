@@ -69,22 +69,6 @@
             align-items: center;
         }
 
-        .refresh-btn {
-            background-color: #34a853;
-            color: white;
-            padding: 8px 16px;
-            font-size: 0.9rem;
-            border-radius: 6px;
-            margin-left: auto;
-            border: none;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .refresh-btn:hover {
-            background-color: #2d9248;
-        }
-
         .question-content {
             font-size: 1.05rem;
             margin-bottom: 25px;
@@ -109,57 +93,26 @@
             overflow-x: auto;
         }
 
-        .answer-options {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-top: 20px;
-        }
-
-        .option {
-            padding: 18px 20px;
-            border: 2px solid #e0e0e0;
+        .answer-section {
+            margin-top: 25px;
+            padding: 20px;
+            background-color: #f8f9fa;
             border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-size: 1.1rem;
+            border-left: 4px solid #4a90e2;
             display: flex;
             align-items: center;
+            gap: 15px;
         }
 
-        .option:hover {
-            background-color: #f5f9ff;
-            border-color: #a0c8ff;
+        .answer-section label {
+            font-size: 1.1rem;
+            white-space: nowrap;
         }
 
-        .option.selected {
-            background-color: #e8f2ff;
-            border-color: #4a90e2;
-            font-weight: 600;
-        }
-
-        .option.correct {
-            background-color: #e7f7e7;
-            border-color: #2ecc71;
-        }
-
-        .option.incorrect {
-            background-color: #fdeaea;
-            border-color: #e74c3c;
-        }
-
-        .option-label {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 36px;
-            height: 36px;
-            background-color: #4a90e2;
-            color: white;
-            border-radius: 50%;
-            margin-right: 15px;
-            font-weight: bold;
-            flex-shrink: 0;
+        .answer-section .answer-input {
+            width: 200px;
+            flex: none;
+            margin-top: 0;
         }
 
         .controls {
@@ -167,22 +120,23 @@
             gap: 15px;
             margin-top: 25px;
             flex-wrap: wrap;
+            justify-content: center;
         }
 
         button {
-            padding: 14px 28px;
+            padding: 10px 20px;
             border: none;
             border-radius: 8px;
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
+            min-width: 120px;
         }
 
         #submit-btn {
             background-color: #4a90e2;
             color: white;
-            flex: 1;
         }
 
         #submit-btn:hover {
@@ -190,16 +144,13 @@
             transform: translateY(-2px);
         }
 
-        #reset-btn {
-            background-color: #f8f9fa;
-            color: #555;
-            border: 2px solid #ddd;
-            flex: 1;
+        #next-btn {
+            background-color: #34a853;
+            color: white;
         }
 
-        #reset-btn:hover {
-            background-color: #e9ecef;
-            border-color: #ccc;
+        #next-btn:hover {
+            background-color: #2d9248;
         }
 
         .feedback {
@@ -227,30 +178,37 @@
             margin-bottom: 10px;
         }
 
-        .stats {
+        .questionset-results {
             display: flex;
-            justify-content: space-around;
-            margin-top: 30px;
-            padding: 20px;
-            background-color: white;
-            border-radius: 12px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+            min-height: 50px;
         }
 
-        .stat-item {
-            text-align: center;
+        .questionset-results .empty-hint {
+            color: #999;
+            font-size: 0.95rem;
         }
 
-        .stat-value {
-            font-size: 2.5rem;
+        .result-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: white;
             font-weight: bold;
-            color: #4a90e2;
         }
 
-        .stat-label {
-            color: #7f8c8d;
-            font-size: 0.9rem;
-            margin-top: 5px;
+        .result-icon.correct {
+            background-color: #2ecc71;
+        }
+
+        .result-icon.incorrect {
+            background-color: #e74c3c;
         }
 
         .explanation {
@@ -357,7 +315,7 @@
 <body>
     <header>
         <h1>选择合适样本量</h1>
-        <div class="subtitle">置信区间与假设检验 · 交互式学习</div>
+       
     </header>
 
     <div class="container">
@@ -365,32 +323,21 @@
             <div class="card">
                 <h2 class="question-title">
                     问题描述
-                    <button class="refresh-btn" id="refresh-btn">刷新参数</button>
                 </h2>
                 <div class="question-content">
-                    <p>许多全职工作的大学毕业生每周工作时间超过40小时。假设我们希望估计全职工作的大学毕业生每周工作的平均小时数 μ。我们将选择一个全职工作的大学毕业生随机样本，并使用该样本的均值来估计 μ。</p>
-
-                    <p>假设大学毕业生每周工作小时数的标准差为 <span class="param" id="param-sigma">6.30</span> 小时，为了使我们有 <span class="param" id="param-confidence">95%</span> 的把握相信我们的估计值在 μ 的 <span class="param" id="param-E">1.5</span> 小时/周范围内，所需的最小样本量是多少？</p>
-
-                    <div class="formula">
-                        已知：置信水平 = <span id="formula-confidence">95%</span>，边际误差 E = <span id="formula-E">1.5</span>，总体标准差 σ = <span id="formula-sigma">6.30</span>
-                    </div>
-
+                    <p id="question-context"></p>
+                    <p id="question-params"></p>
                     <p>请将中间计算至少保留三位小数。将你的答案写成一个整数（并确保它是满足要求的最小整数）。</p>
                 </div>
 
-                <div class="answer-options" id="options-container">
-                    <!-- Options will be dynamically generated -->
-                </div>
-
-                <div class="note">
-                    <strong>提示：</strong> 你也可以直接输入你的答案：
-                    <input type="number" id="direct-answer" class="answer-input" min="1" max="1000">
+                <div class="answer-section">
+                    <label><strong>你的答案：</strong></label>
+                    <input type="number" id="direct-answer" class="answer-input" min="1" max="1000" placeholder="请输入最小样本量">
                 </div>
 
                 <div class="controls">
                     <button id="submit-btn">提交答案</button>
-                    <button id="reset-btn">重新作答</button>
+                    <button id="next-btn">下一题</button>
                 </div>
 
                 <div id="feedback" class="feedback">
@@ -406,8 +353,8 @@
                 <div class="step">
                     <p><strong>步骤 1：确定已知条件</strong></p>
                     <p>置信水平：<span id="exp-confidence">95%</span> → α = 0.05 → α/2 = 0.025</p>
-                    <p>边际误差 E = <span id="exp-E">1.5</span> 小时</p>
-                    <p>总体标准差 σ = <span id="exp-sigma">6.30</span> 小时</p>
+                    <p>边际误差 E = <span id="exp-E">1.5</span> <span id="exp-unit">小时</span></p>
+                    <p>总体标准差 σ = <span id="exp-sigma">6.30</span> <span id="exp-unit2">小时</span></p>
                     <p>z<sub>α/2</sub> = z<sub>0.025</sub> ≈ <span id="exp-z">1.96</span>（标准正态分布临界值）</p>
                 </div>
 
@@ -434,28 +381,9 @@
                     <p>样本量满足大样本条件（n ≥ 30），因此使用置信区间公式是合理的。</p>
                     <p id="calc-verification"></p>
                 </div>
-            </div>
-        </section>
 
-        <section class="interaction-section">
-            <div class="stats">
-                <div class="stat-item">
-                    <div class="stat-value" id="score">0</div>
-                    <div class="stat-label">得分</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value" id="attempts">0</div>
-                    <div class="stat-label">尝试次数</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value" id="accuracy">0%</div>
-                    <div class="stat-label">正确率</div>
-                </div>
-            </div>
-
-            <div class="card">
-                <h2 class="question-title">学习要点</h2>
-                <div class="question-content">
+                <div class="step">
+                    <p><strong>学习要点</strong></p>
                     <p><strong>置信区间：</strong> 总体均值 μ 的 (1-α)100% 置信区间公式为：</p>
                     <div class="formula">
                         x̄ ± z<sub>α/2</sub> × σ/√n
@@ -478,34 +406,13 @@
                     </div>
                 </div>
             </div>
+        </section>
 
+        <section class="interaction-section">
             <div class="card">
-                <h2 class="question-title">练习计算</h2>
-                <div class="question-content">
-                    <p>使用下面的计算器验证你的答案：</p>
-
-                    <div style="margin: 20px 0;">
-                        <div style="margin: 20px 0;">
-                            <label for="calc-z">z<sub>α/2</sub> 值：</label>
-                            <input type="number" id="calc-z" value="1.96" step="0.01" style="width: 100px; padding: 8px; margin: 0 10px;">
-                        </div>
-
-                        <div style="margin: 20px 0;">
-                            <label for="calc-sigma">总体标准差 σ：</label>
-                            <input type="number" id="calc-sigma" value="6.30" step="0.01" style="width: 100px; padding: 8px; margin: 0 10px;">
-                        </div>
-
-                        <div style="margin: 20px 0;">
-                            <label for="calc-e">边际误差 E：</label>
-                            <input type="number" id="calc-e" value="1.5" step="0.01" style="width: 100px; padding: 8px; margin: 0 10px;">
-                        </div>
-
-                        <button id="calculate-btn" style="width: 100%; margin-top: 15px;">计算样本量</button>
-
-                        <div id="calc-result" class="formula" style="margin-top: 20px; text-align: center; font-size: 1.3rem;">
-                            结果将显示在这里
-                        </div>
-                    </div>
+                <h2 class="question-title">答题记录</h2>
+                <div class="questionset-results" id="questionset-results">
+                    <p class="empty-hint">完成题目后，这里会显示答题结果</p>
                 </div>
             </div>
         </section>
@@ -514,69 +421,176 @@
 
 
     <script>
-        // Parameter sets for the question
+        // Parameter sets for the question with different contexts
         const parameterSets = [
-            { confidence: 95, z: 1.96, sigma: 6.30, E: 1.5, answer: 68 },
-            { confidence: 95, z: 1.96, sigma: 5.0, E: 1.0, answer: 97 },
-            { confidence: 90, z: 1.645, sigma: 8.0, E: 2.0, answer: 44 },
-            { confidence: 99, z: 2.576, sigma: 7.5, E: 1.5, answer: 166 },
-            { confidence: 95, z: 1.96, sigma: 4.5, E: 0.8, answer: 122 }
+            {
+                confidence: 95, z: 1.96, sigma: 6.30, E: 1.5, answer: 68,
+                context: "大学毕业生工作时长",
+                contextText: "许多全职工作的大学毕业生每周工作时间超过40小时。假设我们希望估计全职工作的大学毕业生每周工作的平均小时数 μ。我们将选择一个全职工作的大学毕业生随机样本，并使用该样本的均值来估计 μ。",
+                paramsText: "假设大学毕业生每周工作小时数的标准差为 {sigma} 小时，为了使我们有 {confidence} 的把握相信我们的估计值在 μ 的 {E} 小时/周范围内，所需的最小样本量是多少？",
+                unit: "小时"
+            },
+            {
+                confidence: 95, z: 1.96, sigma: 5.0, E: 1.0, answer: 97,
+                context: "智能手机电池续航",
+                contextText: "某品牌智能手机的电池续航时间是消费者关注的重要指标。假设我们希望估计该品牌手机的平均电池续航时间 μ（小时）。我们将选择一个该品牌手机的随机样本，并使用该样本的均值来估计 μ。",
+                paramsText: "假设该品牌手机电池续航时间的标准差为 {sigma} 小时，为了使我们有 {confidence} 的把握相信我们的估计值在 μ 的 {E} 小时范围内，所需的最小样本量是多少？",
+                unit: "小时"
+            },
+            {
+                confidence: 90, z: 1.645, sigma: 8.0, E: 2.0, answer: 44,
+                context: "大学生每周运动时间",
+                contextText: "大学生每周的运动时间对健康很重要。假设我们希望估计某大学学生每周的平均运动时间 μ（小时）。我们将选择一个该大学学生的随机样本，并使用该样本的均值来估计 μ。",
+                paramsText: "假设该大学学生每周运动时间的标准差为 {sigma} 小时，为了使我们有 {confidence} 的把握相信我们的估计值在 μ 的 {E} 小时范围内，所需的最小样本量是多少？",
+                unit: "小时"
+            },
+            {
+                confidence: 99, z: 2.576, sigma: 7.5, E: 1.5, answer: 166,
+                context: "快递配送时间",
+                contextText: "某快递公司的配送时间是客户满意度的重要指标。假设我们希望估计该快递公司从发货到收货的平均配送时间 μ（天）。我们将选择一个快递包裹的随机样本，并使用该样本的均值来估计 μ。",
+                paramsText: "假设该快递公司配送时间的标准差为 {sigma} 天，为了使我们有 {confidence} 的把握相信我们的估计值在 μ 的 {E} 天范围内，所需的最小样本量是多少？",
+                unit: "天"
+            },
+            {
+                confidence: 95, z: 1.96, sigma: 4.5, E: 0.8, answer: 122,
+                context: "咖啡店日销售额",
+                contextText: "某连锁咖啡店希望了解其门店的日均销售额。假设我们希望估计该连锁咖啡店每家门店的平均日销售额 μ（千元）。我们将选择一个门店的随机样本，并使用该样本的均值来估计 μ。",
+                paramsText: "假设该连锁咖啡店日销售额的标准差为 {sigma} 千元，为了使我们有 {confidence} 的把握相信我们的估计值在 μ 的 {E} 千元范围内，所需的最小样本量是多少？",
+                unit: "千元"
+            },
+            {
+                confidence: 95, z: 1.96, sigma: 8.5, E: 2.0, answer: 70,
+                context: "高中生睡眠时间",
+                contextText: "高中生的睡眠时间对学习效率和健康至关重要。假设我们希望估计某市高中生每天的平均睡眠时间 μ（小时）。我们将选择一个该市高中生的随机样本，并使用该样本的均值来估计 μ。",
+                paramsText: "假设该市高中生每天睡眠时间的标准差为 {sigma} 小时，为了使我们有 {confidence} 的把握相信我们的估计值在 μ 的 {E} 小时范围内，所需的最小样本量是多少？",
+                unit: "小时"
+            },
+            {
+                confidence: 90, z: 1.645, sigma: 5.5, E: 1.0, answer: 82,
+                context: "产品重量检验",
+                contextText: "某食品工厂生产的产品重量需要严格控制在标准范围内。假设我们希望估计该工厂生产的一类产品的平均重量 μ（克）。我们将选择一个产品的随机样本，并使用该样本的均值来估计 μ。",
+                paramsText: "假设该类产品重量的标准差为 {sigma} 克，为了使我们有 {confidence} 的把握相信我们的估计值在 μ 的 {E} 克范围内，所需的最小样本量是多少？",
+                unit: "克"
+            },
+            {
+                confidence: 99, z: 2.576, sigma: 10.0, E: 2.5, answer: 107,
+                context: "电池使用寿命",
+                contextText: "某品牌充电电池的使用寿命是消费者关注的重要指标。假设我们希望估计该品牌充电电池的平均使用寿命 μ（充电循环次数）。我们将选择一个该品牌电池的随机样本，并使用该样本的均值来估计 μ。",
+                paramsText: "假设该品牌电池使用寿命的标准差为 {sigma} 次充电循环，为了使我们有 {confidence} 的把握相信我们的估计值在 μ 的 {E} 次充电循环范围内，所需的最小样本量是多少？",
+                unit: "次"
+            },
+            {
+                confidence: 95, z: 1.96, sigma: 7.0, E: 1.2, answer: 131,
+                context: "员工通勤时间",
+                contextText: "某大型企业的员工通勤时间影响员工的工作满意度。假设我们希望估计该企业员工每天的平均通勤时间 μ（分钟）。我们将选择一个员工的随机样本，并使用该样本的均值来估计 μ。",
+                paramsText: "假设该企业员工通勤时间的标准差为 {sigma} 分钟，为了使我们有 {confidence} 的把握相信我们的估计值在 μ 的 {E} 分钟范围内，所需的最小样本量是多少？",
+                unit: "分钟"
+            },
+            {
+                confidence: 90, z: 1.645, sigma: 12.0, E: 3.0, answer: 44,
+                context: "餐厅顾客消费",
+                contextText: "某餐厅希望了解顾客的平均消费金额以优化经营策略。假设我们希望估计该餐厅顾客的平均消费金额 μ（元）。我们将选择一个顾客的随机样本，并使用该样本的均值来估计 μ。",
+                paramsText: "假设该餐厅顾客消费金额的标准差为 {sigma} 元，为了使我们有 {confidence} 的把握相信我们的估计值在 μ 的 {E} 元范围内，所需的最小样本量是多少？",
+                unit: "元"
+            },
+            {
+                confidence: 95, z: 1.96, sigma: 9.0, E: 1.5, answer: 139,
+                context: "考试成绩分析",
+                contextText: "某学校希望分析学生期末考试的成绩分布。假设我们希望估计该校学生期末考试的平均成绩 μ（分）。我们将选择一个学生的随机样本，并使用该样本的均值来估计 μ。",
+                paramsText: "假设该校学生期末考试成绩的标准差为 {sigma} 分，为了使我们有 {confidence} 的把握相信我们的估计值在 μ 的 {E} 分范围内，所需的最小样本量是多少？",
+                unit: "分"
+            },
+            {
+                confidence: 99, z: 2.576, sigma: 6.0, E: 1.0, answer: 239,
+                context: "植物生长高度",
+                contextText: "某农业研究机构正在研究一种新型水稻的生长情况。假设我们希望估计该品种水稻成熟后的平均高度 μ（厘米）。我们将选择一个水稻植株的随机样本，并使用该样本的均值来估计 μ。",
+                paramsText: "假设该品种水稻高度的标准差为 {sigma} 厘米，为了使我们有 {confidence} 的把握相信我们的估计值在 μ 的 {E} 厘米范围内，所需的最小样本量是多少？",
+                unit: "厘米"
+            },
+            {
+                confidence: 90, z: 1.645, sigma: 4.0, E: 0.8, answer: 68,
+                context: "药物剂量反应",
+                contextText: "某制药公司正在研究一种新药对患者的剂量反应。假设我们希望估计该药物达到预期疗效所需的平均剂量 μ（毫克）。我们将选择一个患者的随机样本，并使用该样本的均值来估计 μ。",
+                paramsText: "假设该药物剂量的标准差为 {sigma} 毫克，为了使我们有 {confidence} 的把握相信我们的估计值在 μ 的 {E} 毫克范围内，所需的最小样本量是多少？",
+                unit: "毫克"
+            },
+            {
+                confidence: 95, z: 1.96, sigma: 11.0, E: 2.0, answer: 117,
+                context: "网页加载时间",
+                contextText: "某电商网站希望优化用户体验，需要了解网页加载时间。假设我们希望估计该网站页面的平均加载时间 μ（秒）。我们将选择一个页面访问的随机样本，并使用该样本的均值来估计 μ。",
+                paramsText: "假设该网站页面加载时间的标准差为 {sigma} 秒，为了使我们有 {confidence} 的把握相信我们的估计值在 μ 的 {E} 秒范围内，所需的最小样本量是多少？",
+                unit: "秒"
+            },
+            {
+                confidence: 99, z: 2.576, sigma: 8.0, E: 1.5, answer: 189,
+                context: "顾客排队等待时间",
+                contextText: "某银行希望改善服务质量，需要了解顾客排队等待时间。假设我们希望估计该银行顾客的平均排队等待时间 μ（分钟）。我们将选择一个顾客的随机样本，并使用该样本的均值来估计 μ。",
+                paramsText: "假设该银行顾客排队等待时间的标准差为 {sigma} 分钟，为了使我们有 {confidence} 的把握相信我们的估计值在 μ 的 {E} 分钟范围内，所需的最小样本量是多少？",
+                unit: "分钟"
+            },
+            {
+                confidence: 90, z: 1.645, sigma: 6.5, E: 1.5, answer: 51,
+                context: "城市居民住房面积",
+                contextText: "某市政府希望了解城市居民的住房条件。假设我们希望估计该城市居民的人均住房面积 μ（平方米）。我们将选择一个居民的随机样本，并使用该样本的均值来估计 μ。",
+                paramsText: "假设该城市居民人均住房面积的标准差为 {sigma} 平方米，为了使我们有 {confidence} 的把握相信我们的估计值在 μ 的 {E} 平方米范围内，所需的最小样本量是多少？",
+                unit: "平方米"
+            },
+            {
+                confidence: 95, z: 1.96, sigma: 3.5, E: 0.5, answer: 189,
+                context: "小学生身高调查",
+                contextText: "某市教育局希望了解小学生的身体发育情况。假设我们希望估计该市小学生的平均身高 μ（厘米）。我们将选择一个小学生的随机样本，并使用该样本的均值来估计 μ。",
+                paramsText: "假设该市小学生身高的标准差为 {sigma} 厘米，为了使我们有 {confidence} 的把握相信我们的估计值在 μ 的 {E} 厘米范围内，所需的最小样本量是多少？",
+                unit: "厘米"
+            },
+            {
+                confidence: 99, z: 2.576, sigma: 5.5, E: 1.0, answer: 201,
+                context: "超市商品价格",
+                contextText: "某超市连锁店希望了解其商品的价格分布情况。假设我们希望估计该超市某类商品的平均价格 μ（元）。我们将选择一个该类商品的随机样本，并使用该样本的均值来估计 μ。",
+                paramsText: "假设该类商品价格的标准差为 {sigma} 元，为了使我们有 {confidence} 的把握相信我们的估计值在 μ 的 {E} 元范围内，所需的最小样本量是多少？",
+                unit: "元"
+            },
+            {
+                confidence: 90, z: 1.645, sigma: 9.5, E: 2.5, answer: 40,
+                context: "水果重量抽检",
+                contextText: "某水果批发商希望确保水果的质量符合标准。假设我们希望估计某批次苹果的平均重量 μ（克）。我们将选择一个苹果的随机样本，并使用该样本的均值来估计 μ。",
+                paramsText: "假设该批次苹果重量的标准差为 {sigma} 克，为了使我们有 {confidence} 的把握相信我们的估计值在 μ 的 {E} 克范围内，所需的最小样本量是多少？",
+                unit: "克"
+            },
+            {
+                confidence: 95, z: 1.96, sigma: 7.5, E: 1.8, answer: 67,
+                context: "汽车油耗调查",
+                contextText: "某汽车制造商希望了解其某款车型的实际油耗情况。假设我们希望估计该款车型的平均百公里油耗 μ（升）。我们将选择一个该款车型的随机样本，并使用该样本的均值来估计 μ。",
+                paramsText: "假设该款车型百公里油耗的标准差为 {sigma} 升，为了使我们有 {confidence} 的把握相信我们的估计值在 μ 的 {E} 升范围内，所需的最小样本量是多少？",
+                unit: "升"
+            }
         ];
 
         let currentParams = parameterSets[0];
-        let selectedOption = null;
         let isSubmitted = false;
-        let score = 0;
-        let attempts = 0;
-        let correctAttempts = 0;
-
-        function generateOptions(correctAnswer) {
-            const options = [];
-            const usedValues = new Set();
-
-            // Add correct answer
-            options.push({ value: correctAnswer, isCorrect: true });
-            usedValues.add(correctAnswer);
-
-            // Generate 3 distractors
-            const variations = [-3, -1, 2, 4, -5, 7];
-            let idx = 0;
-
-            while (options.length < 4 && idx < variations.length) {
-                const distractor = correctAnswer + variations[idx];
-                if (!usedValues.has(distractor) && distractor > 0) {
-                    options.push({ value: distractor, isCorrect: false });
-                    usedValues.add(distractor);
-                }
-                idx++;
-            }
-
-            // Shuffle options
-            for (let i = options.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [options[i], options[j]] = [options[j], options[i]];
-            }
-
-            return options;
-        }
+        let questionsetResults = []; // Array to store results for each question set
 
         function renderQuestion() {
             const params = currentParams;
 
-            // Update question text
-            document.getElementById('param-sigma').textContent = params.sigma.toFixed(2);
-            document.getElementById('param-confidence').textContent = params.confidence + '%';
-            document.getElementById('param-E').textContent = params.E.toFixed(1);
+            // Update question text with context
+            document.getElementById('question-context').textContent = params.contextText;
 
-            document.getElementById('formula-confidence').textContent = params.confidence + '%';
-            document.getElementById('formula-E').textContent = params.E.toFixed(1);
-            document.getElementById('formula-sigma').textContent = params.sigma.toFixed(2);
+            const paramsText = params.paramsText
+                .replace('{sigma}', params.sigma.toFixed(2))
+                .replace('{confidence}', params.confidence + '%')
+                .replace('{E}', params.E.toFixed(1));
+            document.getElementById('question-params').innerHTML = paramsText.replace(
+                /(\d+\.?\d*)/g,
+                '<span class="param">$1</span>'
+            );
 
             // Update explanation
             document.getElementById('exp-confidence').textContent = params.confidence + '%';
             document.getElementById('exp-E').textContent = params.E.toFixed(1);
             document.getElementById('exp-sigma').textContent = params.sigma.toFixed(2);
             document.getElementById('exp-z').textContent = params.z.toFixed(3);
+            document.getElementById('exp-unit').textContent = params.unit;
+            document.getElementById('exp-unit2').textContent = params.unit;
 
             // Calculate intermediate values
             const numerator = params.z * params.sigma;
@@ -597,87 +611,35 @@
             `;
 
             document.getElementById('calc-verification').innerHTML = `
-                我们有 ${params.confidence}% 的把握相信，使用 ${params.answer} 个样本得到的样本均值会在总体均值 μ 的 ${params.E.toFixed(1)} 小时范围内。
+                我们有 ${params.confidence}% 的把握相信，使用 ${params.answer} 个样本得到的样本均值会在总体均值 μ 的 ${params.E.toFixed(1)} ${params.unit}范围内。
             `;
 
-            // Generate and render options
-            const options = generateOptions(params.answer);
-            const optionsContainer = document.getElementById('options-container');
-            optionsContainer.innerHTML = '';
-
-            const letters = ['A', 'B', 'C', 'D'];
-            options.forEach((opt, index) => {
-                const optionDiv = document.createElement('div');
-                optionDiv.className = 'option';
-                optionDiv.setAttribute('data-value', opt.value);
-                optionDiv.setAttribute('data-correct', opt.isCorrect);
-                optionDiv.innerHTML = `
-                    <span class="option-label">${letters[index]}</span>
-                    <span class="option-text">${opt.value}</span>
-                `;
-                optionsContainer.appendChild(optionDiv);
-            });
-
-            // Update calculator defaults
-            document.getElementById('calc-z').value = params.z;
-            document.getElementById('calc-sigma').value = params.sigma;
-            document.getElementById('calc-e').value = params.E;
-
             // Reset state
-            selectedOption = null;
             isSubmitted = false;
             document.getElementById('direct-answer').value = '';
-
-            // Re-attach event listeners
-            attachOptionListeners();
         }
 
-        function attachOptionListeners() {
-            const options = document.querySelectorAll('.option');
-            const directAnswerInput = document.getElementById('direct-answer');
+        function updateResultsDisplay() {
+            const resultsContainer = document.getElementById('questionset-results');
+            if (questionsetResults.length === 0) {
+                resultsContainer.innerHTML = '<p class="empty-hint">完成题目后，这里会显示答题结果</p>';
+                return;
+            }
 
-            options.forEach(option => {
-                option.addEventListener('click', function() {
-                    if (isSubmitted) return;
-
-                    options.forEach(opt => {
-                        opt.classList.remove('selected');
-                    });
-
-                    this.classList.add('selected');
-                    selectedOption = parseInt(this.getAttribute('data-value'));
-                    directAnswerInput.value = selectedOption;
-                });
+            let html = '';
+            questionsetResults.forEach((result, index) => {
+                const symbol = result.correct ? '✓' : '✗';
+                html += `<div class="result-icon ${result.correct ? 'correct' : 'incorrect'}" title="第${index + 1}题: ${result.correct ? '正确' : '错误'}">${symbol}</div>`;
             });
-
-            directAnswerInput.addEventListener('input', function() {
-                const value = parseInt(this.value);
-                if (!isNaN(value)) {
-                    options.forEach(opt => {
-                        opt.classList.remove('selected');
-                        if (parseInt(opt.getAttribute('data-value')) === value) {
-                            opt.classList.add('selected');
-                        }
-                    });
-                    selectedOption = value;
-                }
-            });
-        }
-
-        function updateStats() {
-            document.getElementById('score').textContent = score;
-            document.getElementById('attempts').textContent = attempts;
-            const accuracy = attempts > 0 ? Math.round((correctAttempts / attempts) * 100) : 0;
-            document.getElementById('accuracy').textContent = `${accuracy}%`;
+            resultsContainer.innerHTML = html;
         }
 
         document.addEventListener('DOMContentLoaded', function() {
             // Initialize with first parameter set
             renderQuestion();
 
-            const refreshBtn = document.getElementById('refresh-btn');
             const submitBtn = document.getElementById('submit-btn');
-            const resetBtn = document.getElementById('reset-btn');
+            const nextBtn = document.getElementById('next-btn');
             const feedback = document.getElementById('feedback');
             const feedbackTitle = document.getElementById('feedback-title');
             const feedbackText = document.getElementById('feedback-text');
@@ -685,8 +647,8 @@
             const showExplanationBtn = document.getElementById('show-explanation-btn');
             const explanationSection = document.getElementById('explanation-section');
 
-            // Refresh button
-            refreshBtn.addEventListener('click', function() {
+            // Next question button
+            nextBtn.addEventListener('click', function() {
                 let newParams;
                 do {
                     newParams = parameterSets[Math.floor(Math.random() * parameterSets.length)];
@@ -696,11 +658,13 @@
                 renderQuestion();
 
                 // Reset UI
-                document.querySelectorAll('.option').forEach(option => {
-                    option.classList.remove('selected', 'correct', 'incorrect');
-                });
-
+                directAnswerInput.value = '';
+                directAnswerInput.disabled = false;
                 feedback.className = 'feedback';
+                feedbackTitle.textContent = '';
+                feedbackText.textContent = '';
+                isSubmitted = false;
+                submitBtn.disabled = false;
                 showExplanationBtn.style.display = 'none';
                 explanationSection.style.display = 'none';
                 showExplanationBtn.textContent = '查看答案解析';
@@ -708,52 +672,38 @@
 
             // Submit answer
             submitBtn.addEventListener('click', function() {
-                let userAnswer;
-
-                if (directAnswerInput.value && !isNaN(parseInt(directAnswerInput.value))) {
-                    userAnswer = parseInt(directAnswerInput.value);
-                } else if (selectedOption !== null) {
-                    userAnswer = selectedOption;
-                } else {
-                    alert('请选择一个答案或输入你的答案！');
+                if (!directAnswerInput.value || isNaN(parseInt(directAnswerInput.value))) {
+                    alert('请输入你的答案！');
                     return;
                 }
 
-                attempts++;
-
+                const userAnswer = parseInt(directAnswerInput.value);
                 const isCorrect = userAnswer === currentParams.answer;
 
                 if (isCorrect) {
                     feedback.className = 'feedback correct';
                     feedbackTitle.textContent = '正确！';
                     feedbackText.textContent = `你的答案 ${userAnswer} 是正确的。`;
-                    score += 10;
-                    correctAttempts++;
                 } else {
                     feedback.className = 'feedback incorrect';
                     feedbackTitle.textContent = '不正确';
-                    feedbackText.textContent = `你的答案 ${userAnswer} 不正确。请查看解析了解计算步骤。`;
-
-                    document.querySelectorAll('.option').forEach(opt => {
-                        const value = parseInt(opt.getAttribute('data-value'));
-                        if (value === userAnswer) {
-                            opt.classList.add('incorrect');
-                        }
-                    });
+                    feedbackText.textContent = `你的答案 ${userAnswer} 不正确。正确答案是 ${currentParams.answer}。请查看解析了解计算步骤。`;
                 }
 
-                // Disable options
-                document.querySelectorAll('.option').forEach(opt => {
-                    opt.style.pointerEvents = 'none';
+                // Save result
+                questionsetResults.push({
+                    correct: isCorrect,
+                    userAnswer: userAnswer,
+                    correctAnswer: currentParams.answer
                 });
+                updateResultsDisplay();
+
                 submitBtn.disabled = true;
                 directAnswerInput.disabled = true;
                 isSubmitted = true;
 
                 // Show explanation button
                 showExplanationBtn.style.display = 'inline-block';
-
-                updateStats();
             });
 
             // Explanation button
@@ -767,53 +717,8 @@
                 }
             });
 
-            // Reset
-            resetBtn.addEventListener('click', function() {
-                document.querySelectorAll('.option').forEach(opt => {
-                    opt.classList.remove('selected', 'correct', 'incorrect');
-                    opt.style.pointerEvents = 'auto';
-                });
-
-                directAnswerInput.value = '';
-                directAnswerInput.disabled = false;
-
-                feedback.className = 'feedback';
-                feedbackTitle.textContent = '';
-                feedbackText.textContent = '';
-
-                selectedOption = null;
-                isSubmitted = false;
-                submitBtn.disabled = false;
-
-                showExplanationBtn.style.display = 'none';
-                explanationSection.style.display = 'none';
-                showExplanationBtn.textContent = '查看答案解析';
-            });
-
-            // Calculator
-            document.getElementById('calculate-btn').addEventListener('click', function() {
-                const z = parseFloat(document.getElementById('calc-z').value);
-                const sigma = parseFloat(document.getElementById('calc-sigma').value);
-                const e = parseFloat(document.getElementById('calc-e').value);
-
-                if (isNaN(z) || isNaN(sigma) || isNaN(e) || e === 0) {
-                    document.getElementById('calc-result').textContent = '请输入有效的数值！';
-                    document.getElementById('calc-result').style.color = '#e74c3c';
-                    return;
-                }
-
-                const n = Math.pow((z * sigma) / e, 2);
-                const nRounded = Math.ceil(n);
-
-                document.getElementById('calc-result').innerHTML = `
-                    n = (${z} × ${sigma} ÷ ${e})² = (${(z * sigma).toFixed(3)} ÷ ${e})² = (${(z * sigma / e).toFixed(3)})² = <strong>${n.toFixed(6)}</strong><br>
-                    向上取整: <strong style="color: #2ecc71;">${nRounded}</strong>
-                `;
-                document.getElementById('calc-result').style.color = '#333';
-            });
-
-            // Initialize stats
-            updateStats();
+            // Initialize results display
+            updateResultsDisplay();
         });
     </script>
 </body>

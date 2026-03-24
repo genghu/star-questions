@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(start \"\")",
+      "Bash(node verify_anova.js)",
+      "Bash(node verify_html_data.js)"
+    ]
+  }
+}

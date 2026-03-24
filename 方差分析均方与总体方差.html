@@ -37,7 +37,7 @@
             margin-bottom: 10px;
         }
 
-        .header .subtitle {
+        .header  {
             font-size: 1.1rem;
             opacity: 0.9;
         }
@@ -62,10 +62,48 @@
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
         }
 
+        .scenario-box {
+            background-color: #e3f2fd;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border-left: 6px solid #0d47a1;
+            margin-bottom: 10px;
+        }
+
+        .scenario-box h3 {
+            color: #0d47a1;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .scenario-box p {
+            margin-bottom: 12px;
+            line-height: 1.8;
+        }
+
+        .scenario-box table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 0.95rem;
+        }
+
+        .scenario-box th, .scenario-box td {
+            border: 1px solid #90caf9;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .scenario-box th {
+            background-color: #bbdefb;
+            font-weight: 600;
+        }
+
         .question-header {
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            gap: 15px;
             margin-bottom: 20px;
             padding-bottom: 15px;
             border-bottom: 2px dashed #e0e0e0;
@@ -76,12 +114,20 @@
             color: white;
             width: 40px;
             height: 40px;
+            min-width: 40px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
             font-size: 1.2rem;
+        }
+
+        .question-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2c3e50;
+            flex: 1;
         }
 
         .question-text {
@@ -257,22 +303,41 @@
         .explanation {
             background-color: #fff8e1;
             border-left: 5px solid #ffb300;
-            padding: 18px;
+            padding: 20px 25px;
             border-radius: 10px;
             margin-top: 20px;
             font-size: 1rem;
-            line-height: 1.7;
+            line-height: 1.8;
         }
 
         .explanation h4 {
             color: #ff8f00;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             display: flex;
             align-items: center;
+            font-size: 1.2rem;
         }
 
         .explanation h4 i {
             margin-right: 10px;
+        }
+
+        .explanation p {
+            margin-bottom: 12px;
+        }
+
+        .explanation .math {
+            background-color: #fff3cd;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            font-family: 'Cambria Math', 'Times New Roman', serif;
+            font-size: 1.05rem;
+            text-align: center;
+        }
+
+        .explanation strong {
+            color: #e65100;
         }
 
         .controls {
@@ -280,6 +345,7 @@
             justify-content: center;
             gap: 20px;
             margin-top: 30px;
+            flex-wrap: wrap;
         }
 
         .btn {
@@ -318,6 +384,28 @@
             transform: translateY(-3px);
         }
 
+        .btn-next {
+            background: linear-gradient(to right, #34a853, #2ecc71);
+            color: white;
+            box-shadow: 0 5px 15px rgba(52, 168, 83, 0.4);
+        }
+
+        .btn-next:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(52, 168, 83, 0.6);
+        }
+
+        .btn-explanation {
+            background: linear-gradient(to right, #9b59b6, #8e44ad);
+            color: white;
+            box-shadow: 0 5px 15px rgba(155, 89, 182, 0.4);
+        }
+
+        .btn-explanation:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(155, 89, 182, 0.6);
+        }
+
         .score-panel {
             background-color: white;
             border-radius: 15px;
@@ -350,99 +438,138 @@
             color: #666;
         }
 
-    </style>
+        .quiz-history {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 2px dashed #e0e0e0;
+        }
 
-    <style>
-    .show-explanation-btn {
-        display: none;
-        margin: 20px auto;
-        padding: 14px 28px;
-        background: linear-gradient(135deg, #9b59b6, #8e44ad);
-        color: white;
-        border: none;
-        border-radius: 10px;
-        cursor: pointer;
-        font-size: 1.1rem;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
-    }
-    .show-explanation-btn:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
-    }
-    .explanation-section {
-        display: none;
-        margin-top: 20px;
-    }
+        .quiz-history-title {
+            font-size: 1.1rem;
+            color: #1e88e5;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .quiz-history-icons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            min-height: 40px;
+        }
+
+        .quiz-result-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            font-weight: bold;
+            color: white;
+            transition: transform 0.2s;
+        }
+
+        .quiz-result-icon:hover {
+            transform: scale(1.15);
+        }
+
+        .quiz-result-icon.correct {
+            background-color: #4caf50;
+        }
+
+        .quiz-result-icon.incorrect {
+            background-color: #f44336;
+        }
+
+        .quiz-history-empty {
+            color: #999;
+            font-size: 0.95rem;
+        }
+
+        .quiz-stats {
+            margin-top: 15px;
+            font-size: 0.95rem;
+            color: #666;
+        }
+
     </style>
     </head>
 <body>
     <div class="header">
-        <h1><i class="fas fa-chart-bar"></i> 方差分析均方与总体方差
-            <button id="refresh-btn" style="margin-left: 15px; padding: 8px 16px; background: linear-gradient(135deg, #34a853, #2ecc71); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(52, 168, 83, 0.3);">刷新参数</button>
-        </h1>
-        <p class="subtitle">交互式答题练习 - 请仔细阅读题目并选择正确答案</p>
+        <h1><i class="fas fa-chart-bar"></i> 方差分析均方与总体方差</h1>
     </div>
 
     <div class="container">
+        <!-- 场景描述 -->
+        <div class="scenario-box">
+            <h3>题目背景</h3>
+            <div id="scenario-description">
+                <p>在LLD唱片公司，部分针对大学生的市场调研是在大学校园的促销活动期间进行的，而其他针对大学生的市场调研则是通过匿名的邮件、电话、互联网和唱片店问卷完成的。在所有情况下，公司都会从学生那里获取一个"购买意向"得分，其中0分是最低分（"无购买意向"），100分是最高分（"完全有意购买"）。</p>
+                <p>经理为一款即将发行的CD的购买意向得分找到了以下信息：</p>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>组别</th>
+                        <th>样本容量</th>
+                        <th>样本均值</th>
+                        <th>样本方差</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>校园内</td>
+                        <td>21</td>
+                        <td>64.1</td>
+                        <td>74.6</td>
+                    </tr>
+                    <tr>
+                        <td>通过邮件</td>
+                        <td>21</td>
+                        <td>64.5</td>
+                        <td>115.3</td>
+                    </tr>
+                    <tr>
+                        <td>通过电话</td>
+                        <td>21</td>
+                        <td>73.6</td>
+                        <td>133.8</td>
+                    </tr>
+                    <tr>
+                        <td>通过互联网</td>
+                        <td>21</td>
+                        <td>72.9</td>
+                        <td>106.5</td>
+                    </tr>
+                    <tr>
+                        <td>在商店内</td>
+                        <td>21</td>
+                        <td>64.6</td>
+                        <td>115.1</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p id="scenario-assumption">假设抽取这些样本的五个得分总体近似服从正态分布，且具有相同的均值和相同的方差。</p>
+        </div>
+
+        <!-- 题目1 -->
         <div class="question-card">
             <div class="question-header">
                 <div class="question-number">1</div>
-                <h2>问题一：基于样本方差的估计</h2>
+                <div class="question-title">通过合并给出的样本方差，计算这个共同总体方差σ²的估计值。</div>
             </div>
             <div class="question-text">
-                <p>在LLD唱片公司，部分针对大学生的市场调研是在大学校园的促销活动期间进行的，而其他针对大学生的市场调研则是通过匿名的邮件、电话、互联网和唱片店问卷完成的。在所有情况下，公司都会从学生那里获取一个“购买意向”得分，其中0分是最低分（“无购买意向”），100分是最高分（“完全有意购买”）。</p>
-                <p>经理为一款即将发行的CD的购买意向得分找到了以下信息：</p>
-                
-                <table>
-                    <thead>
-                        <tr>
-                            <th>组别</th>
-                            <th>样本容量</th>
-                            <th>样本均值</th>
-                            <th>样本方差</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>校园内</td>
-                            <td>21</td>
-                            <td>64.1</td>
-                            <td>74.6</td>
-                        </tr>
-                        <tr>
-                            <td>通过邮件</td>
-                            <td>21</td>
-                            <td>64.5</td>
-                            <td>115.3</td>
-                        </tr>
-                        <tr>
-                            <td>通过电话</td>
-                            <td>21</td>
-                            <td>73.6</td>
-                            <td>133.8</td>
-                        </tr>
-                        <tr>
-                            <td>通过互联网</td>
-                            <td>21</td>
-                            <td>72.9</td>
-                            <td>106.5</td>
-                        </tr>
-                        <tr>
-                            <td>在商店内</td>
-                            <td>21</td>
-                            <td>64.6</td>
-                            <td>115.1</td>
-                        </tr>
-                    </tbody>
-                </table>
-                
-                <p>假设抽取这些样本的五个得分总体近似服从正态分布，且具有相同的均值和相同的方差。</p>
-                <p><strong>通过合并给出的样本方差，计算这个共同总体方差σ²的估计值。</strong></p>
                 <p>将中间计算过程至少保留三位小数，并将最终答案至少保留一位小数。</p>
             </div>
-            
+
             <div class="input-answer">
                 <label for="answer1">σ² = </label>
                 <input type="number" id="answer1" step="0.1" placeholder="输入答案">
@@ -451,22 +578,19 @@
 
             <div class="feedback" id="feedback1"></div>
 
-            <button class="show-explanation-btn" data-question="1" style="display:none;">查看答案解析</button>
             <div class="explanation" id="explanation1" style="display:none;"></div>
         </div>
 
+        <!-- 题目2 -->
         <div class="question-card">
             <div class="question-header">
                 <div class="question-number">2</div>
-                <h2>问题二：基于样本均值的估计</h2>
+                <div class="question-title">根据给出的样本均值的方差，计算这个共同总体方差σ²的估计值。</div>
             </div>
             <div class="question-text">
-                <p>使用相同的题目背景和数据表格。</p>
-                <p><strong>根据给出的样本均值的方差，计算这个共同总体方差σ²的估计值。</strong></p>
-                <p id="mean-variance-hint">已知五个样本均值（64.1, 64.5, 73.6, 72.9, 64.6）的（样本）方差约为23.593。</p>
                 <p>将中间计算过程至少保留三位小数，并将最终答案至少保留一位小数。</p>
             </div>
-            
+
             <div class="input-answer">
                 <label for="answer2">σ² = </label>
                 <input type="number" id="answer2" step="0.1" placeholder="输入答案">
@@ -475,7 +599,6 @@
 
             <div class="feedback" id="feedback2"></div>
 
-            <button class="show-explanation-btn" data-question="2" style="display:none;">查看答案解析</button>
             <div class="explanation" id="explanation2" style="display:none;"></div>
         </div>
     </div>
@@ -484,8 +607,11 @@
         <button class="btn btn-submit" id="submitBtn">
             <i class="fas fa-paper-plane"></i> 提交答案
         </button>
-        <button class="btn btn-reset" id="resetBtn">
-            <i class="fas fa-redo"></i> 重新作答
+        <button class="btn btn-next" id="nextBtn">
+            <i class="fas fa-arrow-right"></i> 下一题
+        </button>
+        <button class="btn btn-explanation" id="showExplanationBtn" style="display:none;">
+            <i class="fas fa-lightbulb"></i> 查看答案解析
         </button>
     </div>
 
@@ -494,6 +620,16 @@
         <div class="score-value" id="scoreValue">0/2</div>
         <p class="score-detail" id="scoreDetail">您答对了 <span id="correctCount">0</span> 题，答错了 <span id="incorrectCount">0</span> 题。</p>
         <p id="scoreMessage">请继续努力！</p>
+
+        <div class="quiz-history">
+            <div class="quiz-history-title">
+                <i class="fas fa-history"></i> 答题记录
+            </div>
+            <div class="quiz-history-icons" id="quizHistoryIcons">
+                <span class="quiz-history-empty">暂无记录，开始答题吧！</span>
+            </div>
+            <div class="quiz-stats" id="quizStats"></div>
+        </div>
     </div>
 
     
@@ -503,6 +639,8 @@
         const parameterSets = [
             {
                 sampleSize: 21,
+                scenario: '在LLD唱片公司，部分针对大学生的市场调研是在大学校园的促销活动期间进行的，而其他针对大学生的市场调研则是通过匿名的邮件、电话、互联网和唱片店问卷完成的。在所有情况下，公司都会从学生那里获取一个"购买意向"得分，其中0分是最低分（"无购买意向"），100分是最高分（"完全有意购买"）。',
+                scenarioTitle: '购买意向得分',
                 groups: [
                     { name: '校园内', mean: 64.1, variance: 74.6 },
                     { name: '通过邮件', mean: 64.5, variance: 115.3 },
@@ -514,86 +652,383 @@
                 answer1: 109.1,
                 answer2: 495.5
             },
+            // ========== 3个组别的参数集（7组）==========
             {
                 sampleSize: 25,
+                scenario: '某电商平台想了解不同渠道获取的用户对其推荐系统的满意度。平台从三个主要渠道（搜索引擎、社交媒体、直接访问）各抽取了相同数量的用户，记录他们对推荐系统的满意度评分（0-100分）。',
+                scenarioTitle: '推荐系统满意度',
                 groups: [
-                    { name: '校园内', mean: 58.2, variance: 82.4 },
-                    { name: '通过邮件', mean: 62.8, variance: 98.6 },
-                    { name: '通过电话', mean: 71.5, variance: 125.2 },
-                    { name: '通过互联网', mean: 67.3, variance: 110.8 },
-                    { name: '在商店内', mean: 59.1, variance: 95.5 }
+                    { name: '搜索引擎', mean: 58.2, variance: 82.4 },
+                    { name: '社交媒体', mean: 62.8, variance: 98.6 },
+                    { name: '直接访问', mean: 71.5, variance: 125.2 }
                 ],
-                meanVariance: 30.125,
-                answer1: 102.5,
-                answer2: 753.1
+                meanVariance: 45.8,
+                answer1: 102.1,
+                answer2: 1145.0
             },
+            // ========== 4个组别的参数集（7组）==========
             {
                 sampleSize: 18,
+                scenario: '某连锁咖啡店想了解不同城市门店的顾客消费体验。从四个主要城市（北京、上海、广州、深圳）各抽取了相同数量的顾客样本，记录他们的整体消费体验评分（0-100分）。',
+                scenarioTitle: '消费体验评分',
                 groups: [
-                    { name: '校园内', mean: 70.5, variance: 68.3 },
-                    { name: '通过邮件', mean: 65.2, variance: 88.7 },
-                    { name: '通过电话', mean: 72.8, variance: 105.4 },
-                    { name: '通过互联网', mean: 68.9, variance: 92.1 },
-                    { name: '在商店内', mean: 66.4, variance: 78.5 }
+                    { name: '北京门店', mean: 70.5, variance: 68.3 },
+                    { name: '上海门店', mean: 65.2, variance: 88.7 },
+                    { name: '广州门店', mean: 72.8, variance: 105.4 },
+                    { name: '深圳门店', mean: 68.9, variance: 92.1 }
                 ],
-                meanVariance: 18.762,
-                answer1: 86.6,
-                answer2: 337.7
+                meanVariance: 12.5,
+                answer1: 88.6,
+                answer2: 225.0
             },
+            // ========== 5个组别的参数集（6组）==========
             {
                 sampleSize: 30,
+                scenario: '某在线教育平台想了解不同时间段学员的学习效果。平台从五个不同时间段（早晨、上午、下午、傍晚、夜间）学习的学员中各抽取了相同数量的样本，记录他们的课程测验得分（0-100分）。',
+                scenarioTitle: '学习效果得分',
                 groups: [
-                    { name: '校园内', mean: 55.8, variance: 95.2 },
-                    { name: '通过邮件', mean: 52.3, variance: 120.6 },
-                    { name: '通过电话', mean: 61.7, variance: 145.3 },
-                    { name: '通过互联网', mean: 58.4, variance: 108.9 },
-                    { name: '在商店内', mean: 54.6, variance: 118.7 }
+                    { name: '早晨学习', mean: 55.8, variance: 95.2 },
+                    { name: '上午学习', mean: 52.3, variance: 120.6 },
+                    { name: '下午学习', mean: 61.7, variance: 145.3 },
+                    { name: '傍晚学习', mean: 58.4, variance: 108.9 },
+                    { name: '夜间学习', mean: 54.6, variance: 118.7 }
                 ],
                 meanVariance: 14.825,
                 answer1: 117.7,
                 answer2: 444.8
             },
+            // ========== 3个组别 ==========
             {
                 sampleSize: 20,
+                scenario: '某健身连锁机构想了解不同类型会员的健身频率。从三种主要会员类型（月卡会员、季卡会员、年卡会员）中各抽取了相同数量的样本，记录他们过去一个月的健身次数。',
+                scenarioTitle: '月健身次数',
                 groups: [
-                    { name: '校园内', mean: 72.3, variance: 65.8 },
-                    { name: '通过邮件', mean: 68.9, variance: 88.2 },
-                    { name: '通过电话', mean: 75.6, variance: 112.5 },
-                    { name: '通过互联网', mean: 71.2, variance: 78.4 },
-                    { name: '在商店内', mean: 69.5, variance: 95.6 }
+                    { name: '月卡会员', mean: 72.3, variance: 65.8 },
+                    { name: '季卡会员', mean: 68.9, variance: 88.2 },
+                    { name: '年卡会员', mean: 75.6, variance: 112.5 }
                 ],
-                meanVariance: 26.435,
-                answer1: 88.1,
-                answer2: 528.7
+                meanVariance: 12.2,
+                answer1: 88.8,
+                answer2: 244.0
+            },
+            // ========== 心理学背景参数集 ==========
+            // 4个组别
+            {
+                sampleSize: 22,
+                scenario: '王教授是某大学心理咨询中心的临床心理学家，她正在研究不同心理治疗方法对轻度焦虑症患者的治疗效果。她招募了四组被试，每组接受一种不同的心理治疗方法，持续8周。治疗结束后使用焦虑自评量表（SAS）评估症状改善程度（分数降低越多表示改善越明显）。',
+                scenarioTitle: 'SAS分数降低值',
+                groups: [
+                    { name: '认知行为疗法', mean: 78.5, variance: 45.2 },
+                    { name: '精神分析疗法', mean: 72.3, variance: 52.8 },
+                    { name: '人本主义疗法', mean: 75.8, variance: 48.6 },
+                    { name: '行为疗法', mean: 76.2, variance: 55.3 }
+                ],
+                meanVariance: 8.5,
+                answer1: 50.5,
+                answer2: 187.0
+            },
+            // 3个组别
+            {
+                sampleSize: 28,
+                scenario: '李博士是某睡眠研究中心的研究员，她正在研究不同睡眠时长对大学生认知能力的影响。她招募了三组被试，每组保持不同的睡眠时长模式（6小时、7-8小时、9小时），持续两周。实验结束后使用认知能力测试评估被试的认知表现（分数越高表示认知能力越好）。',
+                scenarioTitle: '认知能力得分',
+                groups: [
+                    { name: '6小时睡眠组', mean: 65.2, variance: 88.5 },
+                    { name: '7-8小时睡眠组', mean: 85.6, variance: 62.8 },
+                    { name: '9小时睡眠组', mean: 82.3, variance: 68.4 }
+                ],
+                meanVariance: 125.8,
+                answer1: 73.2,
+                answer2: 3522.4
+            },
+            // 5个组别
+            {
+                sampleSize: 18,
+                scenario: '张教授是某教育心理学系的研究员，她正在研究不同奖励方式对小学生学习动机的影响。她招募了五组小学生，每组使用一种不同的奖励方式，持续一个学期。学期结束后使用学习动机量表评估学生的学习动机水平（分数越高表示动机越强）。',
+                scenarioTitle: '学习动机得分',
+                groups: [
+                    { name: '物质奖励组', mean: 82.5, variance: 35.6 },
+                    { name: '口头表扬组', mean: 75.8, variance: 42.3 },
+                    { name: '积分兑换组', mean: 79.2, variance: 38.5 },
+                    { name: '竞赛排名组', mean: 80.1, variance: 45.2 },
+                    { name: '自主选择组', mean: 83.6, variance: 32.8 }
+                ],
+                meanVariance: 15.25,
+                answer1: 38.9,
+                answer2: 274.5
+            },
+            // 3个组别
+            {
+                sampleSize: 24,
+                scenario: '陈研究员是某认知心理学实验室的研究员，她正在研究不同背景音对大学生阅读理解能力的影响。她招募了三组被试，每组在一种不同的背景音环境下完成相同的阅读理解任务。任务完成后记录每位被试的阅读理解得分（0-100分）。',
+                scenarioTitle: '阅读理解得分',
+                groups: [
+                    { name: '古典音乐组', mean: 78.2, variance: 52.6 },
+                    { name: '轻音乐组', mean: 82.5, variance: 48.2 },
+                    { name: '静音环境组', mean: 74.5, variance: 62.3 }
+                ],
+                meanVariance: 16.8,
+                answer1: 54.4,
+                answer2: 403.2
+            },
+            // 4个组别
+            {
+                sampleSize: 20,
+                scenario: '刘博士是某正念研究中心的研究员，她正在研究不同冥想方式对职场人士焦虑水平的影响。她招募了四组被试，每组练习一种不同的冥想方式，持续4周。训练前后使用状态焦虑量表（STAI-S）评估焦虑水平，记录焦虑分数的降低值。',
+                scenarioTitle: '焦虑分数降低值',
+                groups: [
+                    { name: '正念冥想组', mean: 32.5, variance: 28.5 },
+                    { name: '呼吸冥想组', mean: 35.8, variance: 32.2 },
+                    { name: '身体扫描组', mean: 34.2, variance: 30.8 },
+                    { name: '慈悲冥想组', mean: 30.8, variance: 26.5 }
+                ],
+                meanVariance: 4.8,
+                answer1: 29.5,
+                answer2: 96.0
+            },
+            // 5个组别
+            {
+                sampleSize: 26,
+                scenario: '赵教授是某环境心理学研究中心的研究员，她正在研究不同颜色环境对大学生情绪状态的影响。她招募了五组被试，每组在一种不同颜色布置的房间内停留30分钟。实验结束后使用积极消极情感量表（PANAS）评估积极情绪得分。',
+                scenarioTitle: '积极情绪得分',
+                groups: [
+                    { name: '暖色调环境', mean: 72.5, variance: 58.2 },
+                    { name: '冷色调环境', mean: 65.8, variance: 65.8 },
+                    { name: '中性色调环境', mean: 70.2, variance: 55.6 },
+                    { name: '自然色调环境', mean: 75.6, variance: 52.3 },
+                    { name: '多彩环境', mean: 68.5, variance: 62.5 }
+                ],
+                meanVariance: 18.65,
+                answer1: 58.9,
+                answer2: 484.9
+            },
+            // 3个组别
+            {
+                sampleSize: 22,
+                scenario: '周研究员是某社会心理学实验室的研究员，她正在研究不同社交环境对独居老年人主观幸福感的影响。她招募了三组独居老年人，每组处于一种不同的社交环境模式，持续3个月。研究结束后使用生活满意度量表（SWLS）评估主观幸福感得分。',
+                scenarioTitle: '生活满意度得分',
+                groups: [
+                    { name: '独处环境', mean: 58.2, variance: 72.5 },
+                    { name: '小群体环境', mean: 72.8, variance: 58.2 },
+                    { name: '混合社交环境', mean: 70.5, variance: 62.5 }
+                ],
+                meanVariance: 58.5,
+                answer1: 64.4,
+                answer2: 1287.0
+            },
+            // 4个组别
+            {
+                sampleSize: 30,
+                scenario: '吴教授是某健康心理学研究中心的研究员，她正在研究不同压力水平对护士工作记忆能力的影响。她招募了四组护士，每组处于不同的压力状态，使用n-back任务评估工作记忆能力（得分越高表示工作记忆越好）。',
+                scenarioTitle: '工作记忆得分',
+                groups: [
+                    { name: '低压力组', mean: 85.2, variance: 42.5 },
+                    { name: '中等压力组', mean: 78.6, variance: 52.8 },
+                    { name: '高压力组', mean: 62.5, variance: 85.2 },
+                    { name: '恢复期组', mean: 72.8, variance: 62.5 }
+                ],
+                meanVariance: 105.2,
+                answer1: 60.8,
+                answer2: 3156.0
+            },
+            // ========== 其他背景参数集 ==========
+            // 5个组别
+            {
+                sampleSize: 25,
+                scenario: '某农业研究所想了解不同施肥方式对小麦产量的影响。从五个使用不同施肥方式的试验田中各抽取了相同数量的样本小区，记录每个小区的小麦亩产量（公斤）。',
+                scenarioTitle: '小麦亩产量',
+                groups: [
+                    { name: '有机肥组', mean: 4250.5, variance: 28500 },
+                    { name: '复合肥组', mean: 4580.2, variance: 31200 },
+                    { name: '生物肥组', mean: 4125.8, variance: 26800 },
+                    { name: '微量元素肥组', mean: 4380.6, variance: 29500 },
+                    { name: '混合施肥组', mean: 4652.3, variance: 32500 }
+                ],
+                meanVariance: 45280,
+                answer1: 29700,
+                answer2: 1132000
+            },
+            // 3个组别
+            {
+                sampleSize: 28,
+                scenario: '某数字营销公司想了解不同广告形式的效果。从三种主要广告形式（社交媒体广告、搜索引擎广告、直播带货）投放的活动中各抽取了相同数量的样本，记录每次活动的转化率（%）。',
+                scenarioTitle: '广告转化率',
+                groups: [
+                    { name: '社交媒体广告', mean: 125.8, variance: 450.5 },
+                    { name: '搜索引擎广告', mean: 158.2, variance: 525.2 },
+                    { name: '直播带货', mean: 185.3, variance: 620.8 }
+                ],
+                meanVariance: 850.5,
+                answer1: 532.2,
+                answer2: 23814.0
+            },
+            // 4个组别
+            {
+                sampleSize: 20,
+                scenario: '某咖啡品质检测机构想了解不同产地咖啡豆的咖啡因含量。从四个主要产地的咖啡豆中各抽取了相同数量的样本，检测每份样本的咖啡因含量（%）。',
+                scenarioTitle: '咖啡因含量',
+                groups: [
+                    { name: '巴西咖啡豆', mean: 1.25, variance: 0.085 },
+                    { name: '哥伦比亚咖啡豆', mean: 1.18, variance: 0.072 },
+                    { name: '埃塞俄比亚咖啡豆', mean: 1.32, variance: 0.095 },
+                    { name: '印尼咖啡豆', mean: 1.15, variance: 0.068 }
+                ],
+                meanVariance: 0.0068,
+                answer1: 0.080,
+                answer2: 0.14
+            },
+            // 5个组别
+            {
+                sampleSize: 22,
+                scenario: '某运动科学研究所想了解不同运动方式对心率的影响。从五种不同运动方式（有氧运动、力量训练、瑜伽、游泳、综合训练）的参与者中各抽取了相同数量的样本，记录运动后的心率（次/分钟）。',
+                scenarioTitle: '运动后心率',
+                groups: [
+                    { name: '有氧运动组', mean: 125.5, variance: 85.2 },
+                    { name: '力量训练组', mean: 118.2, variance: 92.5 },
+                    { name: '瑜伽组', mean: 95.8, variance: 65.8 },
+                    { name: '游泳组', mean: 122.6, variance: 78.5 },
+                    { name: '综合训练组', mean: 120.5, variance: 82.3 }
+                ],
+                meanVariance: 165.25,
+                answer1: 80.9,
+                answer2: 3635.5
+            },
+            // 3个组别
+            {
+                sampleSize: 30,
+                scenario: '某教育研究机构想了解不同教学方法对学生考试成绩的影响。从三种主要教学方法（讲授式教学、讨论式教学、项目式学习）的班级中各抽取了相同数量的学生，记录他们的期末考试成绩。',
+                scenarioTitle: '期末考试成绩',
+                groups: [
+                    { name: '讲授式教学', mean: 72.5, variance: 125.8 },
+                    { name: '讨论式教学', mean: 78.2, variance: 108.5 },
+                    { name: '项目式学习', mean: 85.8, variance: 88.6 }
+                ],
+                meanVariance: 48.5,
+                answer1: 107.6,
+                answer2: 1455.0
+            },
+            // 4个组别
+            {
+                sampleSize: 18,
+                scenario: '某食品科学研究所想了解不同存储温度对乳制品保质期的影响。从四种不同温度条件（4°C、8°C、12°C、冷冻）存储的乳制品中各抽取了相同数量的样本，记录每份样本的保质期（天）。',
+                scenarioTitle: '保质期天数',
+                groups: [
+                    { name: '4°C存储', mean: 15.2, variance: 2.85 },
+                    { name: '8°C存储', mean: 12.5, variance: 3.52 },
+                    { name: '12°C存储', mean: 8.6, variance: 4.28 },
+                    { name: '冷冻存储', mean: 25.8, variance: 2.15 }
+                ],
+                meanVariance: 58.2,
+                answer1: 3.2,
+                answer2: 1047.6
+            },
+            // 5个组别
+            {
+                sampleSize: 24,
+                scenario: '某植物研究所想了解不同光源对室内植物生长的影响。从五种不同光源（LED光源、荧光灯、白炽灯、自然光、混合光源）照射下的植物中各抽取了相同数量的样本，记录每株植物的高度增长量（厘米）。',
+                scenarioTitle: '高度增长量',
+                groups: [
+                    { name: 'LED光源', mean: 35.8, variance: 28.5 },
+                    { name: '荧光灯', mean: 28.5, variance: 32.8 },
+                    { name: '白炽灯', mean: 25.2, variance: 38.5 },
+                    { name: '自然光', mean: 42.5, variance: 22.5 },
+                    { name: '混合光源', mean: 38.2, variance: 26.2 }
+                ],
+                meanVariance: 58.25,
+                answer1: 29.7,
+                answer2: 1398.0
+            },
+            // 3个组别
+            {
+                sampleSize: 20,
+                scenario: '某畜牧研究所想了解不同饲料对肉牛体重增长的影响。从三种主要饲料（谷物饲料、配合饲料、混合饲料）喂养的肉牛中各抽取了相同数量的样本，记录每头牛的日增重（克）。',
+                scenarioTitle: '日增重',
+                groups: [
+                    { name: '谷物饲料', mean: 85.2, variance: 25.8 },
+                    { name: '配合饲料', mean: 92.6, variance: 22.5 },
+                    { name: '混合饲料', mean: 90.5, variance: 24.8 }
+                ],
+                meanVariance: 15.2,
+                answer1: 24.4,
+                answer2: 304.0
+            },
+            // 4个组别
+            {
+                sampleSize: 22,
+                scenario: '某水产研究所想了解不同养殖方式对罗非鱼生长的影响。从四种不同养殖方式（淡水养殖、海水养殖、循环水养殖、网箱养殖）的鱼塘中各抽取了相同数量的样本，记录每条鱼的体重（克）。',
+                scenarioTitle: '鱼体重',
+                groups: [
+                    { name: '淡水养殖', mean: 520.5, variance: 2850 },
+                    { name: '海水养殖', mean: 680.2, variance: 3520 },
+                    { name: '循环水养殖', mean: 485.8, variance: 2180 },
+                    { name: '网箱养殖', mean: 625.6, variance: 3250 }
+                ],
+                meanVariance: 8500,
+                answer1: 2950,
+                answer2: 187000
             }
         ];
 
         let currentParams = parameterSets[0];
         let submitted = false;
+        let quizHistory = []; // 存储答题历史记录
+
+        // 更新答题历史显示
+        function updateQuizHistoryDisplay() {
+            const historyContainer = document.getElementById('quizHistoryIcons');
+            const statsContainer = document.getElementById('quizStats');
+
+            if (quizHistory.length === 0) {
+                historyContainer.innerHTML = '<span class="quiz-history-empty">暂无记录，开始答题吧！</span>';
+                statsContainer.innerHTML = '';
+                return;
+            }
+
+            // 生成图标
+            historyContainer.innerHTML = quizHistory.map((result, index) => {
+                const isCorrect = result === 'correct';
+                const iconClass = isCorrect ? 'correct' : 'incorrect';
+                const iconSymbol = isCorrect ? '✓' : '✗';
+                const title = isCorrect ? '全部正确' : '有错误';
+                return '<div class="quiz-result-icon ' + iconClass + '" title="第' + (index + 1) + '套题: ' + title + '">' + iconSymbol + '</div>';
+            }).join('');
+
+            // 计算统计信息
+            const correctCount = quizHistory.filter(r => r === 'correct').length;
+            const totalCount = quizHistory.length;
+            const accuracy = totalCount > 0 ? Math.round((correctCount / totalCount) * 100) : 0;
+
+            statsContainer.innerHTML = '已完成 <strong>' + totalCount + '</strong> 套题，全对 <strong>' + correctCount + '</strong> 套，正确率 <strong>' + accuracy + '%</strong>';
+        }
 
         // 初始化题目
         function initializeQuestion() {
             const params = currentParams;
+            const numGroups = params.groups.length;
+
+            // 更新场景描述
+            const scenarioDesc = document.getElementById('scenario-description');
+            if (scenarioDesc && params.scenario) {
+                scenarioDesc.innerHTML = '<p>' + params.scenario + '</p><p>研究员收集了以下关于<strong>' + (params.scenarioTitle || '测量指标') + '</strong>的数据：</p>';
+            }
+
+            // 更新假设文本
+            const assumptionEl = document.getElementById('scenario-assumption');
+            if (assumptionEl) {
+                const groupText = numGroups === 3 ? '三个' : (numGroups === 4 ? '四个' : '五个');
+                assumptionEl.textContent = '假设抽取这些样本的' + groupText + '得分总体近似服从正态分布，且具有相同的均值和相同的方差。';
+            }
 
             // 更新表格
-            const tbody = document.querySelector('.question-text table tbody');
-            tbody.innerHTML = '';
+            const tbody = document.querySelector('.scenario-box table tbody');
+            if (tbody) {
+                tbody.innerHTML = '';
 
-            params.groups.forEach(group => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>${group.name}</td>
-                    <td>${params.sampleSize}</td>
-                    <td>${group.mean}</td>
-                    <td>${group.variance}</td>
-                `;
-                tbody.appendChild(tr);
-            });
-
-            // 更新问题2中的均值方差
-            const meanVarianceHint = document.getElementById('mean-variance-hint');
-            if (meanVarianceHint) {
-                meanVarianceHint.innerHTML = `已知五个样本均值（${params.groups.map(g => g.mean).join(', ')}）的（样本）方差约为${params.meanVariance}。`;
+                params.groups.forEach(function(group) {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = '<td>' + group.name + '</td><td>' + params.sampleSize + '</td><td>' + group.mean + '</td><td>' + group.variance + '</td>';
+                    tbody.appendChild(tr);
+                });
             }
 
             // 清空输入框
@@ -609,12 +1044,14 @@
             document.getElementById('feedback2').innerHTML = '';
 
             // 隐藏解析
-            document.querySelectorAll('.show-explanation-btn').forEach(btn => {
-                btn.style.display = 'none';
-            });
-            document.querySelectorAll('.explanation').forEach(exp => {
+            document.querySelectorAll('.explanation').forEach(function(exp) {
                 exp.style.display = 'none';
             });
+
+            // 隐藏"查看答案解析"按钮并重置文本
+            const showExplanationBtn = document.getElementById('showExplanationBtn');
+            showExplanationBtn.style.display = 'none';
+            showExplanationBtn.innerHTML = '<i class="fas fa-lightbulb"></i> 查看答案解析';
 
             // 隐藏得分面板
             document.getElementById('scorePanel').classList.remove('show');
@@ -627,28 +1064,52 @@
             const params = currentParams;
             const variances = params.groups.map(g => g.variance);
             const sumVariances = variances.reduce((a, b) => a + b, 0);
+            const numGroups = params.groups.length;
+            const means = params.groups.map(g => g.mean);
+            const sumMeans = means.reduce((a, b) => a + b, 0);
+            const avgMean = sumMeans / numGroups;
+            const meanVarianceCalc = means.reduce((sum, m) => sum + Math.pow(m - avgMean, 2), 0) / (numGroups - 1);
 
             // 更新问题1解析
             const exp1 = document.getElementById('explanation1');
-            exp1.innerHTML = `
-                <h4><i class="fas fa-lightbulb"></i> 题目解析</h4>
-                <p>由于所有样本都来自具有相同方差σ²的总体，每个样本方差都是σ²的一个独立估计值。</p>
-                <p>当所有样本容量相等时，合并这些样本方差的最佳方法是计算它们的算术平均值：</p>
-                <p class="math">σ² ≈ (${variances.join(' + ')}) / 5</p>
-                <p class="math">= ${sumVariances.toFixed(1)} / 5 = ${(sumVariances/5).toFixed(3)} ≈ <strong>${params.answer1}</strong></p>
-            `;
+            exp1.innerHTML = '<h4><i class="fas fa-lightbulb"></i> 题目解析</h4>' +
+                '<p><strong>【背景知识】</strong></p>' +
+                '<p>在方差分析（ANOVA）中，我们假设所有' + numGroups + '个组别的数据都来自具有<strong>相同总体方差σ²</strong>的正态分布。因此，每个样本的方差 s² 都是对总体方差σ²的一个独立估计。</p>' +
+                '<p><strong>【合并样本方差的方法】</strong></p>' +
+                '<p>当所有样本容量相等时，合并这些独立估计的最佳方法是计算它们的<strong>算术平均值</strong>（也称为"合并方差"或"组内方差估计"）：</p>' +
+                '<p class="math">σ̂² = (s₁² + s₂² + ... + s<sub>' + numGroups + '</sub>²) / k</p>' +
+                '<p>其中 k 是组数（本题中 k = ' + numGroups + '）。</p>' +
+                '<p><strong>【计算步骤】</strong></p>' +
+                '<p>第一步：列出各组的样本方差</p>' +
+                '<p class="math">s₁² = ' + variances[0] + ', s₂² = ' + variances[1] + (variances.length > 2 ? ', ...' : '') + '</p>' +
+                '<p>第二步：计算所有样本方差的和</p>' +
+                '<p class="math">Σs² = ' + variances.join(' + ') + ' = ' + sumVariances.toFixed(1) + '</p>' +
+                '<p>第三步：除以组数得到合并方差估计</p>' +
+                '<p class="math">σ̂² = ' + sumVariances.toFixed(1) + ' / ' + numGroups + ' = ' + (sumVariances/numGroups).toFixed(3) + '</p>' +
+                '<p><strong>【最终答案】</strong></p>' +
+                '<p class="math">σ² ≈ <strong>' + params.answer1 + '</strong></p>';
 
             // 更新问题2解析
             const exp2 = document.getElementById('explanation2');
-            exp2.innerHTML = `
-                <h4><i class="fas fa-lightbulb"></i> 题目解析</h4>
-                <p>根据抽样分布理论，样本均值的方差与总体方差之间存在如下关系：</p>
-                <p class="math">Var(X̄) = σ² / n</p>
-                <p>其中 n 是每个样本的容量（本题中 n = ${params.sampleSize}）。</p>
-                <p>已知五个样本均值的样本方差约为 ${params.meanVariance}，我们可以估计：</p>
-                <p class="math">σ² / ${params.sampleSize} ≈ ${params.meanVariance}</p>
-                <p class="math">σ² ≈ ${params.meanVariance} × ${params.sampleSize} = ${(params.meanVariance * params.sampleSize).toFixed(3)} ≈ <strong>${params.answer2}</strong></p>
-            `;
+            exp2.innerHTML = '<h4><i class="fas fa-lightbulb"></i> 题目解析</h4>' +
+                '<p><strong>【背景知识】</strong></p>' +
+                '<p>根据抽样分布理论，样本均值 X̄ 的方差与总体方差σ²之间存在确定的关系：</p>' +
+                '<p class="math">Var(X̄) = σ² / n</p>' +
+                '<p>其中 n 是每个样本的容量。这意味着样本均值的波动程度（方差）是总体方差的 1/n。</p>' +
+                '<p><strong>【为什么这个关系成立？】</strong></p>' +
+                '<p>样本均值是对总体均值的无偏估计，但由于抽样误差，不同样本的均值会有所不同。当样本容量越大时，样本均值越接近总体均值，波动越小，因此样本均值的方差与样本容量成反比。</p>' +
+                '<p><strong>【计算步骤】</strong></p>' +
+                '<p>第一步：计算' + numGroups + '个样本均值的方差</p>' +
+                '<p>样本均值：' + means.map(m => m.toFixed(1)).join(', ') + '</p>' +
+                '<p>样本均值平均：(' + means.map(m => m.toFixed(1)).join(' + ') + ') / ' + numGroups + ' = ' + avgMean.toFixed(2) + '</p>' +
+                '<p class="math">Var(X̄) ≈ Σ(X̄ᵢ - X̄)² / (k-1) = ' + meanVarianceCalc.toFixed(3) + '</p>' +
+                '<p>第二步：利用 Var(X̄) = σ² / n 的关系估计总体方差</p>' +
+                '<p class="math">σ² / ' + params.sampleSize + ' ≈ ' + params.meanVariance + '</p>' +
+                '<p>第三步：解出σ²</p>' +
+                '<p class="math">σ² ≈ ' + params.meanVariance + ' × ' + params.sampleSize + ' = ' + (params.meanVariance * params.sampleSize).toFixed(3) + '</p>' +
+                '<p><strong>【最终答案】</strong></p>' +
+                '<p class="math">σ² ≈ <strong>' + params.answer2 + '</strong></p>' +
+                '<p><strong>【注意】</strong>问题1和问题2使用了两种不同的方法估计总体方差，在方差分析中分别称为"组内方差估计"和"组间方差估计"。当各组总体均值相等时，这两种估计都应该是σ²的无偏估计。</p>';
         }
 
         document.addEventListener('DOMContentLoaded', function() {
@@ -657,8 +1118,11 @@
             initializeQuestion();
             updateExplanations();
 
-            // 刷新按钮事件
-            document.getElementById('refresh-btn').addEventListener('click', function() {
+            // 初始化答题历史显示
+            updateQuizHistoryDisplay();
+
+            // 下一题按钮事件
+            document.getElementById('nextBtn').addEventListener('click', function() {
                 let newParams;
                 do {
                     newParams = parameterSets[Math.floor(Math.random() * parameterSets.length)];
@@ -667,37 +1131,45 @@
                 currentParams = newParams;
                 initializeQuestion();
                 updateExplanations();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             });
 
-            // 显示答案解析按钮点击事件
-            document.querySelectorAll('.show-explanation-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    var questionId = this.getAttribute('data-question') || this.id;
-                    var explanation;
-                    if (questionId) {
-                        explanation = this.nextElementSibling;
-                    }
-                    if (explanation) {
-                        if (explanation.style.display === 'block') {
-                            explanation.style.display = 'none';
-                            this.textContent = '查看答案解析';
-                        } else {
-                            explanation.style.display = 'block';
-                            this.textContent = '隐藏答案解析';
-                        }
-                    }
+            // 查看答案解析按钮点击事件
+            document.getElementById('showExplanationBtn').addEventListener('click', function() {
+                const explanations = document.querySelectorAll('.explanation');
+                const isHidden = explanations[0].style.display === 'none' || explanations[0].style.display === '';
+
+                explanations.forEach(function(exp) {
+                    exp.style.display = isHidden ? 'block' : 'none';
                 });
+
+                this.innerHTML = isHidden ?
+                    '<i class="fas fa-eye-slash"></i> 隐藏答案解析' :
+                    '<i class="fas fa-lightbulb"></i> 查看答案解析';
             });
 
             // 提交按钮事件
-            document.getElementById('submitBtn').addEventListener('click', function() {
-                if (submitted) return;
+            const submitBtn = document.getElementById('submitBtn');
+
+            submitBtn.addEventListener('click', function() {
+                if (submitted) {
+                    return;
+                }
+
+                // 检查是否所有问题都已回答
+                const answer1Value = document.getElementById('answer1').value.trim();
+                const answer2Value = document.getElementById('answer2').value.trim();
+
+                if (!answer1Value || !answer2Value) {
+                    alert('请先回答所有问题后再提交答案！');
+                    return;
+                }
 
                 let correctCount = 0;
                 const tolerance = 0.5;
 
                 // 检查问题1
-                const answer1 = parseFloat(document.getElementById('answer1').value);
+                const answer1 = parseFloat(answer1Value);
                 const feedback1 = document.getElementById('feedback1');
 
                 if (isNaN(answer1)) {
@@ -715,7 +1187,7 @@
                 }
 
                 // 检查问题2
-                const answer2 = parseFloat(document.getElementById('answer2').value);
+                const answer2 = parseFloat(answer2Value);
                 const feedback2 = document.getElementById('feedback2');
 
                 if (isNaN(answer2)) {
@@ -733,9 +1205,7 @@
                 }
 
                 // 显示"查看答案解析"按钮
-                document.querySelectorAll('.show-explanation-btn').forEach(btn => {
-                    btn.style.display = 'inline-block';
-                });
+                document.getElementById('showExplanationBtn').style.display = 'inline-flex';
 
                 // 显示得分面板
                 const scorePanel = document.getElementById('scorePanel');
@@ -762,13 +1232,12 @@
                 scorePanel.classList.add('show');
                 submitted = true;
 
-                scorePanel.scrollIntoView({ behavior: 'smooth' });
-            });
+                // 记录答题结果（只有全部答对才算正确）
+                const quizResult = correctCount === 2 ? 'correct' : 'incorrect';
+                quizHistory.push(quizResult);
+                updateQuizHistoryDisplay();
 
-            // 重置按钮事件
-            document.getElementById('resetBtn').addEventListener('click', function() {
-                initializeQuestion();
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                scorePanel.scrollIntoView({ behavior: 'smooth' });
             });
         });
     </script>
