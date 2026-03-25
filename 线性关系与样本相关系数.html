@@ -34,32 +34,25 @@
             margin-bottom: 10px;
         }
 
-        .header .subtitle {
-            color: #64748b;
-            font-size: 1.1rem;
-        }
-
         .content-container {
             display: flex;
             flex-direction: column;
-            gap: 30px;
+            gap: 20px;
         }
-
-        /* Single column layout */
 
         .section-title {
             color: #1e40af;
-            font-size: 1.5rem;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            padding-bottom: 8px;
             border-bottom: 1px solid #cbd5e1;
         }
 
         .question-card {
             background-color: white;
             border-radius: 12px;
-            padding: 25px;
-            margin-bottom: 25px;
+            padding: 20px;
+            margin-bottom: 15px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
             border: 1px solid #e2e8f0;
             transition: transform 0.2s, box-shadow 0.2s;
@@ -70,41 +63,51 @@
             box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
         }
 
+        .question-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            gap: 10px;
+        }
+
         .question-number {
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
             background-color: #3b82f6;
             color: white;
-            width: 32px;
-            height: 32px;
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
-            text-align: center;
-            line-height: 32px;
             font-weight: bold;
-            margin-right: 10px;
-            margin-bottom: 15px;
+            font-size: 0.9rem;
+            flex-shrink: 0;
         }
 
         .question-text {
-            font-size: 1.2rem;
-            margin-bottom: 20px;
+            font-size: 1.1rem;
             color: #1e293b;
+            margin: 0;
         }
 
         .options-container {
             display: flex;
-            flex-direction: column;
-            gap: 12px;
+            flex-direction: row;
+            flex-wrap: wrap;
+            gap: 10px;
         }
 
         .option {
-            padding: 16px 20px;
+            padding: 10px 16px;
             border: 2px solid #e2e8f0;
-            border-radius: 10px;
+            border-radius: 8px;
             cursor: pointer;
             transition: all 0.2s;
             display: flex;
             align-items: center;
-            font-size: 1.05rem;
+            font-size: 0.95rem;
+            flex: 1;
+            min-width: 120px;
         }
 
         .option:hover {
@@ -128,16 +131,17 @@
         }
 
         .option-letter {
-            display: inline-block;
-            width: 28px;
-            height: 28px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
             background-color: #cbd5e1;
             color: #475569;
             border-radius: 50%;
-            text-align: center;
-            line-height: 28px;
             font-weight: bold;
-            margin-right: 15px;
+            font-size: 0.85rem;
+            margin-right: 8px;
             flex-shrink: 0;
         }
 
@@ -157,11 +161,11 @@
         }
 
         .feedback {
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 10px;
+            margin-top: 12px;
+            padding: 12px;
+            border-radius: 8px;
             display: none;
-            font-size: 1rem;
+            font-size: 0.95rem;
         }
 
         .feedback.correct {
@@ -189,58 +193,19 @@
             top: 20px;
         }
 
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 15px 0;
-            font-size: 0.95rem;
-        }
-
-        .data-table th, .data-table td {
-            border: 1px solid #cbd5e1;
-            padding: 10px;
-            text-align: center;
-        }
-
-        .data-table th {
-            background-color: #f1f5f9;
-            font-weight: 600;
-        }
-
-        .data-table tr:nth-child(even) {
-            background-color: #f8fafc;
-        }
-
-        .concept-explanation {
-            background-color: #f0f9ff;
-            border-radius: 10px;
-            padding: 20px;
-            margin-top: 25px;
-            border-left: 5px solid #0ea5e9;
-        }
-
-        .concept-explanation h3 {
-            color: #0369a1;
-            margin-bottom: 10px;
-        }
-
-        .concept-explanation p {
-            margin-bottom: 10px;
-        }
-
         .controls {
             display: flex;
             justify-content: center;
             gap: 15px;
-            margin-top: 30px;
-            margin-bottom: 20px;
+            margin-top: 20px;
+            margin-bottom: 15px;
         }
 
         .btn {
-            padding: 14px 28px;
+            padding: 12px 24px;
             border: none;
             border-radius: 8px;
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.2s;
@@ -256,19 +221,19 @@
         }
 
         .btn-secondary {
-            background-color: #94a3b8;
+            background-color: #10b981;
             color: white;
         }
 
         .btn-secondary:hover {
-            background-color: #64748b;
+            background-color: #059669;
         }
 
         .score-display {
             text-align: center;
-            font-size: 1.3rem;
-            margin: 20px 0;
-            padding: 15px;
+            font-size: 1.1rem;
+            margin: 15px 0;
+            padding: 12px;
             background-color: #e0f2fe;
             border-radius: 10px;
             color: #0369a1;
@@ -278,6 +243,34 @@
 
         .score-display.show {
             display: block;
+        }
+
+        .result-icons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+
+        .result-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .result-icon.correct {
+            background-color: #10b981;
+        }
+
+        .result-icon.incorrect {
+            background-color: #ef4444;
         }
 
         .correlation-visual {
@@ -310,20 +303,20 @@
             .header h1 {
                 font-size: 1.8rem;
             }
-            
+
             .question-card {
                 padding: 20px;
             }
-            
+
             .option {
                 padding: 14px 16px;
             }
-            
+
             .btn {
                 padding: 12px 20px;
                 font-size: 1rem;
             }
-            
+
             .correlation-visual {
                 flex-direction: column;
                 align-items: center;
@@ -334,500 +327,858 @@
     <style>
     .show-explanation-btn {
         display: none;
-        margin: 20px auto;
-        padding: 14px 28px;
+        margin-top: 12px;
+        padding: 10px 20px;
         background: linear-gradient(135deg, #9b59b6, #8e44ad);
         color: white;
         border: none;
-        border-radius: 10px;
+        border-radius: 8px;
         cursor: pointer;
-        font-size: 1.1rem;
+        font-size: 0.95rem;
         font-weight: 600;
         transition: all 0.3s ease;
         box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
     }
     .show-explanation-btn:hover {
-        transform: translateY(-3px);
+        transform: translateY(-2px);
         box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
     }
     .explanation-section {
         display: none;
-        margin-top: 20px;
+        margin-top: 12px;
+    }
+
+    /* 散点图背景容器 */
+    .scatter-plot-container {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+        margin: 15px 0;
+    }
+    .scatter-plot-wrapper {
+        position: relative;
+        background: white;
+        border-radius: 10px;
+        padding: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        border: 1px solid #e2e8f0;
+    }
+    .scatter-plot-wrapper h4 {
+        text-align: center;
+        color: #1e40af;
+        margin-bottom: 8px;
+        font-size: 0.95rem;
+    }
+    .scatter-plot-wrapper canvas {
+        max-width: 100%;
+    }
+
+    /* 题目卡片增加背景效果 */
+    .question-card {
+        position: relative;
+        overflow: hidden;
+    }
+    .question-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, rgba(59, 130, 246, 0.03), rgba(16, 185, 129, 0.03));
+        z-index: 0;
+        pointer-events: none;
+    }
+    .question-card > * {
+        position: relative;
+        z-index: 1;
+    }
+
+    /* 强制散点图Y轴标题正常显示 */
+    .scatter-plot-wrapper canvas {
+        max-width: 100%;
     }
     </style>
     </head>
 <body>
     <div class="header">
-        <h1>线性关系与样本相关系数
-            <button id="refresh-btn" style="margin-left: 15px; padding: 8px 16px; background: linear-gradient(135deg, #34a853, #2ecc71); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(52, 168, 83, 0.3);">刷新参数</button>
-        </h1>
-        <div class="subtitle">回归与相关 · 双变量数据分析 · 交互式答题</div>
+        <h1>线性关系与样本相关系数</h1>
     </div>
+
+    <!-- 引入 Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <div class="content-container">
         <div class="questions-section">
+            <p style="margin-bottom: 20px; color: #475569; line-height: 1.8;">下面给出了四组二元数据集及其对应的散点图。（注意：每个散点图使用相同的坐标尺度。）每组数据集均由从总体中抽取的样本值组成。</p>
+
+            <div class="scatter-plot-container" id="scatterPlotsContainer">
+                <!-- 散点图将由JavaScript动态生成 -->
+            </div>
+
             <h2 class="section-title">问题</h2>
-            
-            <div class="question-card" id="question1">
-                <div class="question-number">1</div>
-                <div class="question-text">哪个数据集的两个变量之间存在明显的负向但不完美的线性关系？</div>
-                <div class="options-container">
-                    <div class="option" data-option="a">
-                        <div class="option-letter">A</div>
-                        <div class="option-text">x, y 数据集</div>
-                    </div>
-                    <div class="option" data-option="b">
-                        <div class="option-letter">B</div>
-                        <div class="option-text">u, v 数据集</div>
-                    </div>
-                    <div class="option" data-option="c">
-                        <div class="option-letter">C</div>
-                        <div class="option-text">w, t 数据集</div>
-                    </div>
-                    <div class="option" data-option="d">
-                        <div class="option-letter">D</div>
-                        <div class="option-text">m, n 数据集</div>
-                    </div>
-                    <div class="option" data-option="e">
-                        <div class="option-letter">E</div>
-                        <div class="option-text">以上都不是</div>
-                    </div>
-                </div>
-                <button class="show-explanation-btn" style="display:none;">查看答案解析</button>
-                <div class="explanation-section" style="display:none;">
-                    <strong>解析：</strong>图4（m, n数据集）中的数据点显示出负向关系，但并未落在一条直线上。因此，m, n数据集表明存在负向但不完美的线性关系。（实际上，这些数据的样本相关系数 r ≈ -0.93。）
-                </div>
+            <div id="questionsContainer">
+                <!-- 问题将由JavaScript动态生成 -->
             </div>
-            
-            <div class="question-card" id="question2">
-                <div class="question-number">2</div>
-                <div class="question-text">哪个数据集的两个变量之间存在最强的正向线性关系？</div>
-                <div class="options-container">
-                    <div class="option" data-option="a">
-                        <div class="option-letter">A</div>
-                        <div class="option-text">x, y 数据集</div>
-                    </div>
-                    <div class="option" data-option="b">
-                        <div class="option-letter">B</div>
-                        <div class="option-text">u, v 数据集</div>
-                    </div>
-                    <div class="option" data-option="c">
-                        <div class="option-letter">C</div>
-                        <div class="option-text">w, t 数据集</div>
-                    </div>
-                    <div class="option" data-option="d">
-                        <div class="option-letter">D</div>
-                        <div class="option-text">m, n 数据集</div>
-                    </div>
-                </div>
-                <button class="show-explanation-btn" style="display:none;">查看答案解析</button>
-                <div class="explanation-section" style="display:none;">
-                    <strong>解析：</strong>图2（u, v数据集）中的数据点落在一条具有正斜率的直线上，因此u, v数据集显示出最强的正向关系；实际上，这是一种完美的正向关系。（这些数据的样本相关系数 r = 1。）
-                </div>
-            </div>
-            
-            <div class="question-card" id="question3">
-                <div class="question-number">3</div>
-                <div class="question-text">哪个数据集的两个变量之间存在完美的负向线性关系？</div>
-                <div class="options-container">
-                    <div class="option" data-option="a">
-                        <div class="option-letter">A</div>
-                        <div class="option-text">x, y 数据集</div>
-                    </div>
-                    <div class="option" data-option="b">
-                        <div class="option-letter">B</div>
-                        <div class="option-text">u, v 数据集</div>
-                    </div>
-                    <div class="option" data-option="c">
-                        <div class="option-letter">C</div>
-                        <div class="option-text">w, t 数据集</div>
-                    </div>
-                    <div class="option" data-option="d">
-                        <div class="option-letter">D</div>
-                        <div class="option-text">m, n 数据集</div>
-                    </div>
-                    <div class="option" data-option="e">
-                        <div class="option-letter">E</div>
-                        <div class="option-text">以上都不是</div>
-                    </div>
-                </div>
-                <button class="show-explanation-btn" style="display:none;">查看答案解析</button>
-                <div class="explanation-section" style="display:none;">
-                    <strong>解析：</strong>没有一个散点图显示的数据完全落在具有负斜率的直线上，因此没有一个数据集表明两个变量之间存在完美的负向线性关系。
-                </div>
-            </div>
-            
-            <div class="question-card" id="question4">
-                <div class="question-number">4</div>
-                <div class="question-text">在哪个数据集中，有证据表明两个变量之间存在强烈的非线性关系？</div>
-                <div class="options-container">
-                    <div class="option" data-option="a">
-                        <div class="option-letter">A</div>
-                        <div class="option-text">x, y 数据集</div>
-                    </div>
-                    <div class="option" data-option="b">
-                        <div class="option-letter">B</div>
-                        <div class="option-text">u, v 数据集</div>
-                    </div>
-                    <div class="option" data-option="c">
-                        <div class="option-letter">C</div>
-                        <div class="option-text">w, t 数据集</div>
-                    </div>
-                    <div class="option" data-option="d">
-                        <div class="option-letter">D</div>
-                        <div class="option-text">m, n 数据集</div>
-                    </div>
-                    <div class="option" data-option="e">
-                        <div class="option-letter">E</div>
-                        <div class="option-text">以上都不是</div>
-                    </div>
-                </div>
-                <button class="show-explanation-btn" style="display:none;">查看答案解析</button>
-                <div class="explanation-section" style="display:none;">
-                    <strong>解析：</strong>没有一个数据集表明两个变量之间存在强烈的非线性关系。图3表明配对变量w, t具有非常弱的线性关系，甚至可能没有线性关系，但这并不意味着两个变量存在强烈的非线性关系。实际上，从图3绘制的数据来看，w, t之间似乎几乎没有或完全没有关系。
-                </div>
-            </div>
-            
+
             <div class="score-display" id="scoreDisplay">
-                您的得分：<span id="score">0</span>/4
+                <div>答题结果</div>
+                <div class="result-icons" id="resultIcons"></div>
             </div>
-            
+
             <div class="controls">
                 <button class="btn btn-primary" id="submitBtn">提交答案</button>
-                <button class="btn btn-secondary" id="resetBtn">重新作答</button>
+                <button class="btn btn-secondary" id="nextBtn">下一题</button>
             </div>
         </div>
-        
-        <div class="info-section">
-            <h2 class="section-title">数据集</h2>
-            
-            <table class="data-table">
-                <thead>
-                    <tr>
-                        <th>x</th>
-                        <th>y</th>
-                        <th>u</th>
-                        <th>v</th>
-                        <th>w</th>
-                        <th>t</th>
-                        <th>m</th>
-                        <th>n</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>1.0</td>
-                        <td>4.0</td>
-                        <td>1.0</td>
-                        <td>1.0</td>
-                        <td>1.0</td>
-                        <td>6.7</td>
-                        <td>1.0</td>
-                        <td>8.1</td>
-                    </tr>
-                    <tr>
-                        <td>2.0</td>
-                        <td>6.0</td>
-                        <td>2.0</td>
-                        <td>2.0</td>
-                        <td>2.0</td>
-                        <td>9.8</td>
-                        <td>2.0</td>
-                        <td>6.9</td>
-                    </tr>
-                    <tr>
-                        <td>3.0</td>
-                        <td>7.3</td>
-                        <td>3.0</td>
-                        <td>3.0</td>
-                        <td>3.0</td>
-                        <td>3.7</td>
-                        <td>3.0</td>
-                        <td>7.8</td>
-                    </tr>
-                    <tr>
-                        <td>4.0</td>
-                        <td>4.3</td>
-                        <td>4.0</td>
-                        <td>4.0</td>
-                        <td>4.0</td>
-                        <td>9.1</td>
-                        <td>4.0</td>
-                        <td>5.9</td>
-                    </tr>
-                    <tr>
-                        <td>5.0</td>
-                        <td>4.8</td>
-                        <td>5.0</td>
-                        <td>5.0</td>
-                        <td>5.0</td>
-                        <td>5.6</td>
-                        <td>5.0</td>
-                        <td>6.9</td>
-                    </tr>
-                    <tr>
-                        <td>6.0</td>
-                        <td>8.0</td>
-                        <td>6.0</td>
-                        <td>6.0</td>
-                        <td>6.0</td>
-                        <td>2.2</td>
-                        <td>6.0</td>
-                        <td>4.3</td>
-                    </tr>
-                    <tr>
-                        <td>7.0</td>
-                        <td>5.7</td>
-                        <td>7.0</td>
-                        <td>7.0</td>
-                        <td>7.0</td>
-                        <td>6.1</td>
-                        <td>7.0</td>
-                        <td>4.9</td>
-                    </tr>
-                    <tr>
-                        <td>8.0</td>
-                        <td>7.0</td>
-                        <td>8.0</td>
-                        <td>8.0</td>
-                        <td>8.0</td>
-                        <td>9.8</td>
-                        <td>8.0</td>
-                        <td>3.6</td>
-                    </tr>
-                    <tr>
-                        <td>9.0</td>
-                        <td>8.8</td>
-                        <td>9.0</td>
-                        <td>9.0</td>
-                        <td>9.0</td>
-                        <td>5.0</td>
-                        <td>9.0</td>
-                        <td>4.2</td>
-                    </tr>
-                    <tr>
-                        <td>10.0</td>
-                        <td>7.3</td>
-                        <td>10.0</td>
-                        <td>10.0</td>
-                        <td>10.0</td>
-                        <td>8.4</td>
-                        <td>10.0</td>
-                        <td>3.1</td>
-                    </tr>
-                </tbody>
-            </table>
-            
-            <div class="concept-explanation">
-                <h3>样本相关系数 r</h3>
-                <p>样本相关系数 r 是衡量两个变量之间（样本）线性关系强度和方向的数值指标。</p>
-                <p>r 的值始终是介于 -1 到 1 之间的一个数：</p>
-                <ul style="padding-left: 20px; margin-top: 10px;">
-                    <li>如果 r 为正，则样本数据表明两个变量之间存在正向线性关系</li>
-                    <li>如果 r 为负，则样本数据表明两个变量之间存在负向线性关系</li>
-                    <li>r 越接近极值 -1 和 1，样本所显示的线性关系就越强</li>
-                    <li>如果 r = 1，表示完美的正向线性关系</li>
-                    <li>如果 r = -1，表示完美的负向线性关系</li>
-                    <li>当 r = 0 时，样本数据显示两个变量之间没有线性关系</li>
-                </ul>
-                
-                <div class="correlation-visual">
-                    <div class="correlation-item">
-                        <div style="height: 60px; background: linear-gradient(135deg, #ef4444, #f97316); border-radius: 5px;"></div>
-                        <div class="correlation-label">r = -1<br>完美的负向线性关系</div>
-                    </div>
-                    <div class="correlation-item">
-                        <div style="height: 60px; background: linear-gradient(135deg, #cbd5e1, #94a3b8); border-radius: 5px;"></div>
-                        <div class="correlation-label">r = 0<br>无线性关系</div>
-                    </div>
-                    <div class="correlation-item">
-                        <div style="height: 60px; background: linear-gradient(135deg, #10b981, #3b82f6); border-radius: 5px;"></div>
-                        <div class="correlation-label">r = 1<br>完美的正向线性关系</div>
-                    </div>
-                </div>
-            </div>
-        </div>
+
     </div>
-    
-    
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+    // ==================== 相关性类型定义 ====================
+    const CORRELATION_TYPES = {
+        PERFECT_POSITIVE: { name: '完美正相关', r: 1 },
+        PERFECT_NEGATIVE: { name: '完美负相关', r: -1 },
+        STRONG_POSITIVE: { name: '强正相关', r: 0.96 },
+        STRONG_NEGATIVE: { name: '强负相关', r: -0.96 },
+        MEDIUM_POSITIVE: { name: '中等正相关', r: 0.6 },
+        MEDIUM_NEGATIVE: { name: '中等负相关', r: -0.6 },
+        WEAK_POSITIVE: { name: '弱正相关', r: 0.3 },
+        WEAK_NEGATIVE: { name: '弱负相关', r: -0.3 },
+        NO_CORRELATION: { name: '不相关', r: 0 }
+    };
 
-            // 显示答案解析按钮点击事件
-            document.querySelectorAll('.show-explanation-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    var explanation = this.nextElementSibling;
-                    if (explanation) {
-                        if (explanation.style.display === 'none' || explanation.style.display === '') {
-                            explanation.style.display = 'block';
-                            this.textContent = '隐藏答案解析';
-                        } else {
-                            explanation.style.display = 'none';
-                            this.textContent = '查看答案解析';
-                        }
-                    }
-                });
-            });
+    // ==================== 固定数据集（20个数据点）====================
+    // 每个数据集的相关系数经过计算验证
+    const FIXED_DATASETS = {
+        // 完美正相关: y = 1 + 0.5x, r = 1.0
+        PERFECT_POSITIVE: {
+            x: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20],
+            y: [1.5,2.0,2.5,3.0,3.5,4.0,4.5,5.0,5.5,6.0,6.5,7.0,7.5,8.0,8.5,9.0,9.5,10.0,10.5,11.0]
+        },
+        // 完美负相关: y = 12 - 0.5x, r = -1.0
+        PERFECT_NEGATIVE: {
+            x: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20],
+            y: [11.5,11.0,10.5,10.0,9.5,9.0,8.5,8.0,7.5,7.0,6.5,6.0,5.5,5.0,4.5,4.0,3.5,3.0,2.5,2.0]
+        },
+        // 强正相关: r ≈ 0.97 (非常明显的正向线性关系)
+        STRONG_POSITIVE: {
+            x: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20],
+            y: [5.7,4.3,6.8,6.0,5.9,8.4,7.3,9.2,10.1,8.7,10.5,10.7,12.4,11.3,12.5,12.3,13.8,13.3,14.3,14.2]
+        },
+        // 强负相关: r ≈ -0.97 (非常明显的负向线性关系)
+        STRONG_NEGATIVE: {
+            x: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20],
+            y: [14.3,15.3,13.1,14.5,13.3,11.4,11.3,10.4,11.8,11.1,10.7,10.1,8.4,7.5,7.4,7.3,7.3,6.4,6.1,4.1]
+        },
+        // 中等正相关: r ≈ 0.75 (较明显的正向线性关系)
+        MEDIUM_POSITIVE: {
+            x: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20],
+            y: [8.1,7.2,9.0,9.0,10.1,9.9,10.1,10.5,7.3,9.0,8.1,10.4,10.6,9.7,14.2,14.5,10.9,11.0,13.0,16.1]
+        },
+        // 中等负相关: r ≈ -0.76 (较明显的负向线性关系)
+        MEDIUM_NEGATIVE: {
+            x: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20],
+            y: [14.6,11.9,10.9,10.3,14.5,14.0,13.0,9.4,8.9,7.9,8.9,8.9,11.1,9.2,6.9,7.4,5.6,9.1,8.6,7.3]
+        },
+        // 弱正相关: r ≈ 0.15 (几乎看不出的正向线性关系)
+        WEAK_POSITIVE: {
+            x: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20],
+            y: [7.7,8.1,10.3,8.1,9.3,9.4,12.8,12.9,12.7,12.4,11.0,7.3,12.0,12.9,8.5,13.4,11.0,7.4,11.4,8.1]
+        },
+        // 弱负相关: r ≈ -0.14 (几乎看不出的负向线性关系)
+        WEAK_NEGATIVE: {
+            x: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20],
+            y: [8.9,9.0,10.8,8.8,11.0,8.1,7.8,7.4,9.2,7.4,8.4,10.0,11.3,9.8,11.2,7.4,6.5,8.5,8.0,9.5]
+        },
+        // 不相关: r ≈ 0
+        NO_CORRELATION: {
+            x: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20],
+            y: [9.9,8.6,9.7,12.4,11.5,6.8,9.4,13.3,8.8,11.5,13.0,9.8,13.2,8.3,9.5,9.0,12.6,7.8,10.9,9.4]
+        }
+    };
 
-            // 正确答案配置
-            const correctAnswers = {
-                'question1': 'd',
-                'question2': 'b',
-                'question3': 'e',
-                'question4': 'e'
-            };
-            
-            // 用户选择的答案
-            let userAnswers = {
-                'question1': null,
-                'question2': null,
-                'question3': null,
-                'question4': null
-            };
-            
-            // 是否已提交
-            let submitted = false;
-            
-            // 为每个选项添加点击事件
-            document.querySelectorAll('.option').forEach(option => {
-                option.addEventListener('click', function() {
-                    if (submitted) return;
-                    
-                    const questionCard = this.closest('.question-card');
-                    const questionId = questionCard.id;
-                    
-                    // 移除同一问题中其他选项的选中状态
-                    questionCard.querySelectorAll('.option').forEach(opt => {
-                        opt.classList.remove('selected');
-                    });
-                    
-                    // 选中当前选项
-                    this.classList.add('selected');
-                    
-                    // 保存用户答案
-                    const selectedOption = this.getAttribute('data-option');
-                    userAnswers[questionId] = selectedOption;
-                });
-            });
-            
-            // 提交按钮事件
-            document.getElementById('submitBtn').addEventListener('click', function() {
-                if (submitted) return;
-                
-                let score = 0;
-                
-                // 检查每个问题的答案
-                for (const questionId in correctAnswers) {
-                    const correctAnswer = correctAnswers[questionId];
-                    const userAnswer = userAnswers[questionId];
-                    const questionCard = document.getElementById(questionId);
-                    
-                    if (userAnswer === null) {
-                        // 未作答
-                        continue;
-                    }
-                    
-                    // 获取所有选项
-                    const options = questionCard.querySelectorAll('.option');
-                    
-                    // 标记正确和错误的答案 - 只标记错误答案，不显示正确答案
-                    options.forEach(option => {
-                        const optionValue = option.getAttribute('data-option');
+    const DATASET_NAMES = [
+        { x: 'x', y: 'y', label: 'x, y' },
+        { x: 'u', y: 'v', label: 'u, v' },
+        { x: 'w', y: 't', label: 'w, t' },
+        { x: 'm', y: 'n', label: 'm, n' }
+    ];
 
-                        // Only mark incorrect, don't reveal correct answer
-                        if (optionValue === userAnswer && userAnswer !== correctAnswer) {
-                            option.classList.add('incorrect');
-                        }
-                    });
+    const COLORS = [
+        { bg: 'rgba(59, 130, 246, 0.7)', border: 'rgba(59, 130, 246, 1)' },
+        { bg: 'rgba(16, 185, 129, 0.7)', border: 'rgba(16, 185, 129, 1)' },
+        { bg: 'rgba(249, 115, 22, 0.7)', border: 'rgba(249, 115, 22, 1)' },
+        { bg: 'rgba(239, 68, 68, 0.7)', border: 'rgba(239, 68, 68, 1)' }
+    ];
 
-                    // 显示解析按钮
-                    const showBtn = questionCard.querySelector('.show-explanation-btn');
-                    if (showBtn) {
-                        showBtn.style.display = 'inline-block';
-                    }
+    // ==================== 20组问题配置 ====================
+    // 每组4个配置，4个问题，完美一一匹配
+    const QUESTION_SETS = [
+        // 组1: 完美正相关 + 强负相关 + 中等正相关 + 不相关
+        {
+            configs: ['PERFECT_POSITIVE', 'STRONG_NEGATIVE', 'MEDIUM_POSITIVE', 'NO_CORRELATION'],
+            questions: [
+                { pattern: 'perfect_positive', text: '哪个数据集的两个变量之间存在完美的正向线性关系？' },
+                { pattern: 'strongest_negative', text: '哪个数据集的两个变量之间存在最强的负向线性关系？' },
+                { pattern: 'medium_positive', text: '哪个数据集的两个变量之间存在中等程度的正向线性关系？' },
+                { pattern: 'no_correlation', text: '哪个数据集的两个变量之间没有明显的线性关系？' }
+            ]
+        },
+        // 组2: 完美负相关 + 强正相关 + 中等负相关 + 不相关
+        {
+            configs: ['PERFECT_NEGATIVE', 'STRONG_POSITIVE', 'MEDIUM_NEGATIVE', 'NO_CORRELATION'],
+            questions: [
+                { pattern: 'perfect_negative', text: '哪个数据集的两个变量之间存在完美的负向线性关系？' },
+                { pattern: 'strongest_positive', text: '哪个数据集的两个变量之间存在最强的正向线性关系？' },
+                { pattern: 'medium_negative', text: '哪个数据集的两个变量之间存在中等程度的负向线性关系？' },
+                { pattern: 'no_correlation', text: '哪个数据集的两个变量之间没有明显的线性关系？' }
+            ]
+        },
+        // 组3: 完美正相关 + 完美负相关 + 中等正相关 + 中等负相关
+        {
+            configs: ['PERFECT_POSITIVE', 'PERFECT_NEGATIVE', 'MEDIUM_POSITIVE', 'MEDIUM_NEGATIVE'],
+            questions: [
+                { pattern: 'perfect_positive', text: '哪个数据集的两个变量之间存在完美的正向线性关系？' },
+                { pattern: 'perfect_negative', text: '哪个数据集的两个变量之间存在完美的负向线性关系？' },
+                { pattern: 'medium_positive', text: '哪个数据集的两个变量之间存在中等程度的正向线性关系？' },
+                { pattern: 'medium_negative', text: '哪个数据集的两个变量之间存在中等程度的负向线性关系？' }
+            ]
+        },
+        // 组4: 完美正相关 + 完美负相关 + 弱正相关 + 弱负相关
+        {
+            configs: ['PERFECT_POSITIVE', 'PERFECT_NEGATIVE', 'WEAK_POSITIVE', 'WEAK_NEGATIVE'],
+            questions: [
+                { pattern: 'perfect_positive', text: '哪个数据集的两个变量之间存在完美的正向线性关系？' },
+                { pattern: 'perfect_negative', text: '哪个数据集的两个变量之间存在完美的负向线性关系？' },
+                { pattern: 'weak_positive', text: '哪个数据集的两个变量之间存在弱正向线性关系？' },
+                { pattern: 'weak_negative', text: '哪个数据集的两个变量之间存在弱负向线性关系？' }
+            ]
+        },
+        // 组5: 强正相关 + 强负相关 + 中等正相关 + 中等负相关
+        {
+            configs: ['STRONG_POSITIVE', 'STRONG_NEGATIVE', 'MEDIUM_POSITIVE', 'MEDIUM_NEGATIVE'],
+            questions: [
+                { pattern: 'strongest_positive', text: '哪个数据集的两个变量之间存在最强的正向线性关系？' },
+                { pattern: 'strongest_negative', text: '哪个数据集的两个变量之间存在最强的负向线性关系？' },
+                { pattern: 'medium_positive', text: '哪个数据集的两个变量之间存在中等程度的正向线性关系？' },
+                { pattern: 'medium_negative', text: '哪个数据集的两个变量之间存在中等程度的负向线性关系？' }
+            ]
+        },
+        // 组6: 强正相关 + 强负相关 + 弱正相关 + 弱负相关
+        {
+            configs: ['STRONG_POSITIVE', 'STRONG_NEGATIVE', 'WEAK_POSITIVE', 'WEAK_NEGATIVE'],
+            questions: [
+                { pattern: 'strongest_positive', text: '哪个数据集的两个变量之间存在最强的正向线性关系？' },
+                { pattern: 'strongest_negative', text: '哪个数据集的两个变量之间存在最强的负向线性关系？' },
+                { pattern: 'weak_positive', text: '哪个数据集的两个变量之间存在弱正向线性关系？' },
+                { pattern: 'weak_negative', text: '哪个数据集的两个变量之间存在弱负向线性关系？' }
+            ]
+        },
+        // 组7: 强正相关 + 中等负相关 + 弱正相关 + 不相关
+        {
+            configs: ['STRONG_POSITIVE', 'MEDIUM_NEGATIVE', 'WEAK_POSITIVE', 'NO_CORRELATION'],
+            questions: [
+                { pattern: 'strongest_positive', text: '哪个数据集的两个变量之间存在最强的正向线性关系？' },
+                { pattern: 'medium_negative', text: '哪个数据集的两个变量之间存在中等程度的负向线性关系？' },
+                { pattern: 'weak_positive', text: '哪个数据集的两个变量之间存在弱正向线性关系？' },
+                { pattern: 'no_correlation', text: '哪个数据集的两个变量之间没有明显的线性关系？' }
+            ]
+        },
+        // 组8: 强负相关 + 中等正相关 + 弱负相关 + 不相关
+        {
+            configs: ['STRONG_NEGATIVE', 'MEDIUM_POSITIVE', 'WEAK_NEGATIVE', 'NO_CORRELATION'],
+            questions: [
+                { pattern: 'strongest_negative', text: '哪个数据集的两个变量之间存在最强的负向线性关系？' },
+                { pattern: 'medium_positive', text: '哪个数据集的两个变量之间存在中等程度的正向线性关系？' },
+                { pattern: 'weak_negative', text: '哪个数据集的两个变量之间存在弱负向线性关系？' },
+                { pattern: 'no_correlation', text: '哪个数据集的两个变量之间没有明显的线性关系？' }
+            ]
+        },
+        // 组9: 完美负相关 + 中等正相关 + 中等负相关 + 不相关
+        {
+            configs: ['PERFECT_NEGATIVE', 'MEDIUM_POSITIVE', 'MEDIUM_NEGATIVE', 'NO_CORRELATION'],
+            questions: [
+                { pattern: 'perfect_negative', text: '哪个数据集的两个变量之间存在完美的负向线性关系？' },
+                { pattern: 'medium_positive', text: '哪个数据集的两个变量之间存在中等程度的正向线性关系？' },
+                { pattern: 'medium_negative', text: '哪个数据集的两个变量之间存在中等程度的负向线性关系？' },
+                { pattern: 'no_correlation', text: '哪个数据集的两个变量之间没有明显的线性关系？' }
+            ]
+        },
+        // 组10: 完美正相关 + 中等正相关 + 中等负相关 + 不相关
+        {
+            configs: ['PERFECT_POSITIVE', 'MEDIUM_POSITIVE', 'MEDIUM_NEGATIVE', 'NO_CORRELATION'],
+            questions: [
+                { pattern: 'perfect_positive', text: '哪个数据集的两个变量之间存在完美的正向线性关系？' },
+                { pattern: 'medium_positive', text: '哪个数据集的两个变量之间存在中等程度的正向线性关系？' },
+                { pattern: 'medium_negative', text: '哪个数据集的两个变量之间存在中等程度的负向线性关系？' },
+                { pattern: 'no_correlation', text: '哪个数据集的两个变量之间没有明显的线性关系？' }
+            ]
+        },
+        // 组11: 完美正相关 + 强负相关 + 弱正相关 + 不相关
+        {
+            configs: ['PERFECT_POSITIVE', 'STRONG_NEGATIVE', 'WEAK_POSITIVE', 'NO_CORRELATION'],
+            questions: [
+                { pattern: 'perfect_positive', text: '哪个数据集的两个变量之间存在完美的正向线性关系？' },
+                { pattern: 'strongest_negative', text: '哪个数据集的两个变量之间存在最强的负向线性关系？' },
+                { pattern: 'weak_positive', text: '哪个数据集的两个变量之间存在弱正向线性关系？' },
+                { pattern: 'no_correlation', text: '哪个数据集的两个变量之间没有明显的线性关系？' }
+            ]
+        },
+        // 组12: 完美负相关 + 强正相关 + 弱负相关 + 不相关
+        {
+            configs: ['PERFECT_NEGATIVE', 'STRONG_POSITIVE', 'WEAK_NEGATIVE', 'NO_CORRELATION'],
+            questions: [
+                { pattern: 'perfect_negative', text: '哪个数据集的两个变量之间存在完美的负向线性关系？' },
+                { pattern: 'strongest_positive', text: '哪个数据集的两个变量之间存在最强的正向线性关系？' },
+                { pattern: 'weak_negative', text: '哪个数据集的两个变量之间存在弱负向线性关系？' },
+                { pattern: 'no_correlation', text: '哪个数据集的两个变量之间没有明显的线性关系？' }
+            ]
+        },
+        // 组13: 强正相关 + 强负相关 + 不相关 + 弱正相关
+        {
+            configs: ['STRONG_POSITIVE', 'STRONG_NEGATIVE', 'NO_CORRELATION', 'WEAK_POSITIVE'],
+            questions: [
+                { pattern: 'strongest_positive', text: '哪个数据集的两个变量之间存在最强的正向线性关系？' },
+                { pattern: 'strongest_negative', text: '哪个数据集的两个变量之间存在最强的负向线性关系？' },
+                { pattern: 'no_correlation', text: '哪个数据集的两个变量之间没有明显的线性关系？' },
+                { pattern: 'weak_positive', text: '哪个数据集的两个变量之间存在弱正向线性关系？' }
+            ]
+        },
+        // 组14: 强正相关 + 强负相关 + 不相关 + 弱负相关
+        {
+            configs: ['STRONG_POSITIVE', 'STRONG_NEGATIVE', 'NO_CORRELATION', 'WEAK_NEGATIVE'],
+            questions: [
+                { pattern: 'strongest_positive', text: '哪个数据集的两个变量之间存在最强的正向线性关系？' },
+                { pattern: 'strongest_negative', text: '哪个数据集的两个变量之间存在最强的负向线性关系？' },
+                { pattern: 'no_correlation', text: '哪个数据集的两个变量之间没有明显的线性关系？' },
+                { pattern: 'weak_negative', text: '哪个数据集的两个变量之间存在弱负向线性关系？' }
+            ]
+        },
+        // 组15: 中等正相关 + 中等负相关 + 弱正相关 + 弱负相关
+        {
+            configs: ['MEDIUM_POSITIVE', 'MEDIUM_NEGATIVE', 'WEAK_POSITIVE', 'WEAK_NEGATIVE'],
+            questions: [
+                { pattern: 'medium_positive', text: '哪个数据集的两个变量之间存在中等程度的正向线性关系？' },
+                { pattern: 'medium_negative', text: '哪个数据集的两个变量之间存在中等程度的负向线性关系？' },
+                { pattern: 'weak_positive', text: '哪个数据集的两个变量之间存在弱正向线性关系？' },
+                { pattern: 'weak_negative', text: '哪个数据集的两个变量之间存在弱负向线性关系？' }
+            ]
+        },
+        // 组16: 中等正相关 + 中等负相关 + 弱负相关 + 不相关
+        {
+            configs: ['MEDIUM_POSITIVE', 'MEDIUM_NEGATIVE', 'WEAK_NEGATIVE', 'NO_CORRELATION'],
+            questions: [
+                { pattern: 'medium_positive', text: '哪个数据集的两个变量之间存在中等程度的正向线性关系？' },
+                { pattern: 'medium_negative', text: '哪个数据集的两个变量之间存在中等程度的负向线性关系？' },
+                { pattern: 'weak_negative', text: '哪个数据集的两个变量之间存在弱负向线性关系？' },
+                { pattern: 'no_correlation', text: '哪个数据集的两个变量之间没有明显的线性关系？' }
+            ]
+        },
+        // 组17: 中等正相关 + 中等负相关 + 弱正相关 + 不相关
+        {
+            configs: ['MEDIUM_POSITIVE', 'MEDIUM_NEGATIVE', 'WEAK_POSITIVE', 'NO_CORRELATION'],
+            questions: [
+                { pattern: 'medium_positive', text: '哪个数据集的两个变量之间存在中等程度的正向线性关系？' },
+                { pattern: 'medium_negative', text: '哪个数据集的两个变量之间存在中等程度的负向线性关系？' },
+                { pattern: 'weak_positive', text: '哪个数据集的两个变量之间存在弱正向线性关系？' },
+                { pattern: 'no_correlation', text: '哪个数据集的两个变量之间没有明显的线性关系？' }
+            ]
+        },
+        // 组18: 完美正相关 + 中等负相关 + 弱正相关 + 弱负相关
+        {
+            configs: ['PERFECT_POSITIVE', 'MEDIUM_NEGATIVE', 'WEAK_POSITIVE', 'WEAK_NEGATIVE'],
+            questions: [
+                { pattern: 'perfect_positive', text: '哪个数据集的两个变量之间存在完美的正向线性关系？' },
+                { pattern: 'medium_negative', text: '哪个数据集的两个变量之间存在中等程度的负向线性关系？' },
+                { pattern: 'weak_positive', text: '哪个数据集的两个变量之间存在弱正向线性关系？' },
+                { pattern: 'weak_negative', text: '哪个数据集的两个变量之间存在弱负向线性关系？' }
+            ]
+        },
+        // 组19: 完美负相关 + 中等正相关 + 弱正相关 + 弱负相关
+        {
+            configs: ['PERFECT_NEGATIVE', 'MEDIUM_POSITIVE', 'WEAK_POSITIVE', 'WEAK_NEGATIVE'],
+            questions: [
+                { pattern: 'perfect_negative', text: '哪个数据集的两个变量之间存在完美的负向线性关系？' },
+                { pattern: 'medium_positive', text: '哪个数据集的两个变量之间存在中等程度的正向线性关系？' },
+                { pattern: 'weak_positive', text: '哪个数据集的两个变量之间存在弱正向线性关系？' },
+                { pattern: 'weak_negative', text: '哪个数据集的两个变量之间存在弱负向线性关系？' }
+            ]
+        },
+        // 组20: 强正相关 + 中等正相关 + 弱负相关 + 不相关
+        {
+            configs: ['STRONG_POSITIVE', 'MEDIUM_POSITIVE', 'WEAK_NEGATIVE', 'NO_CORRELATION'],
+            questions: [
+                { pattern: 'strongest_positive', text: '哪个数据集的两个变量之间存在最强的正向线性关系？' },
+                { pattern: 'medium_positive', text: '哪个数据集的两个变量之间存在中等程度的正向线性关系？' },
+                { pattern: 'weak_negative', text: '哪个数据集的两个变量之间存在弱负向线性关系？' },
+                { pattern: 'no_correlation', text: '哪个数据集的两个变量之间没有明显的线性关系？' }
+            ]
+        }
+    ];
 
-                    // 显示反馈
-                    const feedback = questionCard.querySelector('.feedback');
-                    if (userAnswer === correctAnswer) {
-                        score++;
-                        feedback.classList.add('correct');
-                    } else {
-                        feedback.classList.add('incorrect');
-                    }
-                    
-                    // 禁用该问题的选项点击
-                    questionCard.querySelectorAll('.option').forEach(opt => {
-                        opt.style.cursor = 'default';
-                    });
+    // 问题模式对应的处理函数
+    const QUESTION_HANDLERS = {
+        perfect_positive: {
+            getAnswer: (datasets) => {
+                const found = datasets.find(d => d.r > 0.99);
+                return found ? found.optionValue : 'e';
+            },
+            explanation: (datasets, answer) => {
+                const ds = datasets.find(d => d.optionValue === answer);
+                if (ds && ds.r > 0) {
+                    return `图${ds.index + 1}（${ds.label}数据集）中的数据点完全落在一条具有正斜率的直线上，因此${ds.label}数据集表明两个变量之间存在完美的正向线性关系。（样本相关系数 r ≈ ${ds.r.toFixed(2)}。）`;
                 }
-                
-                // 显示得分
-                const scoreDisplay = document.getElementById('scoreDisplay');
-                const scoreElement = document.getElementById('score');
-                scoreElement.textContent = score;
-                scoreDisplay.classList.add('show');
-                
-                submitted = true;
-                
-                // 更改提交按钮文本
-                this.textContent = '已提交';
-                this.disabled = true;
-                this.style.backgroundColor = '#94a3b8';
-            });
-            
-            // 重新作答按钮事件
-            document.getElementById('resetBtn').addEventListener('click', function() {
-                // 重置所有状态
-                submitted = false;
-                userAnswers = {
-                    'question1': null,
-                    'question2': null,
-                    'question3': null,
-                    'question4': null
-                };
-                
-                // 清除所有选项的样式
-                document.querySelectorAll('.option').forEach(option => {
-                    option.classList.remove('selected', 'correct', 'incorrect');
-                    option.style.cursor = 'pointer';
-                });
-                
-                // 隐藏反馈
-                document.querySelectorAll('.feedback').forEach(feedback => {
-                    feedback.classList.remove('correct', 'incorrect');
-                });
-
-                // 隐藏解析按钮和解析内容
-                document.querySelectorAll('.show-explanation-btn').forEach(btn => {
-                    btn.style.display = 'none';
-                    btn.textContent = '查看答案解析';
-                });
-                document.querySelectorAll('.explanation-section').forEach(section => {
-                    section.style.display = 'none';
-                });
-
-                // 隐藏得分显示
-                document.getElementById('scoreDisplay').classList.remove('show');
-                
-                // 重置提交按钮
-                const submitBtn = document.getElementById('submitBtn');
-                submitBtn.textContent = '提交答案';
-                submitBtn.disabled = false;
-                submitBtn.style.backgroundColor = '';
-            });
-            
-            // 初始选择第一个选项作为默认答案（仅用于演示）
-            document.querySelectorAll('.question-card').forEach(card => {
-                const firstOption = card.querySelector('.option');
-                if (firstOption) {
-                    // 不自动选择，让用户自己选择
-                    // firstOption.classList.add('selected');
-                    // const questionId = card.id;
-                    // userAnswers[questionId] = firstOption.getAttribute('data-option');
+                return '没有一个散点图显示的数据完全落在具有正斜率的直线上，因此选择"以上都不是"是正确的。';
+            }
+        },
+        perfect_negative: {
+            getAnswer: (datasets) => {
+                const found = datasets.find(d => d.r < -0.99);
+                return found ? found.optionValue : 'e';
+            },
+            explanation: (datasets, answer) => {
+                const ds = datasets.find(d => d.optionValue === answer);
+                if (ds && ds.r < 0) {
+                    return `图${ds.index + 1}（${ds.label}数据集）中的数据点完全落在一条具有负斜率的直线上，因此${ds.label}数据集表明两个变量之间存在完美的负向线性关系。（样本相关系数 r ≈ ${ds.r.toFixed(2)}。）`;
                 }
-            });
+                return '没有一个散点图显示的数据完全落在具有负斜率的直线上，因此选择"以上都不是"是正确的。';
+            }
+        },
+        strongest_positive: {
+            getAnswer: (datasets) => {
+                const positiveOnes = datasets.filter(d => d.r > 0);
+                if (positiveOnes.length === 0) return 'e';
+                positiveOnes.sort((a, b) => b.r - a.r);
+                return positiveOnes[0].optionValue;
+            },
+            explanation: (datasets, answer) => {
+                const ds = datasets.find(d => d.optionValue === answer);
+                if (ds) {
+                    return `图${ds.index + 1}（${ds.label}数据集）中的数据点显示出正向线性趋势，因此${ds.label}数据集显示出最强的正向关系。（样本相关系数 r ≈ ${ds.r.toFixed(2)}。）`;
+                }
+                return '没有一个数据集表明存在正向线性关系，因此选择"以上都不是"是正确的。';
+            }
+        },
+        strongest_negative: {
+            getAnswer: (datasets) => {
+                const negativeOnes = datasets.filter(d => d.r < 0);
+                if (negativeOnes.length === 0) return 'e';
+                negativeOnes.sort((a, b) => a.r - b.r);
+                return negativeOnes[0].optionValue;
+            },
+            explanation: (datasets, answer) => {
+                const ds = datasets.find(d => d.optionValue === answer);
+                if (ds) {
+                    return `图${ds.index + 1}（${ds.label}数据集）中的数据点显示出负向线性趋势，因此${ds.label}数据集显示出最强的负向关系。（样本相关系数 r ≈ ${ds.r.toFixed(2)}。）`;
+                }
+                return '没有一个数据集表明存在负向线性关系，因此选择"以上都不是"是正确的。';
+            }
+        },
+        medium_positive: {
+            getAnswer: (datasets) => {
+                const found = datasets.find(d => d.r > 0.35 && d.r <= 0.7);
+                return found ? found.optionValue : 'e';
+            },
+            explanation: (datasets, answer) => {
+                const ds = datasets.find(d => d.optionValue === answer);
+                if (ds) {
+                    return `图${ds.index + 1}（${ds.label}数据集）中的数据点显示出中等程度的正向线性趋势。因此，${ds.label}数据集表明存在中等程度的正向线性关系。（样本相关系数 r ≈ ${ds.r.toFixed(2)}。）`;
+                }
+                return '没有数据集表明存在中等程度的正向线性关系，因此选择"以上都不是"是正确的。';
+            }
+        },
+        medium_negative: {
+            getAnswer: (datasets) => {
+                const found = datasets.find(d => d.r < -0.35 && d.r >= -0.7);
+                return found ? found.optionValue : 'e';
+            },
+            explanation: (datasets, answer) => {
+                const ds = datasets.find(d => d.optionValue === answer);
+                if (ds) {
+                    return `图${ds.index + 1}（${ds.label}数据集）中的数据点显示出中等程度的负向线性趋势。因此，${ds.label}数据集表明存在中等程度的负向线性关系。（样本相关系数 r ≈ ${ds.r.toFixed(2)}。）`;
+                }
+                return '没有数据集表明存在中等程度的负向线性关系，因此选择"以上都不是"是正确的。';
+            }
+        },
+        weak_positive: {
+            getAnswer: (datasets) => {
+                const found = datasets.find(d => d.r > 0 && d.r <= 0.35);
+                return found ? found.optionValue : 'e';
+            },
+            explanation: (datasets, answer) => {
+                const ds = datasets.find(d => d.optionValue === answer);
+                if (ds) {
+                    return `图${ds.index + 1}（${ds.label}数据集）中的数据点显示出弱正向线性趋势。因此，${ds.label}数据集表明存在弱正向线性关系。（样本相关系数 r ≈ ${ds.r.toFixed(2)}。）`;
+                }
+                return '没有数据集表明存在弱正向线性关系，因此选择"以上都不是"是正确的。';
+            }
+        },
+        weak_negative: {
+            getAnswer: (datasets) => {
+                const found = datasets.find(d => d.r < 0 && d.r >= -0.35);
+                return found ? found.optionValue : 'e';
+            },
+            explanation: (datasets, answer) => {
+                const ds = datasets.find(d => d.optionValue === answer);
+                if (ds) {
+                    return `图${ds.index + 1}（${ds.label}数据集）中的数据点显示出弱负向线性趋势。因此，${ds.label}数据集表明存在弱负向线性关系。（样本相关系数 r ≈ ${ds.r.toFixed(2)}。）`;
+                }
+                return '没有数据集表明存在弱负向线性关系，因此选择"以上都不是"是正确的。';
+            }
+        },
+        no_correlation: {
+            getAnswer: (datasets) => {
+                const found = datasets.find(d => Math.abs(d.r) < 0.2);
+                return found ? found.optionValue : 'e';
+            },
+            explanation: (datasets, answer) => {
+                const ds = datasets.find(d => d.optionValue === answer);
+                if (ds) {
+                    return `图${ds.index + 1}（${ds.label}数据集）中的数据点分布杂乱，没有明显的线性趋势。因此，${ds.label}数据集表明两个变量之间几乎不存在线性关系。（样本相关系数 r ≈ ${ds.r.toFixed(2)}。）`;
+                }
+                return '没有数据集表明两个变量之间几乎不存在线性关系，因此选择"以上都不是"是正确的。';
+            }
+        }
+    };
+
+    // ==================== 工具函数 ====================
+
+    function shuffleArray(array) {
+        const arr = [...array];
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        return arr;
+    }
+
+    function calculateCorrelation(x, y) {
+        const n = x.length;
+        const sumX = x.reduce((a, b) => a + b, 0);
+        const sumY = y.reduce((a, b) => a + b, 0);
+        const sumXY = x.reduce((sum, xi, i) => sum + xi * y[i], 0);
+        const sumX2 = x.reduce((sum, xi) => sum + xi * xi, 0);
+        const sumY2 = y.reduce((sum, yi) => sum + yi * yi, 0);
+
+        const r = (n * sumXY - sumX * sumY) /
+                   Math.sqrt((n * sumX2 - sumX * sumX) * (n * sumY2 - sumY * sumY));
+        return Math.max(-1, Math.min(1, r));
+    }
+
+    // ==================== 主程序 ====================
+    let chartInstances = [];
+    let currentDatasets = [];
+    let correctAnswers = {};
+    let userAnswers = {};
+    let submitted = false;
+    let currentSetIndex = 0;
+    let quizHistory = [];
+
+    function initialize() {
+        generateAndRender();
+    }
+
+    function generateAndRender() {
+        submitted = false;
+        userAnswers = { q1: null, q2: null, q3: null, q4: null };
+        correctAnswers = {};
+        chartInstances.forEach(chart => chart.destroy());
+        chartInstances = [];
+        currentDatasets = [];
+
+        // 随机选择一组问题配置
+        currentSetIndex = Math.floor(Math.random() * QUESTION_SETS.length);
+        const selectedSet = QUESTION_SETS[currentSetIndex];
+
+        // 随机排列数据集顺序
+        const shuffledNames = shuffleArray(DATASET_NAMES);
+
+        // 随机排列configs顺序（使每套题的答案位置不同）
+        const shuffledConfigs = shuffleArray([...selectedSet.configs]);
+
+        // 为每个数据集使用固定数据
+        currentDatasets = shuffledNames.map((name, index) => {
+            const corrKey = shuffledConfigs[index];
+            const corrType = CORRELATION_TYPES[corrKey];
+            const fixedData = FIXED_DATASETS[corrKey];
+
+            return {
+                name: { x: name.x, y: name.y },
+                label: name.label,
+                index,
+                r: corrType.r,
+                dataX: fixedData.x,
+                dataY: fixedData.y,
+                color: COLORS[index]
+            };
         });
+
+        // 为每个数据集添加optionValue
+        currentDatasets.forEach((ds, i) => {
+            ds.optionValue = String.fromCharCode(97 + i);
+        });
+
+        // 生成问题
+        const questionsContainer = document.getElementById('questionsContainer');
+        questionsContainer.innerHTML = '';
+
+        selectedSet.questions.forEach((q, qIndex) => {
+            const qId = `q${qIndex + 1}`;
+            const handler = QUESTION_HANDLERS[q.pattern];
+            const answer = handler.getAnswer(currentDatasets);
+            correctAnswers[qId] = answer;
+
+            const options = currentDatasets.map((n, i) => ({
+                letter: String.fromCharCode(65 + i),
+                text: `${n.label} 数据集`,
+                value: String.fromCharCode(97 + i)
+            }));
+            options.push({
+                letter: 'E',
+                text: '以上都不是',
+                value: 'e'
+            });
+
+            const card = document.createElement('div');
+            card.className = 'question-card';
+            card.id = qId;
+
+            const optionsHtml = options.map(opt => `
+                <div class="option" data-option="${opt.value}">
+                    <div class="option-letter">${opt.letter}</div>
+                    <div class="option-text">${opt.text}</div>
+                </div>
+            `).join('');
+
+            card.innerHTML = `
+                <div class="question-header">
+                    <div class="question-number">${qIndex + 1}</div>
+                    <div class="question-text">${q.text}</div>
+                </div>
+                <div class="options-container">
+                    ${optionsHtml}
+                </div>
+                <button class="show-explanation-btn">查看答案解析</button>
+                <div class="explanation-section">
+                    <strong>解析：</strong>${handler.explanation(currentDatasets, answer)}
+                </div>
+            `;
+
+            questionsContainer.appendChild(card);
+        });
+
+        // 渲染散点图
+        renderScatterPlots();
+
+        // 绑定事件
+        bindEvents();
+    }
+
+    function renderScatterPlots() {
+        const container = document.getElementById('scatterPlotsContainer');
+        container.innerHTML = '';
+
+        currentDatasets.forEach((ds, i) => {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'scatter-plot-wrapper';
+            wrapper.innerHTML = `
+                <h4>图${i + 1}: ${ds.label} 数据集 <span style="color: #3b82f6; font-weight: bold;">r ≈ ${ds.r.toFixed(3)}</span></h4>
+                <div style="display: flex; align-items: center; justify-content: center; gap: 10px; position: relative;">
+                    <span class="y-axis-label" style="font-size: 14px; color: #475569; position: absolute; left: -10px; top: 50%; transform: translateY(-50%); writing-mode: horizontal-tb;">${ds.name.y}</span>
+                    <canvas id="scatterChart${i}"></canvas>
+                </div>
+                <div style="text-align: center; margin-top: 5px;">
+                    <span class="x-axis-label" style="font-size: 14px; color: #475569;">${ds.name.x}</span>
+                </div>
+            `;
+            container.appendChild(wrapper);
+
+            setTimeout(() => createScatterChart(`scatterChart${i}`, ds), 0);
+        });
+    }
+
+    function createScatterChart(canvasId, dataset) {
+        const ctx = document.getElementById(canvasId);
+        if (!ctx) return;
+
+        const scatterData = dataset.dataX.map((xVal, i) => ({
+            x: xVal,
+            y: dataset.dataY[i]
+        }));
+
+        const yValues = dataset.dataY;
+        const yMin = Math.min(...yValues);
+        const yMax = Math.max(...yValues);
+        const yPadding = (yMax - yMin) * 0.15;
+
+        const chart = new Chart(ctx, {
+            type: 'scatter',
+            data: {
+                datasets: [{
+                    label: dataset.label,
+                    data: scatterData,
+                    backgroundColor: dataset.color.bg,
+                    borderColor: dataset.color.border,
+                    borderWidth: 1,
+                    pointRadius: 5,
+                    pointHoverRadius: 7
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                scales: {
+                    x: {
+                        type: 'linear',
+                        position: 'bottom',
+                        title: { display: false },
+                        min: 0,
+                        max: 21,
+                        ticks: { display: false },
+                        grid: { color: 'rgba(0, 0, 0, 0.08)' }
+                    },
+                    y: {
+                        title: { display: false },
+                        min: Math.max(0, Math.floor(yMin - yPadding)),
+                        max: Math.ceil(yMax + yPadding),
+                        ticks: { display: false },
+                        grid: { color: 'rgba(0, 0, 0, 0.08)' }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return `(${context.parsed.x}, ${context.parsed.y.toFixed(1)})`;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        chartInstances.push(chart);
+    }
+
+    function bindEvents() {
+        // 重置提交按钮状态
+        const submitBtn = document.getElementById('submitBtn');
+        submitBtn.textContent = '提交答案';
+        submitBtn.disabled = false;
+        submitBtn.style.backgroundColor = '';
+
+        document.querySelectorAll('.option').forEach(option => {
+            option.onclick = function() {
+                if (submitted) return;
+
+                const questionCard = this.closest('.question-card');
+                const questionId = questionCard.id;
+
+                questionCard.querySelectorAll('.option').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+
+                this.classList.add('selected');
+                userAnswers[questionId] = this.getAttribute('data-option');
+            };
+        });
+
+        document.querySelectorAll('.show-explanation-btn').forEach(btn => {
+            btn.onclick = function() {
+                const explanation = this.nextElementSibling;
+                if (explanation) {
+                    if (explanation.style.display === 'none' || explanation.style.display === '') {
+                        explanation.style.display = 'block';
+                        this.textContent = '隐藏答案解析';
+                    } else {
+                        explanation.style.display = 'none';
+                        this.textContent = '查看答案解析';
+                    }
+                }
+            };
+        });
+
+        document.getElementById('submitBtn').onclick = handleSubmit;
+        document.getElementById('nextBtn').onclick = initialize;
+    }
+
+    function handleSubmit() {
+        if (submitted) return;
+
+        let score = 0;
+        let allCorrect = true;
+
+        for (const questionId in correctAnswers) {
+            const correctAnswer = correctAnswers[questionId];
+            const userAnswer = userAnswers[questionId];
+            const questionCard = document.getElementById(questionId);
+
+            if (userAnswer === null) {
+                allCorrect = false;
+                continue;
+            }
+
+            const options = questionCard.querySelectorAll('.option');
+
+            options.forEach(option => {
+                const optionValue = option.getAttribute('data-option');
+                if (optionValue === userAnswer && userAnswer !== correctAnswer) {
+                    option.classList.add('incorrect');
+                }
+            });
+
+            const showBtn = questionCard.querySelector('.show-explanation-btn');
+            if (showBtn) showBtn.style.display = 'inline-block';
+
+            const feedback = questionCard.querySelector('.feedback');
+            if (userAnswer === correctAnswer) {
+                score++;
+                if (feedback) {
+                    feedback.classList.add('correct');
+                    feedback.innerHTML = '✓ 回答正确！';
+                }
+            } else {
+                allCorrect = false;
+                if (feedback) {
+                    feedback.classList.add('incorrect');
+                    feedback.innerHTML = '✗ 回答错误';
+                }
+            }
+
+            questionCard.querySelectorAll('.option').forEach(opt => {
+                opt.style.cursor = 'default';
+            });
+        }
+
+        // 记录本题结果到历史
+        quizHistory.push(allCorrect);
+        renderResultIcons();
+
+        document.getElementById('scoreDisplay').classList.add('show');
+
+        submitted = true;
+
+        const submitBtn = document.getElementById('submitBtn');
+        submitBtn.textContent = '已提交';
+        submitBtn.disabled = true;
+        submitBtn.style.backgroundColor = '#94a3b8';
+    }
+
+    function renderResultIcons() {
+        const container = document.getElementById('resultIcons');
+        container.innerHTML = '';
+        quizHistory.forEach((isCorrect, index) => {
+            const icon = document.createElement('span');
+            icon.className = 'result-icon ' + (isCorrect ? 'correct' : 'incorrect');
+            icon.textContent = isCorrect ? '✓' : '✗';
+            icon.title = '第' + (index + 1) + '套题';
+            container.appendChild(icon);
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', initialize);
     </script>
 </body>
 </html>

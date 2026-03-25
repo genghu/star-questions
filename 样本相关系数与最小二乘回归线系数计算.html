@@ -53,15 +53,15 @@
             font-size: 1.4rem;
         }
         .data-table {
-            width: 100%;
+            width: auto;
             border-collapse: collapse;
-            margin: 20px 0;
+            margin: 0;
             background-color: white;
             box-shadow: 0 3px 10px rgba(0,0,0,0.05);
         }
         .data-table th, .data-table td {
             border: 1px solid #ddd;
-            padding: 12px 15px;
+            padding: 5px 12px;
             text-align: center;
         }
         .data-table th {
@@ -80,6 +80,39 @@
             font-family: 'Courier New', monospace;
             text-align: center;
             border: 1px dashed #4a90e2;
+        }
+        .answer-input-container {
+            margin: 25px 0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .answer-input-container label {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2980b9;
+        }
+        .answer-input {
+            width: 150px;
+            padding: 12px 15px;
+            font-size: 1.1rem;
+            border: 2px solid #d1e3f6;
+            border-radius: 8px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+        .answer-input:focus {
+            border-color: #4a90e2;
+            box-shadow: 0 0 10px rgba(74, 144, 226, 0.2);
+        }
+        .answer-input.correct {
+            border-color: #27ae60;
+            background-color: #d5f4e6;
+        }
+        .answer-input.incorrect {
+            border-color: #e74c3c;
+            background-color: #fadbd8;
         }
         .answer-options {
             display: grid;
@@ -147,19 +180,19 @@
             transition: all 0.3s ease;
         }
         #submit-btn {
-            background-color: #2ecc71;
+            background-color: #3498db;
             color: white;
         }
         #submit-btn:hover {
-            background-color: #27ae60;
+            background-color: #2980b9;
             transform: scale(1.05);
         }
-        #reset-btn {
-            background-color: #e74c3c;
+        #next-btn {
+            background-color: #2ecc71;
             color: white;
         }
-        #reset-btn:hover {
-            background-color: #c0392b;
+        #next-btn:hover {
+            background-color: #27ae60;
             transform: scale(1.05);
         }
         .feedback {
@@ -180,13 +213,39 @@
         }
         .score-display {
             text-align: center;
-            font-size: 1.3rem;
+            font-size: 1.1rem;
             margin: 20px 0;
             padding: 15px;
             background-color: #e8f4fc;
             border-radius: 10px;
             font-weight: bold;
             color: #2c3e50;
+            display: none;
+        }
+        .result-history {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+        .result-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+        }
+        .result-icon.correct {
+            background-color: #27ae60;
+        }
+        .result-icon.incorrect {
+            background-color: #e74c3c;
         }
         .explanation {
             background-color: #f9f9f9;
@@ -251,70 +310,61 @@
     <div class="container">
         <header>
             <h1>样本相关系数与最小二乘回归线系数计算</h1>
-            <p class="subtitle">回归与相关 - 韦伯定律数据分析</p>
+            <p class="subtitle" id="scenario-title">回归与相关 - 韦伯定律数据分析</p>
         </header>
 
         <section class="question-section">
-            <h2 class="question-title">题目背景 <button id="refresh-btn" style="margin-left: 15px; padding: 8px 16px; background: linear-gradient(135deg, #3498db, #2980b9); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3);">刷新参数</button></h2>
-            <p>韦伯定律是大多数心理学导论课程中教授的一个概念，它指出刺激强度与"刚好可察觉"的强度增量之比是恒定的，也就是说，该比值不依赖于刺激强度。这个比值被称为"韦伯分数"，因此韦伯定律的一个简明表述是"无论刺激强度如何，韦伯分数是恒定的。" 事实证明，韦伯定律与其说是一条定律，不如说是一条经验法则，因为它在许多情况下并不成立。例如，对于某些听觉刺激，韦伯分数确实系统地依赖于刺激强度。</p>
-            <p>以下双变量数据是在一项听觉强度辨别任务中，一位听者获得的实验数据。对于十个刺激强度 <span class="math">x</span>（以分贝为单位），显示了相应的韦伯分数 <span class="math">y</span>（以分贝为单位）。</p>
+            <h2 class="question-title">题目背景</h2>
+            <p id="scenario-description"></p>
+            <p id="scenario-data-note"></p>
 
-            <table class="data-table" id="data-table">
-                <thead>
-                    <tr>
-                        <th>刺激强度, <span class="math">x</span> (分贝)</th>
-                        <th>韦伯分数, <span class="math">y</span> (分贝)</th>
-                    </tr>
-                </thead>
-                <tbody id="table-body">
-                    <tr><td>35</td><td>-0.49</td></tr>
-                    <tr><td>40</td><td>-0.25</td></tr>
-                    <tr><td>45</td><td>-1.04</td></tr>
-                    <tr><td>50</td><td>-1.19</td></tr>
-                    <tr><td>55</td><td>-1.93</td></tr>
-                    <tr><td>60</td><td>-2.47</td></tr>
-                    <tr><td>65</td><td>-3.26</td></tr>
-                    <tr><td>70</td><td>-3.12</td></tr>
-                    <tr><td>75</td><td>-4.31</td></tr>
-                    <tr><td>80</td><td>-4.07</td></tr>
-                </tbody>
-            </table>
+            <div class="table-chart-container" style="display: flex; align-items: flex-start; gap: 30px; margin: 20px 0;">
+                <table class="data-table" id="data-table">
+                    <thead>
+                        <tr id="table-header">
+                            <th id="x-header">x</th>
+                            <th id="y-header">y</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-body">
+                    </tbody>
+                </table>
+                <div class="scatter-plot" style="flex-shrink: 0;">
+                    <canvas id="scatterCanvas" width="350" height="280"></canvas>
+                </div>
+            </div>
 
-            <p id="stats-display">已知：<span class="math">x̄ = 57.5000</span>, <span class="math">ȳ = -2.2130</span>, <span class="math">s_x = 15.1383</span>, <span class="math">s_y = 1.4589</span></p>
-            <p id="slope-display">最小二乘回归线的斜率 <span class="math">b₁ ≈ -0.0943</span></p>
+            <p id="slope-display"></p>
         </section>
 
         <section class="question-section">
             <h2 class="question-title">问题 1: 最小二乘回归线的 y 截距值</h2>
             <p>这些数据的最小二乘回归线的 y 截距值是多少？将你的答案至少舍入到四位小数。</p>
-            <div class="formula">
-                <span class="math">b₀ = ȳ - b₁ × x̄</span>
-            </div>
 
-            <div class="answer-options" id="options1">
-                <!-- Options will be dynamically rendered -->
+            <div class="answer-input-container">
+                <label for="input1">y 截距值 b₀ = </label>
+                <input type="text" id="input1" class="answer-input" placeholder="输入答案">
             </div>
         </section>
 
         <section class="question-section">
             <h2 class="question-title">问题 2: 样本相关系数值</h2>
             <p>这些数据的样本相关系数值是多少？将你的答案至少舍入到三位小数。</p>
-            <div class="formula">
-                <span class="math">r = b₁ × (s_x / s_y)</span>
-            </div>
 
-            <div class="answer-options" id="options2">
-                <!-- Options will be dynamically rendered -->
+            <div class="answer-input-container">
+                <label for="input2">样本相关系数 r = </label>
+                <input type="text" id="input2" class="answer-input" placeholder="输入答案">
             </div>
         </section>
 
-        <div class="score-display" id="score-display">
-            得分: <span id="score">0</span> / 2
-        </div>
-
         <div class="controls">
             <button id="submit-btn">提交答案</button>
-            <button id="reset-btn">重新作答</button>
+            <button id="next-btn">下一题</button>
+        </div>
+
+        <div class="score-display" id="score-display">
+            <span>答题记录：</span>
+            <div class="result-history" id="result-history"></div>
         </div>
 
         <div class="feedback" id="feedback1"></div>
@@ -324,138 +374,346 @@
 <div class="explanation-section explanation" id="explanation" style="display: none;">
             <h3>题目解析</h3>
             <p><strong>1. y截距计算：</strong></p>
-            <p>根据公式 <span class="math">b₀ = ȳ - b₁ × x̄</span>，代入已知值：</p>
-            <p><span class="math">b₀ = -2.2130 - (-0.0943) × 57.5000 = -2.2130 + 5.42225 = 3.20925 ≈ 3.2093</span></p>
-            
+            <p>公式：<span class="math">b₀ = ȳ - b₁ × x̄</span></p>
+            <p id="explanation-calc1"></p>
+
             <p><strong>2. 样本相关系数计算：</strong></p>
-            <p>根据公式 <span class="math">r = b₁ × (s_x / s_y)</span>，代入已知值：</p>
-            <p><span class="math">r = -0.0943 × (15.1383 / 1.4589) = -0.0943 × 10.3776 ≈ -0.9785 ≈ -0.979</span></p>
-            
+            <p>公式：<span class="math">r = b₁ × (s_x / s_y)</span></p>
+            <p id="explanation-calc2"></p>
+
             <p><strong>3. 结果解释：</strong></p>
-            <p>样本相关系数 <span class="math">r = -0.979</span> 非常接近 -1，表明刺激强度与韦伯分数之间存在强烈的负线性关系。随着刺激强度增加，韦伯分数趋于下降。</p>
-            <p>y截距 <span class="math">b₀ = 3.2093</span> 表示当刺激强度为0分贝时，预测的韦伯分数为3.2093分贝（注意：这可能是外推结果，实际意义需谨慎解释）。</p>
+            <p id="explanation-interpret"></p>
         </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
 
-            // Parameter sets with pre-computed values
-            const questionParams = [
+            // 问题背景和数据集
+            const questionScenarios = [
                 {
-                    data: [[35,-0.49], [40,-0.25], [45,-1.04], [50,-1.19], [55,-1.93], [60,-2.47], [65,-3.26], [70,-3.12], [75,-4.31], [80,-4.07]],
-                    xBar: 57.5,
-                    yBar: -2.213,
-                    sX: 15.1383,
-                    sY: 1.4589,
-                    b1: -0.0943,
-                    b0: 3.2093,  // yBar - b1 * xBar
-                    r: -0.979,   // b1 * (sX / sY)
-                    options1: ['3.2093', '2.8765', '3.5128', '2.9451'],
-                    options2: ['-0.979', '-0.892', '-0.945', '-0.865']
+                    // 背景1: 韦伯定律
+                    title: "韦伯定律数据分析",
+                    description: `韦伯定律是大多数心理学导论课程中教授的一个概念，它指出刺激强度与"刚好可察觉"的强度增量之比是恒定的，也就是说，该比值不依赖于刺激强度。这个比值被称为"韦伯分数"，因此韦伯定律的一个简明表述是"无论刺激强度如何，韦伯分数是恒定的。" 事实证明，韦伯定律与其说是一条定律，不如说是一条经验法则，因为它在许多情况下并不成立。例如，对于某些听觉刺激，韦伯分数确实系统地依赖于刺激强度。`,
+                    dataNote: "以下双变量数据是在一项听觉强度辨别任务中，一位听者获得的实验数据。对于十个刺激强度 x（以分贝为单位），显示了相应的韦伯分数 y（以分贝为单位）。",
+                    xLabel: "刺激强度, x (分贝)",
+                    yLabel: "韦伯分数, y (分贝)",
+                    xAxisName: "刺激强度 x",
+                    yAxisName: "韦伯分数 y",
+                    datasets: [
+                        { data: [[35,-0.49], [40,-0.25], [45,-1.04], [50,-1.19], [55,-1.93], [60,-2.47], [65,-3.26], [70,-3.12], [75,-4.31], [80,-4.07]], xBar: 57.5, yBar: -2.213, sX: 15.1383, sY: 1.4589, b1: -0.0943, b0: 3.2093, r: -0.979 },
+                        { data: [[20,1.2], [25,1.5], [30,0.9], [35,0.7], [40,0.4], [45,0.2], [50,-0.1], [55,-0.3], [60,-0.6], [65,-0.9]], xBar: 42.5, yBar: 0.3, sX: 14.79, sY: 0.68, b1: -0.0432, b0: 2.136, r: -0.938 },
+                        { data: [[10,5.2], [15,4.8], [20,4.1], [25,3.5], [30,3.2], [35,2.8], [40,2.1], [45,1.8], [50,1.2], [55,0.8]], xBar: 32.5, yBar: 2.95, sX: 13.69, sY: 1.45, b1: -0.0985, b0: 6.151, r: -0.930 },
+                        { data: [[5,2.8], [10,2.5], [15,2.1], [20,1.8], [25,1.4], [30,1.1], [35,0.7], [40,0.4], [45,0.1], [50,-0.2]], xBar: 27.5, yBar: 1.27, sX: 13.69, sY: 0.98, b1: -0.0612, b0: 2.953, r: -0.855 },
+                        { data: [[40,-0.8], [45,-1.2], [50,-1.5], [55,-2.0], [60,-2.4], [65,-2.9], [70,-3.3], [75,-3.8], [80,-4.2], [85,-4.7]], xBar: 62.5, yBar: -2.68, sX: 13.69, sY: 1.29, b1: -0.0938, b0: 3.188, r: -0.997 }
+                    ]
                 },
                 {
-                    data: [[20,1.2], [25,1.5], [30,0.9], [35,0.7], [40,0.4], [45,0.2], [50,-0.1], [55,-0.3], [60,-0.6], [65,-0.9]],
-                    xBar: 42.5,
-                    yBar: 0.3,
-                    sX: 14.79,
-                    sY: 0.68,
-                    b1: -0.0432,
-                    b0: 2.136,
-                    r: -0.938,
-                    options1: ['2.136', '1.987', '2.245', '1.856'],
-                    options2: ['-0.938', '-0.875', '-0.912', '-0.845']
+                    // 背景2: 身高与体重
+                    title: "身高与体重关系分析",
+                    description: `身高与体重之间的关系是人体测量学中的基本研究内容。一般来说，身高较高的人往往体重也较重，但这种关系并非完全线性的，还受到年龄、性别、骨骼结构、肌肉量等多种因素的影响。在健康评估中，了解身高与体重的统计关系有助于判断个体的营养状况和健康风险。`,
+                    dataNote: "以下数据来自某大学新生体检记录，记录了10名男生的身高 x（厘米）和体重 y（公斤）。",
+                    xLabel: "身高, x (厘米)",
+                    yLabel: "体重, y (公斤)",
+                    xAxisName: "身高 x",
+                    yAxisName: "体重 y",
+                    datasets: [
+                        { data: [[160,52], [163,55], [166,58], [169,60], [172,64], [175,68], [178,71], [181,75], [184,78], [187,82]], xBar: 173.5, yBar: 66.3, sX: 8.72, sY: 9.15, b1: 1.023, b0: -111.19, r: 0.976 },
+                        { data: [[155,48], [158,51], [161,54], [164,56], [167,59], [170,62], [173,66], [176,69], [179,73], [182,76]], xBar: 168.5, yBar: 61.4, sX: 8.72, sY: 9.03, b1: 1.012, b0: -109.12, r: 0.977 },
+                        { data: [[165,58], [168,60], [171,63], [174,66], [177,70], [180,73], [183,77], [186,80], [189,84], [192,88]], xBar: 178.5, yBar: 71.9, sX: 8.72, sY: 9.72, b1: 1.095, b0: -123.56, r: 0.983 },
+                        { data: [[150,45], [155,50], [160,54], [165,58], [170,62], [175,67], [180,72], [185,77], [190,82], [195,87]], xBar: 172.5, yBar: 65.4, sX: 13.69, sY: 13.08, b1: 0.941, b0: -96.92, r: 0.986 },
+                        { data: [[158,50], [162,54], [166,57], [170,61], [174,65], [178,69], [182,73], [186,77], [190,81], [194,85]], xBar: 176, yBar: 67.2, sX: 11.55, sY: 11.27, b1: 0.956, b0: -101.06, r: 0.980 }
+                    ]
                 },
                 {
-                    data: [[10,5.2], [15,4.8], [20,4.1], [25,3.5], [30,3.2], [35,2.8], [40,2.1], [45,1.8], [50,1.2], [55,0.8]],
-                    xBar: 32.5,
-                    yBar: 2.95,
-                    sX: 13.69,
-                    sY: 1.45,
-                    b1: -0.0985,
-                    b0: 6.151,
-                    r: -0.930,
-                    options1: ['6.151', '5.876', '6.423', '5.654'],
-                    options2: ['-0.930', '-0.878', '-0.905', '-0.856']
+                    // 背景3: 学习时间与考试成绩
+                    title: "学习时间与考试成绩分析",
+                    description: `学习时间与考试成绩之间的关系是教育心理学研究的重要内容。虽然学习时间通常与成绩呈正相关，但这种关系受到学习效率、学习方法、先备知识、动机水平等因素的影响。研究表明，有效学习时间比总学习时间更能预测学业成绩。`,
+                    dataNote: "以下数据记录了某班10名学生在期末考试前的复习时间 x（小时）和考试成绩 y（分数）。",
+                    xLabel: "复习时间, x (小时)",
+                    yLabel: "考试成绩, y (分)",
+                    xAxisName: "复习时间 x",
+                    yAxisName: "考试成绩 y",
+                    datasets: [
+                        { data: [[5,58], [8,62], [11,68], [14,72], [17,76], [20,80], [23,84], [26,87], [29,91], [32,94]], xBar: 18.5, yBar: 77.2, sX: 8.72, sY: 11.27, b1: 1.268, b0: 53.74, r: 0.981 },
+                        { data: [[3,52], [6,56], [9,61], [12,66], [15,70], [18,75], [21,79], [24,83], [27,87], [30,90]], xBar: 16.5, yBar: 71.9, sX: 8.72, sY: 12.45, b1: 1.392, b0: 48.94, r: 0.974 },
+                        { data: [[10,65], [12,68], [14,71], [16,74], [18,77], [20,80], [22,83], [24,86], [26,89], [28,92]], xBar: 19, yBar: 78.5, sX: 5.77, sY: 8.15, b1: 1.378, b0: 52.32, r: 0.976 },
+                        { data: [[2,48], [5,55], [8,60], [11,65], [14,69], [17,73], [20,77], [23,81], [26,85], [29,88]], xBar: 15.5, yBar: 70.1, sX: 8.72, sY: 12.32, b1: 1.384, b0: 48.65, r: 0.979 },
+                        { data: [[4,55], [7,59], [10,64], [13,68], [16,72], [19,76], [22,80], [25,84], [28,88], [31,92]], xBar: 17.5, yBar: 73.8, sX: 8.72, sY: 11.65, b1: 1.309, b0: 50.89, r: 0.980 }
+                    ]
                 },
                 {
-                    data: [[5,12], [10,15], [15,14], [20,18], [25,22], [30,25], [35,28], [40,32], [45,35], [50,38]],
-                    xBar: 27.5,
-                    yBar: 23.9,
-                    sX: 13.69,
-                    sY: 9.01,
-                    b1: 0.615,
-                    b0: 6.988,
-                    r: 0.935,
-                    options1: ['6.988', '7.456', '6.543', '7.234'],
-                    options2: ['0.935', '0.876', '0.912', '0.845']
+                    // 背景4: 温度与冰淇淋销量
+                    title: "温度与冰淇淋销量分析",
+                    description: `气温与冰淇淋销量之间存在明显的正相关关系。当气温升高时，人们对冷饮的需求增加，冰淇淋销量也随之上升。这种关系在夏季尤为明显，是市场营销和库存管理的重要参考依据。`,
+                    dataNote: "以下数据记录了某冰淇淋店在10天内的日平均气温 x（摄氏度）和冰淇淋销量 y（个）。",
+                    xLabel: "气温, x (°C)",
+                    yLabel: "销量, y (个)",
+                    xAxisName: "气温 x",
+                    yAxisName: "销量 y",
+                    datasets: [
+                        { data: [[20,85], [22,95], [24,108], [26,122], [28,138], [30,155], [32,173], [34,192], [36,212], [38,233]], xBar: 29, yBar: 151.3, sX: 5.77, sY: 47.85, b1: 8.142, b0: -84.81, r: 0.981 },
+                        { data: [[18,72], [21,88], [24,105], [27,125], [30,148], [33,172], [36,198], [39,226], [42,256], [45,288]], xBar: 31.5, yBar: 167.8, sX: 8.72, sY: 69.28, b1: 7.795, b0: -77.74, r: 0.980 },
+                        { data: [[22,90], [24,102], [26,115], [28,130], [30,147], [32,165], [34,185], [36,207], [38,230], [40,255]], xBar: 31, yBar: 162.6, sX: 5.77, sY: 50.98, b1: 8.634, b0: -105.05, r: 0.978 },
+                        { data: [[15,60], [18,75], [21,92], [24,112], [27,134], [30,158], [33,184], [36,212], [39,242], [42,274]], xBar: 28.5, yBar: 154.3, sX: 8.72, sY: 65.85, b1: 7.412, b0: -56.94, r: 0.981 },
+                        { data: [[25,110], [27,125], [29,142], [31,161], [33,182], [35,205], [37,230], [39,257], [41,286], [43,317]], xBar: 34, yBar: 201.5, sX: 5.77, sY: 65.32, b1: 11.07, b0: -174.88, r: 0.978 }
+                    ]
                 },
                 {
-                    data: [[100,45], [110,52], [120,48], [130,55], [140,62], [150,68], [160,72], [170,78], [180,85], [190,92]],
-                    xBar: 145,
-                    yBar: 65.7,
-                    sX: 27.39,
-                    sY: 14.85,
-                    b1: 0.492,
-                    b0: -5.74,
-                    r: 0.908,
-                    options1: ['-5.74', '-4.32', '-6.85', '-3.98'],
-                    options2: ['0.908', '0.856', '0.925', '0.878']
+                    // 背景5: 房屋面积与价格
+                    title: "房屋面积与价格分析",
+                    description: `房屋面积是影响房价的重要因素之一。在其他条件相似的情况下，面积越大的房屋通常价格越高。然而，房价还受到地段、房龄、装修、配套设施等多种因素的影响，因此面积与价格的关系并非完全线性。`,
+                    dataNote: "以下数据记录了某城市10套相似条件住宅的建筑面积 x（平方米）和售价 y（万元）。",
+                    xLabel: "面积, x (m²)",
+                    yLabel: "价格, y (万元)",
+                    xAxisName: "面积 x",
+                    yAxisName: "价格 y",
+                    datasets: [
+                        { data: [[60,120], [70,142], [80,165], [90,188], [100,212], [110,238], [120,265], [130,293], [140,322], [150,352]], xBar: 105, yBar: 229.7, sX: 27.39, sY: 73.82, b1: 2.667, b0: -50.34, r: 0.990 },
+                        { data: [[50,95], [60,118], [70,142], [80,168], [90,195], [100,224], [110,254], [120,286], [130,320], [140,355]], xBar: 95, yBar: 215.7, sX: 27.39, sY: 82.58, b1: 2.975, b0: -66.93, r: 0.987 },
+                        { data: [[80,168], [90,192], [100,218], [110,246], [120,276], [130,308], [140,342], [150,378], [160,416], [170,456]], xBar: 125, yBar: 300, sX: 27.39, sY: 90.67, b1: 3.263, b0: -107.88, r: 0.986 },
+                        { data: [[55,108], [68,138], [81,170], [94,204], [107,240], [120,278], [133,318], [146,360], [159,404], [172,450]], xBar: 103.5, yBar: 267, sX: 37.11, sY: 103.74, b1: 2.752, b0: -17.83, r: 0.985 },
+                        { data: [[75,155], [85,180], [95,207], [105,236], [115,267], [125,300], [135,335], [145,372], [155,411], [165,452]], xBar: 120, yBar: 291.5, sX: 27.39, sY: 92.52, b1: 3.325, b0: -107.50, r: 0.984 }
+                    ]
                 },
                 {
-                    data: [[2,8.5], [4,7.2], [6,6.8], [8,5.5], [10,4.9], [12,4.2], [14,3.5], [16,2.8], [18,2.1], [20,1.5]],
-                    xBar: 11,
-                    yBar: 4.7,
-                    sX: 5.48,
-                    sY: 2.18,
-                    b1: -0.382,
-                    b0: 8.902,
-                    r: -0.961,
-                    options1: ['8.902', '8.456', '9.234', '8.123'],
-                    options2: ['-0.961', '-0.912', '-0.945', '-0.878']
+                    // 背景6: 年龄与反应时间
+                    title: "年龄与反应时间分析",
+                    description: `反应时间是指从刺激出现到个体做出反应的时间间隔。研究表明，随着年龄增长，人的信息处理速度会逐渐下降，反应时间相应延长。这种变化在中年后更为明显，但个体差异也很大，与健康状况、生活方式等因素有关。`,
+                    dataNote: "以下数据记录了10名不同年龄段受试者在简单反应时测试中的年龄 x（岁）和平均反应时间 y（毫秒）。",
+                    xLabel: "年龄, x (岁)",
+                    yLabel: "反应时间, y (ms)",
+                    xAxisName: "年龄 x",
+                    yAxisName: "反应时间 y",
+                    datasets: [
+                        { data: [[20,215], [25,222], [30,230], [35,242], [40,258], [45,278], [50,302], [55,330], [60,362], [65,398]], xBar: 42.5, yBar: 283.7, sX: 13.69, sY: 56.89, b1: 4.085, b0: 110.08, r: 0.983 },
+                        { data: [[22,218], [28,228], [34,242], [40,260], [46,282], [52,308], [58,338], [64,372], [70,410], [76,452]], xBar: 49, yBar: 311, sX: 17.55, sY: 72.04, b1: 4.025, b0: 113.77, r: 0.980 },
+                        { data: [[18,212], [24,220], [30,232], [36,248], [42,268], [48,292], [54,320], [60,352], [66,388], [72,428]], xBar: 45, yBar: 296, sX: 17.55, sY: 68.95, b1: 3.860, b0: 122.30, r: 0.983 },
+                        { data: [[25,225], [30,234], [35,246], [40,262], [45,282], [50,306], [55,334], [60,366], [65,402], [70,442]], xBar: 47.5, yBar: 309.9, sX: 13.69, sY: 67.48, b1: 4.828, b0: 80.57, r: 0.979 },
+                        { data: [[20,210], [27,224], [34,242], [41,264], [48,290], [55,320], [62,354], [69,392], [76,434], [83,480]], xBar: 51.5, yBar: 321, sX: 20.40, sY: 84.74, b1: 4.075, b0: 111.14, r: 0.980 }
+                    ]
                 }
             ];
 
-            let currentParams = questionParams[0];
+            // 随机初始化第一个题目
+            const initialScenarioIndex = Math.floor(Math.random() * questionScenarios.length);
+            let currentScenario = questionScenarios[initialScenarioIndex];
+            const initialDataIndex = Math.floor(Math.random() * currentScenario.datasets.length);
+            let currentParams = currentScenario.datasets[initialDataIndex];
+
+            // Draw scatter plot
+            function drawScatterPlot(data, b1, b0, xBar, yBar, xAxisName, yAxisName) {
+                const canvas = document.getElementById('scatterCanvas');
+                const ctx = canvas.getContext('2d');
+                const width = canvas.width;
+                const height = canvas.height;
+
+                // Clear canvas
+                ctx.clearRect(0, 0, width, height);
+
+                // Margins
+                const marginLeft = 50;
+                const marginRight = 30;
+                const marginTop = 30;
+                const marginBottom = 50;
+
+                const plotWidth = width - marginLeft - marginRight;
+                const plotHeight = height - marginTop - marginBottom;
+
+                // Get data range
+                const xValues = data.map(d => d[0]);
+                const yValues = data.map(d => d[1]);
+                const dataXMin = Math.min(...xValues);
+                const dataXMax = Math.max(...xValues);
+                const dataYMin = Math.min(...yValues);
+                const dataYMax = Math.max(...yValues);
+
+                // Calculate axis ranges with padding (10% of range)
+                const xRange = dataXMax - dataXMin;
+                const yRange = dataYMax - dataYMin;
+                const xPadding = Math.max(xRange * 0.1, 1);
+                const yPadding = Math.max(yRange * 0.1, 0.1);
+
+                const xMin = dataXMin - xPadding;
+                const xMax = dataXMax + xPadding;
+                const yMin = dataYMin - yPadding;
+                const yMax = dataYMax + yPadding;
+
+                // Scale functions
+                const scaleX = x => marginLeft + (x - xMin) / (xMax - xMin) * plotWidth;
+                const scaleY = y => marginTop + plotHeight - (y - yMin) / (yMax - yMin) * plotHeight;
+
+                // Draw background
+                ctx.fillStyle = '#f8fbfe';
+                ctx.fillRect(marginLeft, marginTop, plotWidth, plotHeight);
+
+                // Draw grid
+                ctx.strokeStyle = '#e0e0e0';
+                ctx.lineWidth = 0.5;
+
+                // Vertical grid lines
+                for (let i = 0; i <= 5; i++) {
+                    const x = marginLeft + i * plotWidth / 5;
+                    ctx.beginPath();
+                    ctx.moveTo(x, marginTop);
+                    ctx.lineTo(x, marginTop + plotHeight);
+                    ctx.stroke();
+                }
+
+                // Horizontal grid lines
+                for (let i = 0; i <= 5; i++) {
+                    const y = marginTop + i * plotHeight / 5;
+                    ctx.beginPath();
+                    ctx.moveTo(marginLeft, y);
+                    ctx.lineTo(marginLeft + plotWidth, y);
+                    ctx.stroke();
+                }
+
+                // Draw axes
+                ctx.strokeStyle = '#333';
+                ctx.lineWidth = 2;
+
+                // X axis
+                ctx.beginPath();
+                ctx.moveTo(marginLeft, marginTop + plotHeight);
+                ctx.lineTo(marginLeft + plotWidth, marginTop + plotHeight);
+                ctx.stroke();
+
+                // Y axis
+                ctx.beginPath();
+                ctx.moveTo(marginLeft, marginTop);
+                ctx.lineTo(marginLeft, marginTop + plotHeight);
+                ctx.stroke();
+
+                // Draw axis labels
+                ctx.fillStyle = '#333';
+                ctx.font = '12px Segoe UI';
+                ctx.textAlign = 'center';
+
+                // X axis label
+                ctx.fillText(xAxisName, marginLeft + plotWidth / 2, height - 10);
+
+                // Y axis label
+                ctx.save();
+                ctx.translate(15, marginTop + plotHeight / 2);
+                ctx.rotate(-Math.PI / 2);
+                ctx.fillText(yAxisName, 0, 0);
+                ctx.restore();
+
+                // Draw tick labels
+                ctx.font = '10px Segoe UI';
+
+                // Determine decimal places based on range
+                const yDecimals = yRange < 10 ? 2 : (yRange < 100 ? 1 : 0);
+
+                // X axis ticks
+                for (let i = 0; i <= 5; i++) {
+                    const val = xMin + i * (xMax - xMin) / 5;
+                    const x = scaleX(val);
+                    ctx.textAlign = 'center';
+                    ctx.fillText(val.toFixed(0), x, marginTop + plotHeight + 15);
+                }
+
+                // Y axis ticks
+                for (let i = 0; i <= 5; i++) {
+                    const val = yMin + i * (yMax - yMin) / 5;
+                    const y = scaleY(val);
+                    ctx.textAlign = 'right';
+                    ctx.fillText(val.toFixed(yDecimals), marginLeft - 5, y + 4);
+                }
+
+                // Draw regression line (clipped to data x range)
+                ctx.strokeStyle = '#e74c3c';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([5, 3]);
+
+                // Calculate regression line endpoints at data boundaries
+                const regX1 = dataXMin;
+                const regX2 = dataXMax;
+                const regY1 = b0 + b1 * regX1;
+                const regY2 = b0 + b1 * regX2;
+
+                ctx.beginPath();
+                ctx.moveTo(scaleX(regX1), scaleY(regY1));
+                ctx.lineTo(scaleX(regX2), scaleY(regY2));
+                ctx.stroke();
+                ctx.setLineDash([]);
+
+                // Draw data points
+                ctx.fillStyle = '#4a90e2';
+                ctx.strokeStyle = '#2c3e50';
+                ctx.lineWidth = 1.5;
+
+                data.forEach(([x, y]) => {
+                    const px = scaleX(x);
+                    const py = scaleY(y);
+
+                    ctx.beginPath();
+                    ctx.arc(px, py, 6, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.stroke();
+                });
+
+                // Draw mean point
+                ctx.fillStyle = '#27ae60';
+                ctx.beginPath();
+                ctx.arc(scaleX(xBar), scaleY(yBar), 6, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.strokeStyle = '#1e8449';
+                ctx.stroke();
+            }
 
             // 显示答案解析按钮点击事件
-            document.querySelectorAll('.show-explanation-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    var questionId = this.getAttribute('data-question') || this.id;
-                    var explanation;
-                    if (questionId) {
-                        explanation = this.nextElementSibling;
-                    }
-                    if (explanation) {
-                        if (explanation.classList.contains('show')) {
-                            explanation.classList.remove('show');
-                            this.textContent = '查看答案解析';
-                        } else {
-                            explanation.classList.add('show');
-                            this.textContent = '隐藏答案解析';
-                        }
-                    }
-                });
+            document.getElementById('show-explanation-btn').addEventListener('click', function() {
+                const explanation = document.getElementById('explanation');
+                if (explanation.style.display === 'none') {
+                    explanation.style.display = 'block';
+                    this.textContent = '📖 隐藏答案解析';
+                } else {
+                    explanation.style.display = 'none';
+                    this.textContent = '📖 查看答案解析';
+                }
             });
 
             // 正确答案 (will be updated dynamically)
             let correctAnswers = {
-                q1: currentParams.options1[0],
-                q2: currentParams.options2[0]
+                q1: currentParams.b0,
+                q2: currentParams.r
             };
 
-            // 用户选择的答案
-            let userAnswers = {
-                q1: null,
-                q2: null
-            };
+            // 容差
+            const tolerance1 = 0.01; // y截距容差
+            const tolerance2 = 0.01; // 相关系数容差
 
             // 是否已提交
             let submitted = false;
 
+            // 答题历史记录
+            let answerHistory = [];
+
+            // 更新答题历史显示
+            function updateResultHistory() {
+                const historyContainer = document.getElementById('result-history');
+                historyContainer.innerHTML = answerHistory.map(isCorrect =>
+                    `<div class="result-icon ${isCorrect ? 'correct' : 'incorrect'}">${isCorrect ? '✓' : '✗'}</div>`
+                ).join('');
+            }
+
             // Render question with current parameters
             function renderQuestion() {
+                const scenario = currentScenario;
                 const params = currentParams;
+
+                // Update subtitle
+                document.getElementById('scenario-title').textContent = `回归与相关 - ${scenario.title}`;
+
+                // Update scenario description
+                document.getElementById('scenario-description').textContent = scenario.description;
+                document.getElementById('scenario-data-note').textContent = scenario.dataNote;
+
+                // Update table headers
+                document.getElementById('x-header').innerHTML = scenario.xLabel;
+                document.getElementById('y-header').innerHTML = scenario.yLabel;
 
                 // Render data table
                 const tableBody = document.getElementById('table-body');
@@ -463,83 +721,37 @@
                     `<tr><td>${x}</td><td>${y}</td></tr>`
                 ).join('');
 
-                // Update stats display
-                document.getElementById('stats-display').innerHTML =
-                    `已知：<span class="math">x̄ = ${params.xBar.toFixed(4)}</span>, <span class="math">ȳ = ${params.yBar.toFixed(4)}</span>, <span class="math">s_x = ${params.sX.toFixed(4)}</span>, <span class="math">s_y = ${params.sY.toFixed(4)}</span>`;
-
                 // Update slope display
                 document.getElementById('slope-display').innerHTML =
                     `最小二乘回归线的斜率 <span class="math">b₁ ≈ ${params.b1.toFixed(4)}</span>`;
 
-                // Render options for question 1
-                document.getElementById('options1').innerHTML = params.options1.map((opt, i) =>
-                    `<div class="option-card" data-value="${opt}">
-                        <div class="option-letter">${String.fromCharCode(65 + i)}</div>
-                        <div class="option-text">${opt}</div>
-                    </div>`
-                ).join('');
-
-                // Render options for question 2
-                document.getElementById('options2').innerHTML = params.options2.map((opt, i) =>
-                    `<div class="option-card" data-value="${opt}">
-                        <div class="option-letter">${String.fromCharCode(65 + i)}</div>
-                        <div class="option-text">${opt}</div>
-                    </div>`
-                ).join('');
+                // Draw scatter plot
+                drawScatterPlot(params.data, params.b1, params.b0, params.xBar, params.yBar, scenario.xAxisName, scenario.yAxisName);
 
                 // Update correct answers
-                correctAnswers.q1 = params.options1[0];
-                correctAnswers.q2 = params.options2[0];
+                correctAnswers.q1 = params.b0;
+                correctAnswers.q2 = params.r;
 
-                // Reset user answers
-                userAnswers = { q1: null, q2: null };
+                // Clear input fields
+                document.getElementById('input1').value = '';
+                document.getElementById('input2').value = '';
+                document.getElementById('input1').classList.remove('correct', 'incorrect');
+                document.getElementById('input2').classList.remove('correct', 'incorrect');
 
-                // Re-attach click events
-                attachOptionEvents();
+                // Update explanation content
+                const calc1 = params.yBar - params.b1 * params.xBar;
+                document.getElementById('explanation-calc1').innerHTML =
+                    `代入已知值：<span class="math">b₀ = ${params.yBar.toFixed(4)} - (${params.b1.toFixed(4)}) × ${params.xBar.toFixed(4)} = ${params.yBar.toFixed(4)} + ${(params.b1 * params.xBar).toFixed(5)} = ${calc1.toFixed(5)} ≈ ${params.b0}</span>`;
+
+                const ratio = params.sX / params.sY;
+                document.getElementById('explanation-calc2').innerHTML =
+                    `代入已知值：<span class="math">r = ${params.b1.toFixed(4)} × (${params.sX.toFixed(4)} / ${params.sY.toFixed(4)}) = ${params.b1.toFixed(4)} × ${ratio.toFixed(4)} ≈ ${params.r}</span>`;
+
+                const relation = params.r > 0 ? '正' : '负';
+                const strength = Math.abs(params.r) > 0.9 ? '强烈' : (Math.abs(params.r) > 0.7 ? '较强' : '较弱');
+                document.getElementById('explanation-interpret').innerHTML =
+                    `样本相关系数 <span class="math">r = ${params.r}</span> 表明两个变量之间存在${strength}的${relation}线性关系。`;
             }
-
-            // Attach click events to options
-            function attachOptionEvents() {
-                document.querySelectorAll('.option-card').forEach(card => {
-                    card.addEventListener('click', function() {
-                        if (submitted) return;
-
-                        const parentId = this.parentElement.id;
-                        const questionNum = parentId === 'options1' ? 'q1' : 'q2';
-
-                        // Remove previous selection
-                        document.querySelectorAll(`#${parentId} .option-card`).forEach(c => {
-                            c.classList.remove('selected');
-                        });
-
-                        // Select current option
-                        this.classList.add('selected');
-                        userAnswers[questionNum] = this.getAttribute('data-value');
-                    });
-                });
-            }
-
-            // Refresh button
-            document.getElementById('refresh-btn').addEventListener('click', function() {
-                // Select random parameters
-                const randomIndex = Math.floor(Math.random() * questionParams.length);
-                currentParams = questionParams[randomIndex];
-
-                // Reset state
-                submitted = false;
-                userAnswers = { q1: null, q2: null };
-
-                // Hide feedback and score
-                document.getElementById('feedback1').style.display = 'none';
-                document.getElementById('feedback2').style.display = 'none';
-                document.getElementById('score-display').style.display = 'none';
-                document.getElementById('explanation').style.display = 'none';
-                document.getElementById('show-explanation-btn').style.display = 'none';
-                document.getElementById('score').textContent = '0';
-
-                // Re-render
-                renderQuestion();
-            });
 
             // Initial render
             renderQuestion();
@@ -553,55 +765,54 @@
 
                 // 检查问题1
                 const feedback1 = document.getElementById('feedback1');
-                if (userAnswers.q1) {
-                    const isCorrect1 = userAnswers.q1 === correctAnswers.q1;
+                const input1 = document.getElementById('input1');
+                const userAnswer1 = parseFloat(input1.value.trim());
+
+                if (!isNaN(userAnswer1)) {
+                    const isCorrect1 = Math.abs(userAnswer1 - correctAnswers.q1) <= tolerance1;
                     if (isCorrect1) score++;
 
-                    feedback1.textContent = `问题1: 你的答案是 ${userAnswers.q1}，${isCorrect1 ? '正确！' : '不正确。'}`;
+                    input1.classList.add(isCorrect1 ? 'correct' : 'incorrect');
+                    feedback1.innerHTML = `问题1: 你的答案是 ${userAnswer1}，${isCorrect1 ? '正确！' : `不正确。正确答案是 ${correctAnswers.q1}`}`;
                     feedback1.className = `feedback ${isCorrect1 ? 'correct' : 'incorrect'}`;
                     feedback1.style.display = 'block';
-
-                    // 标记选项 - 只标记用户选择的错误答案
-                    document.querySelectorAll('#options1 .option-card').forEach(card => {
-                        const value = card.getAttribute('data-value');
-                        if (value === userAnswers.q1 && !isCorrect1) {
-                            card.classList.add('incorrect');
-                        }
-                    });
                 } else {
                     allAnswered = false;
-                    feedback1.textContent = '请先回答问题1';
+                    feedback1.textContent = '请先输入问题1的答案';
                     feedback1.className = 'feedback incorrect';
                     feedback1.style.display = 'block';
                 }
 
                 // 检查问题2
                 const feedback2 = document.getElementById('feedback2');
-                if (userAnswers.q2) {
-                    const isCorrect2 = userAnswers.q2 === correctAnswers.q2;
+                const input2 = document.getElementById('input2');
+                const userAnswer2 = parseFloat(input2.value.trim());
+
+                if (!isNaN(userAnswer2)) {
+                    const isCorrect2 = Math.abs(userAnswer2 - correctAnswers.q2) <= tolerance2;
                     if (isCorrect2) score++;
 
-                    feedback2.textContent = `问题2: 你的答案是 ${userAnswers.q2}，${isCorrect2 ? '正确！' : '不正确。'}`;
+                    input2.classList.add(isCorrect2 ? 'correct' : 'incorrect');
+                    feedback2.innerHTML = `问题2: 你的答案是 ${userAnswer2}，${isCorrect2 ? '正确！' : `不正确。正确答案是 ${correctAnswers.q2}`}`;
                     feedback2.className = `feedback ${isCorrect2 ? 'correct' : 'incorrect'}`;
                     feedback2.style.display = 'block';
-
-                    // 标记选项 - 只标记用户选择的错误答案
-                    document.querySelectorAll('#options2 .option-card').forEach(card => {
-                        const value = card.getAttribute('data-value');
-                        if (value === userAnswers.q2 && !isCorrect2) {
-                            card.classList.add('incorrect');
-                        }
-                    });
                 } else {
                     allAnswered = false;
-                    feedback2.textContent = '请先回答问题2';
+                    feedback2.textContent = '请先输入问题2的答案';
                     feedback2.className = 'feedback incorrect';
                     feedback2.style.display = 'block';
                 }
 
                 if (allAnswered) {
                     submitted = true;
-                    document.getElementById('score').textContent = score;
+
+                    // 记录答题结果（全对为正确，有错为错误）
+                    const isAllCorrect = score === 2;
+                    answerHistory.push(isAllCorrect);
+
+                    // 更新答题记录显示
+                    updateResultHistory();
+
                     document.getElementById('score-display').style.display = 'block';
 
                     // 显示答案解析按钮
@@ -612,23 +823,33 @@
                 }
             });
 
-            // 重置按钮事件
-            document.getElementById('reset-btn').addEventListener('click', function() {
+            // 下一题按钮事件
+            document.getElementById('next-btn').addEventListener('click', function() {
+                // Select random scenario
+                const scenarioIndex = Math.floor(Math.random() * questionScenarios.length);
+                currentScenario = questionScenarios[scenarioIndex];
+
+                // Select random dataset within scenario
+                const dataIndex = Math.floor(Math.random() * currentScenario.datasets.length);
+                currentParams = currentScenario.datasets[dataIndex];
+
+                // Reset state
                 submitted = false;
-                userAnswers = { q1: null, q2: null };
 
-                // 重置所有选项卡片
-                document.querySelectorAll('.option-card').forEach(card => {
-                    card.classList.remove('selected', 'correct', 'incorrect');
-                });
-
-                // 隐藏反馈和分数
+                // Hide feedback and explanation
                 document.getElementById('feedback1').style.display = 'none';
                 document.getElementById('feedback2').style.display = 'none';
-                document.getElementById('score-display').style.display = 'none';
                 document.getElementById('explanation').style.display = 'none';
                 document.getElementById('show-explanation-btn').style.display = 'none';
-                document.getElementById('score').textContent = '0';
+
+                // Keep score-display visible to show history, but don't reset score
+                // document.getElementById('score').textContent = '0';
+
+                // Re-render
+                renderQuestion();
+
+                // 滚动到顶部
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             });
         });
     </script>

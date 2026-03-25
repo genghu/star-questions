@@ -15,37 +15,64 @@
         body {
             background-color: #f0f7ff;
             color: #333;
-            line-height: 1.6;
-            padding: 20px;
+            line-height: 1.5;
+            padding: 15px;
             max-width: 1200px;
             margin: 0 auto;
         }
 
         .container {
             background-color: white;
-            border-radius: 15px;
+            border-radius: 12px;
             box-shadow: 0 10px 30px rgba(0, 82, 204, 0.1);
-            padding: 30px;
-            margin-bottom: 30px;
+            padding: 20px;
+            margin-bottom: 20px;
         }
 
         header {
             text-align: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
             border-bottom: 2px solid #e6f0ff;
         }
 
         h1 {
             color: #0052cc;
-            font-size: 1.8rem;
-            margin-bottom: 10px;
+            font-size: 1.5rem;
+            margin-bottom: 5px;
         }
 
         .subtitle {
             color: #6699ff;
-            font-size: 1rem;
+            font-size: 0.9rem;
             font-weight: normal;
+        }
+
+        .result-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            font-weight: bold;
+            color: white;
+            animation: popIn 0.3s ease;
+        }
+
+        .result-icon.correct {
+            background-color: #27ae60;
+        }
+
+        .result-icon.incorrect {
+            background-color: #e74c3c;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0); opacity: 0; }
+            70% { transform: scale(1.2); }
+            100% { transform: scale(1); opacity: 1; }
         }
 
         .meta-info {
@@ -58,27 +85,27 @@
         }
 
         .question-section {
-            margin-bottom: 40px;
+            margin-bottom: 20px;
         }
 
         .question-title {
-            font-size: 1.3rem;
+            font-size: 1.1rem;
             color: #0052cc;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
+            margin-bottom: 8px;
+            padding-bottom: 5px;
             border-bottom: 1px dashed #cce0ff;
         }
 
         .question-content {
             background-color: #f8fbff;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
             border-left: 4px solid #6699ff;
         }
 
         .question-content p {
-            margin-bottom: 15px;
+            margin-bottom: 8px;
         }
 
         .math {
@@ -91,20 +118,20 @@
 
         .options-container {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 10px;
         }
 
         .option {
             background-color: white;
             border: 2px solid #e6f0ff;
-            border-radius: 10px;
-            padding: 15px;
+            border-radius: 8px;
+            padding: 10px;
             cursor: pointer;
             transition: all 0.3s ease;
             display: flex;
-            align-items: flex-start;
+            align-items: center;
         }
 
         .option:hover {
@@ -130,16 +157,17 @@
 
         .option-letter {
             display: inline-block;
-            width: 28px;
-            height: 28px;
-            line-height: 28px;
+            width: 24px;
+            height: 24px;
+            line-height: 24px;
             text-align: center;
             background-color: #e6f0ff;
             color: #0052cc;
             border-radius: 50%;
-            margin-right: 12px;
+            margin-right: 8px;
             font-weight: bold;
             flex-shrink: 0;
+            font-size: 0.9rem;
         }
 
         .option.correct .option-letter {
@@ -158,11 +186,11 @@
 
         .answer-input {
             width: 100%;
-            padding: 12px;
+            padding: 8px 12px;
             border: 2px solid #e6f0ff;
-            border-radius: 8px;
+            border-radius: 6px;
             font-size: 1rem;
-            margin-top: 10px;
+            margin-top: 5px;
             transition: border-color 0.3s;
         }
 
@@ -174,16 +202,16 @@
         .controls {
             display: flex;
             justify-content: center;
-            gap: 20px;
-            margin-top: 30px;
+            gap: 15px;
+            margin-top: 20px;
             flex-wrap: wrap;
         }
 
         button {
-            padding: 12px 30px;
+            padding: 10px 24px;
             border: none;
-            border-radius: 8px;
-            font-size: 1rem;
+            border-radius: 6px;
+            font-size: 0.95rem;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -200,14 +228,14 @@
             box-shadow: 0 5px 15px rgba(0, 82, 204, 0.3);
         }
 
-        #reset-btn {
-            background-color: #f0f7ff;
-            color: #0052cc;
-            border: 2px solid #0052cc;
+        #next-btn {
+            background-color: #27ae60;
+            color: white;
+            border: none;
         }
 
-        #reset-btn:hover {
-            background-color: #e6f0ff;
+        #next-btn:hover {
+            background-color: #219a52;
             transform: translateY(-3px);
         }
 
@@ -230,12 +258,76 @@
             to { opacity: 1; }
         }
 
+        .score-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
         .score {
             font-size: 1.5rem;
             color: #0052cc;
-            text-align: center;
-            margin-bottom: 20px;
             font-weight: bold;
+        }
+
+        .result-history {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .score-section {
+            display: none;
+            text-align: center;
+            padding: 25px;
+            background-color: #f8fbff;
+            border-radius: 10px;
+            margin-top: 30px;
+            border-left: 4px solid #0052cc;
+        }
+
+        .score-section.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .show-explanation-btn {
+            display: none;
+            margin-top: 20px;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
+        }
+
+        .show-explanation-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
+        }
+
+        .show-explanation-btn.show {
+            display: inline-block;
+        }
+
+        .explanation-section {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .explanation-section.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
         }
 
         .feedback {
@@ -269,59 +361,107 @@
 
         .critical-values {
             display: flex;
-            justify-content: space-around;
+            justify-content: flex-start;
             flex-wrap: wrap;
-            margin-top: 20px;
-            gap: 20px;
+            margin-top: 10px;
+            gap: 15px;
         }
 
         .critical-value {
             text-align: center;
-            padding: 15px;
+            padding: 10px 15px;
             background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
-            min-width: 150px;
+            border-radius: 6px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+            min-width: 120px;
         }
 
         .critical-value .value {
-            font-size: 1.8rem;
+            font-size: 1.2rem;
             font-weight: bold;
             color: #0052cc;
-            margin-bottom: 5px;
+            margin-bottom: 3px;
         }
 
         .critical-value .label {
             color: #666;
+            font-size: 0.85rem;
+        }
+
+        .inline-question {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .inline-question .question-title {
+            margin: 0;
+            padding: 0;
+            border: none;
+            white-space: nowrap;
+        }
+
+        .inline-question .input-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .inline-question label {
             font-size: 0.9rem;
+            color: #666;
+            white-space: nowrap;
+        }
+
+        .inline-question .answer-input {
+            width: 100px;
+            margin: 0;
+            padding: 6px 10px;
+        }
+
+        .inline-question .critical-inputs {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .inline-question .critical-input-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .inline-question .critical-input-group label {
+            font-size: 0.85rem;
         }
 
         @media (max-width: 768px) {
             .container {
-                padding: 20px;
+                padding: 15px;
             }
-            
+
             h1 {
-                font-size: 1.5rem;
+                font-size: 1.3rem;
             }
-            
+
             .options-container {
-                grid-template-columns: 1fr;
+                grid-template-columns: repeat(2, 1fr);
             }
-            
+
             .controls {
-                flex-direction: column;
+                flex-direction: row;
                 align-items: center;
             }
-            
+
             button {
-                width: 100%;
-                max-width: 300px;
+                width: auto;
+                max-width: none;
             }
-            
+
             .meta-info {
                 flex-direction: column;
-                gap: 10px;
+                gap: 8px;
             }
         }
     </style>
@@ -354,13 +494,8 @@
 <body>
     <div class="container">
         <header>
-            <h1>相关系数与最小二乘回归线斜率的假设检验 <button onclick="refreshParams()" style="margin-left: 15px; padding: 8px 16px; background: linear-gradient(135deg, #e74c3c, #c0392b); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-weight: 600; transition: all 0.3s ease;">刷新参数</button></h1>
+            <h1>相关系数与最小二乘回归线斜率的假设检验</h1>
             <p class="subtitle">回归与相关 - 假设检验练习</p>
-            <div class="meta-info">
-                <div>学生姓名：Genghu Shi</div>
-                <div>日期：04/24/2019</div>
-                <div>来源：ALEKS学习系统</div>
-            </div>
         </header>
 
         <section class="question-content" id="question-background">
@@ -371,21 +506,21 @@
         <div class="question-section">
             <h3 class="question-title">1. 原假设：</h3>
             <div class="options-container" id="q1-options">
-                <div class="option" data-question="1" data-option="a">
+                <div class="option" data-question="1" data-correct="true">
                     <div class="option-letter">A</div>
                     <div class="option-text">H₀: ρ = 0</div>
                 </div>
-                <div class="option" data-question="1" data-option="b">
+                <div class="option" data-question="1">
                     <div class="option-letter">B</div>
                     <div class="option-text">H₀: ρ ≠ 0</div>
                 </div>
-                <div class="option" data-question="1" data-option="c">
+                <div class="option" data-question="1">
                     <div class="option-letter">C</div>
-                    <div class="option-text">H₀: ρ > 0</div>
+                    <div class="option-text">H₀: ρ ≥ 0</div>
                 </div>
-                <div class="option" data-question="1" data-option="d">
+                <div class="option" data-question="1">
                     <div class="option-letter">D</div>
-                    <div class="option-text">H₀: ρ < 0</div>
+                    <div class="option-text">H₀: ρ ≤ 0</div>
                 </div>
             </div>
         </div>
@@ -393,19 +528,19 @@
         <div class="question-section">
             <h3 class="question-title">2. 备择假设：</h3>
             <div class="options-container" id="q2-options">
-                <div class="option" data-question="2" data-option="a">
+                <div class="option" data-question="2" data-correct="true">
                     <div class="option-letter">A</div>
-                    <div class="option-text">H₁: ρ = 0</div>
-                </div>
-                <div class="option" data-question="2" data-option="b">
-                    <div class="option-letter">B</div>
                     <div class="option-text">H₁: ρ ≠ 0</div>
                 </div>
-                <div class="option" data-question="2" data-option="c">
+                <div class="option" data-question="2">
+                    <div class="option-letter">B</div>
+                    <div class="option-text">H₁: ρ = 0</div>
+                </div>
+                <div class="option" data-question="2">
                     <div class="option-letter">C</div>
                     <div class="option-text">H₁: ρ > 0</div>
                 </div>
-                <div class="option" data-question="2" data-option="d">
+                <div class="option" data-question="2">
                     <div class="option-letter">D</div>
                     <div class="option-text">H₁: ρ < 0</div>
                 </div>
@@ -432,29 +567,29 @@
                     <div class="option-text">F</div>
                 </div>
             </div>
-            <div style="margin-top: 20px;">
+            <div class="inline-question" style="margin-top: 10px;">
                 <label for="df-input">自由度（如适用）：</label>
-                <input type="text" id="df-input" class="answer-input">
+                <input type="text" id="df-input" class="answer-input answer-input-small" style="width: 80px;">
             </div>
         </div>
 
-        <div class="question-section">
+        <div class="question-section inline-question">
             <h3 class="question-title">4. 检验统计量的值：</h3>
-            <p>（至少舍入到三位小数。）</p>
-            <input type="text" id="test-statistic-input" class="answer-input">
+            <span style="font-size: 0.85rem; color: #666;">（至少三位小数）</span>
+            <input type="text" id="test-statistic-input" class="answer-input" style="width: 100px;">
         </div>
 
-        <div class="question-section">
+        <div class="question-section inline-question">
             <h3 class="question-title">5. 两个临界值：</h3>
-            <p>（至少舍入到三位小数。）</p>
-            <div class="critical-values">
-                <div class="critical-value">
-                    <div class="label">下临界值</div>
-                    <input type="text" id="lower-critical-input" class="answer-input">
+            <span style="font-size: 0.85rem; color: #666;">（至少三位小数）</span>
+            <div class="critical-inputs" style="display: flex; align-items: center; gap: 15px;">
+                <div class="critical-input-group" style="display: flex; align-items: center; gap: 5px;">
+                    <label for="lower-critical-input">下临界值：</label>
+                    <input type="text" id="lower-critical-input" class="answer-input" style="width: 80px;">
                 </div>
-                <div class="critical-value">
-                    <div class="label">上临界值</div>
-                    <input type="text" id="upper-critical-input" class="answer-input">
+                <div class="critical-input-group" style="display: flex; align-items: center; gap: 5px;">
+                    <label for="upper-critical-input">上临界值：</label>
+                    <input type="text" id="upper-critical-input" class="answer-input" style="width: 80px;">
                 </div>
             </div>
         </div>
@@ -475,12 +610,20 @@
 
         <div class="controls">
             <button id="submit-btn">提交答案</button>
-            <button id="reset-btn">重新作答</button>
+            <button id="next-btn">下一题</button>
         </div>
 
-        <div class="results" id="results">
-            <div class="score" id="score">得分: 0/6</div>
-            
+        <!-- 得分区域 -->
+        <div class="score-section" id="score-section">
+            <div class="score-container">
+                <div class="score" id="score">本次得分: 0/6</div>
+                <div class="result-history" id="result-history"></div>
+            </div>
+            <button id="show-explanation-btn" class="show-explanation-btn">查看答案解析</button>
+        </div>
+
+        <!-- 答案解析区域 -->
+        <div class="explanation-section" id="explanation-section">
             <div class="feedback" id="q1-feedback">
                 <h4>问题1: 原假设</h4>
                 <p id="q1-result"></p>
@@ -489,7 +632,7 @@
                     <p>原假设通常表示没有效应或没有关系。在这个检验中，我们要检验两个变量之间是否存在显著的线性关系，即总体相关系数ρ是否不等于0。因此，原假设应为ρ = 0。</p>
                 </div>
             </div>
-            
+
             <div class="feedback" id="q2-feedback">
                 <h4>问题2: 备择假设</h4>
                 <p id="q2-result"></p>
@@ -498,7 +641,7 @@
                     <p>备择假设是原假设的对立面。由于我们进行的是双尾检验，检验两个变量之间是否存在线性关系（无论正相关还是负相关），因此备择假设应为ρ ≠ 0。</p>
                 </div>
             </div>
-            
+
             <div class="feedback" id="q3-feedback">
                 <h4>问题3: 检验统计量的类型</h4>
                 <p id="q3-result"></p>
@@ -508,7 +651,7 @@
                     <p>自由度：n-2 = 50-2 = 48</p>
                 </div>
             </div>
-            
+
             <div class="feedback" id="q4-feedback">
                 <h4>问题4: 检验统计量的值</h4>
                 <p id="q4-result"></p>
@@ -518,7 +661,7 @@
                     <p>检验统计量的值约为1.195（保留三位小数）。</p>
                 </div>
             </div>
-            
+
             <div class="feedback" id="q5-feedback">
                 <h4>问题5: 两个临界值</h4>
                 <p id="q5-result"></p>
@@ -530,7 +673,7 @@
                     <p>因此，两个临界值为-1.677和1.677。</p>
                 </div>
             </div>
-            
+
             <div class="feedback" id="q6-feedback">
                 <h4>问题6: 结论</h4>
                 <p id="q6-result"></p>
@@ -540,8 +683,8 @@
                     <p>结论应为"否"。</p>
                 </div>
             </div>
-            
-            <div class="explanation" style="margin-top: 30px;">
+
+            <div class="explanation summary">
                 <h4>总结：</h4>
                 <p>在这个假设检验中，我们检验了美国各州1980年人均收入与1999年人均收入之间是否存在显著的线性关系。样本相关系数r=0.17，样本量n=50。通过计算得到检验统计量t=1.195，自由度为48。在0.10的显著性水平下，双尾检验的临界值为±1.677。由于1.195落在-1.677和1.677之间，我们不能拒绝原假设，因此没有足够的证据表明两个变量之间存在显著的线性关系。</p>
                 <p>这个例子展示了如何对总体相关系数进行假设检验，以及如何解释检验结果。</p>
@@ -565,6 +708,7 @@
                 lowerCritical: "-1.677",
                 upperCritical: "1.677",
                 conclusion: "b", // 否
+                q3Explanation: "自由度：n-2 = 50-2 = 48",
                 q4Explanation: "计算过程：t = 0.17√(50-2) / √(1 - 0.17²) = 1.195",
                 q5Explanation: "α=0.10的双尾检验，df=48",
                 q6Explanation: "由于检验统计量t=1.195落在临界值±1.677之间，不能拒绝原假设"
@@ -580,6 +724,7 @@
                 lowerCritical: "-2.048",
                 upperCritical: "2.048",
                 conclusion: "a", // 是
+                q3Explanation: "自由度：n-2 = 30-2 = 28",
                 q4Explanation: "计算过程：t = 0.72√(30-2) / √(1 - 0.72²) = 5.478",
                 q5Explanation: "α=0.05的双尾检验，df=28",
                 q6Explanation: "由于检验统计量t=5.478大于临界值2.048，拒绝原假设"
@@ -595,6 +740,7 @@
                 lowerCritical: "-2.807",
                 upperCritical: "2.807",
                 conclusion: "b", // 否
+                q3Explanation: "自由度：n-2 = 25-2 = 23",
                 q4Explanation: "计算过程：t = 0.45√(25-2) / √(1 - 0.45²) = 2.427",
                 q5Explanation: "α=0.01的双尾检验，df=23",
                 q6Explanation: "由于检验统计量t=2.427落在临界值±2.807之间，不能拒绝原假设"
@@ -606,13 +752,14 @@
                 r: 0.58,
                 n: 40,
                 df: 38,
-                testStatistic: "4.308",
+                testStatistic: "4.389",
                 lowerCritical: "-2.024",
                 upperCritical: "2.024",
                 conclusion: "a", // 是
-                q4Explanation: "计算过程：t = 0.58√(40-2) / √(1 - 0.58²) = 4.308",
+                q3Explanation: "自由度：n-2 = 40-2 = 38",
+                q4Explanation: "计算过程：t = 0.58√(40-2) / √(1 - 0.58²) = 4.389",
                 q5Explanation: "α=0.05的双尾检验，df=38",
-                q6Explanation: "由于检验统计量t=4.308大于临界值2.024，拒绝原假设"
+                q6Explanation: "由于检验统计量t=4.389大于临界值2.024，拒绝原假设"
             },
             {
                 // 参数集5: 温度与冰淇淋销量相关性
@@ -621,13 +768,14 @@
                 r: 0.31,
                 n: 35,
                 df: 33,
-                testStatistic: "1.861",
+                testStatistic: "1.873",
                 lowerCritical: "-1.692",
                 upperCritical: "1.692",
                 conclusion: "a", // 是
-                q4Explanation: "计算过程：t = 0.31√(35-2) / √(1 - 0.31²) = 1.861",
+                q3Explanation: "自由度：n-2 = 35-2 = 33",
+                q4Explanation: "计算过程：t = 0.31√(35-2) / √(1 - 0.31²) = 1.873",
                 q5Explanation: "α=0.10的双尾检验，df=33",
-                q6Explanation: "由于检验统计量t=1.861大于临界值1.692，拒绝原假设"
+                q6Explanation: "由于检验统计量t=1.873大于临界值1.692，拒绝原假设"
             },
             {
                 // 参数集6: 房屋面积与价格相关性
@@ -636,22 +784,247 @@
                 r: 0.82,
                 n: 45,
                 df: 43,
-                testStatistic: "9.155",
+                testStatistic: "9.395",
                 lowerCritical: "-2.695",
                 upperCritical: "2.695",
                 conclusion: "a", // 是
-                q4Explanation: "计算过程：t = 0.82√(45-2) / √(1 - 0.82²) = 9.155",
+                q3Explanation: "自由度：n-2 = 45-2 = 43",
+                q4Explanation: "计算过程：t = 0.82√(45-2) / √(1 - 0.82²) = 9.395",
                 q5Explanation: "α=0.01的双尾检验，df=43",
-                q6Explanation: "由于检验统计量t=9.155大于临界值2.695，拒绝原假设"
+                q6Explanation: "由于检验统计量t=9.395大于临界值2.695，拒绝原假设"
+            },
+            {
+                // 参数集7: 睡眠时间与工作表现
+                backgroundText: "一位职业健康心理学家研究了员工每晚睡眠时间与次日工作表现评分之间的关系。调查了28名员工，发现样本相关系数约为<span class='math'>r = 0.53</span>。基于此信息，通过对总体相关系数<span class='math'>ρ</span>进行假设检验，来检验睡眠时间与工作表现这两个变量之间是否存在显著的线性关系。（假设这两个变量服从二元正态分布。）使用0.05的显著性水平，并进行双尾检验。",
+                q6Title: "6. 基于数据，我们能否得出结论（使用0.05水平）：睡眠时间与工作表现之间存在显著的线性关系？",
+                r: 0.53,
+                n: 28,
+                df: 26,
+                testStatistic: "3.187",
+                lowerCritical: "-2.056",
+                upperCritical: "2.056",
+                conclusion: "a", // 是
+                q3Explanation: "自由度：n-2 = 28-2 = 26",
+                q4Explanation: "计算过程：t = 0.53√(28-2) / √(1 - 0.53²) = 3.187",
+                q5Explanation: "α=0.05的双尾检验，df=26",
+                q6Explanation: "由于检验统计量t=3.187大于临界值2.056，拒绝原假设"
+            },
+            {
+                // 参数集8: 二手车里程与价格
+                backgroundText: "一位汽车经销商分析了二手车的行驶里程与销售价格之间的关系。收集了32辆车的数据，发现样本相关系数约为<span class='math'>r = -0.68</span>。基于此信息，通过对总体相关系数<span class='math'>ρ</span>进行假设检验，来检验行驶里程与销售价格这两个变量之间是否存在显著的线性关系。（假设这两个变量服从二元正态分布。）使用0.05的显著性水平，并进行双尾检验。",
+                q6Title: "6. 基于数据，我们能否得出结论（使用0.05水平）：二手车的行驶里程与销售价格之间存在显著的线性关系？",
+                r: -0.68,
+                n: 32,
+                df: 30,
+                testStatistic: "-5.080",
+                lowerCritical: "-2.042",
+                upperCritical: "2.042",
+                conclusion: "a", // 是
+                q3Explanation: "自由度：n-2 = 32-2 = 30",
+                q4Explanation: "计算过程：t = -0.68√(32-2) / √(1 - 0.68²) = -5.080",
+                q5Explanation: "α=0.05的双尾检验，df=30",
+                q6Explanation: "由于检验统计量t=-5.080小于临界值-2.042，拒绝原假设"
+            },
+            {
+                // 参数集9: 教育年限与年收入
+                backgroundText: "一位劳动经济学家研究了个人受教育年限与年收入之间的关系。调查了55名在职人员，发现样本相关系数约为<span class='math'>r = 0.41</span>。基于此信息，通过对总体相关系数<span class='math'>ρ</span>进行假设检验，来检验受教育年限与年收入这两个变量之间是否存在显著的线性关系。（假设这两个变量服从二元正态分布。）使用0.01的显著性水平，并进行双尾检验。",
+                q6Title: "6. 基于数据，我们能否得出结论（使用0.01水平）：受教育年限与年收入之间存在显著的线性关系？",
+                r: 0.41,
+                n: 55,
+                df: 53,
+                testStatistic: "3.273",
+                lowerCritical: "-2.672",
+                upperCritical: "2.672",
+                conclusion: "a", // 是
+                q3Explanation: "自由度：n-2 = 55-2 = 53",
+                q4Explanation: "计算过程：t = 0.41√(55-2) / √(1 - 0.41²) = 3.273",
+                q5Explanation: "α=0.01的双尾检验，df=53",
+                q6Explanation: "由于检验统计量t=3.273大于临界值2.672，拒绝原假设"
+            },
+            {
+                // 参数集10: 年龄与血压
+                backgroundText: "一位心血管医生研究了成年人年龄与舒张压之间的关系。收集了38名成年人的数据，发现样本相关系数约为<span class='math'>r = 0.29</span>。基于此信息，通过对总体相关系数<span class='math'>ρ</span>进行假设检验，来检验年龄与舒张压这两个变量之间是否存在显著的线性关系。（假设这两个变量服从二元正态分布。）使用0.10的显著性水平，并进行双尾检验。",
+                q6Title: "6. 基于数据，我们能否得出结论（使用0.10水平）：年龄与舒张压之间存在显著的线性关系？",
+                r: 0.29,
+                n: 38,
+                df: 36,
+                testStatistic: "1.818",
+                lowerCritical: "-1.688",
+                upperCritical: "1.688",
+                conclusion: "a", // 是
+                q3Explanation: "自由度：n-2 = 38-2 = 36",
+                q4Explanation: "计算过程：t = 0.29√(38-2) / √(1 - 0.29²) = 1.818",
+                q5Explanation: "α=0.10的双尾检验，df=36",
+                q6Explanation: "由于检验统计量t=1.818大于临界值1.688，拒绝原假设"
+            },
+            {
+                // 参数集11: 产品价格与需求量
+                backgroundText: "一位市场分析师研究了某产品价格与月销售量之间的关系。收集了22个月的销售数据，发现样本相关系数约为<span class='math'>r = -0.35</span>。基于此信息，通过对总体相关系数<span class='math'>ρ</span>进行假设检验，来检验价格与销售量这两个变量之间是否存在显著的线性关系。（假设这两个变量服从二元正态分布。）使用0.10的显著性水平，并进行双尾检验。",
+                q6Title: "6. 基于数据，我们能否得出结论（使用0.10水平）：产品价格与销售量之间存在显著的线性关系？",
+                r: -0.35,
+                n: 22,
+                df: 20,
+                testStatistic: "-1.671",
+                lowerCritical: "-1.725",
+                upperCritical: "1.725",
+                conclusion: "b", // 否
+                q3Explanation: "自由度：n-2 = 22-2 = 20",
+                q4Explanation: "计算过程：t = -0.35√(22-2) / √(1 - 0.35²) = -1.671",
+                q5Explanation: "α=0.10的双尾检验，df=20",
+                q6Explanation: "由于检验统计量t=-1.671落在临界值±1.725之间，不能拒绝原假设"
+            },
+            {
+                // 参数集12: 运动时间与静息心率
+                backgroundText: "一位运动生理学家研究了每周运动时间与静息心率之间的关系。调查了42名健身爱好者，发现样本相关系数约为<span class='math'>r = -0.55</span>。基于此信息，通过对总体相关系数<span class='math'>ρ</span>进行假设检验，来检验运动时间与静息心率这两个变量之间是否存在显著的线性关系。（假设这两个变量服从二元正态分布。）使用0.01的显著性水平，并进行双尾检验。",
+                q6Title: "6. 基于数据，我们能否得出结论（使用0.01水平）：运动时间与静息心率之间存在显著的线性关系？",
+                r: -0.55,
+                n: 42,
+                df: 40,
+                testStatistic: "-4.165",
+                lowerCritical: "-2.704",
+                upperCritical: "2.704",
+                conclusion: "a", // 是
+                q3Explanation: "自由度：n-2 = 42-2 = 40",
+                q4Explanation: "计算过程：t = -0.55√(42-2) / √(1 - 0.55²) = -4.165",
+                q5Explanation: "α=0.01的双尾检验，df=40",
+                q6Explanation: "由于检验统计量t=-4.165小于临界值-2.704，拒绝原假设"
+            },
+            {
+                // 参数集13: 阅读量与词汇量
+                backgroundText: "一位语言学家研究了每周阅读时间与词汇量测试得分之间的关系。调查了33名学生，发现样本相关系数约为<span class='math'>r = 0.64</span>。基于此信息，通过对总体相关系数<span class='math'>ρ</span>进行假设检验，来检验阅读时间与词汇量这两个变量之间是否存在显著的线性关系。（假设这两个变量服从二元正态分布。）使用0.05的显著性水平，并进行双尾检验。",
+                q6Title: "6. 基于数据，我们能否得出结论（使用0.05水平）：阅读时间与词汇量之间存在显著的线性关系？",
+                r: 0.64,
+                n: 33,
+                df: 31,
+                testStatistic: "4.638",
+                lowerCritical: "-2.040",
+                upperCritical: "2.040",
+                conclusion: "a", // 是
+                q3Explanation: "自由度：n-2 = 33-2 = 31",
+                q4Explanation: "计算过程：t = 0.64√(33-2) / √(1 - 0.64²) = 4.638",
+                q5Explanation: "α=0.05的双尾检验，df=31",
+                q6Explanation: "由于检验统计量t=4.638大于临界值2.040，拒绝原假设"
+            },
+            {
+                // 参数集14: 员工满意度与离职意向
+                backgroundText: "一位人力资源专家研究了员工满意度评分与离职意向评分之间的关系。调查了48名员工，发现样本相关系数约为<span class='math'>r = -0.48</span>。基于此信息，通过对总体相关系数<span class='math'>ρ</span>进行假设检验，来检验员工满意度与离职意向这两个变量之间是否存在显著的线性关系。（假设这两个变量服从二元正态分布。）使用0.05的显著性水平，并进行双尾检验。",
+                q6Title: "6. 基于数据，我们能否得出结论（使用0.05水平）：员工满意度与离职意向之间存在显著的线性关系？",
+                r: -0.48,
+                n: 48,
+                df: 46,
+                testStatistic: "-3.711",
+                lowerCritical: "-2.013",
+                upperCritical: "2.013",
+                conclusion: "a", // 是
+                q3Explanation: "自由度：n-2 = 48-2 = 46",
+                q4Explanation: "计算过程：t = -0.48√(48-2) / √(1 - 0.48²) = -3.711",
+                q5Explanation: "α=0.05的双尾检验，df=46",
+                q6Explanation: "由于检验统计量t=-3.711小于临界值-2.013，拒绝原假设"
+            },
+            {
+                // 参数集15: 土壤湿度与作物产量
+                backgroundText: "一位农业科学家研究了土壤湿度与小麦产量之间的关系。收集了26块试验田的数据，发现样本相关系数约为<span class='math'>r = 0.38</span>。基于此信息，通过对总体相关系数<span class='math'>ρ</span>进行假设检验，来检验土壤湿度与小麦产量这两个变量之间是否存在显著的线性关系。（假设这两个变量服从二元正态分布。）使用0.10的显著性水平，并进行双尾检验。",
+                q6Title: "6. 基于数据，我们能否得出结论（使用0.10水平）：土壤湿度与小麦产量之间存在显著的线性关系？",
+                r: 0.38,
+                n: 26,
+                df: 24,
+                testStatistic: "2.013",
+                lowerCritical: "-1.711",
+                upperCritical: "1.711",
+                conclusion: "a", // 是
+                q3Explanation: "自由度：n-2 = 26-2 = 24",
+                q4Explanation: "计算过程：t = 0.38√(26-2) / √(1 - 0.38²) = 2.013",
+                q5Explanation: "α=0.10的双尾检验，df=24",
+                q6Explanation: "由于检验统计量t=2.013大于临界值1.711，拒绝原假设"
+            },
+            {
+                // 参数集16: 咖啡摄入量与注意力得分
+                backgroundText: "一位营养学家研究了每日咖啡摄入量与注意力测试得分之间的关系。调查了29名上班族，发现样本相关系数约为<span class='math'>r = 0.22</span>。基于此信息，通过对总体相关系数<span class='math'>ρ</span>进行假设检验，来检验咖啡摄入量与注意力得分这两个变量之间是否存在显著的线性关系。（假设这两个变量服从二元正态分布。）使用0.10的显著性水平，并进行双尾检验。",
+                q6Title: "6. 基于数据，我们能否得出结论（使用0.10水平）：咖啡摄入量与注意力得分之间存在显著的线性关系？",
+                r: 0.22,
+                n: 29,
+                df: 27,
+                testStatistic: "1.162",
+                lowerCritical: "-1.703",
+                upperCritical: "1.703",
+                conclusion: "b", // 否
+                q3Explanation: "自由度：n-2 = 29-2 = 27",
+                q4Explanation: "计算过程：t = 0.22√(29-2) / √(1 - 0.22²) = 1.162",
+                q5Explanation: "α=0.10的双尾检验，df=27",
+                q6Explanation: "由于检验统计量t=1.162落在临界值±1.703之间，不能拒绝原假设"
+            },
+            {
+                // 参数集17: 社交媒体使用时间与睡眠质量
+                backgroundText: "一位睡眠研究专家研究了每日社交媒体使用时间与睡眠质量评分之间的关系。调查了36名大学生，发现样本相关系数约为<span class='math'>r = -0.42</span>。基于此信息，通过对总体相关系数<span class='math'>ρ</span>进行假设检验，来检验社交媒体使用时间与睡眠质量这两个变量之间是否存在显著的线性关系。（假设这两个变量服从二元正态分布。）使用0.05的显著性水平，并进行双尾检验。",
+                q6Title: "6. 基于数据，我们能否得出结论（使用0.05水平）：社交媒体使用时间与睡眠质量之间存在显著的线性关系？",
+                r: -0.42,
+                n: 36,
+                df: 34,
+                testStatistic: "-2.710",
+                lowerCritical: "-2.032",
+                upperCritical: "2.032",
+                conclusion: "a", // 是
+                q3Explanation: "自由度：n-2 = 36-2 = 34",
+                q4Explanation: "计算过程：t = -0.42√(36-2) / √(1 - 0.42²) = -2.710",
+                q5Explanation: "α=0.05的双尾检验，df=34",
+                q6Explanation: "由于检验统计量t=-2.710小于临界值-2.032，拒绝原假设"
+            },
+            {
+                // 参数集18: 日均步数与BMI
+                backgroundText: "一位健康研究员研究了每日平均步数与身体质量指数(BMI)之间的关系。收集了44名成年人的数据，发现样本相关系数约为<span class='math'>r = -0.61</span>。基于此信息，通过对总体相关系数<span class='math'>ρ</span>进行假设检验，来检验日均步数与BMI这两个变量之间是否存在显著的线性关系。（假设这两个变量服从二元正态分布。）使用0.01的显著性水平，并进行双尾检验。",
+                q6Title: "6. 基于数据，我们能否得出结论（使用0.01水平）：日均步数与BMI之间存在显著的线性关系？",
+                r: -0.61,
+                n: 44,
+                df: 42,
+                testStatistic: "-4.989",
+                lowerCritical: "-2.698",
+                upperCritical: "2.698",
+                conclusion: "a", // 是
+                q3Explanation: "自由度：n-2 = 44-2 = 42",
+                q4Explanation: "计算过程：t = -0.61√(44-2) / √(1 - 0.61²) = -4.989",
+                q5Explanation: "α=0.01的双尾检验，df=42",
+                q6Explanation: "由于检验统计量t=-4.989小于临界值-2.698，拒绝原假设"
+            },
+            {
+                // 参数集19: 课堂出勤率与期末成绩
+                backgroundText: "一位教育学研究者研究了学生课堂出勤率与期末考试成绩之间的关系。收集了52名学生的数据，发现样本相关系数约为<span class='math'>r = 0.34</span>。基于此信息，通过对总体相关系数<span class='math'>ρ</span>进行假设检验，来检验出勤率与期末成绩这两个变量之间是否存在显著的线性关系。（假设这两个变量服从二元正态分布。）使用0.05的显著性水平，并进行双尾检验。",
+                q6Title: "6. 基于数据，我们能否得出结论（使用0.05水平）：课堂出勤率与期末成绩之间存在显著的线性关系？",
+                r: 0.34,
+                n: 52,
+                df: 50,
+                testStatistic: "2.556",
+                lowerCritical: "-2.009",
+                upperCritical: "2.009",
+                conclusion: "a", // 是
+                q3Explanation: "自由度：n-2 = 52-2 = 50",
+                q4Explanation: "计算过程：t = 0.34√(52-2) / √(1 - 0.34²) = 2.556",
+                q5Explanation: "α=0.05的双尾检验，df=50",
+                q6Explanation: "由于检验统计量t=2.556大于临界值2.009，拒绝原假设"
+            },
+            {
+                // 参数集20: 每日屏幕时间与视力得分
+                backgroundText: "一位眼科医生研究了每日屏幕使用时间与视力测试得分之间的关系。调查了31名上班族，发现样本相关系数约为<span class='math'>r = -0.25</span>。基于此信息，通过对总体相关系数<span class='math'>ρ</span>进行假设检验，来检验屏幕时间与视力得分这两个变量之间是否存在显著的线性关系。（假设这两个变量服从二元正态分布。）使用0.10的显著性水平，并进行双尾检验。",
+                q6Title: "6. 基于数据，我们能否得出结论（使用0.10水平）：每日屏幕时间与视力得分之间存在显著的线性关系？",
+                r: -0.25,
+                n: 31,
+                df: 29,
+                testStatistic: "-1.393",
+                lowerCritical: "-1.699",
+                upperCritical: "1.699",
+                conclusion: "b", // 否
+                q3Explanation: "自由度：n-2 = 31-2 = 29",
+                q4Explanation: "计算过程：t = -0.25√(31-2) / √(1 - 0.25²) = -1.393",
+                q5Explanation: "α=0.10的双尾检验，df=29",
+                q6Explanation: "由于检验统计量t=-1.393落在临界值±1.699之间，不能拒绝原假设"
             }
         ];
 
         let currentParamIndex = Math.floor(Math.random() * questionParams.length);
 
-        // 正确答案
+        // 正确答案（q1和q2由shuffle函数动态设置）
         let correctAnswers = {
-            q1: 'a', // H₀: ρ = 0
-            q2: 'b', // H₁: ρ ≠ 0
+            q1: 'a',
+            q2: 'a',
             q3: 'b', // t统计量
             df: '48',
             testStatistic: '1.195',
@@ -672,6 +1045,22 @@
             q6: null
         };
 
+        // 答题历史记录
+        let quizHistory = [];
+
+        // 添加结果图标到历史记录
+        function addResultIcon(isAllCorrect) {
+            const historyContainer = document.getElementById('result-history');
+            const icon = document.createElement('div');
+            icon.className = `result-icon ${isAllCorrect ? 'correct' : 'incorrect'}`;
+            icon.innerHTML = isAllCorrect ? '✓' : '✗';
+            icon.title = isAllCorrect ? '全部正确' : '有错误';
+            historyContainer.appendChild(icon);
+
+            // 保存到历史记录
+            quizHistory.push(isAllCorrect);
+        }
+
         // 渲染问题的函数
         function renderQuestion() {
             const params = questionParams[currentParamIndex];
@@ -688,6 +1077,69 @@
             correctAnswers.lowerCritical = params.lowerCritical;
             correctAnswers.upperCritical = params.upperCritical;
             correctAnswers.q6 = params.conclusion;
+
+            // 更新问题3答案解析（自由度）
+            const q3ExpPs = document.querySelectorAll('#q3-feedback .explanation p');
+            if (q3ExpPs.length >= 2 && params.q3Explanation) {
+                q3ExpPs[1].textContent = params.q3Explanation;
+            }
+
+            // 更新问题4答案解析（检验统计量计算）
+            const q4ExpPs = document.querySelectorAll('#q4-feedback .explanation p');
+            if (q4ExpPs.length >= 1 && params.q4Explanation) {
+                q4ExpPs[0].innerHTML = params.q4Explanation;
+            }
+
+            // 更新问题5答案解析（临界值说明）
+            const q5ExpPs = document.querySelectorAll('#q5-feedback .explanation p');
+            if (q5ExpPs.length >= 1 && params.q5Explanation) {
+                q5ExpPs[0].textContent = params.q5Explanation;
+            }
+
+            // 更新问题6答案解析（结论解释）
+            const q6ExpPs = document.querySelectorAll('#q6-feedback .explanation p');
+            if (q6ExpPs.length >= 1 && params.q6Explanation) {
+                q6ExpPs[0].textContent = params.q6Explanation;
+            }
+        }
+
+        // Fisher-Yates 洗牌算法
+        function shuffleArray(array) {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        // 随机打乱指定问题的选项
+        function shuffleQuestionOptions(questionNum) {
+            const container = document.getElementById(`q${questionNum}-options`);
+            if (!container) return;
+
+            const options = Array.from(container.querySelectorAll('.option'));
+            const shuffledOptions = shuffleArray(options);
+            const letters = ['a', 'b', 'c', 'd'];
+
+            container.innerHTML = '';
+            shuffledOptions.forEach((option, index) => {
+                const newLetter = letters[index];
+                option.querySelector('.option-letter').textContent = newLetter.toUpperCase();
+                option.setAttribute('data-option', newLetter);
+
+                if (option.hasAttribute('data-correct')) {
+                    correctAnswers[`q${questionNum}`] = newLetter;
+                }
+
+                container.appendChild(option);
+            });
+        }
+
+        // 打乱问题1和2的选项
+        function shuffleAllOptions() {
+            shuffleQuestionOptions(1);
+            shuffleQuestionOptions(2);
         }
 
         // 刷新参数函数
@@ -721,8 +1173,16 @@
             document.getElementById('lower-critical-input').value = '';
             document.getElementById('upper-critical-input').value = '';
 
-            // 隐藏结果区域
-            document.getElementById('results').classList.remove('show');
+            // 隐藏得分区域
+            document.getElementById('score-section').classList.remove('show');
+
+            // 隐藏答案解析区域
+            document.getElementById('explanation-section').classList.remove('show');
+
+            // 隐藏查看答案解析按钮
+            const showExpBtn = document.getElementById('show-explanation-btn');
+            showExpBtn.classList.remove('show');
+            showExpBtn.textContent = '查看答案解析';
 
             // 重置反馈区域
             for (let i = 1; i <= 6; i++) {
@@ -732,14 +1192,11 @@
                 }
             }
 
-            // 隐藏答案解析按钮
-            document.querySelectorAll('.show-explanation-btn').forEach(btn => {
-                btn.style.display = 'none';
-                btn.textContent = '查看答案解析';
-            });
-
             // 重新渲染问题
             renderQuestion();
+
+            // 重新打乱选项
+            shuffleAllOptions();
         }
 
         // 初始化
@@ -747,6 +1204,9 @@
 
             // 初始化渲染
             renderQuestion();
+
+            // 随机打乱选项
+            shuffleAllOptions();
 
             // 显示答案解析按钮点击事件
             document.querySelectorAll('.show-explanation-btn').forEach(btn => {
@@ -808,8 +1268,21 @@
             // 提交按钮事件
             document.getElementById('submit-btn').addEventListener('click', submitAnswers);
 
-            // 重置按钮事件
-            document.getElementById('reset-btn').addEventListener('click', resetQuiz);
+            // 下一题按钮事件
+            document.getElementById('next-btn').addEventListener('click', refreshParams);
+
+            // 查看答案解析按钮事件
+            document.getElementById('show-explanation-btn').addEventListener('click', function() {
+                const explanationSection = document.getElementById('explanation-section');
+                if (explanationSection.classList.contains('show')) {
+                    explanationSection.classList.remove('show');
+                    this.textContent = '查看答案解析';
+                } else {
+                    explanationSection.classList.add('show');
+                    this.textContent = '隐藏答案解析';
+                    explanationSection.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
         });
 
         function submitAnswers() {
@@ -861,13 +1334,20 @@
             if (q6Correct) score++;
 
             // 更新得分
-            document.getElementById('score').textContent = `得分: ${score}/${totalQuestions}`;
+            document.getElementById('score').textContent = `本次得分: ${score}/${totalQuestions}`;
 
-            // 显示结果区域
-            document.getElementById('results').classList.add('show');
+            // 添加结果图标
+            const isAllCorrect = score === totalQuestions;
+            addResultIcon(isAllCorrect);
 
-            // 滚动到结果区域
-            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+            // 显示得分区域
+            document.getElementById('score-section').classList.add('show');
+
+            // 显示查看答案解析按钮
+            document.getElementById('show-explanation-btn').classList.add('show');
+
+            // 滚动到得分区域
+            document.getElementById('score-section').scrollIntoView({ behavior: 'smooth' });
         }
 
         function updateQuestionFeedback(questionNum, isCorrect, correctAnswerText) {

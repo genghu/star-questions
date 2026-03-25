@@ -16,72 +16,75 @@
         body {
             background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
             color: #333;
-            line-height: 1.6;
-            padding: 20px;
+            line-height: 1.5;
+            padding: 15px;
             min-height: 100vh;
         }
 
         .container {
-            max-width: 1000px;
+            max-width: 900px;
             margin: 0 auto;
             background-color: white;
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(50, 100, 150, 0.1);
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(50, 100, 150, 0.1);
             overflow: hidden;
-            padding: 30px;
+            padding: 20px;
         }
 
         header {
             text-align: center;
-            margin-bottom: 30px;
-            padding-bottom: 20px;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
             border-bottom: 2px solid #eaeff5;
         }
 
         h1 {
             color: #2c3e50;
-            margin-bottom: 10px;
-            font-size: 2.2rem;
+            margin-bottom: 6px;
+            font-size: 1.6rem;
         }
 
         .subtitle {
             color: #7f8c8d;
-            font-size: 1.1rem;
+            font-size: 0.95rem;
         }
 
         .info-box {
             background-color: #f0f8ff;
-            border-left: 5px solid #3498db;
-            padding: 20px;
-            margin-bottom: 30px;
-            border-radius: 0 10px 10px 0;
+            border-left: 4px solid #3498db;
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            border-radius: 0 8px 8px 0;
         }
 
         .info-box h3 {
             color: #2980b9;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
+            font-size: 1rem;
         }
 
         .info-box p {
-            margin-bottom: 10px;
+            margin-bottom: 6px;
+            font-size: 0.9rem;
         }
 
         .formula {
             font-family: 'Cambria Math', 'Times New Roman', serif;
             background-color: #f8f9fa;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 15px 0;
+            padding: 10px 12px;
+            border-radius: 6px;
+            margin: 10px 0;
             border: 1px dashed #bdc3c7;
             overflow-x: auto;
+            font-size: 0.9rem;
         }
 
         .question-container {
-            margin-bottom: 40px;
-            padding-bottom: 30px;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
             border-bottom: 1px solid #ecf0f1;
         }
 
@@ -89,44 +92,48 @@
             display: inline-block;
             background-color: #3498db;
             color: white;
-            width: 36px;
-            height: 36px;
+            min-width: 26px;
+            height: 26px;
             border-radius: 50%;
             text-align: center;
-            line-height: 36px;
+            line-height: 26px;
             font-weight: bold;
-            margin-bottom: 15px;
+            font-size: 0.9rem;
+            margin-right: 8px;
+            flex-shrink: 0;
         }
 
         .question-text {
-            font-size: 1.2rem;
-            margin-bottom: 20px;
+            font-size: 1rem;
+            margin-bottom: 12px;
             color: #2c3e50;
+            display: flex;
+            align-items: flex-start;
         }
 
         .options-container {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 10px;
+            margin-top: 12px;
         }
 
         .option {
             background-color: #f8fafc;
             border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 18px;
+            border-radius: 10px;
+            padding: 12px;
             cursor: pointer;
             transition: all 0.3s ease;
             display: flex;
             align-items: flex-start;
-            gap: 12px;
+            gap: 10px;
         }
 
         .option:hover {
             background-color: #edf2f7;
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         }
 
         .option.selected {
@@ -147,14 +154,15 @@
         .option-letter {
             background-color: #3498db;
             color: white;
-            width: 28px;
-            height: 28px;
+            width: 24px;
+            height: 24px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
             flex-shrink: 0;
+            font-size: 0.85rem;
         }
 
         .option.correct .option-letter {
@@ -167,12 +175,13 @@
 
         .option-text {
             flex-grow: 1;
+            font-size: 0.9rem;
         }
 
         .input-answer {
             display: flex;
-            gap: 20px;
-            margin-top: 15px;
+            gap: 15px;
+            margin-top: 10px;
             flex-wrap: wrap;
         }
 
@@ -180,20 +189,21 @@
             display: flex;
             flex-direction: column;
             flex-grow: 1;
-            min-width: 200px;
+            min-width: 180px;
         }
 
         .input-group label {
-            margin-bottom: 8px;
+            margin-bottom: 5px;
             font-weight: 600;
             color: #2c3e50;
+            font-size: 0.9rem;
         }
 
         .input-group input {
-            padding: 12px 15px;
+            padding: 10px 12px;
             border: 2px solid #bdc3c7;
-            border-radius: 8px;
-            font-size: 1rem;
+            border-radius: 6px;
+            font-size: 0.95rem;
             transition: border-color 0.3s;
         }
 
@@ -213,11 +223,12 @@
         }
 
         .feedback {
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 20px;
+            padding: 12px;
+            border-radius: 6px;
+            margin-top: 12px;
             display: none;
             font-weight: 500;
+            font-size: 0.9rem;
         }
 
         .feedback.correct {
@@ -241,23 +252,23 @@
         .controls {
             display: flex;
             justify-content: center;
-            gap: 20px;
-            margin-top: 40px;
+            gap: 15px;
+            margin-top: 25px;
             flex-wrap: wrap;
         }
 
         button {
-            padding: 15px 30px;
+            padding: 12px 24px;
             border: none;
-            border-radius: 10px;
-            font-size: 1.1rem;
+            border-radius: 8px;
+            font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 8px;
         }
 
         #submit-btn {
@@ -267,8 +278,8 @@
 
         #submit-btn:hover {
             background-color: #2980b9;
-            transform: translateY(-3px);
-            box-shadow: 0 7px 14px rgba(52, 152, 219, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 12px rgba(52, 152, 219, 0.3);
         }
 
         #reset-btn {
@@ -278,16 +289,27 @@
 
         #reset-btn:hover {
             background-color: #7f8c8d;
-            transform: translateY(-3px);
-            box-shadow: 0 7px 14px rgba(149, 165, 166, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 12px rgba(149, 165, 166, 0.3);
+        }
+
+        #next-btn {
+            background-color: #27ae60;
+            color: white;
+        }
+
+        #next-btn:hover {
+            background-color: #219a52;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 12px rgba(39, 174, 96, 0.3);
         }
 
         .score-container {
             text-align: center;
-            margin-top: 30px;
-            padding: 20px;
+            margin-top: 20px;
+            padding: 15px;
             background-color: #f8f9fa;
-            border-radius: 12px;
+            border-radius: 10px;
             display: none;
         }
 
@@ -295,15 +317,49 @@
             display: block;
         }
 
+        .history-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .history-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+            color: white;
+            transition: transform 0.2s ease;
+        }
+
+        .history-icon:hover {
+            transform: scale(1.1);
+        }
+
+        .history-icon.correct {
+            background-color: #27ae60;
+        }
+
+        .history-icon.incorrect {
+            background-color: #e74c3c;
+        }
+
         .score-text {
-            font-size: 1.5rem;
+            font-size: 1.1rem;
             font-weight: bold;
             color: #2c3e50;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         .score-value {
-            font-size: 2.5rem;
+            font-size: 2rem;
             color: #3498db;
             font-weight: bold;
         }
@@ -322,29 +378,29 @@
 
         @media (max-width: 768px) {
             .container {
-                padding: 20px;
+                padding: 15px;
             }
-            
+
             h1 {
-                font-size: 1.8rem;
+                font-size: 1.3rem;
             }
-            
+
             .options-container {
                 grid-template-columns: 1fr;
             }
-            
+
             .input-answer {
                 flex-direction: column;
             }
-            
+
             .input-group {
                 min-width: 100%;
             }
-            
+
             button {
                 width: 100%;
             }
-            
+
             .controls {
                 flex-direction: column;
             }
@@ -354,64 +410,48 @@
     <style>
     .show-explanation-btn {
         display: none;
-        margin: 20px auto;
-        padding: 14px 28px;
+        margin: 15px auto;
+        padding: 10px 20px;
         background: linear-gradient(135deg, #9b59b6, #8e44ad);
         color: white;
         border: none;
-        border-radius: 10px;
+        border-radius: 8px;
         cursor: pointer;
-        font-size: 1.1rem;
+        font-size: 0.95rem;
         font-weight: 600;
         transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(155, 89, 182, 0.3);
+        box-shadow: 0 3px 10px rgba(155, 89, 182, 0.3);
     }
     .show-explanation-btn:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 6px 20px rgba(155, 89, 182, 0.4);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(155, 89, 182, 0.4);
     }
     .explanation-section {
         display: none;
-        margin-top: 20px;
+        margin-top: 15px;
     }
     </style>
     </head>
 <body>
     <div class="container">
         <header>
-            <h1><i class="fas fa-chart-line"></i> 简单线性回归的置信区间与预测区间 <button id="refresh-btn" style="margin-left: 15px; padding: 8px 16px; background: linear-gradient(135deg, #34a853, #2ecc71); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.9rem; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 2px 8px rgba(52, 168, 83, 0.3);">刷新参数</button></h1>
-            <p class="subtitle">答题练习 - 根据题目内容选择正确答案并填写计算结果</p>
+            <h1><i class="fas fa-chart-line"></i> 简单线性回归的置信区间与预测区间</h1>
         </header>
         
         <div class="info-box">
             <h3><i class="fas fa-info-circle"></i> 题目背景</h3>
-            <p>一项面向高中三年级和四年级学生进行的全国性标准化考试，我们随机选取了42名刚刚完成大学一年级学业的学生作为样本，记录了每位学生在此标准化考试中的分数（x，范围从400到1600）以及她大学第一年的平均绩点（y，以四分制计）。</p>
-            <p>计算得到的最小二乘回归方程为：<strong>y = 0.9035 + 0.0018x</strong>。</p>
-            <p>现在我们感兴趣的是预测一个标准化考试成绩为1080分的学生的大一平均绩点。同时，我们也对这个学生的绩点预测区间以及所有标准化考试成绩为1080分的学生的大一平均绩点的置信区间感兴趣。根据已有数据，我们已经计算出以下结果：</p>
-            <div class="formula">
-                <p><strong>已知信息：</strong></p>
-                <p>均方误差 (MSE) ≈ 0.394</p>
-                <p>(1/42) + (1080 - x̄)² / Σ(i=1 to 42)(xi - x̄)² ≈ 0.0274</p>
-                <p>t(0.05) ≈ 1.6839 (自由度 n-2 = 40)</p>
-            </div>
+            <p>为了研究高考成绩与大学学业表现的关系，我们随机选取了42名刚刚完成大学一年级学业的学生作为样本，记录了每位学生的高考成绩（x，满分750分）以及她大学第一年的平均绩点（y，以四分制计）。计算得到的最小二乘回归方程为：<strong>y = 0.9035 + 0.0035x</strong>。现在我们感兴趣的是预测高考成绩为<strong>540分</strong>的学生的大一平均绩点及其预测区间和置信区间。</p>
         </div>
-        
+
         <!-- 问题1 -->
         <div class="question-container" id="q1">
-            <div class="question-number">1</div>
             <div class="question-text">
-                当标准化考试成绩为1080时，单个绩点值的90%预测区间是多少？（中间计算至少保留四位小数，答案至少保留两位小数。）
+                <span class="question-number">1</span>
+                <span>当高考成绩为540分时，单个绩点值的90%预测区间是多少？（中间计算至少保留四位小数，答案至少保留两位小数。）</span>
             </div>
             
-            <div class="input-answer">
-                <div class="input-group">
-                    <label for="lower-bound">a. 下限：</label>
-                    <input type="number" step="0.01" id="lower-bound">
-                </div>
-                <div class="input-group">
-                    <label for="upper-bound">b. 上限：</label>
-                    <input type="number" step="0.01" id="upper-bound">
-                </div>
+            <div class="input-answer" id="q1-input-container">
+                <!-- 输入框将通过JavaScript动态生成以实现随机顺序 -->
             </div>
             
             <div class="feedback" id="feedback-q1">
@@ -421,9 +461,9 @@
         
         <!-- 问题2 -->
         <div class="question-container" id="q2">
-            <div class="question-number">2</div>
             <div class="question-text">
-                考虑（但不实际计算）当标准化考试成绩为1080时，平均绩点的90%置信区间。这个置信区间与上面计算的预测区间相比会如何？（假设两个区间都基于相同的样本数据计算。）
+                <span class="question-number">2</span>
+                <span>考虑（但不实际计算）当高考成绩为540分时，平均绩点的90%置信区间。这个置信区间与上面计算的预测区间相比会如何？（假设两个区间都基于相同的样本数据计算。）</span>
             </div>
             
             <div class="options-container">
@@ -456,23 +496,23 @@
         
         <!-- 问题3 -->
         <div class="question-container" id="q3">
-            <div class="question-number">3</div>
             <div class="question-text">
-                对于本样本中的标准化考试成绩值，890比1080更极端，即890比1080距离样本均值标准化考试成绩更远。当标准化考试成绩为890时，平均绩点的90%预测区间与当标准化考试成绩为1080时平均绩点的90%预测区间相比会如何？
+                <span class="question-number">3</span>
+                <span>对于本样本中的高考成绩值，445分比540分更极端，即445分比540分距离样本均值高考成绩更远。当高考成绩为445分时，平均绩点的90%预测区间与当高考成绩为540分时平均绩点的90%预测区间相比会如何？</span>
             </div>
-            
+
             <div class="options-container">
                 <div class="option" data-question="3" data-option="a">
                     <div class="option-letter">A</div>
-                    <div class="option-text">基于标准化考试成绩890计算出的区间会更宽且中心不同。</div>
+                    <div class="option-text">基于高考成绩445分计算出的区间会更宽且中心不同。</div>
                 </div>
                 <div class="option" data-question="3" data-option="b">
                     <div class="option-letter">B</div>
-                    <div class="option-text">基于标准化考试成绩890计算出的区间会更窄但中心相同。</div>
+                    <div class="option-text">基于高考成绩445分计算出的区间会更窄但中心相同。</div>
                 </div>
                 <div class="option" data-question="3" data-option="c">
                     <div class="option-letter">C</div>
-                    <div class="option-text">基于标准化考试成绩890计算出的区间会更宽但中心相同。</div>
+                    <div class="option-text">基于高考成绩445分计算出的区间会更宽但中心相同。</div>
                 </div>
                 <div class="option" data-question="3" data-option="d">
                     <div class="option-letter">D</div>
@@ -480,10 +520,10 @@
                 </div>
                 <div class="option" data-question="3" data-option="e">
                     <div class="option-letter">E</div>
-                    <div class="option-text">基于标准化考试成绩890计算出的区间会更窄且中心不同。</div>
+                    <div class="option-text">基于高考成绩445分计算出的区间会更窄且中心不同。</div>
                 </div>
             </div>
-            
+
             <div class="feedback" id="feedback-q3">
                 <!-- 反馈内容将通过JavaScript动态填充 -->
             </div>
@@ -493,15 +533,18 @@
             <button id="submit-btn">
                 <i class="fas fa-paper-plane"></i> 提交答案
             </button>
-            <button id="reset-btn">
-                <i class="fas fa-redo"></i> 重新作答
+            <button id="next-btn">
+                <i class="fas fa-arrow-right"></i> 下一题
             </button>
         </div>
         
         <div class="score-container" id="score-container">
-            <div class="score-text">您的得分：</div>
+            <div class="score-text">本次得分</div>
             <div class="score-value" id="score-value">0/3</div>
             <p id="score-message"></p>
+            <div class="history-container" id="history-container">
+                <!-- 历史记录图标将动态添加 -->
+            </div>
         </div>
         
         
@@ -509,6 +552,281 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+
+            // 20组参数配置（含不同题目背景）
+            const parameterSets = [
+                {
+                    // 背景1：高考成绩与大一绩点
+                    background: '为了研究高考成绩与大学学业表现的关系，我们随机选取了42名刚刚完成大学一年级学业的学生作为样本，记录了每位学生的高考成绩（x，满分750分）以及她大学第一年的平均绩点（y，以四分制计）。',
+                    xName: '高考成绩',
+                    xUnit: '分',
+                    yName: '平均绩点',
+                    b0: 0.9035, b1: 0.0035, x0: 540, x1: 445,
+                    mse: 0.394, sqrtTerm: 0.0274, tValue: 1.6839, df: 40,
+                    lower: 1.72, upper: 3.86
+                },
+                {
+                    // 背景2：身高与体重
+                    background: '为了研究大学生身高与体重的关系，我们随机选取了38名大学生作为样本，记录了每位学生的身高（x，单位：厘米）以及体重（y，单位：公斤）。',
+                    xName: '身高',
+                    xUnit: '厘米',
+                    yName: '体重',
+                    b0: -52.34, b1: 0.78, x0: 170, x1: 155,
+                    mse: 12.56, sqrtTerm: 0.0312, tValue: 1.6973, df: 36,
+                    lower: 74.15, upper: 86.37
+                },
+                {
+                    // 背景3：学习时间与考试成绩
+                    background: '为了研究每日学习时间与期末考试成绩的关系，我们随机选取了45名高三学生作为样本，记录了每位学生平均每日学习时间（x，单位：小时）以及期末考试总分（y，满分750分）。',
+                    xName: '学习时间',
+                    xUnit: '小时',
+                    yName: '考试总分',
+                    b0: 385.2, b1: 28.6, x0: 6, x1: 3,
+                    mse: 1842.5, sqrtTerm: 0.0198, tValue: 1.6706, df: 43,
+                    lower: 484.38, upper: 629.22
+                },
+                {
+                    // 背景4：房屋面积与价格
+                    background: '为了研究房屋面积与销售价格的关系，我们随机选取了40套某城市的二手房作为样本，记录了每套房子的建筑面积（x，单位：平方米）以及销售价格（y，单位：万元）。',
+                    xName: '建筑面积',
+                    xUnit: '平方米',
+                    yName: '销售价格',
+                    b0: 45.8, b1: 3.25, x0: 95, x1: 60,
+                    mse: 156.4, sqrtTerm: 0.0356, tValue: 1.6860, df: 38,
+                    lower: 333.09, upper: 376.01
+                },
+                {
+                    // 背景5：汽车使用年限与二手车价格
+                    background: '为了研究汽车使用年限与二手车价格的关系，我们随机选取了42辆同品牌同型号的二手车作为样本，记录了每辆车的使用年限（x，单位：年）以及当前市场估价（y，单位：万元）。',
+                    xName: '使用年限',
+                    xUnit: '年',
+                    yName: '市场估价',
+                    b0: 18.5, b1: -1.35, x0: 5, x1: 8,
+                    mse: 2.85, sqrtTerm: 0.0223, tValue: 1.6839, df: 40,
+                    lower: 8.88, upper: 14.62
+                },
+                {
+                    // 背景6：员工工龄与月薪
+                    background: '为了研究员工工龄与月薪的关系，我们随机选取了41名某IT公司的技术员工作为样本，记录了每位员工的工龄（x，单位：年）以及月薪（y，单位：千元）。',
+                    xName: '工龄',
+                    xUnit: '年',
+                    yName: '月薪',
+                    b0: 8.5, b1: 2.3, x0: 6, x1: 2,
+                    mse: 4.56, sqrtTerm: 0.0287, tValue: 1.6802, df: 39,
+                    lower: 18.66, upper: 25.94
+                },
+                {
+                    // 背景7：广告投入与销售额
+                    background: '为了研究广告投入与月销售额的关系，我们随机选取了39家同类零售企业作为样本，记录了每家企业上月广告投入（x，单位：万元）以及当月销售额（y，单位：万元）。',
+                    xName: '广告投入',
+                    xUnit: '万元',
+                    yName: '销售额',
+                    b0: 125.6, b1: 4.8, x0: 50, x1: 20,
+                    mse: 892.3, sqrtTerm: 0.0209, tValue: 1.6860, df: 37,
+                    lower: 314.71, upper: 416.49
+                },
+                {
+                    // 背景8：温度与冰淇淋销量
+                    background: '为了研究气温与冰淇淋日销量的关系，我们随机选取了37个夏日作为样本，记录了每天的最高气温（x，单位：摄氏度）以及某冰淇淋店的日销量（y，单位：个）。',
+                    xName: '最高气温',
+                    xUnit: '℃',
+                    yName: '日销量',
+                    b0: -85.2, b1: 12.5, x0: 32, x1: 24,
+                    mse: 245.6, sqrtTerm: 0.0334, tValue: 1.6905, df: 35,
+                    lower: 287.87, upper: 341.73
+                },
+                {
+                    // 背景9：教育年限与年收入
+                    background: '为了研究受教育年限与年收入的关系，我们随机选取了43名35-40岁的职场人士作为样本，记录了每位受访者的受教育年限（x，单位：年）以及上一年税前年收入（y，单位：万元）。',
+                    xName: '受教育年限',
+                    xUnit: '年',
+                    yName: '年收入',
+                    b0: -8.5, b1: 3.2, x0: 16, x1: 12,
+                    mse: 28.9, sqrtTerm: 0.0176, tValue: 1.6730, df: 41,
+                    lower: 33.63, upper: 51.77
+                },
+                {
+                    // 背景10：施肥量与作物产量
+                    background: '为了研究氮肥施用量与小麦亩产量的关系，我们随机选取了38块试验田作为样本，记录了每块田的氮肥施用量（x，单位：公斤/亩）以及小麦亩产量（y，单位：公斤）。',
+                    xName: '氮肥施用量',
+                    xUnit: '公斤/亩',
+                    yName: '亩产量',
+                    b0: 245.8, b1: 8.5, x0: 15, x1: 8,
+                    mse: 425.6, sqrtTerm: 0.0398, tValue: 1.6973, df: 36,
+                    lower: 337.59, upper: 409.01
+                },
+                {
+                    // 背景11：跑步距离与消耗热量
+                    background: '为了研究跑步距离与热量消耗的关系，我们随机选取了40名跑步爱好者作为样本，记录了每位 runner 单次跑步的距离（x，单位：公里）以及智能手表记录的热量消耗（y，单位：千卡）。',
+                    xName: '跑步距离',
+                    xUnit: '公里',
+                    yName: '热量消耗',
+                    b0: 85.6, b1: 68.5, x0: 8, x1: 4,
+                    mse: 1250.8, sqrtTerm: 0.0154, tValue: 1.6772, df: 38,
+                    lower: 573.83, upper: 693.37
+                },
+                {
+                    // 背景12：练习时长与打字速度
+                    background: '为了研究打字练习时长与打字速度的关系，我们随机选取了40名初学者作为样本，记录了每位学习者的累计练习时长（x，单位：小时）以及当前打字速度（y，单位：字/分钟）。',
+                    xName: '练习时长',
+                    xUnit: '小时',
+                    yName: '打字速度',
+                    b0: 15.2, b1: 2.8, x0: 30, x1: 15,
+                    mse: 42.5, sqrtTerm: 0.0298, tValue: 1.6839, df: 38,
+                    lower: 88.06, upper: 110.34
+                },
+                {
+                    // 背景13：睡眠时间与注意力测试得分
+                    background: '为了研究睡眠时长与注意力的关系，我们随机选取了41名大学生作为样本，记录了每位学生前一晚的睡眠时长（x，单位：小时）以及次日注意力测试得分（y，满分100分）。',
+                    xName: '睡眠时长',
+                    xUnit: '小时',
+                    yName: '注意力得分',
+                    b0: 38.5, b1: 6.8, x0: 7.5, x1: 5,
+                    mse: 35.2, sqrtTerm: 0.0212, tValue: 1.6802, df: 39,
+                    lower: 79.43, upper: 99.57
+                },
+                {
+                    // 背景14：产品价格与月销量
+                    background: '为了研究产品定价与销量的关系，我们随机选取了39款同类电子产品作为样本，记录了每款产品的售价（x，单位：元）以及上月销量（y，单位：件）。',
+                    xName: '产品售价',
+                    xUnit: '元',
+                    yName: '月销量',
+                    b0: 5280, b1: -2.15, x0: 800, x1: 1200,
+                    mse: 12560, sqrtTerm: 0.0321, tValue: 1.6860, df: 37,
+                    lower: 3368.04, upper: 3751.96
+                },
+                {
+                    // 背景15：阅读量与写作得分
+                    background: '为了研究课外阅读量与写作能力的关系，我们随机选取了40名初中生作为样本，记录了每位学生月均课外阅读量（x，单位：万字）以及作文比赛得分（y，满分60分）。',
+                    xName: '月阅读量',
+                    xUnit: '万字',
+                    yName: '作文得分',
+                    b0: 28.5, b1: 3.2, x0: 6, x1: 3,
+                    mse: 18.6, sqrtTerm: 0.0235, tValue: 1.6839, df: 38,
+                    lower: 40.35, upper: 55.05
+                },
+                {
+                    // 背景16（重复1）：高考成绩与大一绩点
+                    background: '为了研究高考成绩与大学学业表现的关系，我们随机选取了36名刚刚完成大学一年级学业的学生作为样本，记录了每位学生的高考成绩（x，满分750分）以及她大学第一年的平均绩点（y，以四分制计）。',
+                    xName: '高考成绩',
+                    xUnit: '分',
+                    yName: '平均绩点',
+                    b0: 1.2912, b1: 0.0031, x0: 610, x1: 445,
+                    mse: 0.462, sqrtTerm: 0.0367, tValue: 1.6923, df: 34,
+                    lower: 2.01, upper: 4.35
+                },
+                {
+                    // 背景17：工作经验与项目完成时间
+                    background: '为了研究工作经验与完成项目效率的关系，我们随机选取了40名程序员作为样本，记录了每位程序员的工作经验（x，单位：年）以及完成某标准项目所需时间（y，单位：小时）。',
+                    xName: '工作经验',
+                    xUnit: '年',
+                    yName: '完成时间',
+                    b0: 85.6, b1: -4.5, x0: 5, x1: 2,
+                    mse: 28.9, sqrtTerm: 0.0256, tValue: 1.6839, df: 38,
+                    lower: 53.93, upper: 72.27
+                },
+                {
+                    // 背景18：年龄与静息心率
+                    background: '为了研究年龄与静息心率的关系，我们随机选取了38名健康成年人作为样本，记录了每位受访者的年龄（x，单位：岁）以及静息心率（y，单位：次/分钟）。',
+                    xName: '年龄',
+                    xUnit: '岁',
+                    yName: '静息心率',
+                    b0: 52.8, b1: 0.35, x0: 45, x1: 60,
+                    mse: 12.5, sqrtTerm: 0.0412, tValue: 1.6973, df: 36,
+                    lower: 62.43, upper: 74.67
+                },
+                {
+                    // 背景19（重复2）：高考成绩与大一绩点
+                    background: '为了研究高考成绩与大学学业表现的关系，我们随机选取了40名刚刚完成大学一年级学业的学生作为样本，记录了每位学生的高考成绩（x，满分750分）以及她大学第一年的平均绩点（y，以四分制计）。',
+                    xName: '高考成绩',
+                    xUnit: '分',
+                    yName: '平均绩点',
+                    b0: 0.6789, b1: 0.0050, x0: 460, x1: 365,
+                    mse: 0.328, sqrtTerm: 0.0168, tValue: 1.6772, df: 38,
+                    lower: 2.01, upper: 3.95
+                },
+                {
+                    // 背景20：店铺面积与日均客流量
+                    background: '为了研究店铺面积与客流量的关系，我们随机选取了39家连锁咖啡店作为样本，记录了每家店铺的营业面积（x，单位：平方米）以及日均客流量（y，单位：人次）。',
+                    xName: '营业面积',
+                    xUnit: '平方米',
+                    yName: '日均客流',
+                    b0: 85.2, b1: 3.8, x0: 120, x1: 70,
+                    mse: 456.8, sqrtTerm: 0.0309, tValue: 1.6860, df: 37,
+                    lower: 504.61, upper: 577.79
+                }
+            ];
+
+            let currentParamIndex = 0;
+
+            // 更新页面显示
+            function updatePageContent(params) {
+                // 更新题目背景
+                const infoBox = document.querySelector('.info-box p');
+                infoBox.innerHTML = `${params.background}计算得到的最小二乘回归方程为：<strong>y = ${params.b0} + ${params.b1}x</strong>。现在我们感兴趣的是预测${params.xName}为<strong>${params.x0}${params.xUnit}</strong>时的${params.yName}及其预测区间和置信区间。`;
+
+                // 更新问题1
+                const q1Text = document.querySelector('#q1 .question-text span:last-child');
+                q1Text.textContent = `当${params.xName}为${params.x0}${params.xUnit}时，单个${params.yName}值的90%预测区间是多少？（中间计算至少保留四位小数，答案至少保留两位小数。）`;
+
+                // 更新问题2
+                const q2Text = document.querySelector('#q2 .question-text span:last-child');
+                q2Text.textContent = `考虑（但不实际计算）当${params.xName}为${params.x0}${params.xUnit}时，平均${params.yName}的90%置信区间。这个置信区间与上面计算的预测区间相比会如何？（假设两个区间都基于相同的样本数据计算。）`;
+
+                // 更新问题3
+                const q3Text = document.querySelector('#q3 .question-text span:last-child');
+                q3Text.textContent = `对于本样本中的${params.xName}值，${params.x1}${params.xUnit}比${params.x0}${params.xUnit}更极端，即${params.x1}${params.xUnit}比${params.x0}${params.xUnit}距离样本均值更远。当${params.xName}为${params.x1}${params.xUnit}时，${params.yName}的90%预测区间与当${params.xName}为${params.x0}${params.xUnit}时的90%预测区间相比会如何？`;
+
+                // 重新打乱选项顺序
+                const shuffled = generateRandomOptions(params);
+
+                // 更新正确答案
+                correctAnswers.q2 = shuffled.q2CorrectLetter;
+                correctAnswers.q3 = shuffled.q3CorrectLetter;
+            }
+
+            // 生成答案解析
+            function generateFeedbackInfo(params) {
+                const y0 = (params.b0 + params.b1 * params.x0).toFixed(4);
+                const s = Math.sqrt(params.mse).toFixed(4);
+                const sqrtVal = Math.sqrt(1 + params.sqrtTerm).toFixed(4);
+                const margin = (params.tValue * s * sqrtVal).toFixed(4);
+
+                return {
+                    q1: {
+                        correct: `<i class="fas fa-check-circle"></i> 正确！<br>
+                                <strong>已知信息：</strong>均方误差 (MSE) ≈ ${params.mse}，(1/n) + (${params.x0} - x̄)² / Σ(xi - x̄)² ≈ ${params.sqrtTerm}，t(0.05) ≈ ${params.tValue} (自由度 n-2 = ${params.df})<br>
+                                <strong>预测区间计算：</strong><br>
+                                b₀ + b₁x₀ = ${params.b0} + ${params.b1} × ${params.x0} = ${y0}<br>
+                                s = √MSE = √${params.mse} ≈ ${s}<br>
+                                √[1 + 1/n + (x₀ - x̄)²/Σ(xi - x̄)²] = √[1 + ${params.sqrtTerm}] ≈ ${sqrtVal}<br>
+                                预测区间 = ${y0} ± ${params.tValue} × ${s} × ${sqrtVal} ≈ ${y0} ± ${margin}<br>
+                                下限 ≈ ${params.lower}，上限 ≈ ${params.upper}`,
+                        incorrect: `<i class="fas fa-times-circle"></i> 答案不正确。<br>
+                                <strong>已知信息：</strong>均方误差 (MSE) ≈ ${params.mse}，(1/n) + (${params.x0} - x̄)² / Σ(xi - x̄)² ≈ ${params.sqrtTerm}，t(0.05) ≈ ${params.tValue} (自由度 n-2 = ${params.df})<br>
+                                <strong>计算过程：</strong><br>
+                                b₀ + b₁x₀ = ${params.b0} + ${params.b1} × ${params.x0} = ${y0}<br>
+                                s = √MSE = √${params.mse} ≈ ${s}<br>
+                                √[1 + 1/n + (x₀ - x̄)²/Σ(xi - x̄)²] = √[1 + ${params.sqrtTerm}] ≈ ${sqrtVal}<br>
+                                预测区间 = ${y0} ± ${params.tValue} × ${s} × ${sqrtVal} ≈ ${y0} ± ${margin}<br>
+                                正确结果：下限 ≈ ${params.lower}，上限 ≈ ${params.upper}`
+                    },
+                    q2: {
+                        correct: `<i class="fas fa-check-circle"></i> 正确！置信区间与预测区间都以相同的值 b₀ + b₁x₀ = ${y0} 为中心，但由于置信区间公式的平方根下没有"1"，所以误差边际更小，区间更窄。`,
+                        incorrect: `<i class="fas fa-times-circle"></i> 不正确。<br>
+                                因为置信区间公式为：b₀ + b₁x₀ ± t(α/2) × s × √[1/n + (x₀ - x̄)²/Σ(xi - x̄)²]<br>
+                                而预测区间公式为：b₀ + b₁x₀ ± t(α/2) × s × √[1 + 1/n + (x₀ - x̄)²/Σ(xi - x̄)²]<br>
+                                两者中心相同（${y0}），但预测区间公式中多了一个"1"，所以预测区间更宽。`
+                    },
+                    q3: {
+                        correct: `<i class="fas fa-check-circle"></i> 正确！因为${params.xName}${params.x1}${params.xUnit}比${params.x0}${params.xUnit}距离样本均值更远，(x₀ - x̄)²的值更大，所以预测区间会更宽。同时，区间的中心 b₀ + b₁x₀ 也会不同。`,
+                        incorrect: `<i class="fas fa-times-circle"></i> 不正确。<br>
+                                因为：<br>
+                                1. 中心不同：b₀ + b₁×${params.x1} = ${(params.b0 + params.b1 * params.x1).toFixed(4)} ≠ b₀ + b₁×${params.x0} = ${y0}<br>
+                                2. 宽度不同：x₀距离样本均值越远，(x₀ - x̄)²越大，预测区间公式中的平方根项越大，所以区间越宽。`
+                    }
+                };
+            }
 
             // 显示答案解析按钮点击事件
             document.querySelectorAll('.show-explanation-btn').forEach(btn => {
@@ -530,51 +848,250 @@
                 });
             });
 
-            // 正确答案
-            const correctAnswers = {
-                q1: { lower: 1.78, upper: 3.92 },
-                q2: 'b',
-                q3: 'a'
-            };
-            
-            // 用户答案
+            // 初始化正确答案和反馈信息
+            // 问题2的选项配置
+            const q2Options = [
+                { text: '置信区间将与预测区间完全相同。', isCorrect: false },
+                { text: '置信区间将与预测区间中心相同，但比预测区间更窄。', isCorrect: true },
+                { text: '置信区间将位于预测区间的左侧。', isCorrect: false },
+                { text: '置信区间将与预测区间中心相同，但比预测区间更宽。', isCorrect: false },
+                { text: '置信区间将位于预测区间的右侧。', isCorrect: false }
+            ];
+
+            // 问题3的选项配置（文本中的x1和x0会在渲染时替换）
+            const q3OptionsTemplate = [
+                { text: '基于{x1}计算出的区间会更宽且中心不同。', isCorrect: true },
+                { text: '基于{x1}计算出的区间会更窄但中心相同。', isCorrect: false },
+                { text: '基于{x1}计算出的区间会更宽但中心相同。', isCorrect: false },
+                { text: '两个区间将完全相同。', isCorrect: false },
+                { text: '基于{x1}计算出的区间会更窄且中心不同。', isCorrect: false }
+            ];
+
+            // 当前选项顺序（随机打乱后的）
+            let currentQ2Options = [];
+            let currentQ3Options = [];
+
+            // Q1输入框顺序（true表示先下限后上限，false表示先上限后下限）
+            let q1InputReversed = false;
+
+            // 生成Q1输入框（随机顺序）
+            function generateQ1Inputs() {
+                q1InputReversed = Math.random() < 0.5;
+                const container = document.getElementById('q1-input-container');
+
+                if (q1InputReversed) {
+                    container.innerHTML = `
+                        <div class="input-group">
+                            <label for="upper-bound">a. 上限：</label>
+                            <input type="number" step="0.01" id="upper-bound">
+                        </div>
+                        <div class="input-group">
+                            <label for="lower-bound">b. 下限：</label>
+                            <input type="number" step="0.01" id="lower-bound">
+                        </div>
+                    `;
+                } else {
+                    container.innerHTML = `
+                        <div class="input-group">
+                            <label for="lower-bound">a. 下限：</label>
+                            <input type="number" step="0.01" id="lower-bound">
+                        </div>
+                        <div class="input-group">
+                            <label for="upper-bound">b. 上限：</label>
+                            <input type="number" step="0.01" id="upper-bound">
+                        </div>
+                    `;
+                }
+
+                // 重新绑定输入框事件
+                bindInputEvents();
+            }
+
+            // 绑定输入框事件
+            function bindInputEvents() {
+                document.getElementById('lower-bound').addEventListener('input', function() {
+                    userAnswers.q1.lower = parseFloat(this.value);
+                });
+
+                document.getElementById('upper-bound').addEventListener('input', function() {
+                    userAnswers.q1.upper = parseFloat(this.value);
+                });
+            }
+
+            // Fisher-Yates 洗牌算法
+            function shuffleArray(array) {
+                const shuffled = [...array];
+                for (let i = shuffled.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+                }
+                return shuffled;
+            }
+
+            // 生成随机选项并更新DOM
+            function generateRandomOptions(params) {
+                // 打乱问题2选项
+                currentQ2Options = shuffleArray(q2Options.map((opt, idx) => ({
+                    ...opt,
+                    originalIndex: idx
+                })));
+
+                // 打乱问题3选项并替换占位符
+                currentQ3Options = shuffleArray(q3OptionsTemplate.map((opt, idx) => ({
+                    text: opt.text.replace(/{x1}/g, `${params.xName}${params.x1}${params.xUnit}`).replace(/{x0}/g, `${params.xName}${params.x0}${params.xUnit}`),
+                    isCorrect: opt.isCorrect,
+                    originalIndex: idx
+                })));
+
+                // 更新问题2选项
+                const q2Container = document.querySelector('#q2 .options-container');
+                q2Container.innerHTML = currentQ2Options.map((opt, idx) => `
+                    <div class="option" data-question="2" data-option="${String.fromCharCode(97 + idx)}">
+                        <div class="option-letter">${String.fromCharCode(65 + idx)}</div>
+                        <div class="option-text">${opt.text}</div>
+                    </div>
+                `).join('');
+
+                // 更新问题3选项
+                const q3Container = document.querySelector('#q3 .options-container');
+                q3Container.innerHTML = currentQ3Options.map((opt, idx) => `
+                    <div class="option" data-question="3" data-option="${String.fromCharCode(97 + idx)}">
+                        <div class="option-letter">${String.fromCharCode(65 + idx)}</div>
+                        <div class="option-text">${opt.text}</div>
+                    </div>
+                `).join('');
+
+                // 重新绑定选项点击事件
+                bindOptionEvents();
+
+                // 返回正确答案的字母
+                const q2CorrectLetter = String.fromCharCode(97 + currentQ2Options.findIndex(opt => opt.isCorrect));
+                const q3CorrectLetter = String.fromCharCode(97 + currentQ3Options.findIndex(opt => opt.isCorrect));
+
+                return { q2CorrectLetter, q3CorrectLetter };
+            }
+
+            // 绑定选项点击事件
+            function bindOptionEvents() {
+                document.querySelectorAll('.option').forEach(option => {
+                    option.addEventListener('click', function() {
+                        const questionNum = this.getAttribute('data-question');
+                        const optionLetter = this.getAttribute('data-option');
+
+                        // 移除同一问题其他选项的选中状态
+                        document.querySelectorAll(`.option[data-question="${questionNum}"]`).forEach(opt => {
+                            opt.classList.remove('selected');
+                        });
+
+                        // 选中当前选项
+                        this.classList.add('selected');
+
+                        // 保存用户答案
+                        userAnswers[`q${questionNum}`] = optionLetter;
+                    });
+                });
+            }
+
+            // 用户答案 - 必须在使用前初始化
             let userAnswers = {
                 q1: { lower: null, upper: null },
                 q2: null,
                 q3: null
             };
-            
-            // 题目反馈信息
-            const feedbackInfo = {
-                q1: {
-                    correct: `<i class="fas fa-check-circle"></i> 正确！预测区间计算如下：<br>
-                            b0 + b1x0 = 0.9035 + 0.0018 * 1080 = 2.8475<br>
-                            s = √MSE = √0.394 ≈ 0.6277<br>
-                            √[1 + 1/n + (x0 - x̄)²/Σ(xi - x̄)²] = √[1 + 1/42 + 0.0274] = √1.0274 ≈ 1.0136<br>
-                            预测区间 = 2.8475 ± 1.6839 * 0.6277 * 1.0136 ≈ 2.8475 ± 1.0715<br>
-                            下限 ≈ 1.78，上限 ≈ 3.92`,
-                    incorrect: `<i class="fas fa-times-circle"></i> 答案不正确。请检查计算过程：<br>
-                            b0 + b1x0 = 0.9035 + 0.0018 * 1080 = 2.8475<br>
-                            s = √MSE = √0.394 ≈ 0.6277<br>
-                            √[1 + 1/n + (x0 - x̄)²/Σ(xi - x̄)²] = √[1 + 1/42 + 0.0274] = √1.0274 ≈ 1.0136<br>
-                            预测区间 = 2.8475 ± 1.6839 * 0.6277 * 1.0136 ≈ 2.8475 ± 1.0715<br>
-                            正确结果：下限 ≈ 1.78，上限 ≈ 3.92`
-                },
-                q2: {
-                    correct: `<i class="fas fa-check-circle"></i> 正确！置信区间与预测区间都以相同的值 b0 + b1x0 为中心，但由于置信区间公式的平方根下没有"1"，所以误差边际更小，区间更窄。`,
-                    incorrect: `<i class="fas fa-times-circle"></i> 不正确。。<br>
-                            因为置信区间公式为：b0 + b1x0 ± t(α/2) * s * √[1/n + (x0 - x̄)²/Σ(xi - x̄)²]<br>
-                            而预测区间公式为：b0 + b1x0 ± t(α/2) * s * √[1 + 1/n + (x0 - x̄)²/Σ(xi - x̄)²]<br>
-                            两者中心相同，但预测区间公式中多了一个"1"，所以预测区间更宽。`
-                },
-                q3: {
-                    correct: `<i class="fas fa-check-circle"></i> 正确！因为890比1080距离样本均值更远，(x0 - x̄)²的值更大，所以预测区间会更宽。同时，区间的中心 b0 + b1x0 也会不同。`,
-                    incorrect: `<i class="fas fa-times-circle"></i> 不正确。。<br>
-                            因为：<br>
-                            1. 中心不同：b0 + b1*890 ≠ b0 + b1*1080<br>
-                            2. 宽度不同：x0距离样本均值越远，(x0 - x̄)²越大，预测区间公式中的平方根项越大，所以区间越宽。`
-                }
+
+            // 随机选择初始参数组
+            currentParamIndex = Math.floor(Math.random() * parameterSets.length);
+            const initialParams = parameterSets[currentParamIndex];
+
+            // 初始化时打乱选项和Q1输入框顺序
+            const initialOptions = generateRandomOptions(initialParams);
+            generateQ1Inputs();
+
+            let correctAnswers = {
+                q1: { lower: initialParams.lower, upper: initialParams.upper },
+                q2: initialOptions.q2CorrectLetter,
+                q3: initialOptions.q3CorrectLetter
             };
+
+            let feedbackInfo = generateFeedbackInfo(initialParams);
+
+            // 初始化页面内容
+            updatePageContent(initialParams);
+
+            // 历史记录数组
+            let answerHistory = [];
+
+            // 更新历史记录显示
+            function updateHistoryDisplay() {
+                const historyContainer = document.getElementById('history-container');
+                historyContainer.innerHTML = '';
+
+                answerHistory.forEach((isCorrect, index) => {
+                    const icon = document.createElement('div');
+                    icon.className = `history-icon ${isCorrect ? 'correct' : 'incorrect'}`;
+                    icon.innerHTML = isCorrect ? '✓' : '✗';
+                    icon.title = `第${index + 1}题: ${isCorrect ? '正确' : '错误'}`;
+                    historyContainer.appendChild(icon);
+                });
+            }
+
+            // 下一题按钮事件
+            document.getElementById('next-btn').addEventListener('click', function() {
+                // 随机选择一组新参数（避免选到相同的）
+                let newIndex;
+                do {
+                    newIndex = Math.floor(Math.random() * parameterSets.length);
+                } while (newIndex === currentParamIndex && parameterSets.length > 1);
+
+                currentParamIndex = newIndex;
+                const params = parameterSets[currentParamIndex];
+
+                // 更新页面内容（包括打乱选项和更新正确答案）
+                updatePageContent(params);
+
+                // 更新Q1正确答案
+                correctAnswers.q1 = { lower: params.lower, upper: params.upper };
+
+                // 更新反馈信息
+                feedbackInfo = generateFeedbackInfo(params);
+
+                // 重置用户答案和页面状态
+                userAnswers = {
+                    q1: { lower: null, upper: null },
+                    q2: null,
+                    q3: null
+                };
+
+                // 重新生成Q1输入框（随机顺序）
+                generateQ1Inputs();
+
+                // 重置选项
+                document.querySelectorAll('.option').forEach(option => {
+                    option.classList.remove('selected', 'correct', 'incorrect');
+                });
+
+                // 重置反馈
+                document.querySelectorAll('.feedback').forEach(feedback => {
+                    feedback.classList.remove('correct', 'incorrect');
+                    feedback.innerHTML = '';
+                    feedback.style.display = 'none';
+                });
+
+                // 隐藏得分详情但保持历史记录可见
+                const scoreContainer = document.getElementById('score-container');
+                scoreContainer.classList.remove('show');
+                // 如果有历史记录，显示历史记录区域
+                if (answerHistory.length > 0) {
+                    setTimeout(() => {
+                        scoreContainer.classList.add('show');
+                        document.getElementById('score-value').style.display = 'none';
+                        document.getElementById('score-message').style.display = 'none';
+                    }, 100);
+                }
+
+                // 滚动到顶部
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
             
             // 选项点击事件
             document.querySelectorAll('.option').forEach(option => {
@@ -594,16 +1111,7 @@
                     userAnswers[`q${questionNum}`] = optionLetter;
                 });
             });
-            
-            // 输入框事件
-            document.getElementById('lower-bound').addEventListener('input', function() {
-                userAnswers.q1.lower = parseFloat(this.value);
-            });
-            
-            document.getElementById('upper-bound').addEventListener('input', function() {
-                userAnswers.q1.upper = parseFloat(this.value);
-            });
-            
+
             // 提交按钮事件
             document.getElementById('submit-btn').addEventListener('click', function() {
                 let score = 0;
@@ -630,6 +1138,7 @@
                         feedbackQ1.innerHTML = feedbackInfo.q1.correct;
                         feedbackQ1.classList.add('correct');
                         feedbackQ1.classList.remove('incorrect');
+                        feedbackQ1.style.display = 'block';
                     } else {
                         lowerInput.classList.add('incorrect');
                         upperInput.classList.add('incorrect');
@@ -638,6 +1147,7 @@
                         feedbackQ1.innerHTML = feedbackInfo.q1.incorrect;
                         feedbackQ1.classList.add('incorrect');
                         feedbackQ1.classList.remove('correct');
+                        feedbackQ1.style.display = 'block';
                     }
                 } else {
                     lowerInput.classList.add('incorrect');
@@ -645,6 +1155,7 @@
                     feedbackQ1.innerHTML = `<i class="fas fa-exclamation-circle"></i> 请填写下限和上限值`;
                     feedbackQ1.classList.add('incorrect');
                     feedbackQ1.classList.remove('correct');
+                    feedbackQ1.style.display = 'block';
                 }
                 
                 // 检查问题2
@@ -655,18 +1166,21 @@
                     feedbackQ2.innerHTML = feedbackInfo.q2.correct;
                     feedbackQ2.classList.add('correct');
                     feedbackQ2.classList.remove('incorrect');
+                    feedbackQ2.style.display = 'block';
                 } else if (userAnswers.q2 !== null) {
                     document.querySelector(`.option[data-question="2"][data-option="${userAnswers.q2}"]`).classList.add('incorrect');
                     document.querySelector(`.option[data-question="2"][data-option="${correctAnswers.q2}"]`).classList.add('correct');
                     feedbackQ2.innerHTML = feedbackInfo.q2.incorrect;
                     feedbackQ2.classList.add('incorrect');
                     feedbackQ2.classList.remove('correct');
+                    feedbackQ2.style.display = 'block';
                 } else {
                     feedbackQ2.innerHTML = `<i class="fas fa-exclamation-circle"></i> 请选择答案`;
                     feedbackQ2.classList.add('incorrect');
                     feedbackQ2.classList.remove('correct');
+                    feedbackQ2.style.display = 'block';
                 }
-                
+
                 // 检查问题3
                 const feedbackQ3 = document.getElementById('feedback-q3');
                 if (userAnswers.q3 === correctAnswers.q3) {
@@ -675,16 +1189,19 @@
                     feedbackQ3.innerHTML = feedbackInfo.q3.correct;
                     feedbackQ3.classList.add('correct');
                     feedbackQ3.classList.remove('incorrect');
+                    feedbackQ3.style.display = 'block';
                 } else if (userAnswers.q3 !== null) {
                     document.querySelector(`.option[data-question="3"][data-option="${userAnswers.q3}"]`).classList.add('incorrect');
                     document.querySelector(`.option[data-question="3"][data-option="${correctAnswers.q3}"]`).classList.add('correct');
                     feedbackQ3.innerHTML = feedbackInfo.q3.incorrect;
                     feedbackQ3.classList.add('incorrect');
                     feedbackQ3.classList.remove('correct');
+                    feedbackQ3.style.display = 'block';
                 } else {
                     feedbackQ3.innerHTML = `<i class="fas fa-exclamation-circle"></i> 请选择答案`;
                     feedbackQ3.classList.add('incorrect');
                     feedbackQ3.classList.remove('correct');
+                    feedbackQ3.style.display = 'block';
                 }
                 
                 // 显示得分
@@ -694,19 +1211,27 @@
                 
                 scoreValue.textContent = `${score}/${totalQuestions}`;
                 scoreContainer.classList.add('show');
-                
+                // 确保得分详情显示
+                document.getElementById('score-value').style.display = 'block';
+                document.getElementById('score-message').style.display = 'block';
+
+                // 记录本次答题结果到历史
+                const isCorrect = score === totalQuestions;
+                answerHistory.push(isCorrect);
+                updateHistoryDisplay();
+
                 // 根据得分设置样式和消息
                 if (score === totalQuestions) {
                     scoreValue.classList.add('perfect');
-                    scoreMessage.textContent = "太棒了！您完全理解了简单线性回归中置信区间与预测区间的概念。";
+                    scoreMessage.textContent = "太棒了！完全正确！";
                 } else if (score >= totalQuestions/2) {
                     scoreValue.classList.add('good');
-                    scoreMessage.textContent = "不错！您基本掌握了这些概念，但还有一些细节需要注意。";
+                    scoreMessage.textContent = "不错！答对了" + score + "道题。";
                 } else {
                     scoreValue.classList.add('poor');
-                    scoreMessage.textContent = "请仔细复习题目解析，理解置信区间与预测区间的区别。";
+                    scoreMessage.textContent = "继续努力！答对了" + score + "道题。";
                 }
-                
+
                 // 滚动到得分区域
                 scoreContainer.scrollIntoView({ behavior: 'smooth' });
             });

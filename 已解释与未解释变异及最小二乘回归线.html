@@ -46,6 +46,35 @@
             font-size: 1rem;
         }
 
+        .info-box {
+            background-color: #f0f9ff;
+            border-left: 4px solid #3b82f6;
+            padding: 20px 25px;
+            margin-bottom: 30px;
+            border-radius: 0 12px 12px 0;
+        }
+
+        .info-box h3 {
+            color: #1e40af;
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+        }
+
+        .info-box p {
+            margin-bottom: 10px;
+            font-size: 1rem;
+            line-height: 1.8;
+        }
+
+        .info-box .formula {
+            background-color: #e0f2fe;
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin: 10px 0;
+            font-family: 'Cambria Math', 'Times New Roman', serif;
+            font-size: 1.1rem;
+        }
+
         .question-section {
             margin-bottom: 40px;
             padding: 25px;
@@ -297,6 +326,51 @@
             font-size: 0.95rem;
         }
 
+        .history-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .history-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+            color: white;
+            transition: transform 0.2s ease;
+        }
+
+        .history-icon:hover {
+            transform: scale(1.1);
+        }
+
+        .history-icon.correct {
+            background-color: #27ae60;
+        }
+
+        .history-icon.incorrect {
+            background-color: #e74c3c;
+        }
+
+        #next-btn {
+            background-color: #27ae60;
+            color: white;
+        }
+
+        #next-btn:hover {
+            background-color: #219a52;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(39, 174, 96, 0.2);
+        }
+
         .math {
             font-family: 'Cambria Math', 'Times New Roman', serif;
             font-style: italic;
@@ -310,6 +384,40 @@
             margin: 15px 0;
             font-family: 'Cambria Math', 'Times New Roman', serif;
             overflow-x: auto;
+        }
+
+        .dropdown-question {
+            display: inline;
+            line-height: 2.2;
+        }
+
+        .dropdown-select {
+            padding: 8px 12px;
+            font-size: 1rem;
+            border: 2px solid #cbd5e1;
+            border-radius: 8px;
+            background-color: white;
+            color: #334155;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin: 0 5px;
+            min-width: 120px;
+        }
+
+        .dropdown-select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .dropdown-select.correct {
+            border-color: #10b981;
+            background-color: #d1fae5;
+        }
+
+        .dropdown-select.incorrect {
+            border-color: #ef4444;
+            background-color: #fee2e2;
         }
 
         @media (max-width: 768px) {
@@ -368,88 +476,47 @@
             <div class="subtitle">回归与相关 - 答题练习</div>
         </header>
 
+        <div class="info-box" id="info-box">
+            <h3>题目背景</h3>
+            <p id="background-text">针对配对变量 <strong>x</strong> 和 <strong>y</strong> 得到的双变量数据如下表"样本数据"所示。</p>
+            <p id="regression-intro">这些数据绘制在散点图中，该图还显示了数据的最小二乘回归线。该直线的方程为：</p>
+            <div class="formula" id="formula-display">ŷ = 1.72 + 0.94x</div>
+            <p>在"计算"表中，列出了涉及观测到的 <strong>y</strong> 值、这些值的均值 <strong>ȳ</strong>，以及由回归方程预测得到的值 <strong>ŷ</strong> 的计算过程。</p>
+            <table class="data-table" id="data-table">
+                <thead>
+                    <tr>
+                        <th>x</th>
+                        <th>y</th>
+                        <th>(ŷ - ȳ)²</th>
+                        <th>(y - ŷ)²</th>
+                        <th>(y - ȳ)²</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body">
+                    <!-- 数据行将通过JavaScript动态生成 -->
+                </tbody>
+            </table>
+        </div>
+
         <div class="question-section">
             <div class="question-title">
                 <span class="question-number">1</span>
-                样本 y 值中，由 x 和 y 之间的估计线性关系所解释的变异由 ________ 给出，对于这些数据，其值为 ________。
-            </div>
-            <div class="question-text">
-                <p>根据题目提供的计算表：</p>
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>x</th>
-                            <th>y</th>
-                            <th>(ŷ - ȳ)²</th>
-                            <th>(y - ŷ)²</th>
-                            <th>(y - ȳ)²</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>22.5</td>
-                            <td>24.1</td>
-                            <td>13.1769</td>
-                            <td>1.5129</td>
-                            <td>5.7600</td>
-                        </tr>
-                        <tr>
-                            <td>24.3</td>
-                            <td>23.4</td>
-                            <td>3.7558</td>
-                            <td>1.3502</td>
-                            <td>9.6100</td>
-                        </tr>
-                        <tr>
-                            <td>26.4</td>
-                            <td>27.0</td>
-                            <td>0.0013</td>
-                            <td>0.2153</td>
-                            <td>0.2500</td>
-                        </tr>
-                        <tr>
-                            <td>28.4</td>
-                            <td>26.0</td>
-                            <td>3.6711</td>
-                            <td>5.8371</td>
-                            <td>0.2500</td>
-                        </tr>
-                        <tr>
-                            <td>30.2</td>
-                            <td>32.0</td>
-                            <td>13.0177</td>
-                            <td>3.5797</td>
-                            <td>30.2500</td>
-                        </tr>
-                        <tr style="font-weight: bold; background-color: #e2e8f0;">
-                            <td>列总和</td>
-                            <td></td>
-                            <td>33.6228</td>
-                            <td>12.4952</td>
-                            <td>46.1200</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <p>其中：</p>
-                <ul>
-                    <li>第一列总和 = 回归平方和 (SSR) = 33.6228</li>
-                    <li>第二列总和 = 误差平方和 (SSE) = 12.4952</li>
-                    <li>第三列总和 = 总平方和 (SST) = 46.1200</li>
-                </ul>
-                <p>样本 y 值中，由 x 和 y 之间的估计线性关系所解释的变异由 <strong>回归平方和 (SSR)</strong> 给出。</p>
-            </div>
-            <div class="options-container">
-                <div class="option" data-question="1" data-option="a">
-                    <div class="option-letter">A</div>
-                    <div>误差平方和, 46.1200</div>
-                </div>
-                <div class="option" data-question="1" data-option="b">
-                    <div class="option-letter">B</div>
-                    <div>总平方和, 12.4952</div>
-                </div>
-                <div class="option" data-question="1" data-option="c">
-                    <div class="option-letter">C</div>
-                    <div>回归平方和, 33.6228</div>
+                <div class="dropdown-question">
+                    样本 y 值中，由 x 和 y 之间的估计线性关系所解释的变异由
+                    <select id="q1-dropdown1" class="dropdown-select">
+                        <option value="">请选择</option>
+                        <option value="ssr">回归平方和</option>
+                        <option value="sse">误差平方和</option>
+                        <option value="sst">总平方和</option>
+                    </select>
+                    给出，对于这些数据，其值为
+                    <select id="q1-dropdown2" class="dropdown-select">
+                        <option value="">请选择</option>
+                        <option value="33.6228">33.6228</option>
+                        <option value="12.4952">12.4952</option>
+                        <option value="46.1200">46.1200</option>
+                    </select>
+                    。
                 </div>
             </div>
             <div class="feedback" id="feedback-1"></div>
@@ -458,32 +525,11 @@
         <div class="question-section">
             <div class="question-title">
                 <span class="question-number">2</span>
-                值 r² 是样本 y 值总变异中由 x 和 y 之间的估计线性关系所解释的比例。对于这些数据，r² 的值是 ________。（将你的答案四舍五入到至少2位小数。）
+                值 r² 是样本 y 值总变异中由 x 和 y 之间的估计线性关系所解释的比例。对于这些数据，r² 的值是多少？（将你的答案四舍五入到至少2位小数。）
             </div>
-            <div class="question-text">
-                <p>r² 的计算公式为：</p>
-                <div class="formula">r² = SSR / SST</div>
-                <p>其中 SSR = 33.6228，SST = 46.1200</p>
-                <p>因此：</p>
-                <div class="formula">r² = 33.6228 / 46.1200 ≈ 0.7288 ≈ 0.73</div>
-            </div>
-            <div class="options-container">
-                <div class="option" data-question="2" data-option="a">
-                    <div class="option-letter">A</div>
-                    <div>0.67</div>
-                </div>
-                <div class="option" data-question="2" data-option="b">
-                    <div class="option-letter">B</div>
-                    <div>0.73</div>
-                </div>
-                <div class="option" data-question="2" data-option="c">
-                    <div class="option-letter">C</div>
-                    <div>0.82</div>
-                </div>
-                <div class="option" data-question="2" data-option="d">
-                    <div class="option-letter">D</div>
-                    <div>0.91</div>
-                </div>
+            <div class="fill-blank-container">
+                <label>r² = </label>
+                <input type="number" step="0.01" id="q2-input" class="fill-blank-input" placeholder="请输入答案">
             </div>
             <div class="feedback" id="feedback-2"></div>
         </div>
@@ -491,110 +537,523 @@
         <div class="question-section">
             <div class="question-title">
                 <span class="question-number">3</span>
-                上面给出的最小二乘回归线被称为"最佳拟合"样本数据的直线。使用"最佳拟合"这个术语是因为该直线的方程最小化了 _______，对于这些数据，其值为 ________。
-            </div>
-            <div class="question-text">
-                <p>最小二乘回归线是使 <strong>误差平方和 (SSE)</strong> 最小化的直线。</p>
-                <p>根据计算表，SSE = 12.4952。</p>
-                <p>回归方程为：<span class="math">ŷ = 1.72 + 0.94x</span></p>
-            </div>
-            <div class="options-container">
-                <div class="option" data-question="3" data-option="a">
-                    <div class="option-letter">A</div>
-                    <div>误差平方和, 46.1200</div>
-                </div>
-                <div class="option" data-question="3" data-option="b">
-                    <div class="option-letter">B</div>
-                    <div>总平方和, 12.4952</div>
-                </div>
-                <div class="option" data-question="3" data-option="c">
-                    <div class="option-letter">C</div>
-                    <div>误差平方和, 12.4952</div>
-                </div>
-                <div class="option" data-question="3" data-option="d">
-                    <div class="option-letter">D</div>
-                    <div>回归平方和, 33.6228</div>
+                <div class="dropdown-question">
+                    上面给出的最小二乘回归线被称为"最佳拟合"样本数据的直线。使用"最佳拟合"这个术语是因为该直线的方程最小化了
+                    <select id="q3-dropdown1" class="dropdown-select">
+                        <option value="">请选择</option>
+                        <option value="ssr">回归平方和</option>
+                        <option value="sse">误差平方和</option>
+                        <option value="sst">总平方和</option>
+                    </select>
+                    ，对于这些数据，其值为
+                    <select id="q3-dropdown2" class="dropdown-select">
+                        <option value="">请选择</option>
+                        <option value="33.6228">33.6228</option>
+                        <option value="12.4952">12.4952</option>
+                        <option value="46.1200">46.1200</option>
+                    </select>
+                    。
                 </div>
             </div>
             <div class="feedback" id="feedback-3"></div>
         </div>
 
-        <div class="question-section">
+        <div class="question-section" id="q4">
             <div class="question-title">
                 <span class="question-number">4</span>
-                对于数据点 (24.3, 23.4)，残差的值是 ________。（将你的答案四舍五入到至少2位小数。）
+                <span id="q4-text">对于数据点 (24.3, 23.4)，残差的值是多少？（将你的答案四舍五入到至少2位小数。）</span>
             </div>
-            <div class="question-text">
-                <p>残差 = 观测值 y - 预测值 ŷ</p>
-                <p>观测值 y = 23.4</p>
-                <p>预测值 ŷ = 1.72 + 0.94 × 24.3 = 1.72 + 22.842 = 24.562</p>
-                <p>因此：</p>
-                <div class="formula">残差 = 23.4 - 24.562 = -1.162 ≈ -1.16</div>
-            </div>
-            <div class="options-container">
-                <div class="option" data-question="4" data-option="a">
-                    <div class="option-letter">A</div>
-                    <div>1.16</div>
-                </div>
-                <div class="option" data-question="4" data-option="b">
-                    <div class="option-letter">B</div>
-                    <div>-0.94</div>
-                </div>
-                <div class="option" data-question="4" data-option="c">
-                    <div class="option-letter">C</div>
-                    <div>-1.16</div>
-                </div>
-                <div class="option" data-question="4" data-option="d">
-                    <div class="option-letter">D</div>
-                    <div>0.94</div>
-                </div>
+            <div class="fill-blank-container">
+                <label>残差 = </label>
+                <input type="number" step="0.01" id="q4-input" class="fill-blank-input" placeholder="请输入答案">
             </div>
             <div class="feedback" id="feedback-4"></div>
         </div>
 
         <div class="controls">
             <button id="submit-btn">提交答案</button>
-            <button id="reset-btn">重新作答</button>
+            <button id="next-btn" style="background-color: #27ae60; color: white;">下一题</button>
         </div>
 
         <div class="score-container" id="score-container">
             <div class="score-title">答题结果</div>
             <div class="score-value" id="score-value">0/4</div>
             <div class="score-details" id="score-details">您答对了 0 题，答错了 0 题</div>
+            <div class="history-container" id="history-container">
+                <!-- 历史记录图标将动态添加 -->
+            </div>
         </div>
 
         <button class="show-explanation-btn" id="show-explanation-btn">查看答案解析</button>
         <div class="explanation-section" style="display:none; background-color: #f9f9f9; border-radius: 8px; padding: 20px; margin-top: 20px; border-left: 4px solid #f39c12;">
             <h3 style="color: #e67e22; margin-bottom: 15px;">答案解析</h3>
-            <p><strong>1.</strong> 样本 y 值中，由 x 和 y 之间的估计线性关系所解释的变异由回归平方和 (SSR) 给出，其值为 33.6228。</p>
-            <p><strong>2.</strong> r² = SSR / SST = 33.6228 / 46.1200 ≈ 0.7288 ≈ 0.73。</p>
-            <p><strong>3.</strong> 最小二乘回归线最小化误差平方和 (SSE)，其值为 12.4952。</p>
-            <p><strong>4.</strong> 残差 = 观测值 y - 预测值 ŷ = 23.4 - (1.72 + 0.94×24.3) = 23.4 - 24.562 = -1.162 ≈ -1.16。</p>
+            <p id="explanation-1"><strong>1.</strong> 样本 y 值中，由 x 和 y 之间的估计线性关系所解释的变异由回归平方和 (SSR) 给出。</p>
+            <p id="explanation-2"><strong>2.</strong> r² = SSR / SST。</p>
+            <p id="explanation-3"><strong>3.</strong> 最小二乘回归线最小化误差平方和 (SSE)。</p>
+            <p id="explanation-4"><strong>4.</strong> 残差 = 观测值 y - 预测值 ŷ。</p>
         </div>
     </div>
 
     <script>
-        // 正确答案配置
-        const correctAnswers = {
-            1: 'c', // 回归平方和, 33.6228
-            2: 'b', // 0.73
-            3: 'c', // 误差平方和, 12.4952
-            4: 'c'  // -1.16
-        };
+        // 20组参数配置
+        const parameterSets = [
+            {
+                // 背景1：学习时间与考试成绩
+                background: '为了研究每日学习时间与考试成绩的关系，我们随机选取了5名学生作为样本，记录了每位学生的平均每日学习时间（x，单位：小时）以及期末考试成绩（y，满分100分）。',
+                xName: '学习时间', yName: '考试成绩', xUnit: '小时', yUnit: '分',
+                b0: 42.5, b1: 5.8,
+                data: [
+                    { x: 4, y: 68, ssr: 60.84, sse: 4.41, sst: 65.25 },
+                    { x: 5, y: 70, ssr: 21.16, sse: 1.69, sst: 22.85 },
+                    { x: 6, y: 78, ssr: 0.36, sse: 0.81, sst: 1.17 },
+                    { x: 7, y: 85, ssr: 6.76, sse: 1.96, sst: 8.72 },
+                    { x: 8, y: 87, ssr: 29.16, sse: 3.61, sst: 32.77 }
+                ],
+                ssr: 118.28, sse: 12.48, sst: 130.76,
+                r2: 0.90,
+                residualX: 5, residualY: 70, residual: -1.5
+            },
+            {
+                // 背景2：身高与体重
+                background: '为了研究大学生身高与体重的关系，我们随机选取了5名大学生作为样本，记录了每位学生的身高（x，单位：厘米）以及体重（y，单位：公斤）。',
+                xName: '身高', yName: '体重', xUnit: '厘米', yUnit: '公斤',
+                b0: -52.3, b1: 0.78,
+                data: [
+                    { x: 160, y: 72, ssr: 54.76, sse: 6.76, sst: 61.52 },
+                    { x: 165, y: 78, ssr: 21.09, sse: 2.89, sst: 23.98 },
+                    { x: 170, y: 82, ssr: 3.24, sse: 1.44, sst: 4.68 },
+                    { x: 175, y: 85, ssr: 1.29, sse: 4.41, sst: 5.70 },
+                    { x: 180, y: 90, ssr: 31.36, sse: 2.56, sst: 33.92 }
+                ],
+                ssr: 111.74, sse: 18.06, sst: 129.80,
+                r2: 0.86,
+                residualX: 165, residualY: 78, residual: 1.6
+            },
+            {
+                // 背景3：广告投入与销售额
+                background: '为了研究广告投入与月销售额的关系，我们随机选取了5家同类零售企业作为样本，记录了每家企业上月广告投入（x，单位：万元）以及当月销售额（y，单位：万元）。',
+                xName: '广告投入', yName: '销售额', xUnit: '万元', yUnit: '万元',
+                b0: 85.2, b1: 4.5,
+                data: [
+                    { x: 10, y: 125, ssr: 81.00, sse: 25.00, sst: 106.00 },
+                    { x: 15, y: 158, ssr: 20.25, sse: 5.06, sst: 25.31 },
+                    { x: 20, y: 178, ssr: 0.00, sse: 3.24, sst: 3.24 },
+                    { x: 25, y: 195, ssr: 20.25, sse: 2.25, sst: 22.50 },
+                    { x: 30, y: 225, ssr: 81.00, sse: 4.00, sst: 85.00 }
+                ],
+                ssr: 202.50, sse: 39.55, sst: 242.05,
+                r2: 0.84,
+                residualX: 20, residualY: 178, residual: 2.8
+            },
+            {
+                // 背景4：房屋面积与价格
+                background: '为了研究房屋面积与销售价格的关系，我们随机选取了5套某城市的二手房作为样本，记录了每套房子的建筑面积（x，单位：平方米）以及销售价格（y，单位：万元）。',
+                xName: '建筑面积', yName: '销售价格', xUnit: '平方米', yUnit: '万元',
+                b0: 45.8, b1: 3.2,
+                data: [
+                    { x: 60, y: 235, ssr: 103.68, sse: 2.89, sst: 106.57 },
+                    { x: 80, y: 305, ssr: 23.12, sse: 4.84, sst: 27.96 },
+                    { x: 100, y: 368, ssr: 0.32, sse: 1.44, sst: 1.76 },
+                    { x: 120, y: 435, ssr: 28.88, sse: 5.29, sst: 34.17 },
+                    { x: 140, y: 490, ssr: 115.52, sse: 3.24, sst: 118.76 }
+                ],
+                ssr: 271.52, sse: 17.70, sst: 289.22,
+                r2: 0.94,
+                residualX: 100, residualY: 368, residual: 2.2
+            },
+            {
+                // 背景5：施肥量与作物产量
+                background: '为了研究氮肥施用量与小麦亩产量的关系，我们随机选取了5块试验田作为样本，记录了每块田的氮肥施用量（x，单位：公斤/亩）以及小麦亩产量（y，单位：公斤）。',
+                xName: '施肥量', yName: '亩产量', xUnit: '公斤/亩', yUnit: '公斤',
+                b0: 285.6, b1: 12.4,
+                data: [
+                    { x: 5, y: 352, ssr: 115.60, sse: 4.84, sst: 120.44 },
+                    { x: 8, y: 385, ssr: 23.04, sse: 5.76, sst: 28.80 },
+                    { x: 10, y: 408, ssr: 0.64, sse: 2.56, sst: 3.20 },
+                    { x: 12, y: 438, ssr: 10.24, sse: 3.24, sst: 13.48 },
+                    { x: 15, y: 468, ssr: 92.16, sse: 3.24, sst: 95.40 }
+                ],
+                ssr: 241.68, sse: 19.64, sst: 261.32,
+                r2: 0.92,
+                residualX: 10, residualY: 408, residual: -1.6
+            },
+            {
+                // 背景6：员工工龄与月薪
+                background: '为了研究员工工龄与月薪的关系，我们随机选取了5名某IT公司的技术员工作为样本，记录了每位员工的工龄（x，单位：年）以及月薪（y，单位：千元）。',
+                xName: '工龄', yName: '月薪', xUnit: '年', yUnit: '千元',
+                b0: 8.5, b1: 2.3,
+                data: [
+                    { x: 2, y: 12.8, ssr: 33.64, sse: 0.36, sst: 34.00 },
+                    { x: 4, y: 18.2, ssr: 7.84, sse: 0.64, sst: 8.48 },
+                    { x: 6, y: 22.5, ssr: 0.04, sse: 0.81, sst: 0.85 },
+                    { x: 8, y: 26.8, ssr: 6.76, sse: 0.09, sst: 6.85 },
+                    { x: 10, y: 31.5, ssr: 29.16, sse: 0.04, sst: 29.20 }
+                ],
+                ssr: 77.44, sse: 1.94, sst: 79.38,
+                r2: 0.98,
+                residualX: 6, residualY: 22.5, residual: 0.2
+            },
+            {
+                // 背景7：温度与冰淇淋销量
+                background: '为了研究气温与冰淇淋日销量的关系，我们随机选取了5个夏日作为样本，记录了每天的最高气温（x，单位：摄氏度）以及某冰淇淋店的日销量（y，单位：个）。',
+                xName: '气温', yName: '日销量', xUnit: '℃', yUnit: '个',
+                b0: -125.6, b1: 8.5,
+                data: [
+                    { x: 28, y: 115, ssr: 72.25, sse: 7.29, sst: 79.54 },
+                    { x: 30, y: 132, ssr: 20.25, sse: 2.56, sst: 22.81 },
+                    { x: 32, y: 148, ssr: 0.25, sse: 1.69, sst: 1.94 },
+                    { x: 34, y: 162, ssr: 12.25, sse: 3.24, sst: 15.49 },
+                    { x: 36, y: 182, ssr: 56.25, sse: 1.21, sst: 57.46 }
+                ],
+                ssr: 161.25, sse: 15.99, sst: 177.24,
+                r2: 0.91,
+                residualX: 32, residualY: 148, residual: 1.6
+            },
+            {
+                // 背景8：教育年限与年收入
+                background: '为了研究受教育年限与年收入的关系，我们随机选取了5名35-40岁的职场人士作为样本，记录了每位受访者的受教育年限（x，单位：年）以及上一年税前年收入（y，单位：万元）。',
+                xName: '教育年限', yName: '年收入', xUnit: '年', yUnit: '万元',
+                b0: -5.8, b1: 2.6,
+                data: [
+                    { x: 12, y: 25.5, ssr: 27.04, sse: 1.44, sst: 28.48 },
+                    { x: 14, y: 30.8, ssr: 6.76, sse: 2.56, sst: 9.32 },
+                    { x: 16, y: 36.2, ssr: 0.16, sse: 0.36, sst: 0.52 },
+                    { x: 18, y: 41.5, ssr: 5.76, sse: 1.21, sst: 6.97 },
+                    { x: 20, y: 46.8, ssr: 25.00, sse: 0.04, sst: 25.04 }
+                ],
+                ssr: 64.72, sse: 5.61, sst: 70.33,
+                r2: 0.92,
+                residualX: 16, residualY: 36.2, residual: 0.4
+            },
+            {
+                // 背景9：跑步距离与消耗热量
+                background: '为了研究跑步距离与热量消耗的关系，我们随机选取了5名跑步爱好者作为样本，记录了每位runner单次跑步的距离（x，单位：公里）以及智能手表记录的热量消耗（y，单位：千卡）。',
+                xName: '跑步距离', yName: '热量消耗', xUnit: '公里', yUnit: '千卡',
+                b0: 85.2, b1: 68.5,
+                data: [
+                    { x: 3, y: 295, ssr: 107.12, sse: 13.69, sst: 120.81 },
+                    { x: 5, y: 428, ssr: 23.12, sse: 4.84, sst: 27.96 },
+                    { x: 7, y: 565, ssr: 0.72, sse: 2.25, sst: 2.97 },
+                    { x: 9, y: 698, ssr: 18.32, sse: 6.25, sst: 24.57 },
+                    { x: 11, y: 842, ssr: 94.92, sse: 4.41, sst: 99.33 }
+                ],
+                ssr: 244.20, sse: 31.44, sst: 275.64,
+                r2: 0.89,
+                residualX: 7, residualY: 565, residual: 0.3
+            },
+            {
+                // 背景10：练习时长与打字速度
+                background: '为了研究打字练习时长与打字速度的关系，我们随机选取了5名初学者作为样本，记录了每位学习者的累计练习时长（x，单位：小时）以及当前打字速度（y，单位：字/分钟）。',
+                xName: '练习时长', yName: '打字速度', xUnit: '小时', yUnit: '字/分钟',
+                b0: 18.5, b1: 2.8,
+                data: [
+                    { x: 10, y: 46.5, ssr: 78.40, sse: 0.49, sst: 78.89 },
+                    { x: 15, y: 60.2, ssr: 19.60, sse: 0.36, sst: 19.96 },
+                    { x: 20, y: 74.8, ssr: 0.00, sse: 0.64, sst: 0.64 },
+                    { x: 25, y: 89.5, ssr: 19.60, sse: 0.25, sst: 19.85 },
+                    { x: 30, y: 102.3, ssr: 78.40, sse: 0.09, sst: 78.49 }
+                ],
+                ssr: 196.00, sse: 1.83, sst: 197.83,
+                r2: 0.99,
+                residualX: 20, residualY: 74.8, residual: 0.3
+            },
+            {
+                // 背景11：睡眠时间与注意力得分
+                background: '为了研究睡眠时长与注意力的关系，我们随机选取了5名大学生作为样本，记录了每位学生前一晚的睡眠时长（x，单位：小时）以及次日注意力测试得分（y，满分100分）。',
+                xName: '睡眠时长', yName: '注意力得分', xUnit: '小时', yUnit: '分',
+                b0: 42.8, b1: 6.5,
+                data: [
+                    { x: 5, y: 75.5, ssr: 91.12, sse: 1.44, sst: 92.56 },
+                    { x: 6, y: 81.2, ssr: 26.52, sse: 0.64, sst: 27.16 },
+                    { x: 7, y: 88.5, ssr: 1.82, sse: 0.25, sst: 2.07 },
+                    { x: 8, y: 94.8, ssr: 14.52, sse: 0.09, sst: 14.61 },
+                    { x: 9, y: 101.2, ssr: 68.12, sse: 0.16, sst: 68.28 }
+                ],
+                ssr: 202.10, sse: 2.58, sst: 204.68,
+                r2: 0.99,
+                residualX: 7, residualY: 88.5, residual: 0.2
+            },
+            {
+                // 背景12：产品价格与月销量
+                background: '为了研究产品定价与销量的关系，我们随机选取了5款同类电子产品作为样本，记录了每款产品的售价（x，单位：元）以及上月销量（y，单位：件）。',
+                xName: '产品售价', yName: '月销量', xUnit: '元', yUnit: '件',
+                b0: 5800, b1: -3.2,
+                data: [
+                    { x: 200, y: 5150, ssr: 125.44, sse: 4.00, sst: 129.44 },
+                    { x: 300, y: 4820, ssr: 31.36, sse: 5.76, sst: 37.12 },
+                    { x: 400, y: 4525, ssr: 0.64, sse: 2.25, sst: 2.89 },
+                    { x: 500, y: 4185, ssr: 23.04, sse: 4.41, sst: 27.45 },
+                    { x: 600, y: 3890, ssr: 115.24, sse: 3.24, sst: 118.48 }
+                ],
+                ssr: 295.72, sse: 19.66, sst: 315.38,
+                r2: 0.94,
+                residualX: 400, residualY: 4525, residual: 5
+            },
+            {
+                // 背景13：阅读量与写作得分
+                background: '为了研究课外阅读量与写作能力的关系，我们随机选取了5名初中生作为样本，记录了每位学生月均课外阅读量（x，单位：万字）以及作文比赛得分（y，满分60分）。',
+                xName: '阅读量', yName: '作文得分', xUnit: '万字', yUnit: '分',
+                b0: 28.5, b1: 3.2,
+                data: [
+                    { x: 3, y: 38.2, ssr: 53.29, sse: 0.09, sst: 53.38 },
+                    { x: 5, y: 44.5, ssr: 13.69, sse: 0.36, sst: 14.05 },
+                    { x: 7, y: 50.8, ssr: 0.49, sse: 0.16, sst: 0.65 },
+                    { x: 9, y: 57.2, ssr: 11.29, sse: 0.04, sst: 11.33 },
+                    { x: 11, y: 63.8, ssr: 47.61, sse: 0.16, sst: 47.77 }
+                ],
+                ssr: 126.37, sse: 0.81, sst: 127.18,
+                r2: 0.99,
+                residualX: 7, residualY: 50.8, residual: -0.1
+            },
+            {
+                // 背景14：高考成绩与大一绩点
+                background: '为了研究高考成绩与大学学业表现的关系，我们随机选取了5名刚刚完成大学一年级学业的学生作为样本，记录了每位学生的高考成绩（x，满分750分）以及她大学第一年的平均绩点（y，以四分制计）。',
+                xName: '高考成绩', yName: '平均绩点', xUnit: '分', yUnit: '分',
+                b0: 0.85, b1: 0.0042,
+                data: [
+                    { x: 520, y: 3.05, ssr: 0.1764, sse: 0.0156, sst: 0.1920 },
+                    { x: 560, y: 3.18, ssr: 0.0484, sse: 0.0144, sst: 0.0628 },
+                    { x: 600, y: 3.42, ssr: 0.0016, sse: 0.0081, sst: 0.0097 },
+                    { x: 640, y: 3.55, ssr: 0.0324, sse: 0.0025, sst: 0.0349 },
+                    { x: 680, y: 3.68, ssr: 0.1296, sse: 0.0144, sst: 0.1440 }
+                ],
+                ssr: 0.3884, sse: 0.0550, sst: 0.4434,
+                r2: 0.88,
+                residualX: 600, residualY: 3.42, residual: 0.05
+            },
+            {
+                // 背景15：工作经验与项目完成时间
+                background: '为了研究工作经验与完成项目效率的关系，我们随机选取了5名程序员作为样本，记录了每位程序员的工作经验（x，单位：年）以及完成某标准项目所需时间（y，单位：小时）。',
+                xName: '工作经验', yName: '完成时间', xUnit: '年', yUnit: '小时',
+                b0: 95.2, b1: -5.8,
+                data: [
+                    { x: 2, y: 83.5, ssr: 100.00, sse: 0.25, sst: 100.25 },
+                    { x: 4, y: 72.8, ssr: 25.00, sse: 0.36, sst: 25.36 },
+                    { x: 6, y: 60.2, ssr: 0.00, sse: 0.64, sst: 0.64 },
+                    { x: 8, y: 49.5, ssr: 25.00, sse: 0.25, sst: 25.25 },
+                    { x: 10, y: 37.2, ssr: 100.00, sse: 0.36, sst: 100.36 }
+                ],
+                ssr: 250.00, sse: 1.86, sst: 251.86,
+                r2: 0.99,
+                residualX: 6, residualY: 60.2, residual: -0.2
+            },
+            {
+                // 背景16：年龄与静息心率
+                background: '为了研究年龄与静息心率的关系，我们随机选取了5名健康成年人作为样本，记录了每位受访者的年龄（x，单位：岁）以及静息心率（y，单位：次/分钟）。',
+                xName: '年龄', yName: '静息心率', xUnit: '岁', yUnit: '次/分钟',
+                b0: 58.5, b1: 0.35,
+                data: [
+                    { x: 25, y: 67.2, ssr: 42.25, sse: 0.09, sst: 42.34 },
+                    { x: 35, y: 70.8, ssr: 10.56, sse: 0.36, sst: 10.92 },
+                    { x: 45, y: 74.2, ssr: 0.56, sse: 0.16, sst: 0.72 },
+                    { x: 55, y: 77.5, ssr: 9.00, sse: 0.04, sst: 9.04 },
+                    { x: 65, y: 81.3, ssr: 36.00, sse: 0.16, sst: 36.16 }
+                ],
+                ssr: 98.37, sse: 0.81, sst: 99.18,
+                r2: 0.99,
+                residualX: 45, residualY: 74.2, residual: -0.05
+            },
+            {
+                // 背景17：店铺面积与日均客流量
+                background: '为了研究店铺面积与客流量的关系，我们随机选取了5家连锁咖啡店作为样本，记录了每家店铺的营业面积（x，单位：平方米）以及日均客流量（y，单位：人次）。',
+                xName: '营业面积', yName: '日均客流', xUnit: '平方米', yUnit: '人次',
+                b0: 85.2, b1: 3.8,
+                data: [
+                    { x: 80, y: 388, ssr: 87.12, sse: 2.89, sst: 90.01 },
+                    { x: 100, y: 468, ssr: 21.78, sse: 3.24, sst: 25.02 },
+                    { x: 120, y: 542, ssr: 0.72, sse: 1.96, sst: 2.68 },
+                    { x: 140, y: 618, ssr: 15.12, sse: 2.56, sst: 17.68 },
+                    { x: 160, y: 692, ssr: 68.72, sse: 1.44, sst: 70.16 }
+                ],
+                ssr: 193.46, sse: 12.09, sst: 205.55,
+                r2: 0.94,
+                residualX: 120, residualY: 542, residual: 0.8
+            },
+            {
+                // 背景18：饮酒量与反应时间
+                background: '为了研究饮酒量与反应时间的关系，我们随机选取了5名志愿者作为样本，记录了每位志愿者饮酒量（x，单位：标准杯）以及反应测试时间（y，单位：毫秒）。',
+                xName: '饮酒量', yName: '反应时间', xUnit: '杯', yUnit: '毫秒',
+                b0: 185.2, b1: 28.5,
+                data: [
+                    { x: 1, y: 215.8, ssr: 144.00, sse: 6.76, sst: 150.76 },
+                    { x: 2, y: 240.5, ssr: 36.00, sse: 5.29, sst: 41.29 },
+                    { x: 3, y: 271.2, ssr: 0.00, sse: 2.56, sst: 2.56 },
+                    { x: 4, y: 298.8, ssr: 36.00, sse: 1.96, sst: 37.96 },
+                    { x: 5, y: 328.5, ssr: 144.00, sse: 4.41, sst: 148.41 }
+                ],
+                ssr: 360.00, sse: 20.98, sst: 380.98,
+                r2: 0.94,
+                residualX: 3, residualY: 271.2, residual: 0.5
+            },
+            {
+                // 背景19：海拔与气温
+                background: '为了研究海拔高度与气温的关系，我们随机选取了5个不同海拔的气象站作为样本，记录了每个站点的海拔高度（x，单位：米）以及当日正午气温（y，单位：摄氏度）。',
+                xName: '海拔', yName: '气温', xUnit: '米', yUnit: '℃',
+                b0: 28.5, b1: -0.0065,
+                data: [
+                    { x: 500, y: 25.2, ssr: 16.00, sse: 0.09, sst: 16.09 },
+                    { x: 1000, y: 22.1, ssr: 4.00, sse: 0.36, sst: 4.36 },
+                    { x: 1500, y: 18.7, ssr: 0.00, sse: 0.25, sst: 0.25 },
+                    { x: 2000, y: 15.3, ssr: 4.00, sse: 0.04, sst: 4.04 },
+                    { x: 2500, y: 12.2, ssr: 16.00, sse: 0.09, sst: 16.09 }
+                ],
+                ssr: 40.00, sse: 0.83, sst: 40.83,
+                r2: 0.98,
+                residualX: 1500, residualY: 18.7, residual: -0.05
+            },
+            {
+                // 背景20：投资年限与资产增值
+                background: '为了研究投资年限与资产增值的关系，我们随机选取了5名长期投资者作为样本，记录了每位投资者的投资年限（x，单位：年）以及资产增值倍数（y，倍）。',
+                xName: '投资年限', yName: '增值倍数', xUnit: '年', yUnit: '倍',
+                b0: 0.85, b1: 0.38,
+                data: [
+                    { x: 5, y: 2.72, ssr: 6.35, sse: 0.0289, sst: 6.3789 },
+                    { x: 10, y: 4.68, ssr: 1.59, sse: 0.0324, sst: 1.6224 },
+                    { x: 15, y: 6.52, ssr: 0.06, sse: 0.0144, sst: 0.0744 },
+                    { x: 20, y: 8.48, ssr: 1.38, sse: 0.0225, sst: 1.4025 },
+                    { x: 25, y: 10.35, ssr: 5.52, sse: 0.0121, sst: 5.5321 }
+                ],
+                ssr: 14.90, sse: 0.1103, sst: 15.0103,
+                r2: 0.99,
+                residualX: 15, residualY: 6.52, residual: -0.03
+            }
+        ];
 
-        // 答案解释
-        const answerExplanations = {
-            1: "正确！样本 y 值中，由 x 和 y 之间的估计线性关系所解释的变异由回归平方和 (SSR) 给出。根据计算表，SSR = 33.6228。",
-            2: "正确！r² = SSR / SST = 33.6228 / 46.1200 ≈ 0.7288 ≈ 0.73。",
-            3: "正确！最小二乘回归线最小化误差平方和 (SSE)。根据计算表，SSE = 12.4952。",
-            4: "正确！残差 = 观测值 y - 预测值 ŷ = 23.4 - (1.72 + 0.94×24.3) = 23.4 - 24.562 = -1.162 ≈ -1.16。"
-        };
-
-        // 用户选择的答案
+        let currentParamIndex = 0;
         let userAnswers = {};
+        let answerHistory = [];
+
+        // 更新页面内容
+        function updatePageContent(params) {
+            // 更新背景文字
+            document.getElementById('background-text').innerHTML = params.background;
+            document.getElementById('formula-display').textContent = `ŷ = ${params.b0} + ${params.b1}x`;
+
+            // 更新数据表
+            const tableBody = document.getElementById('table-body');
+            let tableHTML = '';
+            params.data.forEach(row => {
+                tableHTML += `
+                    <tr>
+                        <td>${row.x}</td>
+                        <td>${row.y}</td>
+                        <td>${row.ssr.toFixed(4)}</td>
+                        <td>${row.sse.toFixed(4)}</td>
+                        <td>${row.sst.toFixed(4)}</td>
+                    </tr>
+                `;
+            });
+            tableHTML += `
+                <tr style="font-weight: bold; background-color: #e2e8f0;">
+                    <td>列总和</td>
+                    <td></td>
+                    <td>${params.ssr.toFixed(4)}</td>
+                    <td>${params.sse.toFixed(4)}</td>
+                    <td>${params.sst.toFixed(4)}</td>
+                </tr>
+            `;
+            tableBody.innerHTML = tableHTML;
+
+            // 更新下拉框选项值
+            updateDropdownOptions(params);
+        }
+
+        // 更新下拉框选项
+        function updateDropdownOptions(params) {
+            // 问题1下拉框2
+            const q1d2 = document.getElementById('q1-dropdown2');
+            q1d2.innerHTML = `
+                <option value="">请选择</option>
+                <option value="${params.ssr.toFixed(4)}">${params.ssr.toFixed(4)}</option>
+                <option value="${params.sse.toFixed(4)}">${params.sse.toFixed(4)}</option>
+                <option value="${params.sst.toFixed(4)}">${params.sst.toFixed(4)}</option>
+            `;
+
+            // 问题3下拉框2
+            const q3d2 = document.getElementById('q3-dropdown2');
+            q3d2.innerHTML = `
+                <option value="">请选择</option>
+                <option value="${params.ssr.toFixed(4)}">${params.ssr.toFixed(4)}</option>
+                <option value="${params.sse.toFixed(4)}">${params.sse.toFixed(4)}</option>
+                <option value="${params.sst.toFixed(4)}">${params.sst.toFixed(4)}</option>
+            `;
+
+            // 更新问题4的描述
+            const q4Title = document.querySelector('#q4 .question-title');
+            q4Title.innerHTML = `
+                <span class="question-number">4</span>
+                对于数据点 (${params.residualX}, ${params.residualY})，残差的值是多少？（将你的答案四舍五入到至少2位小数。）
+            `;
+        }
+
+        // 获取正确答案
+        function getCorrectAnswers(params) {
+            return {
+                1: { dropdown1: 'ssr', dropdown2: params.ssr.toFixed(4) },
+                2: params.r2,
+                3: { dropdown1: 'sse', dropdown2: params.sse.toFixed(4) },
+                4: params.residual
+            };
+        }
+
+        // 获取答案解释
+        function getAnswerExplanations(params) {
+            return {
+                1: `正确！样本 y 值中，由 x 和 y 之间的估计线性关系所解释的变异由回归平方和 (SSR) 给出。根据计算表，SSR = ${params.ssr.toFixed(4)}。`,
+                2: `正确！r² = SSR / SST = ${params.ssr.toFixed(4)} / ${params.sst.toFixed(4)} ≈ ${params.r2}。`,
+                3: `正确！最小二乘回归线最小化误差平方和 (SSE)。根据计算表，SSE = ${params.sse.toFixed(4)}。`,
+                4: `正确！残差 = 观测值 y - 预测值 ŷ = ${params.residualY} - (${params.b0} + ${params.b1}×${params.residualX}) = ${params.residualY.toFixed(2)} - ${(params.b0 + params.b1 * params.residualX).toFixed(3)} ≈ ${params.residual}。`
+            };
+        }
 
         // 初始化
         document.addEventListener('DOMContentLoaded', function() {
+            // 随机选择初始参数组
+            currentParamIndex = Math.floor(Math.random() * parameterSets.length);
+            const initialParams = parameterSets[currentParamIndex];
+            updatePageContent(initialParams);
+
+            // 下拉框事件监听
+            document.querySelectorAll('.dropdown-select').forEach(select => {
+                select.addEventListener('change', function() {
+                    const selectId = this.id;
+                    const value = this.value;
+                    this.classList.remove('correct', 'incorrect');
+
+                    if (selectId === 'q1-dropdown1' || selectId === 'q1-dropdown2') {
+                        if (!userAnswers[1]) userAnswers[1] = {};
+                        if (selectId === 'q1-dropdown1') userAnswers[1].dropdown1 = value;
+                        else userAnswers[1].dropdown2 = value;
+                        const feedback = document.getElementById('feedback-1');
+                        if (feedback) { feedback.className = 'feedback'; feedback.textContent = ''; }
+                    } else if (selectId === 'q3-dropdown1' || selectId === 'q3-dropdown2') {
+                        if (!userAnswers[3]) userAnswers[3] = {};
+                        if (selectId === 'q3-dropdown1') userAnswers[3].dropdown1 = value;
+                        else userAnswers[3].dropdown2 = value;
+                        const feedback = document.getElementById('feedback-3');
+                        if (feedback) { feedback.className = 'feedback'; feedback.textContent = ''; }
+                    }
+                });
+            });
+
+            // 填空题输入框事件监听
+            document.querySelectorAll('.fill-blank-input').forEach(input => {
+                input.addEventListener('input', function() {
+                    const inputId = this.id;
+                    const value = parseFloat(this.value);
+                    this.classList.remove('correct', 'incorrect');
+
+                    if (inputId === 'q2-input') {
+                        userAnswers[2] = value;
+                        const feedback = document.getElementById('feedback-2');
+                        if (feedback) { feedback.className = 'feedback'; feedback.textContent = ''; }
+                    } else if (inputId === 'q4-input') {
+                        userAnswers[4] = value;
+                        const feedback = document.getElementById('feedback-4');
+                        if (feedback) { feedback.className = 'feedback'; feedback.textContent = ''; }
+                    }
+                });
+            });
 
             // 显示答案解析按钮点击事件
             document.querySelectorAll('.show-explanation-btn').forEach(btn => {
@@ -638,45 +1097,131 @@
             
             // 提交按钮事件
             document.getElementById('submit-btn').addEventListener('click', function() {
+                const params = parameterSets[currentParamIndex];
+                const correctAnswers = getCorrectAnswers(params);
+                const answerExplanations = getAnswerExplanations(params);
                 let correctCount = 0;
-                const totalQuestions = Object.keys(correctAnswers).length;
-                
-                // 检查每个问题
-                for (let i = 1; i <= totalQuestions; i++) {
-                    const userAnswer = userAnswers[i];
-                    const correctAnswer = correctAnswers[i];
-                    const feedback = document.getElementById(`feedback-${i}`);
-                    
-                    // 清除所有选项的样式
-                    document.querySelectorAll(`.option[data-question="${i}"]`).forEach(opt => {
-                        opt.classList.remove('correct', 'incorrect');
-                    });
-                    
-                    // 如果没有回答
-                    if (!userAnswer) {
-                        feedback.className = 'feedback incorrect';
-                        feedback.textContent = '请先选择答案！';
-                        continue;
-                    }
-                    
-                    // 获取用户选择的选项元素
-                    const userOption = document.querySelector(`.option[data-question="${i}"][data-option="${userAnswer}"]`);
+                const totalQuestions = 4;
 
-                    // Mark incorrect only
-                    if (userAnswer === correctAnswer) {
-                        // 回答正确
+                // 检查问题1（下拉框）
+                const feedback1 = document.getElementById('feedback-1');
+                const q1Dropdown1 = document.getElementById('q1-dropdown1');
+                const q1Dropdown2 = document.getElementById('q1-dropdown2');
+                const userQ1Dropdown1 = q1Dropdown1 ? q1Dropdown1.value : '';
+                const userQ1Dropdown2 = q1Dropdown2 ? q1Dropdown2.value : '';
+
+                if (q1Dropdown1) q1Dropdown1.classList.remove('correct', 'incorrect');
+                if (q1Dropdown2) q1Dropdown2.classList.remove('correct', 'incorrect');
+
+                if (!userQ1Dropdown1 || !userQ1Dropdown2) {
+                    feedback1.className = 'feedback incorrect';
+                    feedback1.textContent = '请先选择所有答案！';
+                } else {
+                    const isDropdown1Correct = userQ1Dropdown1 === correctAnswers[1].dropdown1;
+                    const isDropdown2Correct = userQ1Dropdown2 === correctAnswers[1].dropdown2;
+
+                    if (q1Dropdown1) q1Dropdown1.classList.add(isDropdown1Correct ? 'correct' : 'incorrect');
+                    if (q1Dropdown2) q1Dropdown2.classList.add(isDropdown2Correct ? 'correct' : 'incorrect');
+
+                    if (isDropdown1Correct && isDropdown2Correct) {
                         correctCount++;
-                        userOption.classList.add('correct');
-                        feedback.className = 'feedback correct';
-                        feedback.textContent = answerExplanations[i];
+                        feedback1.className = 'feedback correct';
+                        feedback1.textContent = answerExplanations[1];
                     } else {
-                        // 回答错误
-                        userOption.classList.add('incorrect');
-                        feedback.className = 'feedback incorrect';
-                        feedback.textContent = `回答错误。${answerExplanations[i]}`;
+                        feedback1.className = 'feedback incorrect';
+                        let errorMsg = '回答错误。';
+                        if (!isDropdown1Correct) errorMsg += '第一个空格选择不正确。';
+                        if (!isDropdown2Correct) errorMsg += '第二个空格选择不正确。';
+                        feedback1.textContent = errorMsg + ' ' + answerExplanations[1];
                     }
                 }
-                
+
+                // 检查问题2（填空题）
+                const feedback2 = document.getElementById('feedback-2');
+                const q2Input = document.getElementById('q2-input');
+                const userQ2Answer = q2Input ? parseFloat(q2Input.value) : NaN;
+
+                if (q2Input) q2Input.classList.remove('correct', 'incorrect');
+
+                if (isNaN(userQ2Answer)) {
+                    feedback2.className = 'feedback incorrect';
+                    feedback2.textContent = '请先输入答案！';
+                } else {
+                    const isQ2Correct = Math.abs(userQ2Answer - correctAnswers[2]) < 0.02;
+                    q2Input.classList.add(isQ2Correct ? 'correct' : 'incorrect');
+
+                    if (isQ2Correct) {
+                        correctCount++;
+                        feedback2.className = 'feedback correct';
+                        feedback2.textContent = answerExplanations[2];
+                    } else {
+                        feedback2.className = 'feedback incorrect';
+                        feedback2.textContent = `回答错误。正确答案是 ${correctAnswers[2]}。${answerExplanations[2]}`;
+                    }
+                }
+
+                // 检查问题3（下拉框）
+                const feedback3 = document.getElementById('feedback-3');
+                const q3Dropdown1 = document.getElementById('q3-dropdown1');
+                const q3Dropdown2 = document.getElementById('q3-dropdown2');
+                const userQ3Dropdown1 = q3Dropdown1 ? q3Dropdown1.value : '';
+                const userQ3Dropdown2 = q3Dropdown2 ? q3Dropdown2.value : '';
+
+                if (q3Dropdown1) q3Dropdown1.classList.remove('correct', 'incorrect');
+                if (q3Dropdown2) q3Dropdown2.classList.remove('correct', 'incorrect');
+
+                if (!userQ3Dropdown1 || !userQ3Dropdown2) {
+                    feedback3.className = 'feedback incorrect';
+                    feedback3.textContent = '请先选择所有答案！';
+                } else {
+                    const isQ3Dropdown1Correct = userQ3Dropdown1 === correctAnswers[3].dropdown1;
+                    const isQ3Dropdown2Correct = userQ3Dropdown2 === correctAnswers[3].dropdown2;
+
+                    if (q3Dropdown1) q3Dropdown1.classList.add(isQ3Dropdown1Correct ? 'correct' : 'incorrect');
+                    if (q3Dropdown2) q3Dropdown2.classList.add(isQ3Dropdown2Correct ? 'correct' : 'incorrect');
+
+                    if (isQ3Dropdown1Correct && isQ3Dropdown2Correct) {
+                        correctCount++;
+                        feedback3.className = 'feedback correct';
+                        feedback3.textContent = answerExplanations[3];
+                    } else {
+                        feedback3.className = 'feedback incorrect';
+                        let errorMsg = '回答错误。';
+                        if (!isQ3Dropdown1Correct) errorMsg += '第一个空格选择不正确。';
+                        if (!isQ3Dropdown2Correct) errorMsg += '第二个空格选择不正确。';
+                        feedback3.textContent = errorMsg + ' ' + answerExplanations[3];
+                    }
+                }
+
+                // 检查问题4（填空题）
+                const feedback4 = document.getElementById('feedback-4');
+                const q4Input = document.getElementById('q4-input');
+                const userQ4Answer = q4Input ? parseFloat(q4Input.value) : NaN;
+
+                if (q4Input) q4Input.classList.remove('correct', 'incorrect');
+
+                if (isNaN(userQ4Answer)) {
+                    feedback4.className = 'feedback incorrect';
+                    feedback4.textContent = '请先输入答案！';
+                } else {
+                    const isQ4Correct = Math.abs(userQ4Answer - correctAnswers[4]) < 0.02;
+                    q4Input.classList.add(isQ4Correct ? 'correct' : 'incorrect');
+
+                    if (isQ4Correct) {
+                        correctCount++;
+                        feedback4.className = 'feedback correct';
+                        feedback4.textContent = answerExplanations[4];
+                    } else {
+                        feedback4.className = 'feedback incorrect';
+                        feedback4.textContent = `回答错误。正确答案是 ${correctAnswers[4]}。${answerExplanations[4]}`;
+                    }
+                }
+
+                // 记录历史
+                const isCorrect = correctCount === totalQuestions;
+                answerHistory.push(isCorrect);
+                updateHistoryDisplay();
+
                 // 显示得分
                 const scoreContainer = document.getElementById('score-container');
                 const scoreValue = document.getElementById('score-value');
@@ -686,34 +1231,115 @@
                 scoreDetails.textContent = `您答对了 ${correctCount} 题，答错了 ${totalQuestions - correctCount} 题`;
                 scoreContainer.style.display = 'block';
 
-                // Show explanation button
                 var showBtn = document.getElementById('show-explanation-btn');
-                if (showBtn) {
-                    showBtn.style.display = 'inline-block';
+                if (showBtn) showBtn.style.display = 'inline-block';
+
+                scoreContainer.scrollIntoView({ behavior: 'smooth' });
+            });
+
+            // 更新历史记录显示
+            function updateHistoryDisplay() {
+                const historyContainer = document.getElementById('history-container');
+                if (!historyContainer) return;
+                historyContainer.innerHTML = '';
+                answerHistory.forEach((isCorrect, index) => {
+                    const icon = document.createElement('div');
+                    icon.className = `history-icon ${isCorrect ? 'correct' : 'incorrect'}`;
+                    icon.innerHTML = isCorrect ? '✓' : '✗';
+                    icon.title = `第${index + 1}题: ${isCorrect ? '正确' : '错误'}`;
+                    historyContainer.appendChild(icon);
+                });
+            }
+
+            // 下一题按钮事件
+            document.getElementById('next-btn').addEventListener('click', function() {
+                let newIndex;
+                do {
+                    newIndex = Math.floor(Math.random() * parameterSets.length);
+                } while (newIndex === currentParamIndex && parameterSets.length > 1);
+
+                currentParamIndex = newIndex;
+                const params = parameterSets[currentParamIndex];
+                updatePageContent(params);
+
+                // 重置用户答案
+                userAnswers = {};
+
+                // 重置下拉框
+                document.querySelectorAll('.dropdown-select').forEach(select => {
+                    select.value = '';
+                    select.classList.remove('correct', 'incorrect');
+                });
+
+                // 重置填空输入框
+                document.querySelectorAll('.fill-blank-input').forEach(input => {
+                    input.value = '';
+                    input.classList.remove('correct', 'incorrect');
+                });
+
+                // 重置反馈
+                document.querySelectorAll('.feedback').forEach(feedback => {
+                    feedback.className = 'feedback';
+                    feedback.textContent = '';
+                });
+
+                // 隐藏得分区域但保持历史记录可见
+                const scoreContainer = document.getElementById('score-container');
+                if (answerHistory.length > 0) {
+                    document.getElementById('score-value').style.display = 'none';
+                    document.getElementById('score-details').style.display = 'none';
+                } else {
+                    scoreContainer.style.display = 'none';
                 }
 
-                // 滚动到得分区域
-                scoreContainer.scrollIntoView({ behavior: 'smooth' });
+                // 隐藏答案解析
+                var showBtn = document.getElementById('show-explanation-btn');
+                if (showBtn) showBtn.style.display = 'none';
+
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             });
             
             // 重置按钮事件
             document.getElementById('reset-btn').addEventListener('click', function() {
                 // 清除所有选择
                 userAnswers = {};
-                
+
+                // 重置下拉框
+                document.querySelectorAll('.dropdown-select').forEach(select => {
+                    select.value = '';
+                    select.classList.remove('correct', 'incorrect');
+                });
+
+                // 重置填空输入框
+                document.querySelectorAll('.fill-blank-input').forEach(input => {
+                    input.value = '';
+                    input.classList.remove('correct', 'incorrect');
+                });
+
                 // 清除所有选项的样式
                 document.querySelectorAll('.option').forEach(option => {
                     option.classList.remove('selected', 'correct', 'incorrect');
                 });
-                
+
                 // 清除所有反馈
                 document.querySelectorAll('.feedback').forEach(feedback => {
                     feedback.className = 'feedback';
                     feedback.textContent = '';
                 });
-                
+
                 // 隐藏得分区域
                 document.getElementById('score-container').style.display = 'none';
+
+                // 隐藏答案解析
+                var showBtn = document.getElementById('show-explanation-btn');
+                if (showBtn) {
+                    showBtn.style.display = 'none';
+                    showBtn.textContent = '查看答案解析';
+                }
+                var explanation = document.querySelector('.explanation-section');
+                if (explanation) {
+                    explanation.style.display = 'none';
+                }
             });
         });
     </script>
